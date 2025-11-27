@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "nome": "Maria da Silva",
+    "cidade": "Cuiabá",
+    "bairro": "CPA 1",
+    "telefone": "65999999999"
+  },
+  {
+    "id": 2,
+    "nome": "Maria José",
+    "cidade": "Cuiabá",
+    "bairro": "Centro",
+    "telefone": "65988888888"
+  },
+  {
+    "id": 3,
+    "nome": "João de Souza",
+    "cidade": "Várzea Grande",
+    "bairro": "Centro",
+    "telefone": "65977777777"
+  },
+  {
+    "id": 4,
+    "nome": "Ana Paula",
+    "cidade": "Cuiabá",
+    "bairro": "Tijucal",
+    "telefone": "65966666666"
+  },
+  {
+    "id": 5,
+    "nome": "Antônio Carlos",
+    "cidade": "Várzea Grande",
+    "bairro": "Cristo Rei",
+    "telefone": "65955555555"
+  }
+]
