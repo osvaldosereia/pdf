@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cestas Dona Antônia</title>
+    
+    <!-- Ícones (FontAwesome simplificado para não pesar) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- ESTILOS GERAIS (Foco em Acessibilidade e Mobile) --- */
+        :root {
+            --cor-primaria: #D32F2F; /* Vermelho escuro - Fome/Atenção */
+            --cor-secundaria: #FFCDD2; /* Rosa claro - Fundo suave */
+            --cor-whatsapp: #25D366;
+            --cor-texto: #222;
+            --cor-fundo: #fafafa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            padding-bottom: 100px; /* Espaço extra para a barra fixa não cobrir conteúdo */
+            font-size: 18px; /* Fonte base grande para idosos */
+            line-height: 1.6;
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            background-color: var(--cor-primaria);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* --- NAVEGAÇÃO SUPERIOR --- */
+        nav {
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+        nav li {
+            flex: 1;
+        }
+        nav a {
+            display: block;
+            text-align: center;
+            padding: 15px 5px;
+            color: #555;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            border-bottom: 3px solid transparent;
+        }
+        nav a:hover, nav a:active {
+            color: var(--cor-primaria);
+            border-bottom: 3px solid var(--cor-primaria);
+            background-color: #fff0f0;
+        }
+
+        /* --- SEÇÕES --- */
+        section {
+            background: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 15px; /* Bordas arredondadas amigáveis */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            scroll-margin-top: 60px; /* Para o scroll não ficar escondido pelo menu */
+        }
+
+        h2 {
+            color: var(--cor-primaria);
+            border-bottom: 2px solid var(--cor-secundaria);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        /* --- FORMULÁRIOS --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+        }
+        input, select {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px; /* Fonte grande no input evita zoom automático no iPhone */
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        input:focus, select:focus {
+            border-color: var(--cor-primaria);
+            outline: none;
+        }
+
+        /* --- BOTÕES --- */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: transform 0.1s;
+            box-sizing: border-box;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .btn i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+
+        .btn-whatsapp {
+            background-color: var(--cor-whatsapp);
+            color: white;
+            box-shadow: 0 4px 0 #1da851;
+        }
+        
+        .btn-compartilhar {
+            background-color: #0288D1;
+            color: white;
+            margin-top: 15px;
+            font-size: 16px;
+            padding: 12px;
+        }
+
+        .btn-agenda {
+            background-color: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        /* --- LISTAS --- */
+        .lista-info li {
+            margin-bottom: 10px;
+            font-size: 19px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .lista-info li i {
+            color: var(--cor-primaria);
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        .card-ganhador {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 5px solid var(--cor-whatsapp);
+        }
+
+        /* --- PRODUTOS --- */
+        .produto-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 30px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .produto-titulo {
+            font-size: 22px;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .galeria-fotos {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .galeria-fotos img {
+            width: 50%;
+            aspect-ratio: 1 / 1; /* Quadrado Perfeito */
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #ddd;
+        }
+        .preco {
+            font-size: 24px;
+            color: var(--cor-primaria);
+            font-weight: bold;
+            display: block;
+            margin: 10px 0;
+        }
+
+        /* --- BARRA FIXA (APP STYLE) --- */
+        .barra-app {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        .item-barra {
+            text-align: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 12px;
+            flex: 1;
+        }
+        .icone-container {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 4px auto;
+            color: white;
+            font-size: 22px;
+            transition: transform 0.2s;
+        }
+        .item-barra:active .icone-container {
+            transform: scale(0.9);
+        }
+        
+        /* Cores dos ícones da barra */
+        .bg-zap { background: linear-gradient(45deg, #25D366, #128C7E); }
+        .bg-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .bg-face { background: linear-gradient(45deg, #1877F2, #165EAB); }
+        .bg-menu { background-color: #333; }
+
+    </style>
+</head>
+<body>
+
+    <header id="topo">
+        <h1>Dona Antônia</h1>
+        <p>Cestas Básicas & Solidariedade</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#sorteio">Sorteio</a></li>
+            <li><a href="#ganhadores">Resultados</a></li>
+            <li><a href="#produtos">Cestas</a></li>
+        </ul>
+    </nav>
+
+    <!-- PÁGINA 1: CADASTRO -->
+    <section id="sorteio">
+        <h2>🍀 Cadastro para Sorteio</h2>
+        <ul class="lista-info" style="list-style: none; padding: 0;">
+            <li><i class="fas fa-calendar-check"></i> Próximo Sorteio: Sexta-feira</li>
+            <li><i class="fas fa-gift"></i> Prêmio: 1 Cesta Completa</li>
+            <li><i class="fas fa-pen"></i> Preencha abaixo para participar:</li>
+        </ul>
+
+        <form id="formSorteio">
+            <div class="form-group">
+                <label for="nome">Seu Nome Completo</label>
+                <input type="text" id="nome" placeholder="Digite seu nome aqui..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Seu Telefone (WhatsApp)</label>
+                <input type="tel" id="telefone" placeholder="(65) 9..." required>
+            </div>
+
+            <div class="form-group">
+                <label for="cidade">Sua Cidade</label>
+                <select id="cidade">
+                    <option value="Cuiabá">Cuiabá</option>
+                    <option value="Várzea Grande">Várzea Grande</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bairro">Seu Bairro</label>
+                <input type="text" id="bairro" placeholder="Digite seu bairro..." required>
+            </div>
+
+            <button type="button" class="btn btn-whatsapp" onclick="enviarCadastro()">
+                <i class="fab fa-whatsapp"></i> Enviar Cadastro
+            </button>
+            <p style="text-align: center; font-size: 14px; color: #666; margin-top: 10px;">
+                Ao clicar, você será levado ao WhatsApp da Dona Antônia.
+            </p>
+        </form>
+    </section>
+
+    <!-- PÁGINA 2: RESULTADOS -->
+    <section id="ganhadores">
+        <h2>🏆 Últimos Ganhadores</h2>
+        <p>Confira quem ganhou no sorteio passado (5 Ganhadores):</p>
+        
+        <div class="card-ganhador">
+            <strong>1. Maria de Lourdes</strong><br>
+            <small>Bairro: Tijucal</small>
+        </div>
+        <div class="card-ganhador">
+            <strong>2. Sr. Antônio Carlos</strong><br>
+            <small>Bairro: CPA 3</small>
+        </div>
+        <div class="card-ganhador">
+            <strong>3. Francisca Oliveira</strong><br>
+            <small>Bairro: Cristo Rei</small>
+        </div>
+        <div class="card-ganhador">
+            <strong>4. João Pedro</strong><br>
+            <small>Bairro: Centro</small>
+        </div>
+        <div class="card-ganhador">
+            <strong>5. Ana Paula Souza</strong><br>
+            <small>Bairro: Imperial</small>
+        </div>
+    </section>
+
+    <!-- PÁGINA 3: PRODUTOS -->
+    <section id="produtos">
+        <h2>📦 Nossas Cestas</h2>
+        <p>Escolha sua cesta e peça pelo Zap!</p>
+
+        <!-- Produto 1 -->
+        <div class="produto-card">
+            <h3 class="produto-titulo">Cesta Básica Econômica</h3>
+            <div class="galeria-fotos">
+                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Arroz+Feijão" alt="Foto itens básicos">
+                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Pacotes" alt="Foto cesta montada">
+            </div>
+            <p>Ideal para pequenas famílias. Contém arroz, feijão, óleo, sal e açúcar.</p>
+            
+            <button class="btn btn-whatsapp" onclick="encomendar('Cesta Econômica')">
+                <i class="fab fa-whatsapp"></i> Pedir Agora
+            </button>
+            <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Econômica')">
+                <i class="fas fa-share-alt"></i> Mostrar para amigo
+            </button>
+        </div>
+
+        <!-- Produto 2 -->
+        <div class="produto-card">
+            <h3 class="produto-titulo">Cesta Família Grande</h3>
+            <div class="galeria-fotos">
+                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Alimentos" alt="Foto alimentos variados">
+                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Limpeza" alt="Foto itens limpeza">
+            </div>
+            <p>Completa com itens de limpeza e higiene pessoal. Para o mês todo.</p>
+            
+            <button class="btn btn-whatsapp" onclick="encomendar('Cesta Família Grande')">
+                <i class="fab fa-whatsapp"></i> Pedir Agora
+            </button>
+            <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Família Grande')">
+                <i class="fas fa-share-alt"></i> Mostrar para amigo
+            </button>
+        </div>
+
+        <!-- Produto 3 -->
+        <div class="produto-card">
+            <h3 class="produto-titulo">Cesta de Limpeza</h3>
+            <div class="galeria-fotos">
+                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Sabão" alt="Foto sabão">
+                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Desinfetante" alt="Foto desinfetante">
+            </div>
+            <p>Kit completo para casa: Sabão em pó, detergente, água sanitária e mais.</p>
+            
+            <button class="btn btn-whatsapp" onclick="encomendar('Cesta Limpeza')">
+                <i class="fab fa-whatsapp"></i> Pedir Agora
+            </button>
+            <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Limpeza')">
+                <i class="fas fa-share-alt"></i> Mostrar para amigo
+            </button>
+        </div>
+
+        <!-- Produto 4 -->
+        <div class="produto-card">
+            <h3 class="produto-titulo">Cesta Café da Manhã</h3>
+            <div class="galeria-fotos">
+                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Café" alt="Foto café">
+                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Biscoitos" alt="Foto biscoitos">
+            </div>
+            <p>Café, leite em pó, achocolatado, biscoitos e torrada.</p>
+            
+            <button class="btn btn-whatsapp" onclick="encomendar('Cesta Café')">
+                <i class="fab fa-whatsapp"></i> Pedir Agora
+            </button>
+            <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Café')">
+                <i class="fas fa-share-alt"></i> Mostrar para amigo
+            </button>
+        </div>
+
+        <!-- Produto 5 -->
+        <div class="produto-card">
+            <h3 class="produto-titulo">Cesta Doação Solidária</h3>
+            <div class="galeria-fotos">
+                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Doação" alt="Foto doação">
+                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Amor" alt="Foto amor">
+            </div>
+            <p>Quer doar para alguém? Montamos uma cesta especial com preço reduzido.</p>
+            
+            <button class="btn btn-whatsapp" onclick="encomendar('Cesta Doação')">
+                <i class="fab fa-whatsapp"></i> Pedir Agora
+            </button>
+            <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Doação')">
+                <i class="fas fa-share-alt"></i> Mostrar para amigo
+            </button>
+        </div>
+    </section>
+
+    <!-- ÁREA DE CONTATOS (SALVAR) -->
+    <section id="contatos">
+        <h2>📞 Salvar Números</h2>
+        <p>Clique nos botões abaixo para ligar e salvar na agenda:</p>
+        
+        <a href="tel:5565998150975" class="btn btn-agenda">
+            <i class="fas fa-phone-alt"></i> (65) 99815-0975 (Principal)
+        </a>
+        <a href="tel:5565999999999" class="btn btn-agenda">
+            <i class="fas fa-phone-alt"></i> (65) 99999-9999 (Pedidos)
+        </a>
+        <a href="tel:5565888888888" class="btn btn-agenda">
+            <i class="fas fa-phone-alt"></i> (65) 88888-8888 (Entregas)
+        </a>
+    </section>
+
+    <!-- BARRA FIXA ESTILO APP -->
+    <div class="barra-app">
+        <a href="https://wa.me/5565998150975" class="item-barra">
+            <div class="icone-container bg-zap">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            WhatsApp
+        </a>
+        <a href="https://facebook.com" target="_blank" class="item-barra">
+            <div class="icone-container bg-face">
+                <i class="fab fa-facebook-f"></i>
+            </div>
+            Facebook
+        </a>
+        <a href="https://instagram.com" target="_blank" class="item-barra">
+            <div class="icone-container bg-insta">
+                <i class="fab fa-instagram"></i>
+            </div>
+            Instagram
+        </a>
+        <a href="#topo" class="item-barra">
+            <div class="icone-container bg-menu">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            Subir
+        </a>
+    </div>
+
+    <!-- JAVASCRIPT (LÓGICA) -->
+    <script>
+        const TELEFONE_PRINCIPAL = "5565998150975"; // Número da Dona Antônia
+
+        function enviarCadastro() {
+            // Coletar dados
+            const nome = document.getElementById("nome").value.trim();
+            const telefone = document.getElementById("telefone").value.trim();
+            const cidade = document.getElementById("cidade").value;
+            const bairro = document.getElementById("bairro").value.trim();
+
+            // Verificar se preencheu
+            if (!nome || !telefone || !bairro) {
+                alert("Olá! Por favor, preencha o Nome, Telefone e Bairro para participar.");
+                return;
+            }
+
+            // Montar texto do Zap
+            // %0A pula linha
+            // *texto* deixa negrito
+            const texto = `Olá Dona Antônia!%0A` +
+                          `Já fiz meu cadastro para o *Sorteio do dia tal*.%0A%0A` +
+                          `👤 *Nome:* ${nome}%0A` +
+                          `📱 *Telefone:* ${telefone}%0A` +
+                          `🏙️ *Cidade:* ${cidade}%0A` +
+                          `🏡 *Bairro:* ${bairro}`;
+
+            // Abrir WhatsApp
+            window.open(`https://wa.me/${TELEFONE_PRINCIPAL}?text=${texto}`, '_blank');
+        }
+
+        function encomendar(produto) {
+            const texto = `Olá! Gostaria de encomendar a *${produto}*.%0AQuais são as formas de pagamento?`;
+            window.open(`https://wa.me/${TELEFONE_PRINCIPAL}?text=${texto}`, '_blank');
+        }
+
+        function compartilhar(produto) {
+            // Verifica se o navegador suporta compartilhamento nativo (Android/iOS)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Cestas Dona Antônia',
+                    text: `Olha essa ${produto} da Dona Antônia! Muito boa e barata.`,
+                    url: window.location.href
+                })
+                .then(() => console.log('Compartilhado!'))
+                .catch((error) => console.log('Erro ao compartilhar', error));
+            } else {
+                // Fallback para computadores antigos ou navegadores sem suporte
+                alert("Para compartilhar, tire um print da tela ou copie o link do site!");
+            }
+        }
+    </script>
+</body>
+</html>
