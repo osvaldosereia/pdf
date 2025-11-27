@@ -210,11 +210,11 @@
         }
         .item-barra {
             text-align: center; text-decoration: none; color: #666;
-            font-size: 10px; /* Reduzi um pouco a fonte para caber 5 itens */
+            font-size: 10px; 
             flex: 1;
         }
         .icone-container {
-            width: 35px; height: 35px; /* Ícone levemente menor */
+            width: 35px; height: 35px; 
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 3px auto; color: white; font-size: 18px;
@@ -225,20 +225,20 @@
         .bg-insta { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .bg-share { background: linear-gradient(45deg, #607D8B, #455A64); }
 
-        /* --- BOTÃO DE INSTALAÇÃO (Mais estreito) --- */
+        /* --- AVISO FLUTUANTE DISCRETO (BANNER) --- */
         .aviso-instalar {
             position: fixed;
-            bottom: 70px;
+            bottom: 70px; /* Acima da barra de apps */
             left: 10px;
             right: 10px;
-            background: linear-gradient(135deg, #D32F2F, #b71c1c); /* Vermelho forte */
+            background: linear-gradient(135deg, #FF6B6B, #D32F2F);
             color: white;
-            padding: 10px 15px; /* Menos padding (mais estreito) */
+            padding: 10px 15px;
             border-radius: 12px;
             z-index: 1900;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
             display: none;
-            flex-direction: row; /* Itens lado a lado para economizar altura */
+            flex-direction: row; /* Volta a ser lateral */
             align-items: center;
             justify-content: space-between;
             gap: 10px;
@@ -246,19 +246,19 @@
         }
         
         @keyframes piscarSuave {
-            0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
-            50% { box-shadow: 0 0 10px 5px rgba(211, 47, 47, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }
+            50% { transform: scale(1.02); box-shadow: 0 0 20px 10px rgba(211, 47, 47, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
         }
 
-        .texto-instalar {
+        .texto-instalar-banner {
             flex: 1;
             font-size: 14px;
-            line-height: 1.3;
+            line-height: 1.2;
         }
-        .texto-instalar strong { display: block; font-size: 15px; color: #FFEB3B; }
+        .texto-instalar-banner strong { display: block; font-size: 15px; color: #FFEB3B; }
 
-        .btn-acao-instalar {
+        .btn-acao-banner {
             background: white;
             color: var(--cor-primaria);
             font-weight: bold;
@@ -284,6 +284,39 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
+
+        /* --- NOVO: CARD FINAL DE INSTALAÇÃO (Em cada página) --- */
+        .card-instalacao-fixo {
+            background: linear-gradient(135deg, #fff, #f3e5f5);
+            border: 2px solid #7b1fa2; /* Roxo para destacar */
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .card-instalacao-fixo h3 {
+            color: #7b1fa2;
+            margin-top: 0;
+            font-size: 22px;
+        }
+        .btn-instalacao-grande {
+            background-color: #7b1fa2;
+            color: white;
+            font-size: 20px;
+            padding: 20px;
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #4a148c;
+        }
+        .btn-instalacao-grande i { margin-right: 10px; }
+        .btn-instalacao-grande:active { transform: scale(0.98); box-shadow: 0 2px 0 #4a148c; }
 
         /* --- MODAL DE IMAGEM --- */
         .modal-imagem {
@@ -435,6 +468,15 @@
                 <i class="fas fa-phone"></i> (65) 88888-8888 (Loja)
             </a>
         </div>
+
+        <!-- CARTÃO DE INSTALAÇÃO (FINAL DA PÁGINA) -->
+        <div class="card-instalacao-fixo">
+            <h3>📱 Baixe o Aplicativo!</h3>
+            <p>Para participar dos sorteios e ver promoções, instale nosso App.</p>
+            <button class="btn-instalacao-grande" onclick="instalarApp()">
+                <i class="fas fa-download"></i> INSTALAR AGORA
+            </button>
+        </div>
     </div>
 
     <!-- PÁGINA 2: SORTEIO -->
@@ -496,6 +538,15 @@
                 <i class="fas fa-star"></i> CONVIDAR AMIGOS
             </button>
         </div>
+
+        <!-- CARTÃO DE INSTALAÇÃO (FINAL DA PÁGINA) -->
+        <div class="card-instalacao-fixo">
+            <h3>📱 Obrigatório o App!</h3>
+            <p>Garanta sua vaga no sorteio instalando o aplicativo no seu celular.</p>
+            <button class="btn-instalacao-grande" onclick="instalarApp()">
+                <i class="fas fa-download"></i> INSTALAR AGORA
+            </button>
+        </div>
     </div>
 
     <!-- PÁGINA 3: RESULTADOS -->
@@ -520,17 +571,26 @@
                 </li>
             </ul>
         </div>
+
+        <!-- CARTÃO DE INSTALAÇÃO (FINAL DA PÁGINA) -->
+        <div class="card-instalacao-fixo">
+            <h3>📱 Não perca o próximo!</h3>
+            <p>Baixe o app e receba o resultado do sorteio direto no celular.</p>
+            <button class="btn-instalacao-grande" onclick="instalarApp()">
+                <i class="fas fa-download"></i> INSTALAR AGORA
+            </button>
+        </div>
     </div>
 
-    <!-- AVISO DE INSTALAÇÃO (Mais estreito) -->
+    <!-- AVISO DE INSTALAÇÃO (BANNER DISCRETO FLUTUANTE) -->
     <div id="aviso-instalar" class="aviso-instalar">
         <button class="btn-fechar-aviso" onclick="fecharInstalacao()">&times;</button>
-        <div class="texto-instalar">
-            <strong>O Sorteio é exclusivo do App!</strong>
-            Baixe agora para poder participar.
+        <div class="texto-instalar-banner">
+            <strong>Baixe nosso App!</strong>
+            Para participar do sorteio.
         </div>
-        <button class="btn-acao-instalar" onclick="instalarApp()">
-            <i class="fas fa-download"></i> BAIXAR
+        <button class="btn-acao-banner" onclick="instalarApp()">
+            <i class="fas fa-download"></i> INSTALAR
         </button>
     </div>
 
@@ -615,14 +675,9 @@
 
         // --- LÓGICA DO BOTÃO INSTALAR (PERSISTENTE) ---
         const avisoInstalar = document.getElementById('aviso-instalar');
-
-        // Verifica se a pessoa JÁ instalou de verdade
         const jaInstalou = localStorage.getItem('appDonaAntoniaInstaladoDefinitivo');
-        
-        // Verifica se fechou SÓ NESTA SESSÃO (usando sessionStorage)
         const fechouAgora = sessionStorage.getItem('fechouBannerSessao');
 
-        // Se ainda não instalou e não fechou agora, mostra
         if (!jaInstalou && !fechouAgora) {
             setTimeout(() => {
                 avisoInstalar.style.display = 'flex';
@@ -630,26 +685,35 @@
         }
 
         function instalarApp() {
+            // Tenta o método automático PRIMEIRO
             if (window.deferredPrompt) {
                 window.deferredPrompt.prompt();
+                
+                // Espera a escolha do usuário
+                window.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Usuário aceitou a instalação');
+                        localStorage.setItem('appDonaAntoniaInstaladoDefinitivo', 'true');
+                        avisoInstalar.style.display = 'none';
+                    }
+                    window.deferredPrompt = null;
+                });
             } else {
-                alert("Para instalar: \n1. Toque nos 3 pontinhos do navegador\n2. Escolha 'Adicionar à Tela Inicial'");
+                // Se o navegador não deu a opção automática (Ex: iPhone ou Desktop sem PWA)
+                alert("Neste aparelho, a instalação automática não está disponível.\n\nPor favor, vá no menu do navegador e clique em 'Adicionar à Tela Inicial'.");
             }
-            // Se clicar em instalar, aí sim gravamos que instalou para não mostrar mais
-            localStorage.setItem('appDonaAntoniaInstaladoDefinitivo', 'true');
-            avisoInstalar.style.display = 'none';
         }
 
         function fecharInstalacao() {
             avisoInstalar.style.display = 'none';
-            // Salva na SESSÃO. Quando fechar o navegador e abrir de novo, aparece de novo.
             sessionStorage.setItem('fechouBannerSessao', 'true');
-            alert("Atenção: Para participar do sorteio você precisa do App instalado!");
+            // Removemos o alert para ser menos intrusivo ao fechar o banner flutuante
         }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             window.deferredPrompt = e;
+            // Se o evento disparar, garantimos que o banner aparece (se não tiver fechado)
             if (!jaInstalou && !fechouAgora) { avisoInstalar.style.display = 'flex'; }
         });
 
