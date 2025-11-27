@@ -218,13 +218,69 @@
             object-fit: cover;
             border-radius: 8px;
             background-color: #ddd;
+            cursor: pointer; /* Indica que é clicável */
+            transition: opacity 0.2s;
         }
-        .preco {
-            font-size: 24px;
-            color: var(--cor-primaria);
-            font-weight: bold;
+        .galeria-fotos img:active {
+            opacity: 0.7;
+        }
+        .aviso-clique {
+            font-size: 12px;
+            color: #888;
+            margin-top: -10px;
+            margin-bottom: 10px;
             display: block;
-            margin: 10px 0;
+            text-align: center;
+        }
+
+        /* --- VISUALIZADOR DE IMAGEM (NOVO) --- */
+        .modal-imagem {
+            display: none; /* Escondido por padrão */
+            position: fixed;
+            z-index: 3000; /* Acima de tudo */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95); /* Fundo quase preto */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-conteudo {
+            max-width: 95%;
+            max-height: 80%;
+            border: 2px solid white;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .btn-fechar-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .legenda-modal {
+            color: white;
+            margin-top: 15px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* --- BARRA FIXA (APP STYLE) --- */
@@ -359,15 +415,16 @@
     <!-- PÁGINA 3: PRODUTOS -->
     <section id="produtos">
         <h2>📦 Nossas Cestas</h2>
-        <p>Escolha sua cesta e peça pelo Zap!</p>
+        <p>Escolha sua cesta e peça pelo Zap! <br><small style="color: #666;">(Toque na foto para ampliar)</small></p>
 
         <!-- Produto 1 -->
         <div class="produto-card">
             <h3 class="produto-titulo">Cesta Básica Econômica</h3>
             <div class="galeria-fotos">
-                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Arroz+Feijão" alt="Foto itens básicos">
-                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Pacotes" alt="Foto cesta montada">
+                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Arroz+Feijão" alt="Foto itens básicos" onclick="abrirImagem(this.src)">
+                <img src="https://placehold.co/400x400/e0e0e0/333333?text=Pacotes" alt="Foto cesta montada" onclick="abrirImagem(this.src)">
             </div>
+            <span class="aviso-clique"><i class="fas fa-search-plus"></i> Toque para ver grande</span>
             <p>Ideal para pequenas famílias. Contém arroz, feijão, óleo, sal e açúcar.</p>
             
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Econômica')">
@@ -382,9 +439,10 @@
         <div class="produto-card">
             <h3 class="produto-titulo">Cesta Família Grande</h3>
             <div class="galeria-fotos">
-                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Alimentos" alt="Foto alimentos variados">
-                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Limpeza" alt="Foto itens limpeza">
+                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Alimentos" alt="Foto alimentos variados" onclick="abrirImagem(this.src)">
+                <img src="https://placehold.co/400x400/ffebee/d32f2f?text=Limpeza" alt="Foto itens limpeza" onclick="abrirImagem(this.src)">
             </div>
+            <span class="aviso-clique"><i class="fas fa-search-plus"></i> Toque para ver grande</span>
             <p>Completa com itens de limpeza e higiene pessoal. Para o mês todo.</p>
             
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Família Grande')">
@@ -399,9 +457,10 @@
         <div class="produto-card">
             <h3 class="produto-titulo">Cesta de Limpeza</h3>
             <div class="galeria-fotos">
-                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Sabão" alt="Foto sabão">
-                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Desinfetante" alt="Foto desinfetante">
+                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Sabão" alt="Foto sabão" onclick="abrirImagem(this.src)">
+                <img src="https://placehold.co/400x400/e3f2fd/1565c0?text=Desinfetante" alt="Foto desinfetante" onclick="abrirImagem(this.src)">
             </div>
+            <span class="aviso-clique"><i class="fas fa-search-plus"></i> Toque para ver grande</span>
             <p>Kit completo para casa: Sabão em pó, detergente, água sanitária e mais.</p>
             
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Limpeza')">
@@ -416,9 +475,10 @@
         <div class="produto-card">
             <h3 class="produto-titulo">Cesta Café da Manhã</h3>
             <div class="galeria-fotos">
-                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Café" alt="Foto café">
-                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Biscoitos" alt="Foto biscoitos">
+                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Café" alt="Foto café" onclick="abrirImagem(this.src)">
+                <img src="https://placehold.co/400x400/fff3e0/e65100?text=Biscoitos" alt="Foto biscoitos" onclick="abrirImagem(this.src)">
             </div>
+            <span class="aviso-clique"><i class="fas fa-search-plus"></i> Toque para ver grande</span>
             <p>Café, leite em pó, achocolatado, biscoitos e torrada.</p>
             
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Café')">
@@ -433,9 +493,10 @@
         <div class="produto-card">
             <h3 class="produto-titulo">Cesta Doação Solidária</h3>
             <div class="galeria-fotos">
-                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Doação" alt="Foto doação">
-                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Amor" alt="Foto amor">
+                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Doação" alt="Foto doação" onclick="abrirImagem(this.src)">
+                <img src="https://placehold.co/400x400/f3e5f5/7b1fa2?text=Amor" alt="Foto amor" onclick="abrirImagem(this.src)">
             </div>
+            <span class="aviso-clique"><i class="fas fa-search-plus"></i> Toque para ver grande</span>
             <p>Quer doar para alguém? Montamos uma cesta especial com preço reduzido.</p>
             
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Doação')">
@@ -491,6 +552,13 @@
         </a>
     </div>
 
+    <!-- MODAL DE VISUALIZAÇÃO DE IMAGEM -->
+    <div id="modalVisualizador" class="modal-imagem" onclick="fecharImagem()">
+        <button class="btn-fechar-modal" title="Fechar">&times;</button>
+        <img id="imgAmpliada" src="" class="modal-conteudo" alt="Imagem ampliada">
+        <p class="legenda-modal">Toque na tela para fechar</p>
+    </div>
+
     <!-- JAVASCRIPT (LÓGICA) -->
     <script>
         const TELEFONE_PRINCIPAL = "5565998150975"; // Número da Dona Antônia
@@ -509,8 +577,6 @@
             }
 
             // Montar texto do Zap
-            // %0A pula linha
-            // *texto* deixa negrito
             const texto = `Olá Dona Antônia!%0A` +
                           `Já fiz meu cadastro para o *Sorteio do dia tal*.%0A%0A` +
                           `👤 *Nome:* ${nome}%0A` +
@@ -528,7 +594,6 @@
         }
 
         function compartilhar(produto) {
-            // Verifica se o navegador suporta compartilhamento nativo (Android/iOS)
             if (navigator.share) {
                 navigator.share({
                     title: 'Cestas Dona Antônia',
@@ -538,9 +603,23 @@
                 .then(() => console.log('Compartilhado!'))
                 .catch((error) => console.log('Erro ao compartilhar', error));
             } else {
-                // Fallback para computadores antigos ou navegadores sem suporte
                 alert("Para compartilhar, tire um print da tela ou copie o link do site!");
             }
+        }
+
+        // --- Funções para Ampliar Imagem ---
+        function abrirImagem(src) {
+            const modal = document.getElementById("modalVisualizador");
+            const imgGrande = document.getElementById("imgAmpliada");
+            
+            // Define a imagem e mostra o modal
+            imgGrande.src = src;
+            modal.style.display = "flex";
+        }
+
+        function fecharImagem() {
+            const modal = document.getElementById("modalVisualizador");
+            modal.style.display = "none";
         }
     </script>
 </body>
