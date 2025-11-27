@@ -8,7 +8,10 @@
     <!-- Cor da barra do navegador no Android -->
     <meta name="theme-color" content="#D32F2F">
     
-    <title>Cestas Dona Antônia</title>
+    <!-- SEO OTIMIZADO -->
+    <title>Cesta Básica em Cuiabá e Várzea Grande | Dona Antônia</title>
+    <meta name="description" content="A melhor Cesta Básica de Cuiabá e Várzea Grande. Entregamos no CPA, Tijucal, Cristo Rei e região. Participe dos sorteios semanais da Dona Antônia!">
+    <meta name="keywords" content="cesta básica cuiabá, cesta básica várzea grande, doação de alimentos cuiabá, mercado delivery cpa">
     
     <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -110,6 +113,18 @@
             border: 1px solid #eee;
         }
         
+        /* --- FAQ (SEO) --- */
+        .faq-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .faq-item h4 {
+            margin: 0 0 5px 0;
+            color: var(--cor-primaria);
+            font-size: 18px;
+        }
+        .faq-item p { margin: 0; font-size: 16px; color: #555; }
+
         /* --- ESTILOS DE PAGAMENTO --- */
         .lista-pagamento {
             list-style: none;
@@ -338,7 +353,7 @@
 
     <header>
         <h1>Dona Antônia</h1>
-        <p>Cestas Básicas</p>
+        <p>Cestas Básicas em Cuiabá e VG</p>
     </header>
 
     <!-- NAVEGAÇÃO POR ABAS -->
@@ -354,18 +369,18 @@
     <div id="pag-cestas" class="pagina visivel">
         <div class="card" style="background-color: #fff8e1; border-color: #ffe082;">
             <p style="margin: 0; text-align: center; font-weight: bold;">
-                👋 Bem-vindo! Veja nossas promoções abaixo.
+                👋 Bem-vindo! As melhores Cestas Básicas de Cuiabá e Várzea Grande.
             </p>
         </div>
 
         <!-- 1. Cesta Econômica -->
         <div class="card">
-            <h3>1. Cesta Econômica</h3>
+            <h3>1. Cesta Básica Econômica (Cuiabá)</h3>
             <div class="galeria-fotos">
-                <img src="img/cesta-economica.jpg" onerror="this.src='https://placehold.co/400x400/e0e0e0/333333?text=Foto+1'" onclick="abrirImagem(this.src)">
-                <img src="img/cesta-economica-2.jpg" onerror="this.src='https://placehold.co/400x400/e0e0e0/333333?text=Foto+2'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-economica.jpg" alt="Cesta básica econômica entrega rápida Cuiabá e Várzea Grande" onerror="this.src='https://placehold.co/400x400/e0e0e0/333333?text=Foto+1'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-economica-2.jpg" alt="Itens da cesta básica econômica arroz e feijão" onerror="this.src='https://placehold.co/400x400/e0e0e0/333333?text=Foto+2'" onclick="abrirImagem(this.src)">
             </div>
-            <p>Arroz, feijão, óleo, açúcar e sal. O básico que não pode faltar.</p>
+            <p>Ideal para famílias de Cuiabá. Arroz, feijão, óleo, açúcar e sal. Entregamos nos bairros CPA, Tijucal e Centro.</p>
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Econômica')">
                 <i class="fab fa-whatsapp"></i> Pedir Agora
             </button>
@@ -376,12 +391,12 @@
 
         <!-- 2. Cesta Família -->
         <div class="card">
-            <h3>2. Cesta Família</h3>
+            <h3>2. Cesta Família Completa</h3>
             <div class="galeria-fotos">
-                <img src="img/cesta-familia.jpg" onerror="this.src='https://placehold.co/400x400/ffebee/d32f2f?text=Foto+1'" onclick="abrirImagem(this.src)">
-                <img src="img/cesta-familia-2.jpg" onerror="this.src='https://placehold.co/400x400/ffebee/d32f2f?text=Foto+2'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-familia.jpg" alt="Cesta básica grande família entrega Várzea Grande e Cuiabá" onerror="this.src='https://placehold.co/400x400/ffebee/d32f2f?text=Foto+1'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-familia-2.jpg" alt="Kit completo alimentação e limpeza Dona Antônia" onerror="this.src='https://placehold.co/400x400/ffebee/d32f2f?text=Foto+2'" onclick="abrirImagem(this.src)">
             </div>
-            <p>Alimentos + Kit Limpeza. Ideal para o mês todo.</p>
+            <p>Alimentos + Kit Limpeza. A opção preferida no Cristo Rei e Várzea Grande para o mês todo.</p>
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Família')">
                 <i class="fab fa-whatsapp"></i> Pedir Agora
             </button>
@@ -392,12 +407,12 @@
         
         <!-- 3. Cesta Limpeza -->
         <div class="card">
-            <h3>3. Cesta Limpeza</h3>
+            <h3>3. Cesta de Limpeza e Higiene</h3>
             <div class="galeria-fotos">
-                <img src="img/cesta-limpeza.jpg" onerror="this.src='https://placehold.co/400x400/e3f2fd/1565c0?text=Foto+1'" onclick="abrirImagem(this.src)">
-                <img src="img/cesta-limpeza-2.jpg" onerror="this.src='https://placehold.co/400x400/e3f2fd/1565c0?text=Foto+2'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-limpeza.jpg" alt="Kit limpeza barato entrega grátis em alguns bairros de Cuiabá" onerror="this.src='https://placehold.co/400x400/e3f2fd/1565c0?text=Foto+1'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-limpeza-2.jpg" alt="Produtos de limpeza sabão em pó e agua sanitária" onerror="this.src='https://placehold.co/400x400/e3f2fd/1565c0?text=Foto+2'" onclick="abrirImagem(this.src)">
             </div>
-            <p>Sabão em pó, detergente, água sanitária, desinfetante e esponja.</p>
+            <p>Sabão em pó, detergente, água sanitária, desinfetante e esponja. Essencial para casas em toda a baixada cuiabana.</p>
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Limpeza')">
                 <i class="fab fa-whatsapp"></i> Pedir Agora
             </button>
@@ -410,10 +425,10 @@
         <div class="card">
             <h3>4. Cesta Café da Manhã</h3>
             <div class="galeria-fotos">
-                <img src="img/cesta-cafe.jpg" onerror="this.src='https://placehold.co/400x400/fff3e0/e65100?text=Foto+1'" onclick="abrirImagem(this.src)">
-                <img src="img/cesta-cafe-2.jpg" onerror="this.src='https://placehold.co/400x400/fff3e0/e65100?text=Foto+2'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-cafe.jpg" alt="Cesta de café da manhã simples e barata Cuiabá" onerror="this.src='https://placehold.co/400x400/fff3e0/e65100?text=Foto+1'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-cafe-2.jpg" alt="Bolachas e café Dona Antônia entrega" onerror="this.src='https://placehold.co/400x400/fff3e0/e65100?text=Foto+2'" onclick="abrirImagem(this.src)">
             </div>
-            <p>Café, leite em pó, bolachas, torradas, margarina e achocolatado.</p>
+            <p>Café, leite em pó, bolachas, torradas, margarina e achocolatado. Comece o dia bem.</p>
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Café')">
                 <i class="fab fa-whatsapp"></i> Pedir Agora
             </button>
@@ -424,18 +439,38 @@
 
         <!-- 5. Cesta Solidária -->
         <div class="card">
-            <h3>5. Cesta Solidária</h3>
+            <h3>5. Cesta Solidária (Doação)</h3>
             <div class="galeria-fotos">
-                <img src="img/cesta-solidaria.jpg" onerror="this.src='https://placehold.co/400x400/f3e5f5/7b1fa2?text=Foto+1'" onclick="abrirImagem(this.src)">
-                <img src="img/cesta-solidaria-2.jpg" onerror="this.src='https://placehold.co/400x400/f3e5f5/7b1fa2?text=Foto+2'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-solidaria.jpg" alt="Cesta básica para doação em Cuiabá preço social" onerror="this.src='https://placehold.co/400x400/f3e5f5/7b1fa2?text=Foto+1'" onclick="abrirImagem(this.src)">
+                <img src="img/cesta-solidaria-2.jpg" alt="Ajudar quem precisa cesta básica barata" onerror="this.src='https://placehold.co/400x400/f3e5f5/7b1fa2?text=Foto+2'" onclick="abrirImagem(this.src)">
             </div>
-            <p>Preço especial para quem quer comprar para doar.</p>
+            <p>Preço especial para quem quer comprar para doar. Ajudamos você a fazer o bem em Cuiabá e VG.</p>
             <button class="btn btn-whatsapp" onclick="encomendar('Cesta Solidária')">
                 <i class="fab fa-whatsapp"></i> Pedir Agora
             </button>
             <button class="btn btn-compartilhar" onclick="compartilhar('Cesta Solidária')">
                 <i class="fas fa-share-alt"></i> Mostrar pra amiga
             </button>
+        </div>
+
+        <!-- SEO: PERGUNTAS FREQUENTES (FAQ) -->
+        <div class="card" style="background-color: #f9f9f9;">
+            <h3 style="color: #333; margin-top: 0;">❓ Dúvidas Comuns em Cuiabá</h3>
+            
+            <div class="faq-item">
+                <h4>Onde comprar cesta básica em Cuiabá?</h4>
+                <p>Aqui na Dona Antônia! Temos o melhor preço e entregamos em todos os bairros como CPA, Tijucal e Pedra 90.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h4>Vocês entregam cesta básica em Várzea Grande?</h4>
+                <p>Sim! Atendemos toda a região de Várzea Grande, incluindo Cristo Rei, Centro e região do aeroporto.</p>
+            </div>
+
+            <div class="faq-item">
+                <h4>Qual o valor da cesta básica hoje?</h4>
+                <p>Temos cestas a partir de preços super econômicos. Clique em "Pedir Agora" para ver os valores atualizados no WhatsApp.</p>
+            </div>
         </div>
 
         <!-- FORMAS DE PAGAMENTO -->
@@ -480,7 +515,7 @@
         <!-- CARTÃO DE INSTALAÇÃO (FINAL DA PÁGINA) -->
         <div class="card-instalacao-fixo">
             <h3>📱 Baixe o Aplicativo!</h3>
-            <p>Para participar dos sorteios e ver promoções, instale nosso App.</p>
+            <p>Para participar dos sorteios e ver promoções de Cestas em Cuiabá, instale nosso App.</p>
             <button class="btn-instalacao-grande" onclick="instalarApp()">
                 <i class="fas fa-download"></i> INSTALAR AGORA
             </button>
@@ -490,11 +525,11 @@
     <!-- PÁGINA 2: SORTEIO -->
     <div id="pag-sorteio" class="pagina">
         <div class="card">
-            <h2>🍀 Sorteio Semanal</h2>
+            <h2>🍀 Sorteio Semanal em Cuiabá</h2>
             <p style="background-color: #ffebee; padding: 10px; border-radius: 8px; color: #d32f2f;">
                 <strong>Atenção:</strong> Só participa do sorteio quem tiver o nosso <strong>Aplicativo instalado</strong> no celular!
             </p>
-            <p>Participe toda sexta-feira!</p>
+            <p>Participe toda sexta-feira! Válido para moradores de Cuiabá e Várzea Grande.</p>
 
             <div class="escolha-cadastro">
                 <button class="btn-opcao selecionado" id="btn-primeira-vez" onclick="mudarModoCadastro('novo')">Minha 1ª vez</button>
@@ -516,7 +551,7 @@
                 </select>
 
                 <label>Bairro:</label>
-                <input type="text" id="novo-bairro" placeholder="Ex: Centro">
+                <input type="text" id="novo-bairro" placeholder="Ex: Centro, CPA, Tijucal...">
 
                 <button class="btn btn-whatsapp" onclick="enviarNovoCadastro()">
                     <i class="fab fa-whatsapp"></i> Confirmar Cadastro
@@ -563,19 +598,19 @@
             <h2>🏆 Ganhadores da Semana</h2>
             <ul style="list-style: none; padding: 0;">
                 <li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 20px;">
-                    <strong>1. Dona Lúcia</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: CPA 3</span>
+                    <strong>1. Dona Lúcia</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: CPA 3 (Cuiabá)</span>
                 </li>
                 <li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 20px;">
-                    <strong>2. Sr. José Pedro</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Tijucal</span>
+                    <strong>2. Sr. José Pedro</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Tijucal (Cuiabá)</span>
                 </li>
                 <li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 20px;">
-                    <strong>3. Maria Aparecida</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Centro</span>
+                    <strong>3. Maria Aparecida</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Centro (VG)</span>
                 </li>
                 <li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 20px;">
-                    <strong>4. Ana Clara</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Cristo Rei</span>
+                    <strong>4. Ana Clara</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Cristo Rei (VG)</span>
                 </li>
                 <li style="padding: 10px; border-bottom: 1px solid #eee; font-size: 20px;">
-                    <strong>5. João Silva</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Imperial</span>
+                    <strong>5. João Silva</strong> <br> <span style="font-size: 16px; color: #666;">Bairro: Imperial (Cuiabá)</span>
                 </li>
             </ul>
         </div>
