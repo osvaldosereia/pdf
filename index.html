@@ -52,7 +52,7 @@
             color: var(--cor-texto);
             margin: 0 auto; 
             padding: 0;
-            padding-top: 100px; /* Aumentado para compensar o header mais alto */
+            padding-top: 90px; /* Ajustado para o novo header */
             padding-bottom: 80px;
             max-width: 480px; 
             min-height: 100vh;
@@ -60,11 +60,11 @@
             position: relative; 
         }
 
-        /* --- CABEÇALHO (AJUSTADO: MAIS ALTO E MAIOR) --- */
+        /* --- CABEÇALHO (AJUSTADO: Logo menor, ícones próximos) --- */
         header {
             background-color: white;
-            height: 90px; /* Mais alto */
-            padding: 5px 20px;
+            height: 80px; /* Altura ajustada */
+            padding: 5px 15px; /* Padding lateral reduzido para logo ir p/ esquerda */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -80,16 +80,21 @@
         .header-left { display: flex; align-items: center; flex: 1; }
         
         .logo-pequena { 
-            height: 70px; /* Logo Maior */
+            height: 55px; /* Logo Menor */
             width: auto; 
-            max-width: 220px; 
+            max-width: 200px; 
             object-fit: contain; 
+            margin-left: -5px; /* Puxar um pouquinho mais pra esquerda */
         }
         
-        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .header-icons { 
+            display: flex; 
+            gap: 10px; /* Ícones mais próximos */
+            align-items: center; 
+        }
 
         .icon-btn {
-            font-size: 34px; /* Ícones Maiores */
+            font-size: 32px; /* Ícones levemente ajustados */
             color: var(--cor-primaria);
             text-decoration: none; display: flex; align-items: center;
             justify-content: center; transition: transform 0.2s;
@@ -263,11 +268,11 @@
     <!-- CABEÇALHO FIXO (Ajustado) -->
     <header>
         <div class="header-left">
-            <!-- Logo Horizontal -->
+            <!-- Logo Horizontal Menor e mais à esquerda -->
             <img src="img/logo.png" onerror="this.src='https://placehold.co/180x60/ffffff/D32F2F?text=DONA+ANTÔNIA'" alt="Logo Dona Antônia" class="logo-pequena">
         </div>
         <div class="header-icons">
-            <!-- Redes Sociais Apenas (Sem telefone) -->
+            <!-- Redes Sociais Apenas (Próximos) -->
             <a href="https://wa.me/5565998150975" class="icon-btn ic-zap"><i class="fab fa-whatsapp"></i></a>
             <a href="https://facebook.com/SEU_FACEBOOK" target="_blank" class="icon-btn ic-face"><i class="fab fa-facebook"></i></a>
             <a href="https://instagram.com/SEU_INSTA" target="_blank" class="icon-btn ic-insta"><i class="fab fa-instagram"></i></a>
@@ -367,6 +372,7 @@
                     <img src="img/cesta-economica-2.jpg" onerror="this.src='https://placehold.co/300x300?text=Foto2'" onclick="abrirGaleria(this)">
                 </div>
                 <div class="lista-precos-cesta">
+                    <!-- Ajuste: Apenas Tio Alvino -->
                     <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
                 </div>
                 <div class="botoes-wrapper">
@@ -376,7 +382,7 @@
             </div>
         </div>
 
-        <div class="card-instalacao-fixo">
+        <div class="card-instalacao-fixo pwa-install-promo">
             <h3>📱 Baixe o Aplicativo!</h3>
             <p>Para promoções e facilidade, instale nosso App.</p>
             <button class="btn-instalacao-grande" onclick="instalarApp()">
@@ -402,6 +408,15 @@
             </ul>
             <p style="color: red; font-size: 14px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> Não vendemos no boleto ou carnê (fiado).</p>
         </div>
+
+        <!-- BANNER PWA PAGAMENTO -->
+        <div class="card-instalacao-fixo pwa-install-promo">
+            <h3>📱 App Dona Antônia</h3>
+            <p>Instale para ver o sorteio toda semana!</p>
+            <button class="btn-instalacao-grande" onclick="instalarApp()">
+                <i class="fas fa-download"></i> INSTALAR APP
+            </button>
+        </div>
     </div>
 
     <!-- PÁGINA 3: SORTEIO -->
@@ -425,28 +440,28 @@
                 <button type="submit" class="btn btn-whatsapp"><i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Confirmar</button>
             </form>
         </div>
-        <div class="card-instalacao-fixo">
+        <div class="card-instalacao-fixo pwa-install-promo">
             <h3>📱 Obrigatório o App!</h3>
             <p>Garanta sua vaga no sorteio instalando o aplicativo.</p>
             <button class="btn-instalacao-grande" onclick="instalarApp()"><i class="fas fa-download"></i> INSTALAR AGORA</button>
         </div>
     </div>
 
-    <!-- BANNER PWA (Restaurado e Inteligente) -->
-    <div id="aviso-instalar" class="aviso-instalar">
-        <button class="btn-fechar-aviso" onclick="fecharInstalacao()">&times;</button>
+    <!-- BANNER PWA FLUTUANTE -->
+    <div id="aviso-instalar" class="aviso-instalar pwa-install-promo">
         <div class="texto-instalar-banner"><strong>Baixe nosso App!</strong>Para participar do sorteio.</div>
         <button class="btn-acao-banner" onclick="instalarApp()"><i class="fas fa-download"></i> INSTALAR</button>
+        <button class="btn-fechar-aviso" onclick="fecharInstalacao()">&times;</button>
     </div>
 
-    <!-- NAVEGAÇÃO INFERIOR (DARK) -->
+    <!-- NAVEGAÇÃO INFERIOR -->
     <nav class="bottom-nav">
         <button class="nav-item ativo" id="btn-cestas" onclick="navegarPara('cestas')"><i class="fas fa-shopping-basket"></i>CESTAS</button>
         <button class="nav-item" id="btn-pagamento" onclick="navegarPara('pagamento')"><i class="fas fa-credit-card"></i>PAGAMENTO</button>
         <button class="nav-item" id="btn-sorteio" onclick="navegarPara('sorteio')"><i class="fas fa-gift"></i>SORTEIO</button>
     </nav>
 
-    <!-- MODAL IMAGEM (COM NAVEGAÇÃO) -->
+    <!-- MODAL IMAGEM -->
     <div id="modalVisualizador" class="modal-imagem" onclick="fecharImagem()">
         <button class="btn-fechar-galeria" onclick="fecharImagem()">&times;</button>
         <div class="modal-conteudo-wrapper" onclick="event.stopPropagation()">
@@ -561,18 +576,25 @@
         const avisoPwa = document.getElementById('aviso-instalar');
         const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+        // Check install state on load
+        window.addEventListener('load', () => {
+             if (localStorage.getItem('appInstalado')) {
+                 document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
+             } else if (!isIos) {
+                 // If not installed and not iOS, ensure floating banner shows if not closed
+                 if (!sessionStorage.getItem('bannerFechado')) {
+                    avisoPwa.style.display = 'flex';
+                 }
+             }
+        });
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e;
-            if(!isIos && !localStorage.getItem('appInstalado')) {
+            if(!isIos && !localStorage.getItem('appInstalado') && !sessionStorage.getItem('bannerFechado')) {
                 avisoPwa.style.display = 'flex';
             }
         });
-
-        // Fallback para reaparecer sempre que não instalado (exceto iOS)
-        if (!isIos && !localStorage.getItem('appInstalado')) {
-             setTimeout(() => { avisoPwa.style.display = 'flex'; }, 3000);
-        }
 
         function instalarApp() {
             if(deferredPrompt) {
@@ -580,13 +602,19 @@
                 deferredPrompt.userChoice.then((res) => {
                     if(res.outcome === 'accepted') {
                         localStorage.setItem('appInstalado', 'true');
-                        avisoPwa.style.display = 'none';
+                        document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
                     }
                     deferredPrompt = null;
                 });
-            } else { alert("Use o menu do navegador para adicionar à tela inicial."); }
+            } else { 
+                // Fallback message
+                alert("Use o menu do navegador para adicionar à tela inicial."); 
+            }
         }
-        function fecharInstalacao() { avisoPwa.style.display = 'none'; }
+        function fecharInstalacao() { 
+            avisoPwa.style.display = 'none'; 
+            sessionStorage.setItem('bannerFechado', 'true');
+        }
 
         window.onpopstate = function(event) {
             if (event.state && event.state.pagina) navegarPara(event.state.pagina);
@@ -597,6 +625,11 @@
             if(path.includes('/sorteio')) navegarPara('sorteio');
             else if(path.includes('/pagamento')) navegarPara('pagamento');
             else navegarPara('cestas');
+            
+            // Check PWA again on load to be safe
+             if (localStorage.getItem('appInstalado')) {
+                 document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
+             }
         };
     </script>
 </body>
