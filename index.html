@@ -8,17 +8,21 @@
     
     <!-- SEO E DADOS SOCIAIS (Melhorado) -->
     <title>Cesta Básica em Cuiabá e Várzea Grande | Dona Antônia</title>
+    
+    <link rel="canonical" href="https://donaantonia.com.br/" />
+    
     <meta name="description" content="Compre Cesta Básica em Cuiabá e Várzea Grande na Dona Antônia. Melhor preço, entrega rápida no CPA, Tijucal, Cristo Rei e toda região. Confira!">
     <meta name="keywords" content="cesta básica cuiaba, cesta basica varzea grande, comprar alimentos, supermercado online, entrega de cesta, dona antonia">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="Dona Antônia">
     
-    <!-- GEO TAGS (SEO LOCAL - IMPORTANTE) -->
+    <!-- GEO TAGS -->
     <meta name="geo.region" content="BR-MT" />
     <meta name="geo.placename" content="Cuiabá" />
     <meta name="geo.position" content="-15.6014;-56.0979" />
     <meta name="ICBM" content="-15.6014, -56.0979" />
 
-    <!-- Open Graph / Facebook / WhatsApp -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://donaantonia.com.br/">
     <meta property="og:title" content="Cesta Básica Dona Antônia - Entrega Rápida em Cuiabá e VG">
@@ -27,15 +31,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- DADOS ESTRUTURADOS (JSON-LD) - O SEGREDO DO GOOGLE -->
+    <!-- DADOS ESTRUTURADOS -->
     <script type="application/ld+json">
     [
       {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": "Dona Antônia Cestas Básicas",
-        "image": "https://donaantonia.com.br/img/logo1.png",
+        "image": "https://donaantonia.com.br/img/logo.png",
         "telephone": "+5565998150975",
+        "url": "https://donaantonia.com.br/",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Cuiabá",
@@ -43,7 +48,18 @@
           "addressCountry": "BR"
         },
         "priceRange": "$$",
-        "url": "https://donaantonia.com.br/"
+        "sameAs": [
+          "https://facebook.com/SEU_FACEBOOK",
+          "https://instagram.com/SEU_INSTA"
+        ],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+          ],
+          "opens": "08:00",
+          "closes": "18:00"
+        }
       },
       {
         "@context": "https://schema.org",
@@ -97,22 +113,21 @@
             color: var(--cor-texto);
             margin: 0 auto; 
             padding: 0;
-            padding-top: 90px;
-            padding-bottom: 80px;
+            padding-top: 140px; /* AUMENTADO: Para compensar o Header Duplo */
+            padding-bottom: 20px; /* REDUZIDO: Sem barra inferior */
             max-width: 480px; 
             min-height: 100vh;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative; 
         }
 
-        /* --- CABEÇALHO --- */
+        /* --- CABEÇALHO (NOVO LAYOUT DE DOIS ANDARES) --- */
         header {
             background-color: white;
-            height: 80px;
-            padding: 5px 15px;
+            height: 130px; /* Altura para caber Logo + Menu */
+            padding: 0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column; /* Um item embaixo do outro */
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             position: fixed;
             top: 0;
@@ -122,10 +137,22 @@
             max-width: 480px;
             z-index: 1000;
         }
+
+        /* Parte de Cima: Logo e Ícones */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 70px;
+            padding: 5px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
         .header-left { display: flex; align-items: center; flex: 1; }
         
         .logo-pequena { 
-            height: 55px;
+            height: 50px;
             width: auto; 
             max-width: 200px; 
             object-fit: contain; 
@@ -139,7 +166,7 @@
         }
 
         .icon-btn {
-            font-size: 32px;
+            font-size: 28px;
             color: var(--cor-primaria);
             text-decoration: none; display: flex; align-items: center;
             justify-content: center; transition: transform 0.2s;
@@ -149,16 +176,13 @@
         .ic-face { color: #1877F2; }
         .ic-insta { color: #E1306C; }
 
-        /* --- NAVEGAÇÃO ESTILO TEXTO GRANDE --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 480px; 
-            background-color: #222; /* Fundo base escuro */
-            display: flex; justify-content: space-between; /* Espalha igualmente */
-            padding: 0; /* Remove padding interno */
-            z-index: 1000; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
-            height: 65px; /* Altura maior para acomodar texto grande */
+        /* --- NAVEGAÇÃO SUPERIOR (Top Bar - Parte de Baixo do Header) --- */
+        .top-nav {
+            width: 100%;
+            height: 60px;
+            background-color: #222; /* Fundo Escuro */
+            display: flex; 
+            justify-content: space-between;
         }
         
         .nav-item {
@@ -167,27 +191,26 @@
             background: transparent; 
             border: none;
             cursor: pointer; 
-            color: #999; /* Cor do texto inativo */
-            font-size: 15px; 
-            font-weight: 700; /* Negrito */
+            color: #999;
+            font-size: 14px; 
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: flex; 
             align-items: center; 
             justify-content: center;
             transition: all 0.3s ease;
-            border-right: 1px solid #333; /* Divisória sutil entre botões */
+            border-right: 1px solid #333;
         }
         .nav-item:last-child { border-right: none; }
         
-        /* ESTADO ATIVO - BEM DESTACADO */
         .nav-item.ativo { 
             color: #ffffff; 
-            background-color: var(--cor-primaria); /* Fundo Vermelho Forte */
-            font-size: 18px; /* Texto Aumenta */
-            font-weight: 900; /* Extra Negrito */
+            background-color: var(--cor-primaria); /* Vermelho Destaque */
+            font-size: 16px;
+            font-weight: 900;
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2); /* Profundidade interna */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
         
         /* --- PÁGINAS --- */
@@ -224,7 +247,6 @@
         /* --- GALERIA COM INDICADOR DE ZOOM --- */
         .galeria-fotos { display: flex; gap: 10px; margin-bottom: 10px; }
         
-        /* Wrapper para a imagem e o ícone */
         .img-wrapper {
             position: relative;
             width: 50%;
@@ -238,7 +260,6 @@
             background: #eee; 
             display: block;
         }
-        /* Ícone de Lupa/Zoom no canto */
         .zoom-indicator {
             position: absolute;
             bottom: 8px;
@@ -252,7 +273,7 @@
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            pointer-events: none; /* Deixa o clique passar para a div/img */
+            pointer-events: none;
         }
 
         /* --- BOTÕES DE AÇÃO (CESTAS) --- */
@@ -334,7 +355,7 @@
         
         /* --- AVISO FLUTUANTE (PWA - MAIS ALTO) --- */
         .aviso-instalar {
-            position: fixed; bottom: 90px; 
+            position: fixed; bottom: 20px; /* Reduzido pois não tem menu embaixo */
             left: 50%; transform: translateX(-50%);
             width: 95%; max-width: 460px;
             background: linear-gradient(135deg, #FF6B6B, #D32F2F); color: white;
@@ -358,16 +379,26 @@
 </head>
 <body>
 
-    <!-- CABEÇALHO FIXO -->
+    <!-- CABEÇALHO FIXO DUPLO -->
     <header>
-        <div class="header-left">
-            <img src="img/logo1.png" onerror="this.src='https://placehold.co/180x60/ffffff/D32F2F?text=DONA+ANTÔNIA'" alt="Logo Dona Antônia" class="logo-pequena">
+        <!-- Linha 1: Marca e Redes -->
+        <div class="header-top">
+            <div class="header-left">
+                <img src="img/logo.png" onerror="this.src='https://placehold.co/180x60/ffffff/D32F2F?text=DONA+ANTÔNIA'" alt="Logo Dona Antônia" class="logo-pequena">
+            </div>
+            <div class="header-icons">
+                <a href="https://wa.me/5565998150975" class="icon-btn ic-zap" onclick="abrirLinkExterno(event, this)" aria-label="Fale conosco no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://facebook.com/SEU_FACEBOOK" class="icon-btn ic-face" onclick="abrirLinkExterno(event, this)" aria-label="Visite nosso Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://instagram.com/SEU_INSTA" class="icon-btn ic-insta" onclick="abrirLinkExterno(event, this)" aria-label="Siga-nos no Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
         </div>
-        <div class="header-icons">
-            <a href="https://wa.me/5565998150975" class="icon-btn ic-zap" onclick="abrirLinkExterno(event, this)"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://facebook.com/super.cestas.cuiaba/" class="icon-btn ic-face" onclick="abrirLinkExterno(event, this)"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com/super.cestas.dona.antonia/" class="icon-btn ic-insta" onclick="abrirLinkExterno(event, this)"><i class="fab fa-instagram"></i></a>
-        </div>
+
+        <!-- Linha 2: Navegação -->
+        <nav class="top-nav">
+            <button class="nav-item ativo" id="btn-cestas" onclick="navegarPara('cestas')">CESTAS</button>
+            <button class="nav-item" id="btn-pagamento" onclick="navegarPara('pagamento')">PAGAMENTO</button>
+            <button class="nav-item" id="btn-sorteio" onclick="navegarPara('sorteio')">SORTEIO</button>
+        </nav>
     </header>
 
     <!-- PÁGINA 1: CESTAS -->
@@ -380,13 +411,13 @@
             <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Entregas rápidas no CPA, Tijucal, Cristo Rei e região.</p>
         </div>
 
-        <!-- Cesta 1 -->
+        <!-- Cesta 1 (PRINCIPAL - CARREGAMENTO RÁPIDO) -->
         <div class="card card-cesta">
             <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
             <div class="cesta-body">
                 <div class="galeria-fotos">
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <!-- ALT TAG OTIMIZADA -->
+                        <!-- Esta imagem carrega normal pois é a primeira -->
                         <img src="img/cesta-grande.jpg" alt="Cesta Básica Grande Completa em Cuiabá com Arroz e Feijão" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
@@ -406,17 +437,17 @@
             </div>
         </div>
 
-        <!-- Cesta 2 -->
+        <!-- Cesta 2 (LAZY LOADING) -->
         <div class="card card-cesta">
             <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
             <div class="cesta-body">
                 <div class="galeria-fotos">
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-media.jpg" alt="Cesta Básica Média em Várzea Grande e Cuiabá" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <img src="img/cesta-media.jpg" alt="Cesta Básica Média em Várzea Grande e Cuiabá" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-media-2.jpg" alt="Produtos da Cesta Média Dona Antônia" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <img src="img/cesta-media-2.jpg" alt="Produtos da Cesta Média Dona Antônia" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                 </div>
@@ -437,11 +468,11 @@
             <div class="cesta-body">
                 <div class="galeria-fotos">
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-pequena.jpg" alt="Cesta Básica Pequena Econômica Cuiabá" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <img src="img/cesta-pequena.jpg" alt="Cesta Básica Pequena Econômica Cuiabá" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-pequena-2.jpg" alt="Detalhes Cesta Pequena Dona Antônia" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <img src="img/cesta-pequena-2.jpg" alt="Detalhes Cesta Pequena Dona Antônia" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                 </div>
@@ -462,11 +493,11 @@
             <div class="cesta-body">
                 <div class="galeria-fotos">
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-mini.jpg" alt="Mini Cesta Básica Barata em Cuiabá" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <img src="img/cesta-mini.jpg" alt="Mini Cesta Básica Barata em Cuiabá" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-mini-2.jpg" alt="Kit de Alimentos Básico Cesta Mini" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <img src="img/cesta-mini-2.jpg" alt="Kit de Alimentos Básico Cesta Mini" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                 </div>
@@ -487,11 +518,11 @@
             <div class="cesta-body">
                 <div class="galeria-fotos">
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-economica.jpg" alt="Cesta Econômica Melhor Preço VG" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <img src="img/cesta-economica.jpg" alt="Cesta Econômica Melhor Preço VG" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                     <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-economica-2.jpg" alt="Kit Econômico Dona Antônia" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <img src="img/cesta-economica-2.jpg" alt="Kit Econômico Dona Antônia" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
                         <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
                     </div>
                 </div>
@@ -535,7 +566,7 @@
                 <li><i class="fas fa-utensils"></i> Pluxee</li>
                 <li><i class="fas fa-mobile-alt"></i> Ifood Benefícios</li>
             </ul>
-            <p style="color: red; font-size: 14px; text-align: center; margin-top: 20px;"><strong>⚠️ ATENÇÃO:</strong> NÃO VENDEMOS A PRAZO.</p>
+            <p style="color: red; font-size: 14px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> NÃO VENDEMOS A PRAZO.</p>
         </div>
 
         <!-- BANNER PWA PAGAMENTO -->
@@ -582,14 +613,6 @@
         <button class="btn-acao-banner" onclick="instalarApp()"><i class="fas fa-download"></i> INSTALAR</button>
         <button class="btn-fechar-aviso" onclick="fecharInstalacao()">&times;</button>
     </div>
-
-    <!-- NAVEGAÇÃO INFERIOR -->
-    <nav class="bottom-nav">
-        <!-- Ícones removidos e texto aumentado conforme solicitado -->
-        <button class="nav-item ativo" id="btn-cestas" onclick="navegarPara('cestas')">CESTAS</button>
-        <button class="nav-item" id="btn-pagamento" onclick="navegarPara('pagamento')">PAGAMENTO</button>
-        <button class="nav-item" id="btn-sorteio" onclick="navegarPara('sorteio')">SORTEIO</button>
-    </nav>
 
     <!-- MODAL IMAGEM -->
     <div id="modalVisualizador" class="modal-imagem" onclick="fecharImagem()">
