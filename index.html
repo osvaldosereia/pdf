@@ -149,22 +149,46 @@
         .ic-face { color: #1877F2; }
         .ic-insta { color: #E1306C; }
 
-        /* --- NAVEGAÇÃO --- */
+        /* --- NAVEGAÇÃO ESTILO TEXTO GRANDE --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 480px; background-color: #111;
-            border-top: 1px solid #333; display: flex; justify-content: space-around;
-            padding: 10px 0; z-index: 1000; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            width: 100%; max-width: 480px; 
+            background-color: #222; /* Fundo base escuro */
+            display: flex; justify-content: space-between; /* Espalha igualmente */
+            padding: 0; /* Remove padding interno */
+            z-index: 1000; 
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+            height: 65px; /* Altura maior para acomodar texto grande */
         }
+        
         .nav-item {
-            flex: 1; text-align: center; background: none; border: none;
-            cursor: pointer; color: #777; font-size: 12px;
-            display: flex; flex-direction: column; align-items: center;
-            gap: 5px; transition: color 0.3s;
+            flex: 1; 
+            text-align: center; 
+            background: transparent; 
+            border: none;
+            cursor: pointer; 
+            color: #999; /* Cor do texto inativo */
+            font-size: 15px; 
+            font-weight: 700; /* Negrito */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: all 0.3s ease;
+            border-right: 1px solid #333; /* Divisória sutil entre botões */
         }
-        .nav-item i { font-size: 24px; margin-bottom: 2px; }
-        .nav-item.ativo { color: #fff; }
-        .nav-item.ativo i { color: var(--cor-primaria); }
+        .nav-item:last-child { border-right: none; }
+        
+        /* ESTADO ATIVO - BEM DESTACADO */
+        .nav-item.ativo { 
+            color: #ffffff; 
+            background-color: var(--cor-primaria); /* Fundo Vermelho Forte */
+            font-size: 18px; /* Texto Aumenta */
+            font-weight: 900; /* Extra Negrito */
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2); /* Profundidade interna */
+        }
         
         /* --- PÁGINAS --- */
         .pagina { display: none; padding: 15px; animation: fadeIn 0.3s ease; }
@@ -353,7 +377,7 @@
             <h1 style="margin: 0; font-size: 1.1rem; font-weight: bold; color: #E65100;">
                 <i class="fas fa-truck"></i> Cesta Básica em Cuiabá e Várzea Grande
             </h1>
-            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Não cobramos taxa de entrega pra Cuiabá e VG.</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Entregas rápidas no CPA, Tijucal, Cristo Rei e região.</p>
         </div>
 
         <!-- Cesta 1 -->
@@ -527,7 +551,7 @@
     <!-- PÁGINA 3: SORTEIO -->
     <div id="pag-sorteio" class="pagina">
         <div class="card">
-            <h2>🍀 Sorteio todo Domingo</h2>
+            <h2>🍀 Sorteio todos Domingo</h2>
             <p>Preencha para concorrer. Serão 5 ganhadores de Kits de Limpeza e Higiêne!</p>
             <form onsubmit="event.preventDefault(); enviarNovoCadastro();">
                 <label>Nome Completo: <span style="color:red">*</span></label>
@@ -561,9 +585,10 @@
 
     <!-- NAVEGAÇÃO INFERIOR -->
     <nav class="bottom-nav">
-        <button class="nav-item ativo" id="btn-cestas" onclick="navegarPara('cestas')"><i class="fas fa-shopping-basket"></i>CESTAS</button>
-        <button class="nav-item" id="btn-pagamento" onclick="navegarPara('pagamento')"><i class="fas fa-credit-card"></i>PAGAMENTO</button>
-        <button class="nav-item" id="btn-sorteio" onclick="navegarPara('sorteio')"><i class="fas fa-gift"></i>SORTEIO</button>
+        <!-- Ícones removidos e texto aumentado conforme solicitado -->
+        <button class="nav-item ativo" id="btn-cestas" onclick="navegarPara('cestas')">CESTAS</button>
+        <button class="nav-item" id="btn-pagamento" onclick="navegarPara('pagamento')">PAGAMENTO</button>
+        <button class="nav-item" id="btn-sorteio" onclick="navegarPara('sorteio')">SORTEIO</button>
     </nav>
 
     <!-- MODAL IMAGEM -->
