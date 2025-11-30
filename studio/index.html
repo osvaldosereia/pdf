@@ -69,22 +69,39 @@
         .menu-btn.active { background: white; color: black; transform: scale(1.1); }
         .menu-btn.action-green { background: #22c55e; border-color: #22c55e; }
 
-        /* Gavetas (Drawers) */
+        /* Gavetas (Drawers) - MODIFICADO: Centralizadas e Menores */
         .drawer-panel {
-            position: fixed; right: 80px; top: 50%;
-            transform: translateY(-50%) translateX(20px);
-            width: 280px; max-height: 85vh;
-            background: rgba(10, 10, 10, 0.95);
+            position: fixed; 
+            left: 50%; 
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.9); /* Centralizado */
+            width: 90%; 
+            max-width: 320px; /* Largura fixa compacta */
+            max-height: 50vh; /* Máximo 50% da altura da tela */
+            background: rgba(15, 15, 15, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 24px;
             padding: 20px;
-            z-index: 19;
-            opacity: 0; pointer-events: none;
+            z-index: 100; /* Acima de tudo */
+            opacity: 0; 
+            pointer-events: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto; color: white;
+            overflow-y: auto; /* Barra de rolagem */
+            color: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-        .drawer-panel.open { opacity: 1; pointer-events: auto; transform: translateY(-50%) translateX(0); }
+        
+        .drawer-panel.open { 
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: translate(-50%, -50%) scale(1); 
+        }
+
+        /* Custom Scrollbar for Drawer */
+        .drawer-panel::-webkit-scrollbar { width: 4px; }
+        .drawer-panel::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .drawer-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
 
         /* Custom Inputs */
         .dark-input {
@@ -196,7 +213,7 @@
 
         <!-- DRAWER 1: FUNDO -->
         <div id="drawer-bg" class="drawer-panel">
-            <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4"></i> Ajustar Fundo</h3>
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-white"><i data-lucide="image" class="w-4 h-4"></i> Fundo</h3>
             
             <label class="label-xs">Trocar Imagem</label>
             <label class="block w-full bg-white/10 p-3 rounded-lg text-center text-xs mb-4 cursor-pointer border border-white/20 hover:bg-white/20 transition">
@@ -214,7 +231,7 @@
 
         <!-- DRAWER 2: FILTROS (NOVO) -->
         <div id="drawer-filters" class="drawer-panel">
-            <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="wand-2" class="w-4 h-4"></i> Filtros</h3>
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-white"><i data-lucide="wand-2" class="w-4 h-4"></i> Filtros</h3>
             
             <div class="filter-grid" id="filterList">
                 <!-- Gerado via JS -->
@@ -227,7 +244,7 @@
 
         <!-- DRAWER 3: TEXTO (ATUALIZADO) -->
         <div id="drawer-text" class="drawer-panel">
-            <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="type" class="w-4 h-4"></i> Editar Texto</h3>
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-white"><i data-lucide="type" class="w-4 h-4"></i> Texto</h3>
 
             <!-- Conteúdo -->
             <label class="label-xs mt-0">Conteúdo</label>
@@ -268,12 +285,13 @@
 
             <!-- Posição -->
             <div class="border-t border-white/10 pt-2">
-                <label class="label-xs">Posição</label>
+                <label class="label-xs">Posição Vertical</label>
                 <div class="flex bg-white/10 p-1 rounded-lg mb-2">
                     <button onclick="setBoxPos('top')" class="flex-1 py-1 text-xs rounded hover:bg-white/10" id="pos-top">Topo</button>
                     <button onclick="setBoxPos('bottom')" class="flex-1 py-1 text-xs rounded bg-white text-black font-bold" id="pos-bottom">Base</button>
                 </div>
                 
+                <label class="label-xs">Mover Texto (Ajuste Fino)</label>
                 <!-- D-Pad -->
                 <div class="grid grid-cols-3 gap-1 w-[120px] mx-auto mt-2">
                     <div></div>
@@ -286,24 +304,34 @@
             </div>
         </div>
 
-        <!-- DRAWER 4: LOGO -->
+        <!-- DRAWER 4: LOGO (ATUALIZADO) -->
         <div id="drawer-logo" class="drawer-panel">
-            <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><i data-lucide="store" class="w-4 h-4"></i> Logo</h3>
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-white"><i data-lucide="store" class="w-4 h-4"></i> Logo</h3>
             <label class="block w-full bg-white/10 p-3 rounded-lg text-center text-xs mb-4 cursor-pointer border border-white/20">
                 Carregar PNG
                 <input type="file" id="logoInput" accept="image/*" class="hidden">
             </label>
+            
             <label class="label-xs">Formato</label>
             <div class="flex gap-2 mb-4">
                 <button onclick="setLogoFormat('horizontal')" class="flex-1 p-2 text-xs bg-white text-black rounded font-bold">Horiz.</button>
                 <button onclick="setLogoFormat('square')" class="flex-1 p-2 text-xs bg-white/10 rounded">Quad.</button>
             </div>
-            <label class="label-xs">Posição</label>
-            <div class="grid grid-cols-3 gap-2 mb-4">
-                <button onclick="setLogoPos('tl')" class="p-2 bg-white/10 rounded flex justify-center">↖</button>
-                <button onclick="setLogoPos('tc')" class="p-2 bg-white text-black rounded flex justify-center">↑</button>
-                <button onclick="setLogoPos('tr')" class="p-2 bg-white/10 rounded flex justify-center">↗</button>
+
+            <!-- NOVA CONFIGURAÇÃO DE POSIÇÃO (IGUAL AO GLASS BOX) -->
+            <label class="label-xs">Posição Vertical</label>
+            <div class="flex bg-white/10 p-1 rounded-lg mb-4">
+                <button onclick="setLogoVert('top')" class="flex-1 py-1 text-xs rounded hover:bg-white/10" id="logo-v-top">Topo</button>
+                <button onclick="setLogoVert('bottom')" class="flex-1 py-1 text-xs rounded bg-white text-black font-bold" id="logo-v-bottom">Base</button>
             </div>
+
+            <label class="label-xs">Alinhamento Horizontal</label>
+            <div class="flex bg-white/10 p-1 rounded-lg mb-4">
+                <button onclick="setLogoAlign('left')" class="flex-1 py-1 text-xs rounded hover:bg-white/10" id="logo-h-left">Esq</button>
+                <button onclick="setLogoAlign('center')" class="flex-1 py-1 text-xs rounded bg-white text-black font-bold" id="logo-h-center">Centro</button>
+                <button onclick="setLogoAlign('right')" class="flex-1 py-1 text-xs rounded hover:bg-white/10" id="logo-h-right">Dir</button>
+            </div>
+
             <label class="label-xs">Tamanho</label>
             <input type="range" oninput="adjustLogoScale(this.value)" min="0.5" max="2" step="0.1" value="1">
         </div>
@@ -328,23 +356,23 @@
             { id: 'soft', name: 'Suave', filter: 'brightness(110%) saturate(80%) blur(0.5px)' },
         ];
 
-        // --- ESTADO INICIAL (Modificado para ser mais discreto) ---
+        // --- ESTADO INICIAL ---
         let state = {
             bgImg: null,
             logoImg: null,
             
-            // Texto & Box (Valores iniciais menores)
+            // Texto & Box
             name: 'Nome do Produto',
             price: '99,90',
             unit: 'un',
             
-            boxW: 800,      // Menor que antes
-            boxH: 350,      // Mais compacto
+            boxW: 800,
+            boxH: 350,
             boxPos: 'bottom',
             
             textOffX: 0, textOffY: 0,
             
-            // Tipografia (Tamanhos iniciais)
+            // Tipografia
             fontFamily: 'Inter',
             titleSize: 45,
             priceSize: 130,
@@ -354,7 +382,11 @@
             currentFilterId: 'normal',
 
             // Logo
-            logoFormat: 'horizontal', logoPos: 'tc', logoScale: 1,
+            logoFormat: 'horizontal', 
+            logoScale: 1,
+            // Novos estados de posição da logo
+            logoVert: 'top', 
+            logoAlign: 'center' 
         };
 
         // --- INICIALIZAÇÃO ---
@@ -388,6 +420,8 @@
         document.getElementById('rangeBoxW').value = state.boxW;
         document.getElementById('rangeBoxH').value = state.boxH;
         updateFontButtons();
+        // Sync Logo buttons
+        updateLogoButtons();
 
         // --- FUNÇÕES DE INTERAÇÃO ---
 
@@ -418,7 +452,6 @@
         // Preview Mode
         window.togglePreview = () => {
             document.body.classList.toggle('preview-active');
-            // Fechar drawers se abrir preview
             if(document.body.classList.contains('preview-active')) {
                 toggleDrawer(null); // Fecha tudo
             }
@@ -480,10 +513,26 @@
         // Fundo Scale
         document.getElementById('bgScale').addEventListener('input', e => { state.bgScale = parseFloat(e.target.value); draw(); });
 
-        // Logo
+        // Logo Functions
         window.setLogoFormat = f => { state.logoFormat = f; draw(); };
-        window.setLogoPos = p => { state.logoPos = p; draw(); };
         window.adjustLogoScale = v => { state.logoScale = v; draw(); };
+        
+        // Novas Funções de Posição da Logo
+        window.setLogoVert = (v) => { state.logoVert = v; updateLogoButtons(); draw(); };
+        window.setLogoAlign = (a) => { state.logoAlign = a; updateLogoButtons(); draw(); };
+
+        function updateLogoButtons() {
+            // Update Vert
+            document.getElementById('logo-v-top').className = state.logoVert === 'top' ? "flex-1 py-1 text-xs rounded bg-white text-black font-bold" : "flex-1 py-1 text-xs rounded hover:bg-white/10";
+            document.getElementById('logo-v-bottom').className = state.logoVert === 'bottom' ? "flex-1 py-1 text-xs rounded bg-white text-black font-bold" : "flex-1 py-1 text-xs rounded hover:bg-white/10";
+            
+            // Update Horiz
+            const aligns = ['left', 'center', 'right'];
+            const labels = {'left': 'Esq', 'center': 'Centro', 'right': 'Dir'};
+            aligns.forEach(a => {
+                document.getElementById(`logo-h-${a}`).className = state.logoAlign === a ? "flex-1 py-1 text-xs rounded bg-white text-black font-bold" : "flex-1 py-1 text-xs rounded hover:bg-white/10";
+            });
+        }
 
         // UI Drawer Toggle
         let currentDrawer = null;
@@ -602,15 +651,20 @@
                 ctx.fillText(`/${state.unit}`, sx + cw + 10 + pw + 10, py);
             }
 
-            // 4. LOGO
+            // 4. LOGO (ATUALIZADO LÓGICA)
             if(state.logoImg) {
                 const limg = state.logoImg;
                 let lw = state.logoFormat==='horizontal'?400:300, lh = state.logoFormat==='horizontal'?200:300;
                 lw *= state.logoScale; lh *= state.logoScale;
                 
-                let lx = state.logoPos.includes('l') ? 60 : state.logoPos.includes('c') ? (1080-lw)/2 : 1080-lw-60;
-                let ly = state.logoPos.includes('t') ? 100 : 1920-lh-100;
-                
+                // Posição Vertical
+                let ly = state.logoVert === 'top' ? 100 : 1920 - lh - 100;
+
+                // Posição Horizontal
+                let lx = 60; // default left
+                if(state.logoAlign === 'center') lx = (1080 - lw) / 2;
+                if(state.logoAlign === 'right') lx = 1080 - lw - 60;
+
                 // Aspect Ratio Contain
                 const lr = limg.width/limg.height, tr = lw/lh;
                 let fw, fh; if(lr>tr){fw=lw;fh=lw/lr;}else{fh=lh;fw=lh*lr;}
