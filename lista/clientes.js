@@ -1,5 +1,89 @@
 const clientes = [
-   {
+  {
+    "nome": "SUELLEN MARIA DOS SANTOS",
+    "telefone": "65992923920",
+    "cidade": "Várzea Grande",
+    "bairro": "Cristo rei Maringá"
+  },
+  {
+    "nome": "Makeila dos santos",
+    "telefone": "65984051713",
+    "cidade": "Cuiabá",
+    "bairro": "Doutor fabio"
+  },
+  {
+    "nome": "Silvia mikaely Rodrigues dos santos",
+    "telefone": "65996951410",
+    "cidade": "Várzea Grande",
+    "bairro": "Solaris taruma"
+  },
+  {
+    "nome": "Uanderson costa toledo",
+    "telefone": "65999798755",
+    "cidade": "Cuiabá",
+    "bairro": "Grande terceiro"
+  },
+  {
+    "nome": "Acácio Antônio de Campos",
+    "telefone": "65993568815",
+    "cidade": "Várzea Grande",
+    "bairro": "Marajoara"
+  },
+  {
+    "nome": "Rogerio jose santo de souza",
+    "telefone": "65992972470",
+    "cidade": "Várzea Grande",
+    "bairro": "Icaraí"
+  },
+  {
+    "nome": "Kamila Jesus de arruda osmar cabral",
+    "telefone": "65981042321",
+    "cidade": "Cuiabá",
+    "bairro": "Osmar cabral"
+  },
+  {
+    "nome": "Rejane de Souza melo",
+    "telefone": "65996282152",
+    "cidade": "Cuiabá",
+    "bairro": "Vila nova"
+  },
+  {
+    "nome": "Cristiene Jorge da Silva",
+    "telefone": "65993394432",
+    "cidade": "Cuiabá",
+    "bairro": "Dom Bosco"
+  },
+  {
+    "nome": "Lilaine Ferreira Fonseca",
+    "telefone": "93235515",
+    "cidade": "Cuiabá",
+    "bairro": "J.florinoplis"
+  },
+  {
+    "nome": "Fellype césar",
+    "telefone": "65992770590",
+    "cidade": "Várzea Grande",
+    "bairro": "Costa verde"
+  },
+  {
+    "nome": "Johana del carmen Betancourt Motta",
+    "telefone": "65992524315",
+    "cidade": "Cuiabá",
+    "bairro": "Sol nascente"
+  },
+  {
+    "nome": "Crislaine Cordeiro Alencastro",
+    "telefone": "65981233921",
+    "cidade": "Cuiabá",
+    "bairro": "Brasil 21"
+  },
+  {
+    "nome": "Michelly thainara da Silva Almeida",
+    "telefone": "65993384574",
+    "cidade": "Cuiabá",
+    "bairro": "jardim Florianópolis"
+  },
+  {
     "nome": "MARTA Chávez infante",
     "telefone": "65981199305",
     "cidade": "Cuiabá",
@@ -199,7 +283,7 @@ const clientes = [
   },
   {
     "nome": "Ivete vitoriano vitorino",
-    "telefone": "92345531",
+    "telefone": "06692345531",
     "cidade": "Várzea Grande",
     "bairro": "Marajuara"
   },
