@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Stories V15 - Stickers</title>
+    <title>Studio Stories V17 - Optimized</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Playfair+Display:ital,wght@0,700;1,400&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Biblioteca para processar GIFs Animados -->
+    <script src="https://cdn.jsdelivr.net/gh/buzzfeed/libgif-js@master/libgif.js"></script>
+
     <style>
         /* BASE */
         body { 
@@ -71,10 +74,12 @@
         .menu-btn.active { background: white; color: black; width: 55px; }
         .menu-btn.action-green { background: #22c55e; color: white; border: none; margin-top: 10px; }
 
+        /* DRAWER PANEL (COMPACTO) */
         .drawer-panel {
             position: absolute; left: 0; top: 50%;
             transform: translateY(-50%) translateX(-100%);
-            width: 85%; max-width: 320px; height: 50vh; max-height: 480px; 
+            width: 85%; max-width: 320px; 
+            height: 45vh; max-height: 400px; 
             background: rgba(20, 20, 20, 0.98);
             border-radius: 0 20px 20px 0;
             border: 1px solid rgba(255,255,255,0.15); border-left: none;
@@ -100,7 +105,7 @@
         .sticker-thumb { 
             aspect-ratio: 1; background: rgba(255,255,255,0.05); border-radius: 8px; 
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            border: 1px solid transparent; transition: 0.2s;
+            border: 1px solid transparent; transition: 0.2s; overflow: hidden;
         }
         .sticker-thumb:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
         .sticker-thumb img { max-width: 90%; max-height: 90%; object-fit: contain; pointer-events: none; }
@@ -127,6 +132,15 @@
         input[type="range"] { width: 100%; height: 20px; background: transparent; -webkit-appearance: none; margin: 8px 0; touch-action: pan-x; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; margin-top: -8px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+        /* Giphy Link */
+        .giphy-link {
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            background: linear-gradient(45deg, #9933ff, #ff6666);
+            color: white; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 12px;
+            margin-bottom: 12px; text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .giphy-link:hover { opacity: 0.9; }
 
     </style>
 </head>
@@ -175,7 +189,10 @@
             <div onclick="toggleDrawer('stickers')" class="menu-btn" id="btn-stickers"><i data-lucide="smile"></i></div>
             
             <div class="h-[1px] bg-white/10 w-[30px] mx-auto my-1"></div>
-            <div onclick="downloadStory()" class="menu-btn action-green"><i data-lucide="image-down"></i></div>
+            <!-- Download IMG -->
+            <div onclick="downloadStory()" class="menu-btn action-green" title="Imagem Otimizada"><i data-lucide="image-down"></i></div>
+            <!-- Download VIDEO -->
+            <div onclick="downloadVideo()" class="menu-btn action-green mt-2" id="btn-video-dl" title="Vídeo Leve"><i data-lucide="video"></i></div>
         </div>
     </div>
 
@@ -253,15 +270,26 @@
             </div>
         </div>
 
-        <!-- STICKERS (NOVO) -->
+        <!-- STICKERS (GIF/PNG) -->
         <div id="drawer-stickers" class="drawer-panel">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-base flex gap-2"><i data-lucide="smile"></i> Figurinhas</h3>
+                <h3 class="font-bold text-base flex gap-2"><i data-lucide="smile"></i> GIFs & Figuras</h3>
                 <i data-lucide="x" class="close-drawer" onclick="closeAllDrawers()"></i>
             </div>
-            <p class="text-[10px] text-gray-400 mb-4">Toque para adicionar à tela. Arraste e pince para ajustar.</p>
+            
+            <!-- GIPHY LINK -->
+            <a href="https://giphy.com/" target="_blank" class="giphy-link">
+                <i data-lucide="search" class="w-4 h-4"></i> Buscar GIFs no GIPHY
+            </a>
+
+            <label class="block w-full bg-white/5 p-3 rounded-lg text-center text-xs cursor-pointer border border-white/10 mb-4">
+                Carregar GIF/IMG do Dispositivo
+                <input type="file" id="stickerInput" accept="image/gif, image/png, image/jpeg" class="hidden">
+            </label>
+
+            <p class="text-[10px] text-gray-400 mb-2">Galeria (img1...img100)</p>
             <div class="stickers-grid" id="stickersGrid">
-                <!-- Gerado via JS (studio/img/imgX.png) -->
+                <!-- Gerado via JS -->
             </div>
         </div>
     </div>
@@ -292,10 +320,13 @@
             bgScale: 1, bgX: 0, bgY: 0, currentFilterId: 'normal',
             logoFormat: 'horizontal', logoScale: 1, logoX: null, logoY: null,
             
-            stickers: [] // Array de objetos { img, x, y, scale }
+            stickers: [], 
+            
+            // Video Config
+            videoDuration: 5, // segundos
         };
 
-        // --- LOADERS ---
+        // --- LOADERS PADRÃO ---
         const phBg = new Image(); phBg.crossOrigin = "anonymous";
         phBg.src = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1080&auto=format&fit=crop';
         const phLogo = new Image(); phLogo.crossOrigin = "anonymous";
@@ -304,35 +335,79 @@
         phBg.onload = () => { if(!state.bgImg) { state.bgImg = phBg; } };
         phLogo.onload = () => { if(!state.logoImg) { state.logoImg = phLogo; } };
 
-        // --- LOAD STICKERS ---
+        // --- STICKERS LOADER (Local + Upload) ---
         const stickersGrid = document.getElementById('stickersGrid');
-        // Gera lista de 30 figurinhas presumidas
-        for(let i=1; i<=30; i++) {
+        
+        // Carrega 100 GIFs presumidos (Expandido)
+        for(let i=1; i<=100; i++) {
             const div = document.createElement('div');
             div.className = 'sticker-thumb';
             // Caminho da imagem
-            const src = `studio/img/img${i}.png`;
+            const src = `studio/img/img${i}.gif`;
             
-            // Cria imagem e lida com erro (se arquivo nao existir)
             const img = new Image();
             img.src = src;
-            img.onerror = () => { div.style.display = 'none'; }; // Esconde se nao achar
+            img.onerror = () => { div.style.display = 'none'; }; 
             img.onload = () => {
                 div.appendChild(img);
-                div.onclick = () => addSticker(img);
+                div.onclick = () => loadSticker(src); // Carrega a URL
             };
             stickersGrid.appendChild(div);
         }
 
-        function addSticker(imgSource) {
-            state.stickers.push({
-                img: imgSource,
-                x: 1080/2 - 150, // Centro
-                y: 1920/2 - 150,
-                scale: 1.0
-            });
-            draw();
-            closeAllDrawers();
+        // Upload Manual de Sticker
+        document.getElementById('stickerInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (evt) => loadSticker(evt.target.result);
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Lógica Unificada de Carregamento de Sticker (GIF vs IMG)
+        function loadSticker(src) {
+            // Verifica se é GIF (pela extensão ou dataURI)
+            const isGif = src.toLowerCase().includes('.gif') || src.startsWith('data:image/gif');
+            
+            // Cria elemento de imagem temporário
+            const imgEl = document.createElement('img');
+            imgEl.src = src;
+            
+            if(isGif) {
+                // Configura SuperGif
+                const wrapper = document.createElement('div');
+                // Atributo rel:auto_play é necessário para libgif iniciar
+                imgEl.setAttribute('rel:auto_play', '1'); 
+                imgEl.setAttribute('rel:rubbable', '0');
+                wrapper.appendChild(imgEl);
+                
+                const gifObj = new SuperGif({ gif: imgEl, auto_play: true });
+                
+                gifObj.load(() => {
+                    // Loaded!
+                    state.stickers.push({
+                        type: 'gif',
+                        obj: gifObj,
+                        x: 1080/2 - 150,
+                        y: 1920/2 - 150,
+                        scale: 1.0
+                    });
+                    closeAllDrawers();
+                });
+            } else {
+                // Imagem Normal
+                imgEl.onload = () => {
+                    state.stickers.push({
+                        type: 'img',
+                        obj: imgEl,
+                        x: 1080/2 - 150,
+                        y: 1920/2 - 150,
+                        scale: 1.0
+                    });
+                    closeAllDrawers();
+                };
+            }
         }
 
         // --- UI RENDER ---
@@ -438,10 +513,16 @@
             // Check Stickers (Top down)
             for(let i=state.stickers.length-1; i>=0; i--) {
                 const s = state.stickers[i];
-                // Assume tamanho padrão 300x300 base
-                const sw = (s.img.width || 300) * s.scale;
-                const sh = (s.img.height || 300) * s.scale;
-                if(x >= s.x && x <= s.x + sw && y >= s.y && y <= s.y + sh) return `sticker-${i}`;
+                let w = 300, h = 300;
+                if(s.type === 'gif') {
+                    const c = s.obj.get_canvas();
+                    if(c) { w=c.width; h=c.height; }
+                } else {
+                    w = s.obj.width; h = s.obj.height;
+                }
+                w *= s.scale; h *= s.scale;
+                
+                if(x >= s.x && x <= s.x + w && y >= s.y && y <= s.y + h) return `sticker-${i}`;
             }
 
             if(state.logoImg) {
@@ -460,11 +541,8 @@
         };
 
         const handlePointerDown = (e) => {
-            if(document.body.classList.contains('preview-active')) {
-                // Em preview nao edita nada
-                return;
-            }
-            if(e.target.closest('.drawer-panel') || e.target.closest('.floating-menu')) return;
+            if(document.body.classList.contains('preview-active')) return;
+            if(e.target.closest('.drawer-panel') || e.target.closest('.floating-menu') || e.target.id === 'exit-preview-btn') return;
             
             e.preventDefault();
             pointers[e.pointerId] = e;
@@ -574,7 +652,7 @@
         cContainer.addEventListener('pointerout', handlePointerUp);
 
 
-        // --- ANIMAÇÃO LOOP (Apenas para redesenho suave) ---
+        // --- ANIMAÇÃO LOOP (Necessário para GIFs) ---
         function animate() {
             draw();
             requestAnimationFrame(animate);
@@ -584,7 +662,7 @@
         function draw() {
             ctx.clearRect(0,0,1080,1920); ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1920);
             
-            // 1. BG
+            // 1. BG (Sem animação de motion, apenas estático escalável)
             if(state.bgImg) {
                 const i=state.bgImg; const f=FILTERS.find(x=>x.id===state.currentFilterId);
                 const r=i.width/i.height, cr=1080/1920;
@@ -645,14 +723,8 @@
             let fullPrice = state.price;
             let mainPrice = fullPrice; 
             let cents = "";
-            
-            if(fullPrice.includes(',')) {
-                let parts = fullPrice.split(',');
-                mainPrice = parts[0]; cents = "," + parts[1];
-            } else if(fullPrice.includes('.')) {
-                let parts = fullPrice.split('.');
-                mainPrice = parts[0]; cents = "." + parts[1];
-            }
+            if(fullPrice.includes(',')) { let p = fullPrice.split(','); mainPrice = p[0]; cents = "," + p[1]; } 
+            else if(fullPrice.includes('.')) { let p = fullPrice.split('.'); mainPrice = p[0]; cents = "." + p[1]; }
 
             const cw=ctx.measureText("R$").width;
             const px = sx + cw + (10*state.boxScale);
@@ -690,20 +762,75 @@
                 ctx.restore();
             }
 
-            // 5. STICKERS
+            // 5. STICKERS (Desenhados por último)
             state.stickers.forEach(s => {
-                const sw = (s.img.width || 300) * s.scale;
-                const sh = (s.img.height || 300) * s.scale;
+                let w, h, imgDraw;
+                
+                if (s.type === 'gif') {
+                    const canvasGif = s.obj.get_canvas(); // LibGif Canvas
+                    if(!canvasGif) return;
+                    imgDraw = canvasGif;
+                    w = canvasGif.width;
+                    h = canvasGif.height;
+                } else {
+                    imgDraw = s.obj;
+                    w = s.obj.width;
+                    h = s.obj.height;
+                }
+
+                // Ajuste de escala do sticker (se muito grande inicialmente, reduzir)
+                // Vamos usar um tamanho base de 300px se não definido
+                if(!s.baseScaleSet) {
+                    const maxDim = Math.max(w, h);
+                    if(maxDim > 400) {
+                        const ratio = 400 / maxDim;
+                        w *= ratio; h *= ratio;
+                        // Ajusta escala interna para refletir isso no futuro
+                        // Na verdade, melhor desenhar com w/h ajustados pelo scale state
+                    }
+                    s.baseW = w; s.baseH = h; s.baseScaleSet = true;
+                }
+
+                const drawW = s.baseW * s.scale;
+                const drawH = s.baseH * s.scale;
+
                 ctx.save();
                 ctx.shadowColor="rgba(0,0,0,0.2)"; ctx.shadowBlur=15; ctx.shadowOffsetY=5;
-                ctx.drawImage(s.img, s.x, s.y, sw, sh);
+                ctx.drawImage(imgDraw, s.x, s.y, drawW, drawH);
                 ctx.restore();
             });
         }
         
         window.downloadStory = () => {
             const l=document.createElement('a'); l.download=`story_${Date.now()}.jpg`;
-            l.href=canvas.toDataURL('image/jpeg',1.0); l.click();
+            draw(); 
+            // QUALIDADE REDUZIDA (0.85)
+            l.href=canvas.toDataURL('image/jpeg',0.85); l.click();
+        }
+
+        async function downloadVideo() {
+            const btn = document.getElementById('btn-video-dl');
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i>';
+            btn.style.pointerEvents = 'none';
+            
+            const stream = canvas.captureStream(30);
+            // BITRATE REDUZIDO (2.5 Mbps)
+            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 2500000 });
+            const chunks = [];
+            
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `story_video_${Date.now()}.webm`; a.click();
+                URL.revokeObjectURL(url);
+                btn.innerHTML = originalIcon; btn.style.pointerEvents = 'auto'; lucide.createIcons();
+            };
+            
+            mediaRecorder.start();
+            setTimeout(() => { mediaRecorder.stop(); }, 5000); // 5 Segundos de gravação
         }
     </script>
 </body>
