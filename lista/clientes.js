@@ -5,6 +5,18 @@ const clientes = [
     "cidade": "Várzea Grande",
     "bairro": "Cristo rei Maringá"
   },
+  {
+    "nome": "Dalkis Clausell Perez",
+    "telefone": "95984275554",
+    "cidade": "CUIABÁ",
+    "bairro": "Residencial Sao Carlos"
+  },
+  {
+    "nome": " Rosalina mara cristina de  lima silva",
+    "telefone": "65992910757",
+    "cidade": "CUIABÁ",
+    "bairro": "Praeiro"
+  },
    {
     "nome": "Ivete vitoriano vitorino",
     "telefone": "06692345531",
