@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Ícones para visual -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Importando o arquivo de clientes -->
+    <script src="clientes.js"></script>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800 p-6">
 
@@ -52,23 +54,17 @@
     </div>
 
     <script>
-        // --- PARTE 1: DADOS (Simulando o arquivo clientes.js) ---
-        // Em um projeto real, você importaria isso de um arquivo externo.
-        const clientes = [
-            { "nome": "Simone tatiana pimenta", "telefone": "65999820431", "bairro": "Residencial são carlos" },
-            { "nome": "Stefany silva", "telefone": "65992171980", "bairro": "Parque do lago" },
-            { "nome": "VANIA REGINA BATISTA AMORIM FERREIRA", "telefone": "65984773145", "bairro": "Jardim primavera" },
-            { "nome": "Márcia Figueiredo dos Santos", "telefone": "65992938380", "bairro": "Industriário 1" },
-            { "nome": "Jakelliny de Oliveira leite", "telefone": "65993036232", "bairro": "Primeiro de março" },
-            { "nome": "Marcos Kleyton Nishida", "telefone": "65993368890", "bairro": "Paiaguás" },
-            { "nome": "Jucilene bispo dos Santos", "telefone": "65993271164", "bairro": "Cinturão verde" },
-            { "nome": "Everton de souza Lourenço", "telefone": "65981008560", "bairro": "Don Aquino" },
-            { "nome": "Luciane Castorina mattos", "telefone": "65993448972", "bairro": "Mapim" },
-            { "nome": "Orlando de souza", "telefone": "65992448685", "bairro": "Novo matogrosso" }
-        ];
-
+        // --- PARTE 1: DADOS ---
+        // A variável 'clientes' agora é carregada automaticamente do arquivo clientes.js importado no <head>
+        
         // --- PARTE 2: RENDERIZAÇÃO (Mostrar na tela) ---
         function renderizarTabela() {
+            // Verifica se a lista foi carregada corretamente
+            if (typeof clientes === 'undefined') {
+                alert("Erro: O arquivo clientes.js não foi carregado corretamente.");
+                return;
+            }
+
             const tbody = document.getElementById('tabela-clientes');
             tbody.innerHTML = ''; // Limpa a tabela antes de renderizar
 
