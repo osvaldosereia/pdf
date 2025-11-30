@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Studio Stories Mobile V11</title>
+    <title>Studio Stories V14 - Price Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Playfair+Display:ital,wght@0,700;1,400&family=Oswald:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* CONFIGURAÇÕES GERAIS */
+        /* BASE */
         body { 
             font-family: 'Inter', sans-serif; 
             background-color: #000;
@@ -17,7 +17,7 @@
             touch-action: none;
         }
 
-        /* 1. CAMADA CANVAS */
+        /* CANVAS */
         #canvas-container {
             position: absolute; inset: 0; z-index: 1;
             display: flex; align-items: center; justify-content: center;
@@ -25,7 +25,7 @@
         }
         canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* 2. CAMADA UI */
+        /* UI LAYERS */
         #ui-layer {
             position: absolute; inset: 0; z-index: 20; pointer-events: none;
             transition: opacity 0.3s;
@@ -34,11 +34,9 @@
         
         .floating-menu {
             position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 8px;
-            pointer-events: auto;
+            display: flex; flex-direction: column; gap: 8px; pointer-events: auto;
         }
 
-        /* 3. CAMADA OVERLAY */
         #drawer-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
             z-index: 40; opacity: 0; pointer-events: none; transition: opacity 0.3s;
@@ -46,85 +44,45 @@
         }
         #drawer-overlay.open { opacity: 1; pointer-events: auto; }
 
-        /* 4. CAMADA MODAIS (GAVETAS) */
-        #drawers-layer {
-            position: fixed; inset: 0; z-index: 50; pointer-events: none;
-        }
+        #drawers-layer { position: fixed; inset: 0; z-index: 50; pointer-events: none; }
 
-        /* ESTILOS ESPECÍFICOS */
-        
+        /* COMPONENTES */
         .menu-btn {
             width: 50px; height: 48px; 
             border-top-left-radius: 12px; border-bottom-left-radius: 12px;
             background: rgba(30, 30, 30, 0.9);
             backdrop-filter: blur(10px);
             border-left: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ccc;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: -4px 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer; pointer-events: auto;
+            color: #ccc; display: flex; align-items: center; justify-content: center;
+            box-shadow: -4px 4px 10px rgba(0,0,0,0.3); cursor: pointer; pointer-events: auto;
         }
         .menu-btn:active { transform: scale(0.95); background: #555; }
         .menu-btn.active { background: white; color: black; width: 55px; }
         .menu-btn.action-green { background: #22c55e; color: white; border: none; margin-top: 10px; }
 
-        /* DRAWER PANEL - AJUSTADO: Esquerda e Menor Altura */
         .drawer-panel {
-            position: absolute; 
-            left: 0; /* Encostado na esquerda */
-            top: 50%;
-            transform: translateY(-50%) translateX(-100%); /* Sai da esquerda */
-            width: 85%; max-width: 320px;
-            
-            /* ALTURA MENOR (Aprox 45% da tela ou fixo compact) */
-            height: 50vh; max-height: 480px; 
-            
+            position: absolute; left: 0; top: 50%;
+            transform: translateY(-50%) translateX(-100%);
+            width: 85%; max-width: 320px; height: 50vh; max-height: 480px; 
             background: rgba(20, 20, 20, 0.98);
-            border-top-right-radius: 20px;
-            border-bottom-right-radius: 20px;
-            border-right: 1px solid rgba(255,255,255,0.15);
-            border-top: 1px solid rgba(255,255,255,0.15);
-            border-bottom: 1px solid rgba(255,255,255,0.15);
-            
-            padding: 20px;
-            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
-            opacity: 0; 
-            overflow-y: auto; 
-            pointer-events: auto;
-            box-shadow: 10px 10px 50px rgba(0,0,0,0.8);
-            color: white;
-            touch-action: pan-y;
+            border-radius: 0 20px 20px 0;
+            border: 1px solid rgba(255,255,255,0.15); border-left: none;
+            padding: 20px; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s;
+            opacity: 0; overflow-y: auto; pointer-events: auto;
+            box-shadow: 10px 10px 50px rgba(0,0,0,0.8); color: white; touch-action: pan-y;
         }
-        .drawer-panel.open { 
-            opacity: 1; 
-            transform: translateY(-50%) translateX(0); 
-        }
+        .drawer-panel.open { opacity: 1; transform: translateY(-50%) translateX(0); }
 
-        /* Scrollbar */
-        .drawer-panel::-webkit-scrollbar { width: 8px; }
-        .drawer-panel::-webkit-scrollbar-track { background: transparent; }
-        .drawer-panel::-webkit-scrollbar-thumb { 
-            background: rgba(255,255,255,0.2); border-radius: 4px; 
-        }
-
-        /* UI Elements */
         .dark-input {
             width: 100%; background: rgba(0,0,0,0.4);
             border: 1px solid rgba(255,255,255,0.2); color: white;
             padding: 10px; border-radius: 8px; outline: none; font-size: 14px;
         }
         
-        input[type="range"] {
-            width: 100%; height: 20px; background: transparent;
-            -webkit-appearance: none; margin: 8px 0; touch-action: pan-x;
-        }
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 20px; width: 20px; margin-top: -8px;
-            background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
+        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .filter-item { aspect-ratio: 16/9; background: #222; border-radius: 6px; position: relative; border: 2px solid transparent; overflow: hidden; }
+        .filter-item.selected { border-color: white; box-shadow: 0 0 0 2px rgba(255,255,255,0.5); }
+        .filter-name { position: absolute; bottom:0; width: 100%; background: rgba(0,0,0,0.7); font-size: 10px; text-align: center; padding: 4px; font-weight: bold; }
 
         #welcome-screen {
             position: fixed; inset: 0; z-index: 200; background: #111;
@@ -135,7 +93,6 @@
 
         .label-xs { font-size: 10px; text-transform: uppercase; color: #888; margin: 12px 0 4px 0; font-weight: 700; display: block; }
         .row { display: flex; gap: 10px; align-items: center; }
-        
         .btn-select { 
             flex: 1; padding: 8px; font-size: 11px; border-radius: 6px; 
             text-align: center; cursor: pointer; border: 1px solid transparent; transition: 0.2s;
@@ -143,24 +100,26 @@
         .btn-select.active { background: white; color: black; font-weight: 800; }
         .btn-select.inactive { background: rgba(255,255,255,0.05); color: #888; }
         
-        .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .filter-item { aspect-ratio: 16/9; background: #222; border-radius: 6px; position: relative; border: 2px solid transparent; overflow: hidden; }
-        .filter-item.selected { border-color: white; }
-        .filter-name { position: absolute; bottom:0; width: 100%; background: rgba(0,0,0,0.6); font-size: 10px; text-align: center; padding: 3px; }
         .close-drawer { position: absolute; top: 15px; right: 15px; padding: 5px; color: #888; }
+        .gesture-hint { position: absolute; bottom: 20px; width: 100%; text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); pointer-events: none; text-shadow: 0 2px 4px black; }
+
+        input[type="range"] { width: 100%; height: 20px; background: transparent; -webkit-appearance: none; margin: 8px 0; touch-action: pan-x; }
+        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; margin-top: -8px; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
 
     </style>
 </head>
 <body>
 
-    <!-- TELA INICIAL -->
+    <!-- START SCREEN -->
     <div id="welcome-screen">
         <div class="p-6 text-center">
             <div class="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <i data-lucide="camera" class="w-10 h-10 text-black"></i>
             </div>
             <h1 class="text-3xl font-bold text-white mb-2">Studio Stories</h1>
-            <label class="block w-full max-w-xs mx-auto mt-8">
+            <p class="text-gray-500 text-xs mb-8">Pince para Zoom • Arraste para Mover</p>
+            <label class="block w-full max-w-xs mx-auto">
                 <div class="w-full bg-white text-black font-bold py-4 rounded-xl flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition">
                     <i data-lucide="image-plus" class="w-5 h-5"></i>
                     Carregar Foto
@@ -170,67 +129,63 @@
         </div>
     </div>
 
-    <!-- CANVAS 1080x1920 (9:16) -->
+    <!-- CANVAS -->
     <div id="canvas-container">
         <canvas id="storyCanvas" width="1080" height="1920"></canvas>
     </div>
 
     <!-- UI -->
     <div id="ui-layer">
-        <div style="position:absolute; bottom:20px; width:100%; text-align:center; color:rgba(255,255,255,0.3); font-size:10px;">Arraste para mover Fundo ou Logo</div>
+        <div class="gesture-hint">Toque e Arraste qualquer elemento • Pince para Zoom</div>
         <div class="floating-menu">
-            <div onclick="togglePreview()" class="menu-btn"><i data-lucide="eye"></i></div>
+            <div onclick="togglePreview()" class="menu-btn" title="Ver"><i data-lucide="eye"></i></div>
             <div class="h-[1px] bg-white/10 w-[30px] mx-auto my-1"></div>
             <div onclick="toggleDrawer('bg')" class="menu-btn" id="btn-bg"><i data-lucide="image"></i></div>
             <div onclick="toggleDrawer('filters')" class="menu-btn" id="btn-filters"><i data-lucide="wand-2"></i></div>
             <div onclick="toggleDrawer('text')" class="menu-btn" id="btn-text"><i data-lucide="type"></i></div>
             <div onclick="toggleDrawer('logo')" class="menu-btn" id="btn-logo"><i data-lucide="store"></i></div>
             <div class="h-[1px] bg-white/10 w-[30px] mx-auto my-1"></div>
-            <div onclick="downloadStory()" class="menu-btn action-green"><i data-lucide="download"></i></div>
+            <div onclick="downloadStory()" class="menu-btn action-green"><i data-lucide="image-down"></i></div>
+            <div onclick="downloadVideo()" class="menu-btn action-green mt-2" id="btn-video-dl"><i data-lucide="video"></i></div>
         </div>
     </div>
 
     <div id="drawer-overlay" onclick="closeAllDrawers()"></div>
 
+    <!-- MODAIS -->
     <div id="drawers-layer">
         
-        <!-- DRAWER BG -->
+        <!-- BG -->
         <div id="drawer-bg" class="drawer-panel">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-base flex gap-2"><i data-lucide="image"></i> Fundo</h3>
                 <i data-lucide="x" class="close-drawer" onclick="closeAllDrawers()"></i>
             </div>
-            <label class="label-xs mt-0">Trocar Imagem</label>
-            <label class="block w-full bg-white/5 p-3 rounded-lg text-center text-xs cursor-pointer border border-white/10">
-                Selecionar Nova Foto
+            <label class="block w-full bg-white/5 p-3 rounded-lg text-center text-xs cursor-pointer border border-white/10 mb-4">
+                Trocar Foto
                 <input type="file" id="bgInputDrawer" accept="image/*" class="hidden">
             </label>
-            <label class="label-xs">Zoom</label>
-            <div class="flex items-center gap-3 bg-white/5 p-2 rounded-lg">
-                <i data-lucide="minus" class="w-4 h-4 text-gray-400"></i>
-                <input type="range" id="bgScale" min="0.5" max="3" step="0.05" value="1">
-                <i data-lucide="plus" class="w-4 h-4 text-gray-400"></i>
-            </div>
+            <p class="text-[10px] text-gray-400">Use dois dedos na tela para dar zoom e um para mover o fundo.</p>
         </div>
 
-        <!-- DRAWER FILTROS -->
+        <!-- FILTROS -->
         <div id="drawer-filters" class="drawer-panel">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-base flex gap-2"><i data-lucide="wand-2"></i> Filtros</h3>
+                <h3 class="font-bold text-base flex gap-2"><i data-lucide="wand-2"></i> Filtros (4)</h3>
                 <i data-lucide="x" class="close-drawer" onclick="closeAllDrawers()"></i>
             </div>
             <div class="filter-grid" id="filterList"></div>
         </div>
 
-        <!-- DRAWER TEXTO -->
+        <!-- TEXTO -->
         <div id="drawer-text" class="drawer-panel">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-base flex gap-2"><i data-lucide="type"></i> Texto</h3>
+                <h3 class="font-bold text-base flex gap-2"><i data-lucide="type"></i> Informações</h3>
                 <i data-lucide="x" class="close-drawer" onclick="closeAllDrawers()"></i>
             </div>
-            <button onclick="toggleInvert()" id="btnInvert" class="w-full py-2 mb-4 rounded-lg bg-white text-black font-bold text-xs flex items-center justify-center gap-2">Inverter Cores</button>
+            <button onclick="toggleInvert()" id="btnInvert" class="w-full py-2 mb-4 rounded-lg bg-white text-black font-bold text-xs">Inverter Cores</button>
             
-            <label class="label-xs mt-0">Conteúdo</label>
+            <label class="label-xs mt-0">Dados</label>
             <input type="text" id="inpName" class="dark-input mb-2" placeholder="Nome">
             <div class="row">
                 <div class="w-2/3"><input type="text" id="inpPrice" class="dark-input font-bold" placeholder="0,00"></div>
@@ -243,25 +198,11 @@
                 <div onclick="setFont('Playfair Display')" class="btn-select" id="font-Playfair">Elegant</div>
                 <div onclick="setFont('Oswald')" class="btn-select" id="font-Oswald">Bold</div>
             </div>
-
-            <label class="label-xs">Tamanhos</label>
-            <div class="bg-white/5 p-2 rounded-lg">
-                <div class="row"><span class="text-[10px] w-8">Título</span><input type="range" id="rangeTitleSize" min="20" max="120"></div>
-                <div class="row"><span class="text-[10px] w-8">Preço</span><input type="range" id="rangePriceSize" min="50" max="300"></div>
-            </div>
-
-            <label class="label-xs">Glass Box</label>
-            <div class="bg-white/5 p-2 rounded-lg mb-2">
-                <div class="row"><span class="text-[10px] w-8">Larg.</span><input type="range" id="rangeBoxW" min="400" max="1000" step="10"></div>
-                <div class="row"><span class="text-[10px] w-8">Alt.</span><input type="range" id="rangeBoxH" min="150" max="800" step="10"></div>
-            </div>
-            <div class="flex bg-white/5 p-1 rounded-lg gap-1">
-                <div onclick="setBoxPos('top')" class="btn-select" id="pos-top">Topo</div>
-                <div onclick="setBoxPos('bottom')" class="btn-select" id="pos-bottom">Base</div>
-            </div>
+            
+            <p class="text-[10px] text-gray-400 mt-4">Dica: Toque e arraste o box de texto na tela para mover. Pince para redimensionar.</p>
         </div>
 
-        <!-- DRAWER LOGO -->
+        <!-- LOGO -->
         <div id="drawer-logo" class="drawer-panel">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-base flex gap-2"><i data-lucide="store"></i> Logo</h3>
@@ -271,26 +212,21 @@
                 Carregar PNG
                 <input type="file" id="logoInput" accept="image/*" class="hidden">
             </label>
-            
-            <label class="label-xs">Ajustes</label>
+            <label class="label-xs">Formato</label>
             <div class="flex bg-white/5 p-1 rounded-lg gap-1 mb-2">
                 <div onclick="setLogoFormat('horizontal')" class="btn-select" id="fmt-horizontal">Horiz.</div>
                 <div onclick="setLogoFormat('square')" class="btn-select" id="fmt-square">Quad.</div>
             </div>
+            
+            <label class="label-xs">Tamanho (Slider ou Pinça)</label>
             <div class="flex items-center gap-2 bg-white/5 p-2 rounded-lg mb-2">
                 <i data-lucide="minus" class="w-3 h-3 text-gray-400"></i>
-                <input type="range" oninput="adjustLogoScale(this.value)" min="0.5" max="2.5" step="0.1" value="1">
+                <!-- ID Adicionado para Sync -->
+                <input type="range" id="logoScaleInput" oninput="adjustLogoScale(this.value)" min="0.2" max="3" step="0.1" value="1">
                 <i data-lucide="plus" class="w-3 h-3 text-gray-400"></i>
             </div>
-            <div class="flex bg-white/5 p-1 rounded-lg gap-1 mb-2">
-                <div onclick="setLogoVert('top')" class="btn-select" id="logo-v-top">Topo</div>
-                <div onclick="setLogoVert('bottom')" class="btn-select" id="logo-v-bottom">Base</div>
-            </div>
-            <div class="flex bg-white/5 p-1 rounded-lg gap-1">
-                <div onclick="setLogoAlign('left')" class="btn-select" id="logo-h-left">Esq</div>
-                <div onclick="setLogoAlign('center')" class="btn-select" id="logo-h-center">Centro</div>
-                <div onclick="setLogoAlign('right')" class="btn-select" id="logo-h-right">Dir</div>
-            </div>
+
+            <p class="text-[10px] text-gray-400 mt-2">Arraste a logo na tela para posicionar ou use o slider.</p>
         </div>
     </div>
 
@@ -300,33 +236,41 @@
         const ctx = canvas.getContext('2d');
         const welcomeScreen = document.getElementById('welcome-screen');
 
+        // --- DADOS ---
         const FILTERS = [
             { id: 'normal', name: 'Normal', filter: 'none' },
-            { id: 'vignette', name: 'Vinheta', filter: 'none', overlay: 'vignette' },
-            { id: 'bw', name: 'P&B', filter: 'grayscale(100%)' },
-            { id: 'sepia', name: 'Sépia', filter: 'sepia(80%)' },
-            { id: 'vivid', name: 'Vívido', filter: 'saturate(150%) contrast(110%)' },
-            { id: 'dark', name: 'Dark', filter: 'brightness(70%)' },
-            { id: 'contrast', name: 'Contraste', filter: 'contrast(130%)' },
+            { id: 'vignette', name: 'Vinheta', filter: 'none', overlay: 'vignette_strong' },
+            { id: 'bw', name: 'P&B', filter: 'grayscale(100%) contrast(1.1)' },
+            { id: 'sharp', name: 'Nitidez', filter: 'contrast(1.4) saturate(1.1)' },
         ];
 
         let state = {
             bgImg: null, logoImg: null,
             name: 'Nome do Produto', price: '99,90', unit: 'un',
-            boxW: 800, boxH: 300, boxPos: 'bottom', isDarkMode: false,
+            
+            boxW: 800, boxH: 300, 
+            boxManualX: null, boxManualY: null,
+            boxScale: 1.0, isDarkMode: false,
+            
             fontFamily: 'Inter', titleSize: 50, priceSize: 140,
+            
             bgScale: 1, bgX: 0, bgY: 0, currentFilterId: 'normal',
-            logoFormat: 'horizontal', logoScale: 1, logoVert: 'top', logoAlign: 'center', logoX: null, logoY: null
+            
+            logoFormat: 'horizontal', logoScale: 1, logoX: null, logoY: null,
+            
+            videoDuration: 5, totalRecordingTime: 15
         };
 
+        // --- LOADERS ---
         const phBg = new Image(); phBg.crossOrigin = "anonymous";
         phBg.src = 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=1080&auto=format&fit=crop';
         const phLogo = new Image(); phLogo.crossOrigin = "anonymous";
         phLogo.src = 'https://placehold.co/400x200/ffffff/000000.png?text=LOGO';
 
-        phBg.onload = () => { if(!state.bgImg) { state.bgImg = phBg; draw(); } };
-        phLogo.onload = () => { if(!state.logoImg) { state.logoImg = phLogo; draw(); } };
+        phBg.onload = () => { if(!state.bgImg) { state.bgImg = phBg; } };
+        phLogo.onload = () => { if(!state.logoImg) { state.logoImg = phLogo; } };
 
+        // --- UI RENDER ---
         const filterListEl = document.getElementById('filterList');
         FILTERS.forEach(f => {
             const div = document.createElement('div');
@@ -336,32 +280,26 @@
             filterListEl.appendChild(div);
         });
 
+        // --- SYNC ---
         function syncUI() {
             document.getElementById('inpName').value = state.name;
             document.getElementById('inpPrice').value = state.price;
             document.getElementById('inpUnit').value = state.unit;
-            document.getElementById('rangeTitleSize').value = state.titleSize;
-            document.getElementById('rangePriceSize').value = state.priceSize;
-            document.getElementById('rangeBoxW').value = state.boxW;
-            document.getElementById('rangeBoxH').value = state.boxH;
+            document.getElementById('logoScaleInput').value = state.logoScale;
             updateClasses();
         }
 
         function updateClasses() {
-            document.getElementById('pos-top').className = state.boxPos === 'top' ? 'btn-select active' : 'btn-select inactive';
-            document.getElementById('pos-bottom').className = state.boxPos === 'bottom' ? 'btn-select active' : 'btn-select inactive';
-            
             ['Inter','Playfair Display','Oswald'].forEach(f => {
                 const el = document.getElementById(`font-${f.split(' ')[0]}`);
                 el.className = state.fontFamily.includes(f.split(' ')[0]) ? 'btn-select active' : 'btn-select inactive';
             });
             document.getElementById('fmt-horizontal').className = state.logoFormat === 'horizontal' ? 'btn-select active' : 'btn-select inactive';
             document.getElementById('fmt-square').className = state.logoFormat === 'square' ? 'btn-select active' : 'btn-select inactive';
-            ['top','bottom'].forEach(v => document.getElementById(`logo-v-${v}`).className = state.logoVert===v ? 'btn-select active' : 'btn-select inactive');
-            ['left','center','right'].forEach(h => document.getElementById(`logo-h-${h}`).className = state.logoAlign===h ? 'btn-select active' : 'btn-select inactive');
         }
         syncUI();
 
+        // --- HANDLERS ---
         const handleUpload = (file, key) => {
             if(!file) return;
             const r = new FileReader();
@@ -369,9 +307,8 @@
                 const img = new Image();
                 img.onload = () => {
                     state[key] = img;
-                    if(key==='bgImg'){ state.bgX=0; state.bgY=0; state.bgScale=1; document.getElementById('bgScale').value=1; }
+                    if(key==='bgImg'){ state.bgX=0; state.bgY=0; state.bgScale=1; }
                     if(key==='logoImg'){ state.logoX=null; state.logoY=null; }
-                    draw();
                 };
                 img.src = e.target.result;
             };
@@ -382,27 +319,19 @@
         document.getElementById('bgInputDrawer').addEventListener('change', e=>handleUpload(e.target.files[0],'bgImg'));
         document.getElementById('logoInput').addEventListener('change', e=>handleUpload(e.target.files[0],'logoImg'));
 
-        document.getElementById('inpName').addEventListener('input', e=>{state.name=e.target.value; draw();});
-        document.getElementById('inpPrice').addEventListener('input', e=>{state.price=e.target.value; draw();});
-        document.getElementById('inpUnit').addEventListener('input', e=>{state.unit=e.target.value; draw();});
-        document.getElementById('rangeTitleSize').addEventListener('input', e=>{state.titleSize=parseInt(e.target.value); draw();});
-        document.getElementById('rangePriceSize').addEventListener('input', e=>{state.priceSize=parseInt(e.target.value); draw();});
-        document.getElementById('rangeBoxW').addEventListener('input', e=>{state.boxW=parseInt(e.target.value); draw();});
-        document.getElementById('rangeBoxH').addEventListener('input', e=>{state.boxH=parseInt(e.target.value); draw();});
-        document.getElementById('bgScale').addEventListener('input', e=>{state.bgScale=parseFloat(e.target.value); draw();});
+        document.getElementById('inpName').addEventListener('input', e=>{state.name=e.target.value;});
+        document.getElementById('inpPrice').addEventListener('input', e=>{state.price=e.target.value;});
+        document.getElementById('inpUnit').addEventListener('input', e=>{state.unit=e.target.value;});
 
-        window.setFont = f => {state.fontFamily=f; updateClasses(); draw();}
-        window.setBoxPos = p => {state.boxPos=p; updateClasses(); draw();}
+        window.setFont = f => {state.fontFamily=f; updateClasses();}
         window.setFilter = id => {
             state.currentFilterId=id; 
             document.querySelectorAll('.filter-item').forEach(e=>e.classList.remove('selected'));
-            event.currentTarget.classList.add('selected'); draw();
+            event.currentTarget.classList.add('selected');
         }
-        window.toggleInvert = () => { state.isDarkMode=!state.isDarkMode; updateClasses(); draw(); }
-        window.setLogoFormat = f => { state.logoFormat=f; updateClasses(); draw(); }
-        window.adjustLogoScale = v => { state.logoScale=parseFloat(v); draw(); }
-        window.setLogoVert = v => { state.logoVert=v; state.logoY=null; updateClasses(); draw(); }
-        window.setLogoAlign = a => { state.logoAlign=a; state.logoX=null; updateClasses(); draw(); }
+        window.toggleInvert = () => { state.isDarkMode=!state.isDarkMode; updateClasses(); }
+        window.setLogoFormat = f => { state.logoFormat=f; updateClasses(); }
+        window.adjustLogoScale = v => { state.logoScale=parseFloat(v); }
 
         window.togglePreview = () => {
             document.body.classList.toggle('preview-active');
@@ -423,120 +352,291 @@
         };
         window.closeAllDrawers = () => toggleDrawer(null);
 
-        // DRAG
-        let isDragging=false, dragTarget=null, startX, startY, initX, initY, initLogoX, initLogoY;
+        // --- SISTEMA DE GESTOS MULTITOUCH ---
+        let dragTarget = null;
+        let pointers = {};
+        let initialDist = 0;
+        let initialScale = 1;
+        let startPoints = {}; 
+        let initialPos = { x:0, y:0 };
+
         const cContainer = document.getElementById('canvas-container');
-        const getCoords = e => {
+
+        const getCanvasCoords = (clientX, clientY) => {
             const r = canvas.getBoundingClientRect();
-            const sx = canvas.width/r.width, sy = canvas.height/r.height;
-            const cx = e.touches?e.touches[0].clientX:e.clientX;
-            const cy = e.touches?e.touches[0].clientY:e.clientY;
-            return { x:(cx-r.left)*sx, y:(cy-r.top)*sy };
+            const sx = canvas.width / r.width;
+            const sy = canvas.height / r.height;
+            return { x: (clientX - r.left) * sx, y: (clientY - r.top) * sy };
         };
-        const onStart = e => {
-            if(document.body.classList.contains('preview-active')) return;
-            if(e.target.closest('.drawer-panel') || e.target.closest('.floating-menu')) return;
-            const p = getCoords(e);
+
+        const hitTest = (x, y) => {
             if(state.logoImg) {
                 let lw=state.logoFormat==='horizontal'?400:300, lh=state.logoFormat==='horizontal'?200:300;
                 lw*=state.logoScale; lh*=state.logoScale;
-                let lx = state.logoX!==null ? state.logoX : (state.logoAlign==='left'?60:state.logoAlign==='right'?(1080-lw-60):(1080-lw)/2);
-                let ly = state.logoY!==null ? state.logoY : (state.logoVert==='top'?100:1920-lh-100);
-                if(p.x>=lx && p.x<=lx+lw && p.y>=ly && p.y<=ly+lh) {
-                    isDragging=true; dragTarget='logo'; startX=p.x; startY=p.y; initLogoX=lx; initLogoY=ly; return;
+                let lx = state.logoX!==null ? state.logoX : (1080-lw)/2; 
+                let ly = state.logoY!==null ? state.logoY : 100;
+                if(x>=lx && x<=lx+lw && y>=ly && y<=ly+lh) return 'logo';
+            }
+            let bw = state.boxW * state.boxScale;
+            let bh = state.boxH * state.boxScale;
+            let bx = state.boxManualX !== null ? state.boxManualX : (1080 - bw)/2;
+            let by = state.boxManualY !== null ? state.boxManualY : 1920 - bh - 120;
+            if(x>=bx && x<=bx+bw && y>=by && y<=by+bh) return 'box';
+            return 'bg';
+        };
+
+        const handlePointerDown = (e) => {
+            if(document.body.classList.contains('preview-active')) return;
+            if(e.target.closest('.drawer-panel') || e.target.closest('.floating-menu')) return;
+            
+            e.preventDefault();
+            pointers[e.pointerId] = e;
+            const pts = Object.values(pointers);
+            
+            if(pts.length === 1) {
+                const p = getCanvasCoords(e.clientX, e.clientY);
+                dragTarget = hitTest(p.x, p.y);
+                startPoints[e.pointerId] = { cx: e.clientX, cy: e.clientY }; 
+                
+                if(dragTarget === 'logo') {
+                    let lw=state.logoFormat==='horizontal'?400:300; 
+                    lw*=state.logoScale; 
+                    initialPos = { x: state.logoX!==null?state.logoX : (1080-lw)/2, y: state.logoY!==null?state.logoY : 100 };
+                } 
+                else if(dragTarget === 'box') {
+                    let bw = state.boxW * state.boxScale;
+                    let bh = state.boxH * state.boxScale;
+                    initialPos = { x: state.boxManualX!==null?state.boxManualX : (1080-bw)/2, y: state.boxManualY!==null?state.boxManualY : 1920-bh-120 };
+                }
+                else if(dragTarget === 'bg') {
+                    initialPos = { x: state.bgX, y: state.bgY };
+                }
+            } 
+            else if (pts.length === 2) {
+                const p1 = pts[0]; const p2 = pts[1];
+                initialDist = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);
+                if(dragTarget === 'bg') initialScale = state.bgScale;
+                if(dragTarget === 'logo') initialScale = state.logoScale;
+                if(dragTarget === 'box') initialScale = state.boxScale;
+            }
+        };
+
+        const handlePointerMove = (e) => {
+            if(!dragTarget) return;
+            e.preventDefault();
+            pointers[e.pointerId] = e;
+            const pts = Object.values(pointers);
+
+            if(pts.length === 1) {
+                const p = pts[0];
+                const start = startPoints[p.pointerId];
+                if(!start) return;
+                const ratio = 1080 / window.innerWidth;
+                const dx = (p.clientX - start.cx) * ratio;
+                const dy = (p.clientY - start.cy) * ratio;
+
+                if(dragTarget === 'logo') {
+                    state.logoX = initialPos.x + dx;
+                    state.logoY = initialPos.y + dy;
+                }
+                else if(dragTarget === 'box') {
+                    state.boxManualX = initialPos.x + dx;
+                    state.boxManualY = initialPos.y + dy;
+                }
+                else if(dragTarget === 'bg') {
+                    state.bgX = initialPos.x + dx;
+                    state.bgY = initialPos.y + dy;
                 }
             }
-            isDragging=true; dragTarget='bg';
-            startX = e.touches?e.touches[0].clientX:e.clientX;
-            startY = e.touches?e.touches[0].clientY:e.clientY;
-            initX=state.bgX; initY=state.bgY;
-        };
-        const onMove = e => {
-            if(!isDragging) return;
-            e.preventDefault();
-            if(dragTarget==='logo') {
-                const p = getCoords(e);
-                state.logoX = initLogoX + (p.x-startX);
-                state.logoY = initLogoY + (p.y-startY);
-            } else {
-                let cx = e.touches?e.touches[0].clientX:e.clientX;
-                let cy = e.touches?e.touches[0].clientY:e.clientY;
-                const ratio = 1080/window.innerWidth;
-                state.bgX = initX + (cx-startX)*ratio;
-                state.bgY = initY + (cy-startY)*ratio;
-            }
-            draw();
-        };
-        const onEnd = () => { isDragging=false; };
-        cContainer.addEventListener('mousedown', onStart); window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onEnd);
-        cContainer.addEventListener('touchstart', onStart, {passive:false}); cContainer.addEventListener('touchmove', onMove, {passive:false}); cContainer.addEventListener('touchend', onEnd);
+            else if(pts.length === 2) {
+                const p1 = pts[0]; const p2 = pts[1];
+                const dist = Math.hypot(p1.clientX - p2.clientX, p1.clientY - p2.clientY);
+                const scaleFactor = dist / initialDist;
 
-        // DRAW
-        function draw() {
+                if(dragTarget === 'bg') state.bgScale = Math.max(0.1, initialScale * scaleFactor);
+                if(dragTarget === 'logo') {
+                    state.logoScale = Math.max(0.2, initialScale * scaleFactor);
+                    // Sync Slider
+                    document.getElementById('logoScaleInput').value = state.logoScale;
+                }
+                if(dragTarget === 'box') state.boxScale = Math.max(0.5, initialScale * scaleFactor);
+            }
+        };
+
+        const handlePointerUp = (e) => {
+            delete pointers[e.pointerId];
+            delete startPoints[e.pointerId];
+            if(Object.keys(pointers).length === 0) dragTarget = null;
+            else if(Object.keys(pointers).length === 1) {
+                const remaining = Object.values(pointers)[0];
+                handlePointerDown(remaining);
+            }
+        };
+
+        cContainer.addEventListener('pointerdown', handlePointerDown);
+        cContainer.addEventListener('pointermove', handlePointerMove);
+        cContainer.addEventListener('pointerup', handlePointerUp);
+        cContainer.addEventListener('pointercancel', handlePointerUp);
+        cContainer.addEventListener('pointerout', handlePointerUp);
+
+
+        // --- ANIMAÇÃO ---
+        function animate(timestamp) {
+            draw(timestamp);
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+
+        function draw(timestamp) {
             ctx.clearRect(0,0,1080,1920); ctx.fillStyle='#000'; ctx.fillRect(0,0,1080,1920);
+            if (!timestamp) timestamp = performance.now();
+            const loop = (timestamp % (state.videoDuration*1000))/(state.videoDuration*1000);
+            
+            const bgBreath = Math.sin(loop*Math.PI*2)*0.01;
+            const floatY = Math.sin(loop*Math.PI*2)*3;
+
+            // 1. BG
             if(state.bgImg) {
                 const i=state.bgImg; const f=FILTERS.find(x=>x.id===state.currentFilterId);
                 const r=i.width/i.height, cr=1080/1920;
                 let dw,dh; 
-                // LÓGICA DE CORTE "COVER"
-                if(r > cr) { dh=1920; dw=i.width*(1920/i.height); } // Imagem mais larga que canvas
-                else { dw=1080; dh=i.height*(1080/i.width); } // Imagem mais alta que canvas
+                if(r > cr) { dh=1920; dw=i.width*(1920/i.height); }
+                else { dw=1080; dh=i.height*(1080/i.width); }
                 
                 ctx.save(); ctx.filter=f.filter;
-                ctx.translate(540,960); ctx.scale(state.bgScale,state.bgScale); ctx.translate(-540,-960);
+                ctx.translate(540,960); ctx.scale(state.bgScale+bgBreath, state.bgScale+bgBreath); ctx.translate(-540,-960);
                 ctx.translate(state.bgX,state.bgY);
-                // Desenha centralizado
                 ctx.drawImage(i, (1080-dw)/2, (1920-dh)/2, dw, dh);
                 ctx.restore();
-                if(f.overlay==='vignette'){
-                    const g=ctx.createRadialGradient(540,960,300,540,960,1300);
-                    g.addColorStop(0,'transparent'); g.addColorStop(1,'rgba(0,0,0,0.85)');
+                
+                if(f.overlay==='vignette_strong'){
+                    const g=ctx.createRadialGradient(540,960,100,540,960,1300);
+                    g.addColorStop(0,'transparent'); g.addColorStop(0.4, 'rgba(0,0,0,0.2)'); g.addColorStop(1,'rgba(0,0,0,0.95)');
                     ctx.fillStyle=g; ctx.fillRect(0,0,1080,1920);
                 }
             }
-            const bx=(1080-state.boxW)/2, by=state.boxPos==='top'?100:1920-state.boxH-120;
-            const dm=state.isDarkMode;
-            ctx.save(); ctx.shadowColor="rgba(0,0,0,0.3)"; ctx.shadowBlur=50; ctx.shadowOffsetY=20;
-            ctx.fillStyle=dm?"rgba(0,0,0,0.85)":"rgba(255,255,255,0.85)";
-            ctx.beginPath(); ctx.roundRect(bx,by,state.boxW,state.boxH,30); ctx.fill();
-            ctx.strokeStyle=dm?"rgba(255,255,255,0.2)":"rgba(255,255,255,0.4)"; ctx.lineWidth=1.5; ctx.stroke(); ctx.restore();
 
-            const ch=state.titleSize+20+state.priceSize;
-            const sy=by+(state.boxH-ch)/2+state.titleSize;
-            const sx=bx+60;
+            // 2. GLASS BOX
+            let finalBoxW = state.boxW * state.boxScale;
+            let finalBoxH = state.boxH * state.boxScale;
+            let bx = state.boxManualX !== null ? state.boxManualX : (1080 - finalBoxW)/2;
+            let by = state.boxManualY !== null ? state.boxManualY : 1920 - finalBoxH - 120;
+            by += floatY;
+
+            const dm=state.isDarkMode;
+            ctx.save(); 
+            ctx.shadowColor="rgba(0,0,0,0.5)"; ctx.shadowBlur=40; ctx.shadowOffsetY=15; ctx.shadowOffsetX=5;
+            ctx.fillStyle=dm?"rgba(0,0,0,0.85)":"rgba(255,255,255,0.85)";
+            ctx.beginPath(); ctx.roundRect(bx,by,finalBoxW,finalBoxH,30); ctx.fill();
+            ctx.strokeStyle=dm?"rgba(255,255,255,0.2)":"rgba(255,255,255,0.4)"; ctx.lineWidth=1.5; ctx.stroke(); 
+            ctx.restore();
+
+            // 3. TEXTO (Formatação Inteligente de Preço)
+            const titleS = state.titleSize * state.boxScale;
+            const priceS = state.priceSize * state.boxScale;
+            const gap = 5 * state.boxScale;
+
+            const contentH = titleS + gap + priceS;
+            const startY = by + (finalBoxH - contentH)/2 + titleS;
+            const sx = bx + (60 * state.boxScale);
+
             ctx.fillStyle=dm?"#fff":"#1e293b"; ctx.textAlign="left";
             let tw='600'; if(state.fontFamily==='Oswald') tw='700';
-            ctx.font=`${tw} ${state.titleSize}px '${state.fontFamily}'`; ctx.fillText(state.name,sx,sy);
+            ctx.font=`${tw} ${titleS}px '${state.fontFamily}'`; ctx.fillText(state.name,sx,startY);
             
-            const py=sy+20+state.priceSize;
+            const py = startY + gap + priceS;
             let pw='800'; if(state.fontFamily==='Playfair Display') pw='700';
-            const cs=state.priceSize*0.4;
-            ctx.font=`${pw} ${cs}px '${state.fontFamily}'`; ctx.fillText("R$",sx,py);
-            const cw=ctx.measureText("R$").width;
-            ctx.font=`${pw} ${state.priceSize}px '${state.fontFamily}'`; ctx.fillText(state.price,sx+cw+15,py);
-            if(state.unit){
-                const pww=ctx.measureText(state.price).width;
-                ctx.font=`400 ${cs*0.7}px '${state.fontFamily}'`; ctx.fillStyle=dm?"#999":"#555";
-                ctx.fillText(`/${state.unit}`,sx+cw+15+pww+10,py);
+            const cs=priceS*0.4; // Tamanho moeda
+            const centsSize = priceS * 0.5; // Tamanho centavos (50%)
+
+            // Desenhar "R$"
+            ctx.font=`${pw} ${cs}px '${state.fontFamily}'`; 
+            ctx.fillText("R$",sx,py);
+            
+            // Separar Preço (99,90 -> 99 e 90)
+            let fullPrice = state.price;
+            let mainPrice = fullPrice; 
+            let cents = "";
+            
+            // Tenta achar virgula ou ponto
+            if(fullPrice.includes(',')) {
+                let parts = fullPrice.split(',');
+                mainPrice = parts[0];
+                cents = "," + parts[1];
+            } else if(fullPrice.includes('.')) {
+                let parts = fullPrice.split('.');
+                mainPrice = parts[0];
+                cents = "." + parts[1];
             }
 
+            const cw=ctx.measureText("R$").width;
+            const px = sx + cw + (10*state.boxScale);
+
+            // Desenha Inteiro
+            ctx.font=`${pw} ${priceS}px '${state.fontFamily}'`; 
+            ctx.fillText(mainPrice, px, py);
+            
+            // Desenha Centavos (Se houver)
+            const mainW = ctx.measureText(mainPrice).width;
+            if(cents) {
+                ctx.font=`${pw} ${centsSize}px '${state.fontFamily}'`;
+                // Alinhamento Baseline ou um pouco acima (Superscript look)
+                // Para alinhar no topo da fonte grande: py - (priceS*0.4) aprox
+                // Para manter baseline: py
+                // A maioria dos designs de varejo usa baseline ou levemente elevado. Vamos usar baseline para manter limpo
+                ctx.fillText(cents, px + mainW, py);
+            }
+
+            // Unidade
+            if(state.unit){
+                const centsW = ctx.measureText(cents).width;
+                ctx.font=`400 ${cs*0.7}px '${state.fontFamily}'`; ctx.fillStyle=dm?"#999":"#555";
+                ctx.fillText(`/${state.unit}`, px + mainW + centsW + (10*state.boxScale), py);
+            }
+
+            // 4. LOGO
             if(state.logoImg) {
                 let lw=state.logoFormat==='horizontal'?400:300, lh=state.logoFormat==='horizontal'?200:300;
                 lw*=state.logoScale; lh*=state.logoScale;
-                let lx = state.logoX!==null ? state.logoX : (state.logoAlign==='left'?60:state.logoAlign==='right'?(1080-lw-60):(1080-lw)/2);
-                let ly = state.logoY!==null ? state.logoY : (state.logoVert==='top'?100:1920-lh-100);
+                let lx = state.logoX!==null ? state.logoX : (1080-lw)/2;
+                let ly = state.logoY!==null ? state.logoY : 100;
+                ly += (floatY * 0.5);
+
                 const lr=state.logoImg.width/state.logoImg.height, tr=lw/lh;
                 let fw,fh; if(lr>tr){fw=lw;fh=lw/lr;}else{fh=lh;fw=lh*lr;}
-                ctx.save(); ctx.shadowColor="rgba(0,0,0,0.2)"; ctx.shadowBlur=20;
-                ctx.drawImage(state.logoImg, lx+(lw-fw)/2, ly+(lh-fh)/2, fw, fh); ctx.restore();
+                ctx.save(); 
+                ctx.shadowColor="rgba(0,0,0,0.4)"; ctx.shadowBlur=25; ctx.shadowOffsetY=10; ctx.shadowOffsetX=5;
+                ctx.drawImage(state.logoImg, lx+(lw-fw)/2, ly+(lh-fh)/2, fw, fh); 
+                ctx.restore();
             }
         }
         
         window.downloadStory = () => {
             const l=document.createElement('a'); l.download=`story_${Date.now()}.jpg`;
+            draw(0); 
             l.href=canvas.toDataURL('image/jpeg',1.0); l.click();
         }
-        draw();
+
+        async function downloadVideo() {
+            const btn = document.getElementById('btn-video-dl');
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i>';
+            btn.style.pointerEvents = 'none';
+            const stream = canvas.captureStream(30);
+            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 5000000 });
+            const chunks = [];
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `story_video_${Date.now()}.webm`; a.click();
+                URL.revokeObjectURL(url);
+                btn.innerHTML = originalIcon; btn.style.pointerEvents = 'auto'; lucide.createIcons();
+            };
+            mediaRecorder.start();
+            setTimeout(() => { mediaRecorder.stop(); }, state.totalRecordingTime * 1000);
+        }
     </script>
 </body>
 </html>
