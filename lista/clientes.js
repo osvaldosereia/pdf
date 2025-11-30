@@ -1,4 +1,4 @@
-[
+const clientes = [
   {
     "nome": "Simone tatiana pimenta",
     "telefone": "65999820431",
@@ -329,4 +329,4 @@
     "telefone": "65992296707",
     "bairro": "CPA 1"
   }
-]
+];
