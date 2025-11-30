@@ -912,7 +912,7 @@
             <!-- FORMULÁRIO JÁ TENHO CADASTRO -->
             <div id="conteudo-ja-tenho" style="display: none;">
                 <label>Telefone (Whatsapp): <span style="color:red">*</span></label>
-                <input type="tel" id="busca-telefone" placeholder="(65) 9..." required>
+                <input type="tel" id="busca-telefone" placeholder="Digite seu telefone..." required>
                 <button onclick="buscarCadastro()" class="btn" style="background-color: #555; margin-top: 5px;">
                     <i class="fas fa-search" style="margin-right: 8px;"></i> Buscar
                 </button>
@@ -1233,8 +1233,9 @@
             const inputTel = document.getElementById('busca-telefone').value;
             const telLimpo = inputTel.replace(/\D/g, ''); // Remove ( ) - e espaços
 
-            if (!telLimpo || telLimpo.length < 8) {
-                alert("Por favor, digite um telefone válido para buscar.");
+            // Validação mínima de 6 dígitos agora
+            if (!telLimpo || telLimpo.length < 6) {
+                alert("Por favor, digite pelo menos os últimos 6 números do seu telefone.");
                 return;
             }
 
@@ -1244,14 +1245,20 @@
             btnBuscar.disabled = true;
 
             // Busca no array de clientes (AGORA VEM DO ARQUIVO EXTERNO)
-            // Usamos 'includes' para ser flexível caso o cadastro tenha DDD e a pessoa digite sem, ou vice-versa
-            // Mas para ser preciso, idealmente comparamos o número exato. Vamos tentar encontrar correspondência.
+            // LÓGICA DE 6 DÍGITOS: Compara apenas o final do número para evitar erros de formatação
             
             let clienteEncontrado = null;
             if(typeof clientes !== 'undefined') {
+                 // Pega os últimos 6 dígitos do input
+                 const inputSuffix = telLimpo.slice(-6);
+
                  clienteEncontrado = clientes.find(c => {
                     const cTelLimpo = c.telefone.replace(/\D/g, '');
-                    return cTelLimpo === telLimpo || cTelLimpo.endsWith(telLimpo) || telLimpo.endsWith(cTelLimpo);
+                    // Garante que o cadastro também tenha pelo menos 6 dígitos antes de comparar
+                    if (cTelLimpo.length < 6) return false;
+                    
+                    const clientSuffix = cTelLimpo.slice(-6);
+                    return clientSuffix === inputSuffix;
                 });
             } else {
                 console.error("Arquivo clientes.js não carregado ou variável não definida.");
@@ -1268,7 +1275,7 @@
                     document.getElementById('busca-telefone').setAttribute('data-nome-encontrado', clienteEncontrado.nome);
                 } else {
                     document.getElementById('area-resultado-busca').style.display = 'none';
-                    alert("Ops! Não encontramos seu cadastro com este número. Verifique se digitou corretamente ou faça o cadastro na aba 'Primeira Vez'.");
+                    alert("Ops! Não encontramos seu cadastro com este número. Tente digitar de outra forma ou faça o cadastro na aba 'Primeira Vez'.");
                 }
             }, 600); // Pequeno delay para UX
         }
