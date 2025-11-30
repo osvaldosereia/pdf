@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerPoint - Cardápio Digital</title>
+    
+    <!-- Tailwind CSS para Estilização Moderna -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonte Google (Inter e Oswald para dar personalidade) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#D92525', // Vermelho Lanchonete
+                            dark: '#1F2937',
+                            yellow: '#F59E0B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Oswald', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Ajuste fino para ocultar a barra de rolagem horizontal se necessário */
+        body { -webkit-tap-highlight-color: transparent; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-24">
+
+    <!-- 1. TOPO: Logo e Contatos -->
+    <header class="bg-white shadow-sm pt-4 pb-2 px-4 flex justify-between items-center">
+        <!-- Logo (Texto estilizado para simular logo) -->
+        <div class="flex flex-col">
+            <h1 class="font-display text-2xl font-bold text-brand-red tracking-wide">BURGER<span class="text-brand-dark">POINT</span></h1>
+            <span class="text-xs text-gray-500 font-medium tracking-wider">EST. 2024</span>
+        </div>
+
+        <!-- Ações do Topo -->
+        <div class="flex gap-3">
+            <a href="#" class="p-2 bg-gray-100 rounded-full text-pink-600 hover:bg-pink-50 transition" aria-label="Instagram">
+                <i data-lucide="instagram" class="w-5 h-5"></i>
+            </a>
+            <button onclick="salvarContato()" class="p-2 bg-brand-dark rounded-full text-white hover:bg-gray-700 transition" aria-label="Salvar Contato">
+                <i data-lucide="contact" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. MENU DE NAVEGAÇÃO FIXO (Sticky) -->
+    <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+        <div class="flex overflow-x-auto hide-scrollbar py-3 px-2 space-x-2" id="nav-menu">
+            <!-- Os botões serão gerados ou controlados via JS para estado ativo -->
+            <a href="#lanches" class="nav-item active px-4 py-2 rounded-full text-sm font-bold bg-brand-red text-white whitespace-nowrap transition-all">
+                LANCHES
+            </a>
+            <a href="#extras" class="nav-item px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition-all">
+                EXTRAS
+            </a>
+            <a href="#bebidas" class="nav-item px-4 py-2 rounded-full text-sm font-bold text-gray-600 hover:bg-gray-100 whitespace-nowrap transition-all">
+                BEBIDAS
+            </a>
+        </div>
+    </nav>
+
+    <!-- 3. CONTEÚDO DO CARDÁPIO -->
+    <main class="px-4 py-6 space-y-10">
+
+        <!-- Seção: LANCHES -->
+        <section id="lanches" class="scroll-mt-28 category-section">
+            <h2 class="font-display text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-red pl-3 uppercase">Lanches</h2>
+            <div class="space-y-4" id="lista-lanches">
+                <!-- Itens inseridos via JS -->
+            </div>
+        </section>
+
+        <!-- Seção: EXTRAS -->
+        <section id="extras" class="scroll-mt-28 category-section">
+            <h2 class="font-display text-2xl font-bold text-gray-900 mb-4 border-l-4 border-brand-yellow pl-3 uppercase">Extras</h2>
+            <div class="space-y-4" id="lista-extras">
+                <!-- Itens inseridos via JS -->
+            </div>
+        </section>
+
+        <!-- Seção: BEBIDAS -->
+        <section id="bebidas" class="scroll-mt-28 category-section">
+            <h2 class="font-display text-2xl font-bold text-gray-900 mb-4 border-l-4 border-blue-500 pl-3 uppercase">Bebidas</h2>
+            <div class="space-y-4" id="lista-bebidas">
+                <!-- Itens inseridos via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 4. BARRA DE RODAPÉ (Carrinho e Checkout) -->
+    <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] p-4 z-50 transform translate-y-full transition-transform duration-300">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="text-xs text-gray-500 font-semibold uppercase">Total do Pedido</span>
+                <span class="font-display text-xl font-bold text-brand-dark" id="cart-total">R$ 0,00</span>
+                <span class="text-xs text-brand-red cursor-pointer hover:underline" onclick="limparCarrinho()">Limpar</span>
+            </div>
+            <button onclick="abrirModalCheckout()" class="bg-brand-red text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-red-700 active:scale-95 transition flex items-center gap-2">
+                <span>PEDIR</span>
+                <i data-lucide="whatsapp" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 5. MODAL DE CHECKOUT (Mesa e Senha) -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black/60 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden transform transition-all scale-95 opacity-0" id="modal-content">
+            <div class="bg-brand-dark p-4 flex justify-between items-center">
+                <h3 class="text-white font-display font-bold text-lg">Finalizar Pedido</h3>
+                <button onclick="fecharModalCheckout()" class="text-gray-400 hover:text-white">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-gray-600 mb-2">Por favor, identifique-se para enviarmos o pedido para a cozinha.</p>
+                
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Número da Mesa</label>
+                    <input type="number" id="input-mesa" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-red font-bold text-lg text-center" placeholder="Ex: 05">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Código de Segurança</label>
+                    <input type="password" inputmode="numeric" id="input-senha" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-red font-bold text-lg text-center" placeholder="****">
+                    <p class="text-[10px] text-gray-400 mt-1 text-center">O código não será salvo no seu dispositivo.</p>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="enviarPedidoZap()" class="w-full bg-green-600 text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-green-700 active:bg-green-800 transition flex justify-center items-center gap-2">
+                        <span>CONFIRMAR E ENVIAR</span>
+                        <i data-lucide="send-horizontal" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DADOS DOS PRODUTOS ---
+        const produtos = {
+            lanches: [
+                { id: 1, nome: "X-Burger Clássico", desc: "Pão brioche, burger 160g, queijo prato e maionese da casa.", preco: 28.00 },
+                { id: 2, nome: "X-Salada Bacon", desc: "Pão, burger 160g, queijo, bacon crocante, alface, tomate e molho especial.", preco: 32.50 },
+                { id: 3, nome: "Smash Duplo", desc: "Dois smash burgers de 90g, cheddar inglês duplo e cebola caramelizada.", preco: 35.00 },
+                { id: 4, nome: "Veggie Supreme", desc: "Burger de grão de bico, cogumelos, rúcula e tomate seco.", preco: 30.00 }
+            ],
+            extras: [
+                { id: 10, nome: "Batata Frita Rústica", desc: "Porção individual com alecrim e alho.", preco: 12.00 },
+                { id: 11, nome: "Onion Rings", desc: "Anéis de cebola empanados (8 unidades).", preco: 15.00 },
+                { id: 12, nome: "Molho Extra", desc: "Potinho de maionese verde ou barbecue.", preco: 3.00 }
+            ],
+            bebidas: [
+                { id: 20, nome: "Coca-Cola Lata", desc: "350ml gelada.", preco: 6.00 },
+                { id: 21, nome: "Suco de Laranja", desc: "Natural 300ml.", preco: 8.00 },
+                { id: 22, nome: "Água sem Gás", desc: "500ml.", preco: 4.00 }
+            ]
+        };
+
+        // --- ESTADO DA APLICAÇÃO ---
+        let carrinho = {}; // Formato: { idProduto: { ...dados, qtd: 1 } }
+        const PHONE_NUMBER = "5511999999999"; // Coloque o número do ZAP da lanchonete aqui
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarProdutos();
+            lucide.createIcons();
+            setupScrollSpy();
+        });
+
+        // --- RENDERIZAÇÃO ---
+        function renderizarProdutos() {
+            renderizarCategoria('lanches', 'lista-lanches');
+            renderizarCategoria('extras', 'lista-extras');
+            renderizarCategoria('bebidas', 'lista-bebidas');
+        }
+
+        function renderizarCategoria(categoria, elementId) {
+            const container = document.getElementById(elementId);
+            produtos[categoria].forEach(prod => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex justify-between items-start gap-3 transition hover:shadow-md";
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-800 text-lg leading-tight mb-1">${prod.nome}</h3>
+                        <p class="text-sm text-gray-500 leading-snug mb-2 line-clamp-2">${prod.desc}</p>
+                        <span class="font-display font-bold text-brand-red text-lg">R$ ${prod.preco.toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <button onclick="adicionarAoCarrinho(${prod.id}, '${categoria}')" class="bg-gray-100 text-brand-dark p-2 rounded-lg hover:bg-brand-red hover:text-white transition active:scale-90" aria-label="Adicionar">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                        <span id="badge-${prod.id}" class="hidden text-xs font-bold bg-brand-yellow text-white px-2 py-0.5 rounded-full">0x</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- LÓGICA DO CARRINHO ---
+        function adicionarAoCarrinho(id, categoria) {
+            const produto = produtos[categoria].find(p => p.id === id);
+            
+            if (carrinho[id]) {
+                carrinho[id].qtd++;
+            } else {
+                carrinho[id] = { ...produto, qtd: 1 };
+            }
+
+            atualizarUI();
+        }
+
+        function atualizarUI() {
+            // Atualizar Badges nos produtos
+            for (const id in carrinho) {
+                const badge = document.getElementById(`badge-${id}`);
+                if (badge) {
+                    badge.innerText = `${carrinho[id].qtd}x`;
+                    badge.classList.remove('hidden');
+                }
+            }
+
+            // Calcular Total
+            let total = 0;
+            let count = 0;
+            for (const id in carrinho) {
+                total += carrinho[id].preco * carrinho[id].qtd;
+                count += carrinho[id].qtd;
+            }
+
+            // Atualizar barra inferior
+            const cartBar = document.getElementById('cart-bar');
+            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+
+            if (count > 0) {
+                cartBar.classList.remove('translate-y-full');
+            } else {
+                cartBar.classList.add('translate-y-full');
+            }
+        }
+
+        function limparCarrinho() {
+            // Resetar badges
+            for (const id in carrinho) {
+                const badge = document.getElementById(`badge-${id}`);
+                if (badge) badge.classList.add('hidden');
+            }
+            carrinho = {};
+            atualizarUI();
+        }
+
+        // --- LÓGICA DE NAVEGAÇÃO (SCROLL SPY) ---
+        function setupScrollSpy() {
+            const sections = document.querySelectorAll('.category-section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    // Ajuste de offset para considerar o header fixo
+                    if (scrollY >= (sectionTop - 180)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navItems.forEach(item => {
+                    item.classList.remove('bg-brand-red', 'text-white');
+                    item.classList.add('text-gray-600', 'hover:bg-gray-100'); // Estilo inativo
+                    
+                    if (item.getAttribute('href').includes(current)) {
+                        item.classList.remove('text-gray-600', 'hover:bg-gray-100');
+                        item.classList.add('bg-brand-red', 'text-white'); // Estilo ativo
+                        
+                        // Scroll horizontal do menu para manter o item visível
+                        item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }
+                });
+            });
+        }
+
+        // --- MODAL E CHECKOUT ---
+        function abrirModalCheckout() {
+            const modal = document.getElementById('checkout-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            // Pequeno delay para animação CSS
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function fecharModalCheckout() {
+            const modal = document.getElementById('checkout-modal');
+            const content = document.getElementById('modal-content');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function enviarPedidoZap() {
+            const mesa = document.getElementById('input-mesa').value;
+            const senha = document.getElementById('input-senha').value;
+
+            if (!mesa || !senha) {
+                alert("Por favor, informe a Mesa e o Código de Segurança.");
+                return;
+            }
+
+            // Construir mensagem
+            let mensagem = `*NOVO PEDIDO - MESA ${mesa}*\n`;
+            mensagem += `Código Seg: ${senha}\n`;
+            mensagem += `--------------------------\n`;
+            
+            let total = 0;
+            for (const id in carrinho) {
+                const item = carrinho[id];
+                const subtotal = item.preco * item.qtd;
+                total += subtotal;
+                mensagem += `${item.qtd}x ${item.nome}\n(R$ ${subtotal.toFixed(2)})\n`;
+            }
+            
+            mensagem += `--------------------------\n`;
+            mensagem += `*TOTAL: R$ ${total.toFixed(2)}*`;
+
+            // Encodar para URL
+            const url = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+            
+            // Abrir WhatsApp
+            window.open(url, '_blank');
+            
+            // Opcional: Fechar modal e limpar carrinho após envio
+            fecharModalCheckout();
+            // limparCarrinho(); // Descomente se quiser limpar após enviar
+        }
+
+        // --- FUNCIONALIDADES EXTRAS ---
+        function salvarContato() {
+            // Simulação de salvar contato
+            alert("Em um app real, isso baixaria o arquivo .vcf da Lanchonete!");
+        }
+
+    </script>
+</body>
+</html>
