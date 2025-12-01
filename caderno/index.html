@@ -16,8 +16,17 @@
         }
         /* Estilo para a área de edição (textarea) */
         #noteContent {
-            resize: none;
             line-height: 1.6;
+            min-height: 400px; /* Simula o rows="25" */
+            /* Garante que o conteúdo seja relativo para o botão flutuante */
+        }
+        /* Estilo para o placeholder do div contenteditable */
+        #noteContent[placeholder]:empty:before {
+            content: attr(placeholder);
+            color: #9ca3af; /* Tailwind gray-400 */
+        }
+        #noteContent[placeholder]:empty:focus:before {
+            content: "";
         }
         /* Estilo para o botão flutuante da IA */
         #iaFloatingButton {
@@ -121,7 +130,12 @@
                     <p id="noteDate" class="text-sm text-gray-500 self-center"></p>
                 </div>
 
-                <textarea id="noteContent" rows="25" placeholder="Comece a escrever a sua nota aqui... (Selecione texto para usar a funcionalidade de IA!)" class="w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                <!-- CAMPO DE NOTA ATUALIZADO PARA EDITOR DE TEXTO RICO (CONTENTEDITABLE DIV) -->
+                <div id="noteContent" 
+                    contenteditable="true" 
+                    placeholder="Comece a escrever a sua nota aqui... (Cole texto formatado ou selecione texto para usar a funcionalidade de IA!)" 
+                    class="w-full p-3 bg-gray-100 border border-gray-300 text-gray-900 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 overflow-y-auto">
+                </div>
 
                 <div class="flex justify-between mt-4">
                     <div>
@@ -190,7 +204,7 @@
             }
         };
 
-        // --- NOVO: Funções de Exportação e Importação ---
+        // --- Funções de Exportação e Importação ---
 
         // Função para exportar todas as notas para um ficheiro JSON
         const handleExport = () => {
@@ -287,7 +301,8 @@
         const resetEditor = () => {
             currentNoteId = null;
             document.getElementById('noteTitle').value = '';
-            document.getElementById('noteContent').value = '';
+            // USO DE .innerHTML para limpar o conteúdo formatado
+            document.getElementById('noteContent').innerHTML = ''; 
             document.getElementById('noteCategory').value = 'Geral';
             document.getElementById('noteDate').textContent = 'Nova Nota (não gravada)';
             document.getElementById('deleteNoteBtn').classList.add('hidden');
@@ -301,7 +316,8 @@
         const loadNoteToEditor = (note) => {
             currentNoteId = note.id;
             document.getElementById('noteTitle').value = note.title;
-            document.getElementById('noteContent').value = note.content;
+            // USO DE .innerHTML para carregar o conteúdo formatado
+            document.getElementById('noteContent').innerHTML = note.content;
             document.getElementById('noteCategory').value = note.category || 'Geral';
             // 'createdAt' é um timestamp em milissegundos
             document.getElementById('noteDate').textContent = `Criada em: ${formatDate(note.createdAt)}`;
@@ -368,12 +384,16 @@
             filteredNotes.forEach(note => {
                 const noteCard = document.createElement('div');
                 noteCard.className = `p-3 bg-white hover:bg-indigo-50 rounded-lg cursor-pointer transition duration-150 shadow-md ${note.id === currentNoteId ? 'ring-2 ring-indigo-500' : ''}`;
+                
+                // Extrai texto puro da nota para pré-visualização, removendo tags HTML
+                const previewText = note.content.replace(/<[^>]*>/g, '').substring(0, 100).trim();
+
                 noteCard.innerHTML = `
                     <h3 class="text-base font-semibold truncate text-indigo-700">${note.title || 'Nota Sem Título'}</h3>
                     <p class="text-xs text-gray-500 mt-1">
                         ${note.category} • ${formatDate(note.createdAt)}
                     </p>
-                    <p class="text-sm text-gray-600 mt-2 line-clamp-2">${note.content.substring(0, 100).trim()}...</p>
+                    <p class="text-sm text-gray-600 mt-2 line-clamp-2">${previewText}...</p>
                 `;
                 noteCard.onclick = () => {
                     loadNoteToEditor(note);
@@ -388,10 +408,14 @@
         // Guarda ou Atualiza a nota no array e no LocalStorage
         const saveNote = () => {
             const title = document.getElementById('noteTitle').value.trim() || 'Nota Sem Título';
-            const content = document.getElementById('noteContent').value.trim();
+            // USO DE .innerHTML para obter o conteúdo formatado
+            const content = document.getElementById('noteContent').innerHTML.trim(); 
             const category = document.getElementById('noteCategory').value;
+            
+            // Verifica se o conteúdo está realmente vazio (pode conter tags HTML, então verifica o texto puro)
+            const textContent = content.replace(/<[^>]*>/g, '').trim();
 
-            if (!content) {
+            if (!textContent) {
                 alertMessage("O conteúdo da nota não pode estar vazio!", 'red');
                 return;
             }
@@ -478,12 +502,11 @@
             return window.confirm(message); 
         }
 
-        // CORRIGIDO: Agora usa propriedades do textarea para obter o texto selecionado
+        // CORRIGIDO: Usa window.getSelection() para o div contenteditable
         // Trata o texto selecionado e abre a pesquisa do Google AI
         const handleIaSearch = (event) => {
-            const editor = document.getElementById('noteContent');
-            // Obtém o texto selecionado usando propriedades específicas do textarea
-            const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd).trim();
+            const selection = window.getSelection();
+            const selectedText = selection.toString().trim();
             
             if (!selectedText) {
                 alertMessage("Nenhum texto selecionado para enviar à IA.", 'yellow');
@@ -503,40 +526,42 @@
             document.getElementById('iaFloatingButton').style.display = 'none';
         };
 
-        // CORRIGIDO: Agora usa propriedades do textarea para verificar e posicionar
+        // CORRIGIDO: Usa window.getSelection() para verificar a seleção no div
         // Exibe ou move o botão flutuante com base na seleção de texto
         const checkSelection = () => {
             const editor = document.getElementById('noteContent');
             const iaButton = document.getElementById('iaFloatingButton');
+            const selection = window.getSelection();
 
-            // 1. Usa propriedades específicas do textarea para verificar a seleção
-            const selectedTextLength = editor.selectionEnd - editor.selectionStart;
+            // 1. Verifica se há seleção e se ela está dentro do editor
+            if (selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+                const selectedText = selection.toString().trim();
 
-            if (selectedTextLength > 0) {
-                iaButton.style.display = 'block';
-                
-                // 2. Posicionamento simplificado e robusto: Canto superior direito do editor
-                
-                // Obtém a posição do elemento `#noteContent` no ecrã
-                const editorRect = editor.getBoundingClientRect();
-                
-                // Obtém a posição do contêiner da coluna (pai da notaEditor) no ecrã
-                // .flex-1.bg-white é o contêiner de coluna com position: relative
-                const containerRect = document.querySelector('.flex-1.bg-white').getBoundingClientRect(); 
+                if (selectedText.length > 0) {
+                    iaButton.style.display = 'block';
 
-                // Calcula a posição (top/right) do botão *relativo* ao contêiner da coluna.
-                // Subtrai as coordenadas do contêiner pai para obter a posição relativa.
+                    // 2. Posicionamento simplificado e robusto: Canto superior direito da área de edição
+                    
+                    // Obtém a posição do elemento `#noteContent` no ecrã
+                    const editorRect = editor.getBoundingClientRect();
+                    
+                    // Obtém a posição do contêiner da coluna (pai da notaEditor) no ecrã
+                    // .flex-1.bg-white é o contêiner de coluna com position: relative
+                    const containerRect = document.querySelector('.flex-1.bg-white').getBoundingClientRect(); 
 
-                const topPositionRelativeToContainer = editorRect.top - containerRect.top;
+                    // Calcula a posição (top/right) do botão *relativo* ao contêiner da coluna.
+                    const topPositionRelativeToContainer = editorRect.top - containerRect.top;
 
-                // O botão tem cerca de 40px de altura (ajuste para aparecer acima da textarea)
-                iaButton.style.top = `${topPositionRelativeToContainer - 40}px`; 
-                // Posiciona 10px da margem direita da coluna
-                iaButton.style.right = '10px'; 
-                iaButton.style.left = 'auto'; // Garante que não há conflito de left/right
-            } else {
-                iaButton.style.display = 'none';
+                    // O botão aparece 40px acima da borda superior da área de edição
+                    iaButton.style.top = `${topPositionRelativeToContainer - 40}px`; 
+                    iaButton.style.right = '10px'; 
+                    iaButton.style.left = 'auto'; 
+                    
+                    return;
+                }
             }
+
+            iaButton.style.display = 'none';
         };
 
         // --- Inicialização e Event Listeners ---
@@ -567,12 +592,13 @@
         document.getElementById('dateSearch').addEventListener('change', renderNotes);
         
         // Listeners para a funcionalidade IA:
-        // Estes listeners estão corretos, mas agora chamam a função checkSelection corrigida.
+        // mouseup e keyup são usados para detetar a seleção de texto.
         document.getElementById('noteContent').addEventListener('mouseup', checkSelection);
         document.getElementById('noteContent').addEventListener('keyup', checkSelection);
+        document.getElementById('noteContent').addEventListener('blur', () => { setTimeout(checkSelection, 100); });
         document.getElementById('iaFloatingButton').addEventListener('click', handleIaSearch);
         
-        // NOVOS Listeners para Exportar/Importar
+        // Listeners para Exportar/Importar
         document.getElementById('exportBtn').addEventListener('click', handleExport);
         document.getElementById('importFile').addEventListener('change', handleImport);
 
