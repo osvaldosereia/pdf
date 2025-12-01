@@ -452,7 +452,7 @@
         };
 
 
-        // --- Funcionalidade de IA e Mensagens Personalizadas (Inalteradas) ---
+        // --- Funcionalidade de IA e Mensagens Personalizadas ---
 
         // Substitui o alert/confirm nativo por uma função customizada
         const alertMessage = (message, color) => {
@@ -478,10 +478,12 @@
             return window.confirm(message); 
         }
 
+        // CORRIGIDO: Agora usa propriedades do textarea para obter o texto selecionado
         // Trata o texto selecionado e abre a pesquisa do Google AI
         const handleIaSearch = (event) => {
-            const selection = window.getSelection();
-            const selectedText = selection.toString().trim();
+            const editor = document.getElementById('noteContent');
+            // Obtém o texto selecionado usando propriedades específicas do textarea
+            const selectedText = editor.value.substring(editor.selectionStart, editor.selectionEnd).trim();
             
             if (!selectedText) {
                 alertMessage("Nenhum texto selecionado para enviar à IA.", 'yellow');
@@ -501,24 +503,37 @@
             document.getElementById('iaFloatingButton').style.display = 'none';
         };
 
+        // CORRIGIDO: Agora usa propriedades do textarea para verificar e posicionar
         // Exibe ou move o botão flutuante com base na seleção de texto
         const checkSelection = () => {
             const editor = document.getElementById('noteContent');
-            const selection = window.getSelection();
             const iaButton = document.getElementById('iaFloatingButton');
 
-            // Verifica se há texto selecionado e se a seleção está dentro da área de edição
-            if (selection.toString().trim().length > 0 && selection.anchorNode && editor.contains(selection.anchorNode.parentElement)) {
-                const range = selection.getRangeAt(0);
-                const rect = range.getBoundingClientRect();
-                const editorRect = editor.getBoundingClientRect();
+            // 1. Usa propriedades específicas do textarea para verificar a seleção
+            const selectedTextLength = editor.selectionEnd - editor.selectionStart;
 
+            if (selectedTextLength > 0) {
                 iaButton.style.display = 'block';
-                // Posição ajustada para aparecer acima da seleção
-                iaButton.style.top = `${rect.top - editorRect.top + editor.offsetTop + window.scrollY - 40}px`; 
-                iaButton.style.left = `${rect.left - editorRect.left + editor.offsetLeft + window.scrollX + rect.width - 150}px`;
+                
+                // 2. Posicionamento simplificado e robusto: Canto superior direito do editor
+                
+                // Obtém a posição do elemento `#noteContent` no ecrã
+                const editorRect = editor.getBoundingClientRect();
+                
+                // Obtém a posição do contêiner da coluna (pai da notaEditor) no ecrã
+                // .flex-1.bg-white é o contêiner de coluna com position: relative
+                const containerRect = document.querySelector('.flex-1.bg-white').getBoundingClientRect(); 
 
-                iaButton.style.top = Math.max(0, parseInt(iaButton.style.top)) + 'px';
+                // Calcula a posição (top/right) do botão *relativo* ao contêiner da coluna.
+                // Subtrai as coordenadas do contêiner pai para obter a posição relativa.
+
+                const topPositionRelativeToContainer = editorRect.top - containerRect.top;
+
+                // O botão tem cerca de 40px de altura (ajuste para aparecer acima da textarea)
+                iaButton.style.top = `${topPositionRelativeToContainer - 40}px`; 
+                // Posiciona 10px da margem direita da coluna
+                iaButton.style.right = '10px'; 
+                iaButton.style.left = 'auto'; // Garante que não há conflito de left/right
             } else {
                 iaButton.style.display = 'none';
             }
@@ -552,6 +567,7 @@
         document.getElementById('dateSearch').addEventListener('change', renderNotes);
         
         // Listeners para a funcionalidade IA:
+        // Estes listeners estão corretos, mas agora chamam a função checkSelection corrigida.
         document.getElementById('noteContent').addEventListener('mouseup', checkSelection);
         document.getElementById('noteContent').addEventListener('keyup', checkSelection);
         document.getElementById('iaFloatingButton').addEventListener('click', handleIaSearch);
