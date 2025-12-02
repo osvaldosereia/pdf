@@ -114,7 +114,7 @@
             padding-top: 140px; 
             padding-bottom: 20px;
             max-width: 480px; 
-            min-height: 100vh;
+            min-height: 10vh;
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             position: relative; 
         }
@@ -259,37 +259,64 @@
             padding: 0 10px;
         }
 
-        /* --- GALERIA --- */
-        .galeria-fotos { display: flex; gap: 10px; margin-bottom: 10px; }
-        
+        /* --- GALERIA - NOVO ESTILO (FOTO ÚNICA COM SETAS) --- */
+        .galeria-fotos { 
+            position: relative; 
+            margin-bottom: 15px; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            background: #eee;
+        }
         .img-wrapper {
-            position: relative;
-            width: 50%;
-            cursor: pointer;
+            position: absolute; 
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .img-wrapper.active {
+            opacity: 1;
+            position: relative; /* Ativa a imagem no fluxo para dar altura ao .galeria-fotos */
         }
         .img-wrapper img { 
             width: 100%; 
-            aspect-ratio: 1 / 1; 
+            height: 100%; 
             object-fit: cover; 
-            border-radius: 8px; 
-            background: #eee; 
+            border-radius: 12px; /* Aplica arredondamento na imagem, herdada do pai */
             display: block;
+            /* Não precisa de cursor: pointer, pois não abre modal */
         }
-        .zoom-indicator {
+        /* Setas de Navegação */
+        .nav-arrow {
             position: absolute;
-            bottom: 8px;
-            right: 8px;
-            background-color: rgba(0,0,0,0.6);
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.4);
             color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            padding: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 50;
+            border-radius: 8px;
+            transition: background 0.2s;
+            height: 40px;
+            width: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            pointer-events: none;
         }
+        .nav-arrow:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .nav-arrow.left { left: 10px; }
+        .nav-arrow.right { right: 10px; }
+        /* FIM NOVO ESTILO GALERIA */
+
+        /* REMOVIDO: ZOOM INDICATOR */
 
         /* --- BOTÕES --- */
         .botoes-wrapper { display: flex; gap: 10px; margin-top: 15px; }
@@ -307,43 +334,13 @@
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 16px; }
 
         /* --- MODAIS --- */
-        .modal-imagem {
-            display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.95); 
-            flex-direction: column; justify-content: center; align-items: center;
-        }
-        .modal-conteudo-wrapper {
-            width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
-        }
-        .modal-conteudo { 
-            width: 100%; height: auto; max-height: 70vh; object-fit: contain; 
-            border-top: 1px solid #333; border-bottom: 1px solid #333; background-color: black;
-        }
-        .modal-controles {
-            width: 100%; display: flex; justify-content: center; align-items: center; gap: 60px; padding: 10px;
-        }
-        .nav-seta {
-            color: white; font-size: 40px; cursor: pointer; padding: 20px;
-            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;
-        }
-        .nav-seta:active { background: rgba(255,255,255,0.3); }
-        .btn-fechar-galeria {
-            position: absolute; top: 20px; right: 20px; color: white; font-size: 35px; font-weight: bold;
-            cursor: pointer; z-index: 3001; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px;
-            border: none; display: flex; align-items: center; justify-content: center;
-        }
-        .contador-fotos { position: absolute; top: 25px; left: 25px; color: #ccc; font-size: 16px; }
+        /* REMOVIDO: ESTILO MODAL IMAGEM E CONTROLES */
 
         .lista-pagamento { list-style: none; padding: 0; }
         .lista-pagamento li { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 16px; display: flex; align-items: center; }
         .lista-pagamento i { color: var(--cor-primaria); width: 30px; font-size: 18px; }
 
-        .modal-brinde { display: none; position: fixed; z-index: 2500; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; animation: fadeInModal 0.3s; }
-        .conteudo-brinde { background: linear-gradient(135deg, #FFEB3B, #FFF59D); width: 85%; max-width: 400px; border-radius: 20px; padding: 30px 20px; text-align: center; border: 4px solid #FBC02D; box-shadow: 0 0 50px rgba(255, 235, 59, 0.6); position: relative; }
-        .titulo-brinde { color: #D32F2F; font-size: 26px; font-weight: 900; margin: 0; text-transform: uppercase; }
-        .texto-brinde { font-size: 18px; color: #333; margin: 15px 0; font-weight: 500; }
-        .btn-fechar-brinde { background: #D32F2F; color: white; border: none; padding: 12px 30px; font-size: 18px; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #b71c1c; }
+        /* REMOVIDO: ESTILO MODAL BRINDE */
         
         /* --- NOVO: ESTILO MODAL VARIAÇÃO (MINI MODAL) --- */
         .modal-variacao {
@@ -514,16 +511,38 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            /* Container para o texto rotativo */
+            min-height: 40px; 
+            overflow: hidden;
+            position: relative;
+            padding-top: 5px; /* Adicionado para afastar o texto do topo */
         } 
         .texto-instalar-banner strong { 
             font-size: 15px; 
             color: #222;
             margin-bottom: 2px;
         }
-        .texto-instalar-banner span {
+        /* O span do carrossel será posicionado absolutamente */
+        .carousel-text {
             font-size: 13px;
             color: #666;
+            position: absolute;
+            width: 100%;
+            top: 25px; /* AUMENTADO para 25px para afastar do título */
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
+        .carousel-text.active {
+            opacity: 1;
+            transform: translateY(-5px); /* Ajuste fino para alinhar visualmente */
+        }
+        .carousel-text.next {
+            transform: translateY(100%);
+        }
+        .carousel-text.prev {
+            transform: translateY(-100%);
+        }
+
         
         .btn-acao-banner { 
             background-color: var(--cor-primaria); /* Vermelho Marca */
@@ -580,15 +599,23 @@
             display: flex;
             flex-direction: column;
             text-align: left;
+            /* Container para o texto rotativo no card fixo */
+            min-height: 40px; 
+            overflow: hidden;
+            position: relative;
+            padding-top: 5px; /* Adicionado para afastar o texto do topo */
         }
         .conteudo-banner-interno strong {
             font-size: 15px;
             color: #333;
             margin-bottom: 3px;
         }
-        .conteudo-banner-interno span {
-            font-size: 13px;
-            color: #777;
+        .conteudo-banner-interno .carousel-text {
+            position: absolute;
+            width: 100%;
+            top: 25px; /* AUMENTADO para 25px para afastar do título */
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         
         /* Botão interno */
@@ -698,125 +725,24 @@
     
     <!-- SEÇÃO 1: CESTAS (Sempre visível inicialmente) -->
     <div id="pag-cestas" class="secao-conteudo visivel animar">
+        <!-- ALTERAÇÃO 1: NOVA FRASE DE TRADIÇÃO -->
         <div class="card" style="text-align: center; background-color: #fff3e0;">
             <h1 style="margin: 0; font-size: 1.1rem; font-weight: bold; color: #E65100;">
-                <i class="fas fa-truck"></i> Cesta Básica em Cuiabá e Várzea Grande
+                <i class="fas fa-crown"></i> 8 anos de tradição em Cuiabá e VG
             </h1>
-            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Entregas rápidas no CPA, Tijucal, Cristo Rei e região.</p>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Cestas básicas com preço justo e qualidade garantida.</p>
         </div>
 
-        <!-- Cestas -->
-        <div class="card card-cesta">
-            <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
-            <div class="cesta-body">
-                <div class="galeria-fotos">
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-grande.jpg" alt="Cesta Básica Grande" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-grande-2.jpg" alt="Cesta Básica Grande Detalhe" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                </div>
-                <div class="lista-precos-cesta">
-                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 380,00</strong></div>
-                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
-                </div>
-                <div class="botoes-wrapper">
-                    <!-- BOTÃO ALTERADO PARA ABRIR O MODAL -->
-                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">Encomendar</button>
-                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Grande')">Compartilhar</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card card-cesta">
-            <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
-            <div class="cesta-body">
-                <div class="galeria-fotos">
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-media.jpg" alt="Cesta Média" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-media-2.jpg" alt="Cesta Média Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                </div>
-                <div class="lista-precos-cesta">
-                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 320,00</strong></div>
-                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
-                </div>
-                <div class="botoes-wrapper">
-                    <!-- BOTÃO ALTERADO PARA ABRIR O MODAL -->
-                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">Encomendar</button>
-                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Média')">Compartilhar</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card card-cesta">
-            <div class="cesta-header"><h3>CESTA PEQUENA</h3></div>
-            <div class="cesta-body">
-                <div class="galeria-fotos">
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-pequena.jpg" alt="Cesta Pequena" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-pequena-2.jpg" alt="Cesta Pequena Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                </div>
-                <div class="lista-precos-cesta">
-                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 215,00</strong></div>
-                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
-                </div>
-                <div class="botoes-wrapper">
-                    <!-- BOTÃO ALTERADO PARA ABRIR O MODAL -->
-                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">Encomendar</button>
-                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Pequena')">Compartilhar</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card card-cesta">
-            <div class="cesta-header"><h3>CESTA MINI</h3></div>
-            <div class="cesta-body">
-                <div class="galeria-fotos">
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-mini.jpg" alt="Cesta Mini" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-mini-2.jpg" alt="Cesta Mini Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                </div>
-                <div class="lista-precos-cesta">
-                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 165,00</strong></div>
-                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
-                </div>
-                <div class="botoes-wrapper">
-                    <!-- BOTÃO ALTERADO PARA ABRIR O MODAL -->
-                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">Encomendar</button>
-                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Mini')">Compartilhar</button>
-                </div>
-            </div>
-        </div>
-
+        <!-- Cestas (REORDENADAS para: economica, mini, pequena, media, grande) -->
+        
+        <!-- CESTA ECONÔMICA (PRIMEIRA) - 1 FOTO (SEM CARROSSEL) -->
         <div class="card card-cesta">
             <div class="cesta-header"><h3>CESTA ECONÔMICA</h3></div>
             <div class="cesta-body">
-                <div class="galeria-fotos">
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-economica.jpg" alt="Cesta Econômica" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
-                    </div>
-                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
-                        <img src="img/cesta-economica-2.jpg" alt="Cesta Econômica Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
-                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                <div class="galeria-fotos" id="galeria-economica" style="aspect-ratio: 1/1; position: relative;">
+                    <!-- Apenas a primeira imagem, sem navegação lateral -->
+                    <div class="img-wrapper active" data-img-index="0" style="position: static; opacity: 1;">
+                        <img src="img/cesta-economica.jpg" alt="Cesta Econômica" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
                     </div>
                 </div>
                 <div class="lista-precos-cesta">
@@ -830,13 +756,118 @@
             </div>
         </div>
 
-        <!-- BANNER INTERNO ORGANIZADO E RESPONSIVO -->
+        <!-- CESTA MINI (SEGUNDA) - 2 FOTOS (COM CARROSSEL) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA MINI</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos" id="galeria-mini">
+                    <div class="img-wrapper active" data-img-index="0">
+                        <img src="img/cesta-mini.jpg" alt="Cesta Mini" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MINI+1'">
+                    </div>
+                    <div class="img-wrapper" data-img-index="1">
+                        <img src="img/cesta-mini-2.jpg" alt="Cesta Mini Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MINI+2'">
+                    </div>
+                    <!-- Setas de Navegação -->
+                    <div class="nav-arrow left" onclick="mudarFotoNoCard('mini', -1)"><i class="fas fa-chevron-left"></i></div>
+                    <div class="nav-arrow right" onclick="mudarFotoNoCard('mini', 1)"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 165,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Mini')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CESTA PEQUENA (TERCEIRA) - 2 FOTOS (COM CARROSSEL) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA PEQUENA</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos" id="galeria-pequena">
+                    <div class="img-wrapper active" data-img-index="0">
+                        <img src="img/cesta-pequena.jpg" alt="Cesta Pequena" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=PEQUENA+1'">
+                    </div>
+                    <div class="img-wrapper" data-img-index="1">
+                        <img src="img/cesta-pequena-2.jpg" alt="Cesta Pequena Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=PEQUENA+2'">
+                    </div>
+                    <!-- Setas de Navegação -->
+                    <div class="nav-arrow left" onclick="mudarFotoNoCard('pequena', -1)"><i class="fas fa-chevron-left"></i></div>
+                    <div class="nav-arrow right" onclick="mudarFotoNoCard('pequena', 1)"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 215,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Pequena')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CESTA MÉDIA (QUARTA) - 2 FOTOS (COM CARROSSEL) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos" id="galeria-media">
+                    <div class="img-wrapper active" data-img-index="0">
+                        <img src="img/cesta-media.jpg" alt="Cesta Média" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MÉDIA+1'">
+                    </div>
+                    <div class="img-wrapper" data-img-index="1">
+                        <img src="img/cesta-media-2.jpg" alt="Cesta Média Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MÉDIA+2'">
+                    </div>
+                    <!-- Setas de Navegação -->
+                    <div class="nav-arrow left" onclick="mudarFotoNoCard('media', -1)"><i class="fas fa-chevron-left"></i></div>
+                    <div class="nav-arrow right" onclick="mudarFotoNoCard('media', 1)"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 320,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Média')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CESTA GRANDE (ÚLTIMA) - 2 FOTOS (COM CARROSSEL) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos" id="galeria-grande">
+                    <div class="img-wrapper active" data-img-index="0">
+                        <img src="img/cesta-grande.jpg" alt="Cesta Básica Grande" onerror="this.src='https://placehold.co/400x400?text=GRANDE+1'">
+                    </div>
+                    <div class="img-wrapper" data-img-index="1">
+                        <img src="img/cesta-grande-2.jpg" alt="Cesta Básica Grande Detalhe" onerror="this.src='https://placehold.co/400x400?text=GRANDE+2'">
+                    </div>
+                    <!-- Setas de Navegação -->
+                    <div class="nav-arrow left" onclick="mudarFotoNoCard('grande', -1)"><i class="fas fa-chevron-left"></i></div>
+                    <div class="nav-arrow right" onclick="mudarFotoNoCard('grande', 1)"><i class="fas fa-chevron-right"></i></div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 380,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Grande')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BANNER INTERNO ORGANIZADO E RESPONSIVO (PWA) -->
         <div class="card-instalacao-fixo pwa-install-promo">
             <div class="banner-content-wrapper">
                 <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
                 <div class="conteudo-banner-interno">
                     <strong>App Dona Antônia</strong>
-                    <span>Baixe para ver ofertas exclusivas.</span>
+                    <!-- ELEMENTO DE CARROSSEL DE TEXTO -->
+                    <span id="pwa-text-carousel-fixo" class="carousel-text"></span>
                 </div>
             </div>
             <button class="btn-instalacao-inline" onclick="instalarApp()">
@@ -863,13 +894,14 @@
             <p style="color: red; font-size: 14px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> Não vendemos a prazo para 30 dias.</p>
         </div>
 
-        <!-- BANNER INTERNO ORGANIZADO -->
+        <!-- BANNER INTERNO ORGANIZADO (PWA) -->
         <div class="card-instalacao-fixo pwa-install-promo">
             <div class="banner-content-wrapper">
                 <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
                 <div class="conteudo-banner-interno">
                     <strong>App Dona Antônia</strong>
-                    <span>Mais facilidade no pagamento.</span>
+                    <!-- ELEMENTO DE CARROSSEL DE TEXTO -->
+                    <span id="pwa-text-carousel-fixo-2" class="carousel-text"></span>
                 </div>
             </div>
             <button class="btn-instalacao-inline" onclick="instalarApp()">
@@ -928,13 +960,14 @@
 
         </div>
         
-        <!-- BANNER INTERNO ORGANIZADO -->
+        <!-- BANNER INTERNO ORGANIZADO (PWA) -->
         <div class="card-instalacao-fixo pwa-install-promo">
             <div class="banner-content-wrapper">
                 <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
                 <div class="conteudo-banner-interno">
                     <strong>App Dona Antônia</strong>
-                    <span>Participe dos sorteios semanais.</span>
+                    <!-- ELEMENTO DE CARROSSEL DE TEXTO -->
+                    <span id="pwa-text-carousel-fixo-3" class="carousel-text"></span>
                 </div>
             </div>
             <button class="btn-instalacao-inline" onclick="instalarApp()">
@@ -989,7 +1022,8 @@
         
         <div class="texto-instalar-banner">
             <strong>Instalar App Dona Antônia</strong>
-            <span>Receba ofertas e participe de sorteios.</span>
+            <!-- ELEMENTO DE CARROSSEL DE TEXTO -->
+            <span id="pwa-text-carousel-flutuante" class="carousel-text"></span>
         </div>
         
         <button class="btn-acao-banner" onclick="instalarApp()">
@@ -997,25 +1031,7 @@
         </button>
     </div>
 
-    <div id="modalVisualizador" class="modal-imagem" onclick="fecharImagem()">
-        <button class="btn-fechar-galeria" onclick="fecharImagem()">&times;</button>
-        <div class="modal-conteudo-wrapper" onclick="event.stopPropagation()">
-            <img id="imgAmpliada" src="" class="modal-conteudo">
-        </div>
-        <div class="modal-controles" onclick="event.stopPropagation()">
-            <button class="nav-seta" onclick="mudarFoto(-1)">&#10094;</button>
-            <button class="nav-seta" onclick="mudarFoto(1)">&#10095;</button>
-        </div>
-        <div id="contadorFotos" class="contador-fotos">1 / 2</div>
-    </div>
-
-    <div id="modalBrinde" class="modal-brinde">
-        <div class="conteudo-brinde">
-            <h1>🎉 SURPRESA!</h1>
-            <p>Na compra de qualquer cesta, ganhe <strong>1 Amaciante Ypê 2L</strong> de brinde!</p>
-            <button class="btn-fechar-brinde" onclick="document.getElementById('modalBrinde').style.display='none'">EU QUERO!</button>
-        </div>
-    </div>
+    <!-- REMOVIDO: Modal de Visualização de Imagem (#modalVisualizador) -->
 
     <!-- SCRIPT DE DADOS EXTERNO (Inserido antes do script principal) -->
     <script src="data/clientes.js"></script>
@@ -1024,7 +1040,93 @@
         const TELEFONE = "5565998150975";
         const LINK_SITE = "donaantonia.com.br/oferta";
 
-        // --- SISTEMA DE ROLAGEM INFINITA ---
+        // --- CARROSSEL DE TEXTO PWA ---
+        const carouselMessages = [
+            '<i class="fas fa-magic" style="color:#00BCD4;"></i> Baixe o App e Ganhe Amaciante Ypê 2L!',
+            'Baixe para ver ofertas exclusivas.',
+            'Participe dos sorteios semanais.'
+        ];
+        let currentCarouselIndex = 0;
+
+        function updateCarouselText() {
+            const elements = [
+                document.getElementById('pwa-text-carousel-fixo'),
+                document.getElementById('pwa-text-carousel-fixo-2'),
+                document.getElementById('pwa-text-carousel-fixo-3'),
+                document.getElementById('pwa-text-carousel-flutuante')
+            ];
+
+            const nextMessage = carouselMessages[currentCarouselIndex];
+
+            elements.forEach(el => {
+                if (el) {
+                    el.classList.remove('active');
+                    el.classList.add('next');
+                    
+                    setTimeout(() => {
+                        el.innerHTML = nextMessage;
+                        el.classList.remove('next');
+                        el.classList.add('active');
+                    }, 500); 
+                }
+            });
+
+            currentCarouselIndex = (currentCarouselIndex + 1) % carouselMessages.length;
+        }
+
+        function iniciarCarouselPWA() {
+            currentCarouselIndex = carouselMessages.length - 1; 
+            updateCarouselText(); 
+
+            setInterval(updateCarouselText, 4000); 
+        }
+        // FIM CARROSSEL DE TEXTO PWA
+
+        // --- NAVEGAÇÃO DE IMAGENS NOS CARDS (NOVO) ---
+        // Dados de Imagens (Apenas para Cestas com 2 fotos)
+        const CestaImages = {
+            'mini': 2,
+            'pequena': 2,
+            'media': 2,
+            'grande': 2,
+        };
+        // Armazena o índice da foto atual para cada cesta
+        let currentPhotoIndex = {
+            'mini': 0,
+            'pequena': 0,
+            'media': 0,
+            'grande': 0
+        };
+
+        function mudarFotoNoCard(cestaTipo, direcao) {
+            const galeria = document.getElementById(`galeria-${cestaTipo}`);
+            if (!galeria || !CestaImages[cestaTipo] || CestaImages[cestaTipo] < 2) return;
+
+            const totalImages = CestaImages[cestaTipo];
+            let newIndex = (currentPhotoIndex[cestaTipo] + direcao) % totalImages;
+            
+            // Ajustar o índice para que seja sempre positivo (navegação circular)
+            if (newIndex < 0) {
+                newIndex = totalImages - 1;
+            }
+
+            // Esconder foto atual
+            const currentWrapper = galeria.querySelector(`.img-wrapper.active`);
+            if (currentWrapper) {
+                currentWrapper.classList.remove('active');
+            }
+
+            // Mostrar nova foto
+            const newWrapper = galeria.querySelector(`.img-wrapper[data-img-index="${newIndex}"]`);
+            if (newWrapper) {
+                newWrapper.classList.add('active');
+            }
+
+            // Atualizar o índice armazenado
+            currentPhotoIndex[cestaTipo] = newIndex;
+        }
+
+        // --- SISTEMA DE ROLAGEM INFINITA (RESTANTE) ---
         let paginasReveladas = {
             'cestas': true,
             'pagamento': false,
@@ -1056,26 +1158,20 @@
             }
         }
 
-        // --- NOVO: SISTEMA DE NAVEGAÇÃO POR LINK (HASHTAG) ---
         function verificarHash() {
-            // Pega o que vem depois do # (ex: #sorteio -> sorteio)
             const hash = window.location.hash.replace('#', '');
             const secoes = ['cestas', 'pagamento', 'sorteio'];
             
             if (secoes.includes(hash)) {
-                // Se o link tiver um hash válido, rola para ele
                 revelarSecao(hash, true);
             } else {
-                // Se não, mostra o padrão (cestas) sem rolar
                 revelarSecao('cestas', false);
             }
         }
 
-        // Ouve quando o usuário clica em "Voltar" no navegador
         window.addEventListener('popstate', verificarHash);
 
         function rolarPara(id) {
-            // Atualiza a URL (adiciona o #) sem recarregar a página
             if(history.pushState) {
                 history.pushState(null, null, '#' + id);
             } else {
@@ -1097,7 +1193,6 @@
             }
 
             atualizarMenuAtivo();
-            checarBrinde();
         };
 
         function atualizarMenuAtivo() {
@@ -1108,7 +1203,7 @@
                 const el = document.getElementById('pag-' + id);
                 if (el && el.classList.contains('visivel')) {
                     const rect = el.getBoundingClientRect();
-                    if (rect.top < window.innerHeight / 2 && rect.bottom > 140) {
+                    if (rect.top < 140 && rect.bottom > 140) { 
                         atual = id;
                     }
                 }
@@ -1126,25 +1221,21 @@
             window.open(url, '_blank');
         }
 
-        // --- LÓGICA ANTIGA DO ENCOMENDAR (Mantida para Cesta Econômica) ---
         function encomendar(produto) { 
             window.open(`https://wa.me/${TELEFONE}?text=Olá, quero encomendar a ${produto}`, '_blank'); 
         }
 
-        // --- NOVA LÓGICA DO MODAL DE VARIAÇÃO ---
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
-        let opcaoEscolhida = ''; // 'alvino' ou 'koblenz'
+        let opcaoEscolhida = ''; 
 
         function abrirModalVariacao(nome, pAlvino, pKoblenz) {
             dadosCestaAtual = { nome, precoAlvino: pAlvino, precoKoblenz: pKoblenz };
-            opcaoEscolhida = ''; // Reseta escolha
+            opcaoEscolhida = '';
             
-            // Popula o modal
             document.getElementById('tituloCestaModal').innerText = nome;
             document.getElementById('precoAlvinoDisplay').innerText = 'R$ ' + pAlvino;
             document.getElementById('precoKoblenzDisplay').innerText = 'R$ ' + pKoblenz;
             
-            // Reseta estilos
             document.getElementById('optAlvino').classList.remove('selected');
             document.getElementById('optKoblenz').classList.remove('selected');
             document.getElementById('btnConfirmarPedido').disabled = true;
@@ -1155,7 +1246,6 @@
         function selecionarOpcao(tipo) {
             opcaoEscolhida = tipo;
             
-            // Atualiza visual
             document.getElementById('optAlvino').classList.remove('selected');
             document.getElementById('optKoblenz').classList.remove('selected');
             
@@ -1165,7 +1255,6 @@
                 document.getElementById('optKoblenz').classList.add('selected');
             }
             
-            // Habilita botão
             document.getElementById('btnConfirmarPedido').disabled = false;
         }
 
@@ -1190,20 +1279,15 @@
             const texto = `Olha essa ${produto} da Dona Antônia! Confira: ${LINK_SITE}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
         }
-
-        // --- LÓGICA DE SORTEIO (ALTERADA) ---
         
-        // 1. Alternar Abas
+        // --- LÓGICA DE SORTEIO ---
         function alternarAbaSorteio(aba) {
-            // Remove classe ativo dos botões
             document.getElementById('tab-primeira').classList.remove('ativo');
             document.getElementById('tab-ja-tenho').classList.remove('ativo');
             
-            // Esconde conteúdos
             document.getElementById('conteudo-primeira-vez').style.display = 'none';
             document.getElementById('conteudo-ja-tenho').style.display = 'none';
 
-            // Ativa a aba selecionada
             if (aba === 'primeira') {
                 document.getElementById('tab-primeira').classList.add('ativo');
                 document.getElementById('conteudo-primeira-vez').style.display = 'block';
@@ -1213,7 +1297,6 @@
             }
         }
 
-        // 2. Enviar Novo Cadastro (Primeira Vez)
         function enviarNovoCadastro() {
             const nome = document.getElementById('novo-nome').value.trim();
             const tel = document.getElementById('novo-telefone').value.trim();
@@ -1221,19 +1304,15 @@
             const bai = document.getElementById('novo-bairro').value.trim();
             if (!nome || !tel || !cid || !bai) { alert("Preencha todos os campos!"); return; }
             
-            // Adicionado texto obrigatório no final
             const msg = `CADASTRO SORTEIO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}\n\nSorteio do Dia 7 de Dezembro`;
             
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // 3. Buscar Cadastro (Já Tenho) - ATUALIZADO
         function buscarCadastro() {
-            // Pega o valor e remove tudo que não for número para comparar
             const inputTel = document.getElementById('busca-telefone').value;
-            const telLimpo = inputTel.replace(/\D/g, ''); // Remove ( ) - e espaços
+            const telLimpo = inputTel.replace(/\D/g, ''); 
 
-            // Validação mínima de 6 dígitos agora
             if (!telLimpo || telLimpo.length < 6) {
                 alert("Por favor, digite pelo menos os últimos 6 números do seu telefone.");
                 return;
@@ -1244,17 +1323,12 @@
             btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
             btnBuscar.disabled = true;
 
-            // Busca no array de clientes (AGORA VEM DO ARQUIVO EXTERNO)
-            // LÓGICA DE 6 DÍGITOS: Compara apenas o final do número para evitar erros de formatação
-            
             let clienteEncontrado = null;
             if(typeof clientes !== 'undefined') {
-                 // Pega os últimos 6 dígitos do input
                  const inputSuffix = telLimpo.slice(-6);
 
                  clienteEncontrado = clientes.find(c => {
                     const cTelLimpo = c.telefone.replace(/\D/g, '');
-                    // Garante que o cadastro também tenha pelo menos 6 dígitos antes de comparar
                     if (cTelLimpo.length < 6) return false;
                     
                     const clientSuffix = cTelLimpo.slice(-6);
@@ -1271,73 +1345,34 @@
                 if (clienteEncontrado) {
                     document.getElementById('area-resultado-busca').style.display = 'block';
                     document.getElementById('nome-cliente-encontrado').innerText = clienteEncontrado.nome;
-                    // Salva o telefone encontrado no input para garantir que o envio use o dado correto
                     document.getElementById('busca-telefone').setAttribute('data-nome-encontrado', clienteEncontrado.nome);
                 } else {
                     document.getElementById('area-resultado-busca').style.display = 'none';
                     alert("Ops! Não encontramos seu cadastro com este número. Tente digitar de outra forma ou faça o cadastro na aba 'Primeira Vez'.");
                 }
-            }, 600); // Pequeno delay para UX
+            }, 600); 
         }
 
-        // 4. Confirmar Cadastro Existente - ATUALIZADO
         function confirmarJaCadastrado() {
             const inputTel = document.getElementById('busca-telefone').value;
             const nomeEncontrado = document.getElementById('busca-telefone').getAttribute('data-nome-encontrado') || "Cliente";
             
-            // Adicionado texto obrigatório no final
             const msg = `JÁ SOU CADASTRADO:\nNome: ${nomeEncontrado}\nConfirmo minha participação com o telefone: ${inputTel}\n\nSorteio do Dia 7 de Dezembro`;
             
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // ------------------------------------
-
-        let currentImages = [];
-        let currentIndex = 0;
-        function abrirGaleria(imgElement) {
-            if (!imgElement) return;
-            const container = imgElement.closest('.galeria-fotos');
-            const imgs = container.querySelectorAll('img');
-            currentImages = [];
-            imgs.forEach((img, index) => {
-                currentImages.push(img.src);
-                if (img === imgElement) currentIndex = index;
-            });
-            atualizarModalImagem();
-            document.getElementById('modalVisualizador').style.display = 'flex';
-        }
-        function atualizarModalImagem() {
-            document.getElementById('imgAmpliada').src = currentImages[currentIndex];
-            document.getElementById('contadorFotos').innerText = `${currentIndex + 1} / ${currentImages.length}`;
-        }
-        function mudarFoto(dir) {
-            currentIndex += dir;
-            if (currentIndex >= currentImages.length) currentIndex = 0;
-            if (currentIndex < 0) currentIndex = currentImages.length - 1;
-            atualizarModalImagem();
-        }
-        function fecharImagem() { document.getElementById('modalVisualizador').style.display = 'none'; }
-
-        let brindeMostrado = false;
-        function checarBrinde() {
-            if(brindeMostrado) return;
-            if(window.scrollY > 1500 || paginasReveladas['pagamento']) {
-                 brindeMostrado = true;
-                 document.getElementById('modalBrinde').style.display = 'flex';
-                 confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            }
-        }
-
+        // --- LÓGICA PWA ---
         let deferredPrompt;
         const avisoPwa = document.getElementById('aviso-instalar');
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e;
             localStorage.removeItem('appInstalado'); 
-            if(!sessionStorage.getItem('bannerFechado')) {
-                avisoPwa.style.display = 'flex';
-                document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'flex'); /* Alterado para flex para funcionar com o novo CSS */
+            
+            if (deferredPrompt) {
+                avisoPwa.style.display = 'flex'; 
+                document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'flex');
             }
         });
         function instalarApp() {
@@ -1348,16 +1383,27 @@
                         localStorage.setItem('appInstalado', 'true');
                         document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
                         avisoPwa.style.display = 'none';
+                        alert("🎉 PARABÉNS! Você baixou o App e ganhou 1 Amaciante Ypê 2L de brinde na sua próxima cesta!");
                     }
                     deferredPrompt = null;
                 });
             } else { alert("Para instalar: Toque nos três pontinhos do navegador e escolha 'Adicionar à Tela Inicial'."); }
         }
-        function fecharInstalacao() { avisoPwa.style.display = 'none'; sessionStorage.setItem('bannerFechado', 'true'); }
+        function fecharInstalacao() { 
+            avisoPwa.style.display = 'none'; 
+            localStorage.setItem('bannerFlutuanteFechado', 'true');
+        }
 
         window.onload = function() {
             if (localStorage.getItem('appInstalado')) {
                  document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
+            } else {
+                iniciarCarouselPWA();
+                document.querySelectorAll('.card-instalacao-fixo').forEach(el => el.style.display = 'flex');
+
+                if (!localStorage.getItem('bannerFlutuanteFechado')) {
+                     avisoPwa.style.display = 'flex';
+                }
             }
             // NOVO: Verifica o link ao carregar a página
             verificarHash();
