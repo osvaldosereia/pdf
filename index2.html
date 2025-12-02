@@ -1,395 +1,1443 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sorteio Dona Antônia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D32F2F">
+    
+    <!-- SEO E DADOS SOCIAIS -->
+    <title>Cesta Básica em Cuiabá e Várzea Grande | Dona Antônia</title>
+    <link rel="canonical" href="https://donaantonia.com.br/" />
+    <meta name="description" content="Compre Cesta Básica em Cuiabá e Várzea Grande na Dona Antônia. Melhor preço com entrega grátis em Cuiabá e VG. Confira!">
+    <meta name="keywords" content="cesta básica cuiaba, cesta basica varzea grande, comprar alimentos, supermercado online, entrega de cesta, dona antonia">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Dona Antônia">
+    
+    <!-- GEO TAGS -->
+    <meta name="geo.region" content="BR-MT" />
+    <meta name="geo.placename" content="Cuiabá" />
+    <meta name="geo.position" content="-15.6014;-56.0979" />
+    <meta name="ICBM" content="-15.6014, -56.0979" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://donaantonia.com.br/">
+    <meta property="og:title" content="Cesta Básica Dona Antônia - Entrega Rápida em Cuiabá e VG">
+    <meta property="og:description" content="Arroz Tio Alvino ou Koblenz? Escolha sua cesta e receba em casa. Preço justo e qualidade.">
+    <meta property="og:image" content="https://donaantonia.com.br/img/logo-social.jpg"> 
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- DADOS ESTRUTURADOS -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Dona Antônia Cestas Básicas",
+        "image": "https://donaantonia.com.br/img/logo1.png",
+        "telephone": "+5565998150975",
+        "url": "https://donaantonia.com.br/",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Cuiabá",
+          "addressRegion": "MT",
+          "addressCountry": "BR"
+        },
+        "priceRange": "$$",
+        "sameAs": [
+          "https://facebook.com/super.cestas.cuiaba/",
+          "https://instagram.com/super.cestas.dona.antonia/"
+        ],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+          ],
+          "opens": "08:00",
+          "closes": "18:00"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+          "@type": "Question",
+          "name": "Onde comprar cesta básica em Cuiabá?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Na Dona Antônia! Temos o melhor preço e entregamos no CPA, Tijucal, Pedra 90 e toda região." }
+        }, {
+          "@type": "Question",
+          "name": "Vocês entregam em Várzea Grande?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sim! Atendemos Cristo Rei, Mapim e toda a região de Várzea Grande." }
+        }]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Cesta Básica Grande",
+        "description": "Cesta completa com Arroz Tio Alvino ou Koblenz, feijão, óleo e itens essenciais.",
+        "offers": {
+          "@type": "Offer",
+          "price": "380.00",
+          "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    ]
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* CONFIGURAÇÕES GERAIS DE ESTILO */
+        /* --- CORREÇÃO GLOBAL --- */
+        * { box-sizing: border-box; }
+
+        /* --- ESTILOS GERAIS --- */
+        :root {
+            --cor-primaria: #D32F2F; 
+            --cor-ativa: #ffffff;
+            --cor-inativa: #ffebee;
+            --cor-whatsapp: #25D366;
+            --cor-texto: #222;
+            --cor-fundo: #fafafa;
+        }
+
+        html { background-color: #e0e0e0; scroll-behavior: smooth; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a; /* Fundo escuro */
-            color: white;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            height: 100vh; /* Ocupa a altura toda da tela */
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* CABEÇALHO */
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0 auto; 
+            padding: 0;
+            padding-top: 140px; 
             padding-bottom: 20px;
+            max-width: 480px; 
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative; 
         }
 
-        h1 {
-            color: #FFD700; /* Dourado */
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        /* LAYOUT EM DUAS COLUNAS PARA DESKTOP */
-        .main-container {
+        /* --- CABEÇALHO --- */
+        header {
+            background-color: white;
+            height: 130px; 
+            padding: 0;
             display: flex;
-            gap: 30px;
-            flex: 1; /* Ocupa o restante da tela */
-            max-width: 1200px;
-            margin: 0 auto;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
+            max-width: 480px;
+            z-index: 1000;
         }
 
-        /* COLUNA DA ESQUERDA (CONFIGURAÇÕES) */
-        .left-panel {
-            flex: 1;
-            background: #2d2d2d;
-            padding: 20px;
-            border-radius: 15px;
+        .header-top {
             display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-
-        /* COLUNA DA DIREITA (PALCO DO SORTEIO) */
-        .right-panel {
-            flex: 2;
-            display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            background: #222;
-            border-radius: 15px;
-            border: 1px solid #333;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* ESTILOS DOS INPUTS */
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #bbb;
-        }
-
-        input[type="text"], textarea {
             width: 100%;
-            background-color: #404040;
-            color: white;
-            border: 1px solid #555;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 16px;
-            box-sizing: border-box; /* Garante que padding não estoure a largura */
+            height: 70px;
+            padding: 5px 15px;
+            border-bottom: 1px solid #f0f0f0;
         }
 
-        input[type="text"] {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            border: 1px solid #FFD700; /* Borda dourada para o prêmio */
-        }
-
-        textarea {
-            flex: 1; /* Cresce para ocupar espaço vertical */
-            resize: none;
-            font-family: monospace;
-            white-space: pre;
-            overflow-y: scroll; /* Sempre mostra barra de rolagem */
-        }
-
-        /* BARRA DE FERRAMENTAS DA LISTA */
-        .toolbar {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 5px;
+        .header-left { display: flex; align-items: center; flex: 1; }
+        
+        .logo-pequena { 
+            height: 50px;
+            width: auto; 
+            max-width: 200px; 
+            object-fit: contain; 
+            margin-left: -5px;
         }
         
-        .btn-tool {
-            background-color: #444;
-            color: #ddd;
-            border: 1px solid #555;
-            padding: 5px 10px;
-            font-size: 0.8rem;
+        .header-icons { 
+            display: flex; 
+            gap: 15px;
+            align-items: center; 
+        }
+
+        .icon-btn {
+            font-size: 28px;
+            color: var(--cor-primaria);
+            text-decoration: none; display: flex; align-items: center;
+            justify-content: center; transition: transform 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.9); }
+        .ic-zap { color: #25D366; }
+        .ic-face { color: #1877F2; }
+        .ic-insta { color: #E1306C; }
+
+        /* --- NAVEGAÇÃO --- */
+        .top-nav {
+            width: 100%;
+            height: 60px;
+            background-color: #222;
+            display: flex; 
+            justify-content: space-between;
+        }
+        
+        .nav-item {
+            flex: 1; 
+            text-align: center; 
+            background: transparent; 
+            border: none;
+            cursor: pointer; 
+            color: #999;
+            font-size: 14px; 
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            transition: all 0.3s ease;
+            border-right: 1px solid #333;
+        }
+        .nav-item:last-child { border-right: none; }
+        
+        .nav-item.ativo { 
+            color: #ffffff; 
+            background-color: var(--cor-primaria);
+            font-size: 16px;
+            font-weight: 900;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        /* --- SEÇÕES (PÁGINAS) --- */
+        .secao-conteudo { 
+            display: none; 
+            padding: 15px; 
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        .secao-conteudo.visivel { 
+            display: block; 
+        }
+
+        .secao-conteudo.animar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- CARTÕES --- */
+        .card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #f0f0f0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        
+        /* ESTILO CESTAS */
+        .card-cesta { padding: 0; overflow: hidden; border: 1px solid #eee; }
+        .cesta-header { background-color: var(--cor-primaria); padding: 15px; text-align: center; color: white; }
+        .cesta-header h3 { margin: 0; color: white; border: none; padding: 0; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .cesta-body { padding: 15px; }
+        
+        .lista-precos-cesta {
+            background-color: #f9f9f9; border-radius: 8px; padding: 12px;
+            margin: 15px 0; border: 1px solid #eee;
+        }
+        .item-preco { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 15px; color: #444; }
+        .item-preco:last-child { margin-bottom: 0; }
+        .item-preco strong { color: #D32F2F; font-size: 18px; }
+
+        h2, h3 { color: var(--cor-primaria); margin-top: 0; }
+        h3 { font-size: 18px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px; }
+
+        /* SEO SECTION */
+        .seo-text-block {
+            font-size: 12px; 
+            color: #888; 
+            text-align: center; 
+            margin-top: 30px; 
+            margin-bottom: 10px;
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        /* --- GALERIA --- */
+        .galeria-fotos { display: flex; gap: 10px; margin-bottom: 10px; }
+        
+        .img-wrapper {
+            position: relative;
+            width: 50%;
             cursor: pointer;
-            border-radius: 4px;
-            flex: 1;
         }
-        .btn-tool:hover { background-color: #555; }
-
-        .info-participantes {
-            text-align: right;
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            font-weight: bold;
+        .img-wrapper img { 
+            width: 100%; 
+            aspect-ratio: 1 / 1; 
+            object-fit: cover; 
+            border-radius: 8px; 
+            background: #eee; 
+            display: block;
         }
-
-        /* O CONTADOR DE SORTEIOS */
-        .sorteio-badge {
-            background-color: #FFD700;
-            color: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1.2rem;
+        .zoom-indicator {
             position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-
-        /* O VISOR GRANDE */
-        #display-sorteio {
-            width: 90%;
-            height: 200px;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #000;
-            border: 6px solid #444;
-            border-radius: 20px;
-            font-size: 4rem; /* Gigante para desktop */
-            font-weight: 800;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 30px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.9);
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-            padding: 10px;
-            word-break: break-word; /* Quebra nomes muito longos */
+            font-size: 12px;
+            pointer-events: none;
         }
 
-        /* BOTÃO */
-        button.action-btn {
-            background: linear-gradient(45deg, #27ae60, #2ecc71);
-            color: white;
-            border: none;
-            padding: 20px 60px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
-            transition: all 0.2s;
+        /* --- BOTÕES --- */
+        .botoes-wrapper { display: flex; gap: 10px; margin-top: 15px; }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; padding: 15px; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: bold; cursor: pointer;
+            text-decoration: none; color: white; text-align: center;
+            flex: 1; 
+        }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-compartilhar-produto { background-color: #0288D1; }
+        
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 16px; }
+
+        /* --- MODAIS --- */
+        .modal-imagem {
+            display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.95); 
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+        .modal-conteudo-wrapper {
+            width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 20px;
+        }
+        .modal-conteudo { 
+            width: 100%; height: auto; max-height: 70vh; object-fit: contain; 
+            border-top: 1px solid #333; border-bottom: 1px solid #333; background-color: black;
+        }
+        .modal-controles {
+            width: 100%; display: flex; justify-content: center; align-items: center; gap: 60px; padding: 10px;
+        }
+        .nav-seta {
+            color: white; font-size: 40px; cursor: pointer; padding: 20px;
+            background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-seta:active { background: rgba(255,255,255,0.3); }
+        .btn-fechar-galeria {
+            position: absolute; top: 20px; right: 20px; color: white; font-size: 35px; font-weight: bold;
+            cursor: pointer; z-index: 3001; background: rgba(0,0,0,0.5); border-radius: 50%; width: 50px; height: 50px;
+            border: none; display: flex; align-items: center; justify-content: center;
+        }
+        .contador-fotos { position: absolute; top: 25px; left: 25px; color: #ccc; font-size: 16px; }
+
+        .lista-pagamento { list-style: none; padding: 0; }
+        .lista-pagamento li { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 16px; display: flex; align-items: center; }
+        .lista-pagamento i { color: var(--cor-primaria); width: 30px; font-size: 18px; }
+
+        /* REMOVEMOS O MODAL-BRINDE ANTIGO */
+        
+        /* --- NOVO: ESTILO MODAL VARIAÇÃO (MINI MODAL) --- */
+        .modal-variacao {
+            display: none;
+            position: fixed;
+            z-index: 4000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-variacao-content {
+            background-color: white;
+            width: 90%;
+            max-width: 350px;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: zoomIn 0.2s ease-out;
+            text-align: center;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .titulo-modal-var {
+            color: var(--cor-primaria);
+            margin: 0 0 15px 0;
+            font-size: 20px;
             text-transform: uppercase;
         }
-
-        button.action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 25px rgba(46, 204, 113, 0.6);
+        
+        .subtitulo-modal-var {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
         }
 
-        button.action-btn:disabled {
-            background: #555;
+        .btn-fechar-modal-var {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .opcao-select {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .opcao-select:active {
+            transform: scale(0.98);
+        }
+
+        .opcao-select.selected {
+            border-color: var(--cor-primaria);
+            background-color: #ffebee;
+        }
+        
+        .opcao-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .opcao-nome { font-weight: bold; color: #333; }
+        .opcao-preco { color: var(--cor-primaria); font-weight: 900; }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .selected .radio-custom {
+            border-color: var(--cor-primaria);
+        }
+        
+        .selected .radio-custom::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px; height: 10px;
+            background-color: var(--cor-primaria);
+            border-radius: 50%;
+        }
+
+        .btn-confirmar-pedido {
+            width: 100%;
+            padding: 15px;
+            background-color: #25D366; /* WhatsApp green */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .btn-confirmar-pedido:disabled {
+            background-color: #ccc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
-        /* EFEITO DE VENCEDOR */
-        .vencedor {
-            border-color: #FFD700 !important;
-            color: #FFD700 !important;
-            animation: pulsar 1s infinite alternate;
-            background-color: #1a1a00 !important;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3) !important;
+        /* --- AVISO FLUTUANTE (PWA - ESTILO BOTTOM SHEET PROFISSIONAL) --- */
+        .aviso-instalar {
+            position: fixed; 
+            bottom: 0; 
+            left: 0;
+            width: 100%;
+            background-color: white; 
+            color: #333;
+            padding: 15px;
+            z-index: 2900;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.15); /* Sombra suave para cima */
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            display: none; 
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 15px;
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Logo do App no Banner */
+        .app-icon-banner {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .texto-instalar-banner { 
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        } 
+        .texto-instalar-banner strong { 
+            font-size: 15px; 
+            color: #222;
+            margin-bottom: 2px;
+        }
+        .texto-instalar-banner span {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .btn-acao-banner { 
+            background-color: var(--cor-primaria); /* Vermelho Marca */
+            color: white; 
+            font-weight: bold; 
+            padding: 10px 20px; 
+            border-radius: 30px; 
+            border: none; 
+            font-size: 14px; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn-acao-banner:active { transform: scale(0.95); }
+
+        .btn-fechar-aviso { 
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent; 
+            color: #999; 
+            border: none; 
+            font-size: 20px; 
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
         }
 
-        @keyframes pulsar {
-            from { transform: scale(1); text-shadow: 0 0 10px #FFD700; }
-            to { transform: scale(1.02); text-shadow: 0 0 20px #FFD700, 0 0 40px #FF4500; }
+        /* --- BANNERS EMBUTIDOS (CORREÇÃO DE TEXTO ENCAVALADO) --- */
+        .card-instalacao-fixo { 
+            background-color: white; 
+            border: 1px solid #eee; 
+            border-radius: 12px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap; /* PERMITE QUEBRA DE LINHA NO MOBILE */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .banner-content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1; /* Ocupa espaço disponível */
+            min-width: 200px; /* Garante que não esmague */
         }
 
-        /* Confetti */
-        .confetti {
-            position: fixed;
-            width: 12px;
-            height: 12px;
-            z-index: 9999;
-            animation: cair 3s linear forwards;
+        .conteudo-banner-interno {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
         }
-        @keyframes cair { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .conteudo-banner-interno strong {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        .conteudo-banner-interno span {
+            font-size: 13px;
+            color: #777;
+        }
+        
+        /* Botão interno */
+        .btn-instalacao-inline { 
+            background-color: #222; /* Preto/Cinza Escuro Profissional */
+            color: white; 
+            font-size: 13px; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0; /* Impede o botão de encolher */
+        }
+        
+        /* Ajuste Mobile para Banners Internos */
+        @media (max-width: 360px) {
+            .card-instalacao-fixo {
+                justify-content: center;
+                text-align: center;
+            }
+            .banner-content-wrapper {
+                flex-direction: column;
+                text-align: center;
+                min-width: 100%;
+            }
+            .conteudo-banner-interno {
+                align-items: center;
+            }
+            .btn-instalacao-inline {
+                width: 100%; /* Botão full width em telas muito pequenas */
+            }
+        }
+
+        /* --- ESTILOS ABAS DE CADASTRO (NOVO) --- */
+        .tabs-cadastro {
+            display: flex;
+            background-color: #eee;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.ativo {
+            background-color: white;
+            color: var(--cor-primaria);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .area-resultado-busca {
+            background-color: #f0f9f0;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .nome-encontrado {
+            display: block;
+            font-size: 18px;
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- NOVO: BANNER DE RESERVA DE BRINDE (FIXO) --- */
+        .aviso-reserva-brinde {
+            position: fixed; 
+            bottom: 0; 
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px; /* Limita à largura do corpo */
+            background: linear-gradient(90deg, #D32F2F 0%, #FF5252 100%); 
+            color: white;
+            padding: 10px 15px;
+            z-index: 2950; /* Acima do PWA (2900) e abaixo dos modais */
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+            display: none; /* Inicialmente oculto, será exibido via JS */
+            flex-direction: row; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 15px;
+            font-size: 14px;
+            animation: slideUp 0.4s ease-out;
+            cursor: pointer; /* Indica que é clicável */
+        }
+
+        .reserva-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .reserva-content i {
+            font-size: 20px;
+        }
+
+        .btn-reserva {
+            background-color: #FFEB3B; /* Amarelo chamativo */
+            color: #333; 
+            font-weight: 900; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            border: none; 
+            font-size: 14px; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .btn-reserva:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
+    <!-- CABEÇALHO FIXO DUPLO -->
     <header>
-        <h1>Sorteio Super Cestas Dona Antônia</h1>
-    </header>
-
-    <div class="main-container">
-        <!-- PAINEL ESQUERDO: CONTROLES -->
-        <div class="left-panel">
-            <label>🎁 Prêmio do Sorteio Atual:</label>
-            <input type="text" id="input-premio" placeholder="Ex: Cesta Básica #1" value="Super Cesta #1">
-
-            <label style="margin-top: 15px;">📋 Lista de Participantes:</label>
-            <div class="toolbar">
-                <button class="btn-tool" onclick="limparLista()">🗑️ Limpar</button>
-                <button class="btn-tool" onclick="removerDuplicados()">✨ Remover Duplicados</button>
-                <button class="btn-tool" onclick="embaralharLista()">🔀 Embaralhar</button>
+        <div class="header-top">
+            <div class="header-left">
+                <img src="img/logo1.png" onerror="this.src='https://placehold.co/180x60/ffffff/D32F2F?text=DONA+ANTÔNIA'" alt="Logo Dona Antônia" class="logo-pequena">
             </div>
-            <textarea id="lista-nomes" oninput="atualizarContador()" placeholder="Cole aqui a lista copiada do Excel/Google Sheets..."></textarea>
-            
-            <div class="info-participantes" id="contador-pessoas">
-                0 Participantes
+            <div class="header-icons">
+                <a href="https://wa.me/5565998150975" class="icon-btn ic-zap" onclick="abrirLinkExterno(event, this)" aria-label="Fale conosco no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://facebook.com/super.cestas.cuiaba/" class="icon-btn ic-face" onclick="abrirLinkExterno(event, this)" aria-label="Visite nosso Facebook"><i class="fab fa-facebook"></i></a>
+                <a href="https://instagram.com/super.cestas.dona.antonia/" class="icon-btn ic-insta" onclick="abrirLinkExterno(event, this)" aria-label="Siga-nos no Instagram"><i class="fab fa-instagram"></i></a>
             </div>
         </div>
 
-        <!-- PAINEL DIREITO: VISUALIZAÇÃO -->
-        <div class="right-panel">
-            <div class="sorteio-badge" id="badge-numero">Sorteio Nº 1</div>
+        <nav class="top-nav">
+            <button class="nav-item ativo" id="btn-cestas" onclick="rolarPara('cestas')">CESTAS</button>
+            <button class="nav-item" id="btn-pagamento" onclick="rolarPara('pagamento')">PAGAMENTO</button>
+            <button class="nav-item" id="btn-sorteio" onclick="rolarPara('sorteio')">SORTEIO</button>
+        </nav>
+    </header>
 
-            <div id="display-sorteio">?</div>
+    <!-- CONTAINER DE SEÇÕES EM ROLAGEM ÚNICA -->
+    
+    <!-- SEÇÃO 1: CESTAS (Sempre visível inicialmente) -->
+    <div id="pag-cestas" class="secao-conteudo visivel animar">
+        
+        <!-- CORREÇÃO VISUAL: BANNER DE CONFIANÇA/AUTORIDADE (Design mais limpo e leve) -->
+        <div class="card" style="text-align: center; border: 1px solid #f0f0f0; background-color: #f9f9f9;">
+            <h2 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #D32F2F; text-transform: uppercase;">
+                <i class="fas fa-certificate" style="color: #D32F2F;"></i> 8 ANOS DE TRADIÇÃO EM CUIABÁ E VG
+            </h2>
+            <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666; font-weight: 500;">
+                ✅ **Entrega Grátis** | Aceitamos Cartão e Benefícios Alimentação
+            </p>
+        </div>
 
-            <button id="btn-sortear" class="action-btn" onclick="iniciarSorteio()">🚀 Iniciar Sorteio</button>
+        <!-- 1º CARD: CESTA ECONÔMICA (Em destaque, vinda do anúncio) -->
+        <div class="card card-cesta" style="border: 2px solid #25D366;"> 
+            <div class="cesta-header" style="background-color: #25D366;"><h3>CESTA ECONÔMICA R$ 85,00</h3></div>
+            <div class="cesta-body">
+                <!-- CORREÇÃO VISUAL: SELO DE BRINDE MAIS LEVE -->
+                <div style="background-color: #E8F5E9; border: 1px solid #B9F6CA; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px;">
+                    <p style="color: #25D366; font-weight: 900; margin: 0; font-size: 1.1rem;">
+                        <i class="fas fa-gift"></i> BRINDE INCLUSO: Amaciante Ypê 2L!
+                    </p>
+                </div>
+
+                <div class="galeria-fotos">
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-economica.jpg" alt="Cesta Econômica" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-economica-2.jpg" alt="Cesta Econômica Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <!-- CESTA ECONÔMICA MANTÉM O BOTÃO DIRETO (SEM MODAL) -->
+                    <button class="btn btn-whatsapp" onclick="encomendar('Cesta Econômica')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Econômica')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2º CARD: CESTA MINI (Próximo Up-sell lógico) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA MINI</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos">
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-mini.jpg" alt="Cesta Mini" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-mini-2.jpg" alt="Cesta Mini Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 165,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Mini')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3º CARD: CESTA PEQUENA -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA PEQUENA</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos">
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-pequena.jpg" alt="Cesta Pequena" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-pequena-2.jpg" alt="Cesta Pequena Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 215,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Pequena')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4º CARD: CESTA MÉDIA -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos">
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-media.jpg" alt="Cesta Média" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-media-2.jpg" alt="Cesta Média Detalhe" loading="lazy" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 320,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Média')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5º CARD: CESTA GRANDE (Último item na lista) -->
+        <div class="card card-cesta">
+            <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
+            <div class="cesta-body">
+                <div class="galeria-fotos">
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-grande.jpg" alt="Cesta Básica Grande" onerror="this.src='https://placehold.co/300x300?text=Foto1'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="img-wrapper" onclick="abrirGaleria(this.querySelector('img'))">
+                        <img src="img/cesta-grande-2.jpg" alt="Cesta Básica Grande Detalhe" onerror="this.src='https://placehold.co/300x300?text=Foto2'">
+                        <div class="zoom-indicator"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
+                <div class="lista-precos-cesta">
+                    <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 380,00</strong></div>
+                    <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
+                </div>
+                <div class="botoes-wrapper">
+                    <button class="btn btn-whatsapp" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">Encomendar</button>
+                    <button class="btn btn-compartilhar-produto" onclick="compartilhar('Cesta Grande')">Compartilhar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BANNER INTERNO ORGANIZADO E RESPONSIVO (PWA) -->
+        <div class="card-instalacao-fixo pwa-install-promo">
+            <div class="banner-content-wrapper">
+                <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
+                <div class="conteudo-banner-interno">
+                    <strong>App Dona Antônia</strong>
+                    <span>Baixe para ver ofertas exclusivas.</span>
+                </div>
+            </div>
+            <button class="btn-instalacao-inline" onclick="instalarApp()">
+                <i class="fas fa-download"></i> BAIXAR
+            </button>
         </div>
     </div>
 
+    <!-- SEÇÃO 2: PAGAMENTO (Inicialmente Oculta) -->
+    <div id="pag-pagamento" class="secao-conteudo">
+        <div class="card">
+            <h2>💳 Formas de Pagamento</h2>
+            <p>Aceitamos as principais formas para facilitar sua vida:</p>
+            <ul class="lista-pagamento">
+                <li><i class="fas fa-money-bill-wave"></i> Dinheiro</li>
+                <li><i class="fas fa-qrcode"></i> Pix</li>
+                <li><i class="fas fa-credit-card"></i> Cartão de Débito</li>
+                <li><i class="fas fa-credit-card"></i> Cartão de Crédito (até 3x sem juros)</li>
+                <li><i class="fas fa-utensils"></i> Alelo Alimentação/Refeição</li>
+                <li><i class="fas fa-utensils"></i> Sodexo Alimentação/Refeição</li>
+                <li><i class="fas fa-utensils"></i> Pluxee</li>
+                <li><i class="fas fa-mobile-alt"></i> Ifood Benefícios</li>
+            </ul>
+            <p style="color: red; font-size: 14px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> Não vendemos a prazo para 30 dias.</p>
+        </div>
+
+        <!-- BANNER INTERNO ORGANIZADO (PWA) -->
+        <div class="card-instalacao-fixo pwa-install-promo">
+            <div class="banner-content-wrapper">
+                <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
+                <div class="conteudo-banner-interno">
+                    <strong>App Dona Antônia</strong>
+                    <span>Mais facilidade no pagamento.</span>
+                </div>
+            </div>
+            <button class="btn-instalacao-inline" onclick="instalarApp()">
+                <i class="fas fa-download"></i> BAIXAR
+            </button>
+        </div>
+    </div>
+
+    <!-- SEÇÃO 3: SORTEIO -->
+    <div id="pag-sorteio" class="secao-conteudo">
+        <div class="card">
+            <h2>🍀 Sorteio todo Domingo. Válido para moradores de Cuiabá e VG</h2>
+            <p>Preencha para concorrer. Serão 5 ganhadores de Kits de Limpeza e Higiêne! Próximo Sorteio dia 7 de Dezembro as 18h.</p>
+            
+            <!-- ABAS DE NAVEGAÇÃO DO CADASTRO -->
+            <div class="tabs-cadastro">
+                <button class="tab-btn ativo" id="tab-primeira" onclick="alternarAbaSorteio('primeira')">Primeira Vez</button>
+                <button class="tab-btn" id="tab-ja-tenho" onclick="alternarAbaSorteio('ja-tenho')">Já tenho cadastro</button>
+            </div>
+
+            <!-- FORMULÁRIO PRIMEIRA VEZ -->
+            <div id="conteudo-primeira-vez">
+                <form onsubmit="event.preventDefault(); enviarNovoCadastro();">
+                    <label>Nome Completo: <span style="color:red">*</span></label>
+                    <input type="text" id="novo-nome" placeholder="Seu nome" required>
+                    <label>Telefone (Whatsapp): <span style="color:red">*</span></label>
+                    <input type="tel" id="novo-telefone" placeholder="(65) 9..." required>
+                    <label>Cidade: <span style="color:red">*</span></label>
+                    <select id="novo-cidade" required>
+                        <option value="">Selecione...</option>
+                        <option value="Cuiabá">Cuiabá</option>
+                        <option value="Várzea Grande">Várzea Grande</option>
+                    </select>
+                    <label>Bairro: <span style="color:red">*</span></label>
+                    <input type="text" id="novo-bairro" placeholder="Seu bairro" required>
+                    <button type="submit" class="btn btn-whatsapp"><i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Participar</button>
+                </form>
+            </div>
+
+            <!-- FORMULÁRIO JÁ TENHO CADASTRO -->
+            <div id="conteudo-ja-tenho" style="display: none;">
+                <label>Telefone (Whatsapp): <span style="color:red">*</span></label>
+                <input type="tel" id="busca-telefone" placeholder="Digite seu telefone..." required>
+                <button onclick="buscarCadastro()" class="btn" style="background-color: #555; margin-top: 5px;">
+                    <i class="fas fa-search" style="margin-right: 8px;"></i> Buscar
+                </button>
+
+                <!-- ÁREA DE RESULTADO (ESCONDIDA INICIALMENTE) -->
+                <div id="area-resultado-busca" class="area-resultado-busca" style="display: none;">
+                    <span class="nome-encontrado" id="nome-cliente-encontrado"></span>
+                    <button onclick="confirmarJaCadastrado()" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Participar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        
+        <!-- BANNER INTERNO ORGANIZADO (PWA) -->
+        <div class="card-instalacao-fixo pwa-install-promo">
+            <div class="banner-content-wrapper">
+                <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner" style="width: 45px; height: 45px; border-radius: 8px;">
+                <div class="conteudo-banner-interno">
+                    <strong>App Dona Antônia</strong>
+                    <span>Participe dos sorteios semanais.</span>
+                </div>
+            </div>
+            <button class="btn-instalacao-inline" onclick="instalarApp()">
+                <i class="fas fa-download"></i> BAIXAR
+            </button>
+        </div>
+
+        <!-- TEXTO SEO RESTAURADO E POSICIONADO NO FIM -->
+        <div class="seo-text-block">
+            <p><strong>Cesta Básica Dona Antônia</strong> - A melhor opção em alimentos para sua família. Atendemos com rapidez e qualidade os bairros: CPA 1, 2, 3 e 4, Tijucal, Pedra 90, Osmar Cabral, Parque Cuiabá, Cristo Rei, Mapim e toda a Grande Cuiabá e Várzea Grande.</p>
+            <p>Aceitamos Pix, Cartão de Crédito e Alimentação (Alelo, Sodexo, Pluxee). Garanta sua cesta básica hoje mesmo!</p>
+        </div>
+    </div>
+
+    <!-- BANNERS E MODAIS -->
+    
+    <!-- NOVO: MODAL DE VARIAÇÃO (MINI MODAL) -->
+    <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
+        <div class="modal-variacao-content">
+            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">&times;</button>
+            
+            <h3 class="titulo-modal-var" id="tituloCestaModal">Cesta X</h3>
+            <p class="subtitulo-modal-var">Escolha a marca do arroz para continuar:</p>
+            
+            <div class="opcao-select" id="optAlvino" onclick="selecionarOpcao('alvino')">
+                <div class="opcao-info">
+                    <span class="opcao-nome">Arroz Tio Alvino</span>
+                    <span class="opcao-preco" id="precoAlvinoDisplay">R$ 0,00</span>
+                </div>
+                <div class="radio-custom"></div>
+            </div>
+
+            <div class="opcao-select" id="optKoblenz" onclick="selecionarOpcao('koblenz')">
+                <div class="opcao-info">
+                    <span class="opcao-nome">Arroz Koblenz</span>
+                    <span class="opcao-preco" id="precoKoblenzDisplay">R$ 0,00</span>
+                </div>
+                <div class="radio-custom"></div>
+            </div>
+
+            <button class="btn-confirmar-pedido" id="btnConfirmarPedido" onclick="confirmarEncomenda()" disabled>
+                <i class="fab fa-whatsapp"></i> Enviar Pedido
+            </button>
+        </div>
+    </div>
+
+    <!-- BANNER FLUTUANTE (PWA) -->
+    <div id="aviso-instalar" class="aviso-instalar pwa-install-promo">
+        <button class="btn-fechar-aviso" onclick="fecharInstalacao()">&times;</button>
+        
+        <img src="img/icon-192.png" onerror="this.src='https://placehold.co/50x50/D32F2F/ffffff?text=DA'" class="app-icon-banner">
+        
+        <div class="texto-instalar-banner">
+            <strong>Instalar App Dona Antônia</strong>
+            <span>Receba ofertas e participe de sorteios.</span>
+        </div>
+        
+        <button class="btn-acao-banner" onclick="instalarApp()">
+            OBTER
+        </button>
+    </div>
+
+    <!-- NOVO: BANNER FLUTUANTE DE RESERVA DE BRINDE -->
+    <div id="avisoReservaBrinde" class="aviso-reserva-brinde" onclick="reservarBrinde()">
+        <div class="reserva-content">
+            <i class="fas fa-tags"></i>
+            <span>
+                ⚠️ **QUER O BRINDE?** Garanta sua reserva AGORA e pague depois!
+            </span>
+        </div>
+        <button class="btn-reserva">
+            RESERVAR BRINDE GRÁTIS
+        </button>
+    </div>
+
+    <div id="modalVisualizador" class="modal-imagem" onclick="fecharImagem()">
+        <button class="btn-fechar-galeria" onclick="fecharImagem()">&times;</button>
+        <div class="modal-conteudo-wrapper" onclick="event.stopPropagation()">
+            <img id="imgAmpliada" src="" class="modal-conteudo">
+        </div>
+        <div class="modal-controles" onclick="event.stopPropagation()">
+            <button class="nav-seta" onclick="mudarFoto(-1)">&#10094;</button>
+            <button class="nav-seta" onclick="mudarFoto(1)">&#10095;</button>
+        </div>
+        <div id="contadorFotos" class="contador-fotos">1 / 2</div>
+    </div>
+
+    <!-- REMOVEMOS O modalBrinde ANTIGO -->
+
+    <!-- SCRIPT DE DADOS EXTERNO (Inserido antes do script principal) -->
+    <!-- ATENÇÃO: É necessário que o arquivo clientes.js exista no ambiente de execução. -->
+    <script src="data/clientes.js"></script>
+
     <script>
-        // Variável para controlar o número do sorteio
-        let numeroSorteio = 1;
+        const TELEFONE = "5565998150975";
+        const LINK_SITE = "donaantonia.com.br/oferta";
 
-        // Funções da Barra de Ferramentas
-        function getListaNomes() {
-            const textarea = document.getElementById('lista-nomes');
-            return textarea.value.split('\n').filter(n => n.trim() !== '');
-        }
+        // --- SISTEMA DE ROLAGEM INFINITA ---
+        let paginasReveladas = {
+            'cestas': true,
+            'pagamento': false,
+            'sorteio': false
+        };
 
-        function atualizarContador() {
-            const lista = getListaNomes();
-            const contadorDiv = document.getElementById('contador-pessoas');
-            contadorDiv.innerText = `${lista.length} Participantes`;
-        }
+        function revelarSecao(id, rolar = false) {
+            const el = document.getElementById('pag-' + id);
+            if (!el) return;
+            
+            paginasReveladas[id] = true;
+            el.classList.add('visivel');
+            setTimeout(() => {
+                el.classList.add('animar');
+            }, 50);
 
-        function limparLista() {
-            if(confirm("Tem certeza que deseja apagar toda a lista?")) {
-                document.getElementById('lista-nomes').value = "";
-                atualizarContador();
+            if (id === 'sorteio' && !paginasReveladas['pagamento']) {
+                revelarSecao('pagamento', false); 
+            }
+
+            if (rolar) {
+                const headerOffset = 140; 
+                const elementPosition = el.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                     top: offsetPosition,
+                     behavior: "smooth"
+                });
             }
         }
 
-        function removerDuplicados() {
-            const lista = getListaNomes();
-            // O Set remove duplicatas automaticamente
-            const listaUnica = [...new Set(lista.map(n => n.trim()))];
+        // --- SISTEMA DE NAVEGAÇÃO POR LINK (HASHTAG) ---
+        function verificarHash() {
+            // Pega o que vem depois do # (ex: #sorteio -> sorteio)
+            const hash = window.location.hash.replace('#', '');
+            const secoes = ['cestas', 'pagamento', 'sorteio'];
             
-            document.getElementById('lista-nomes').value = listaUnica.join('\n');
-            atualizarContador();
-            
-            const removidos = lista.length - listaUnica.length;
-            if (removidos > 0) alert(`${removidos} nomes duplicados foram removidos!`);
-        }
-
-        function embaralharLista() {
-            const lista = getListaNomes();
-            // Algoritmo de Fisher-Yates para embaralhar
-            for (let i = lista.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [lista[i], lista[j]] = [lista[j], lista[i]];
+            if (secoes.includes(hash)) {
+                // Se o link tiver um hash válido, rola para ele
+                revelarSecao(hash, true);
+            } else {
+                // Se não, mostra o padrão (cestas) sem rolar
+                revelarSecao('cestas', false);
             }
-            document.getElementById('lista-nomes').value = lista.join('\n');
         }
 
-        // Funções do Sorteio
-        function iniciarSorteio() {
-            const textarea = document.getElementById('lista-nomes');
-            const display = document.getElementById('display-sorteio');
-            const btn = document.getElementById('btn-sortear');
-            const badge = document.getElementById('badge-numero');
+        // Ouve quando o usuário clica em "Voltar" no navegador
+        window.addEventListener('popstate', verificarHash);
 
-            // 1. Validar lista
-            const nomes = textarea.value.split('\n').filter(n => n.trim() !== '');
+        function rolarPara(id) {
+            // Atualiza a URL (adiciona o #) sem recarregar a página
+            if(history.pushState) {
+                history.pushState(null, null, '#' + id);
+            } else {
+                window.location.hash = id;
+            }
+            revelarSecao(id, true);
+        }
 
-            if (nomes.length < 2) {
-                alert("A lista precisa de pelo menos 2 nomes!");
+        // VARIÁVEL PARA CONTROLE DO NOVO BANNER DE RESERVA
+        let reservaFlutuanteMostrada = false;
+
+        window.onscroll = function() {
+            const scrollTotal = document.documentElement.scrollHeight;
+            const scrollAtual = window.scrollY + window.innerHeight;
+            
+            // Revelação das outras seções (mantida)
+            if (scrollAtual >= scrollTotal - 150) {
+                if (!paginasReveladas['pagamento']) {
+                    revelarSecao('pagamento', false);
+                } else if (!paginasReveladas['sorteio']) {
+                    revelarSecao('sorteio', false);
+                }
+            }
+
+            // NOVO: Exibe o banner de reserva após ver a primeira cesta (aprox 400px de scroll)
+            if (window.scrollY > 400 && !reservaFlutuanteMostrada) {
+                document.getElementById('avisoReservaBrinde').style.display = 'flex';
+                reservaFlutuanteMostrada = true;
+                
+                // Dispara o confetti na primeira vez que aparece
+                confetti({ particleCount: 100, spread: 70, origin: { y: 1 } });
+            }
+
+
+            atualizarMenuAtivo();
+        };
+
+        function atualizarMenuAtivo() {
+            const ids = ['cestas', 'pagamento', 'sorteio'];
+            let atual = 'cestas';
+
+            ids.forEach(id => {
+                const el = document.getElementById('pag-' + id);
+                if (el && el.classList.contains('visivel')) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight / 2 && rect.bottom > 140) {
+                        atual = id;
+                    }
+                }
+            });
+
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('ativo'));
+            const btnAtual = document.getElementById('btn-' + atual);
+            if(btnAtual) btnAtual.classList.add('ativo');
+        }
+
+        function abrirLinkExterno(event, element) {
+            event.preventDefault();
+            let url = element.getAttribute('href');
+            if (url && !url.startsWith('http') && !url.startsWith('//')) { url = 'https://' + url; }
+            window.open(url, '_blank');
+        }
+
+        // --- LÓGICA ANTIGA DO ENCOMENDAR (Mantida para Cesta Econômica) ---
+        function encomendar(produto) { 
+            // Mensagem direta de compra para a Cesta Econômica
+            const msg = `Olá, quero encomendar a *${produto}* (R$ 85,00) e garantir o meu Amaciante Ypê de brinde!`;
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank'); 
+        }
+
+        // --- NOVA LÓGICA DE RESERVA DE BRINDE ---
+        function reservarBrinde() {
+            const msg = `Olá, vi o anúncio do Amaciante Ypê de brinde! Gostaria de GARANTIR A RESERVA do meu brinde. Quando eu puder comprar a cesta, o brinde estará garantido, certo?`;
+            
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
+            
+            // Opcional: Esconde o banner após a ação para não incomodar
+            document.getElementById('avisoReservaBrinde').style.display = 'none';
+        }
+
+        // --- NOVA LÓGICA DO MODAL DE VARIAÇÃO (PARA UP-SELL) ---
+        let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
+        let opcaoEscolhida = ''; // 'alvino' ou 'koblenz'
+
+        function abrirModalVariacao(nome, pAlvino, pKoblenz) {
+            dadosCestaAtual = { nome, precoAlvino: pAlvino, precoKoblenz: pKoblenz };
+            opcaoEscolhida = ''; // Reseta escolha
+            
+            // Popula o modal
+            document.getElementById('tituloCestaModal').innerText = nome;
+            document.getElementById('precoAlvinoDisplay').innerText = 'R$ ' + pAlvino;
+            document.getElementById('precoKoblenzDisplay').innerText = 'R$ ' + pKoblenz;
+            
+            // Reseta estilos
+            document.getElementById('optAlvino').classList.remove('selected');
+            document.getElementById('optKoblenz').classList.remove('selected');
+            document.getElementById('btnConfirmarPedido').disabled = true;
+
+            document.getElementById('modalVariacao').style.display = 'flex';
+        }
+
+        function selecionarOpcao(tipo) {
+            opcaoEscolhida = tipo;
+            
+            // Atualiza visual
+            document.getElementById('optAlvino').classList.remove('selected');
+            document.getElementById('optKoblenz').classList.remove('selected');
+            
+            if(tipo === 'alvino') {
+                document.getElementById('optAlvino').classList.add('selected');
+            } else {
+                document.getElementById('optKoblenz').classList.add('selected');
+            }
+            
+            // Habilita botão
+            document.getElementById('btnConfirmarPedido').disabled = false;
+        }
+
+        function confirmarEncomenda() {
+            if(!opcaoEscolhida) return;
+
+            let marca = opcaoEscolhida === 'alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
+            let preco = opcaoEscolhida === 'alvino' ? dadosCestaAtual.precoAlvino : dadosCestaAtual.precoKoblenz;
+            let nomeCesta = dadosCestaAtual.nome;
+
+            // Mensagem de up-sell: menciona o brinde para fechar a compra maior
+            let textoZap = `Olá, quero encomendar a *${nomeCesta}* com *${marca}* (Valor: R$ ${preco}). Quero garantir meu Amaciante Ypê de brinde!`;
+            
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank');
+            fecharModalVariacao();
+        }
+
+        function fecharModalVariacao() {
+            document.getElementById('modalVariacao').style.display = 'none';
+        }
+
+        function compartilhar(produto) {
+            const texto = `Olha essa ${produto} da Dona Antônia! Confira: ${LINK_SITE}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
+        }
+
+        // --- LÓGICA DE SORTEIO (Mantida) ---
+        
+        // 1. Alternar Abas
+        function alternarAbaSorteio(aba) {
+            // Remove classe ativo dos botões
+            document.getElementById('tab-primeira').classList.remove('ativo');
+            document.getElementById('tab-ja-tenho').classList.remove('ativo');
+            
+            // Esconde conteúdos
+            document.getElementById('conteudo-primeira-vez').style.display = 'none';
+            document.getElementById('conteudo-ja-tenho').style.display = 'none';
+
+            // Ativa a aba selecionada
+            if (aba === 'primeira') {
+                document.getElementById('tab-primeira').classList.add('ativo');
+                document.getElementById('conteudo-primeira-vez').style.display = 'block';
+            } else {
+                document.getElementById('tab-ja-tenho').classList.add('ativo');
+                document.getElementById('conteudo-ja-tenho').style.display = 'block';
+            }
+        }
+
+        // 2. Enviar Novo Cadastro (Primeira Vez)
+        function enviarNovoCadastro() {
+            const nome = document.getElementById('novo-nome').value.trim();
+            const tel = document.getElementById('novo-telefone').value.trim();
+            const cid = document.getElementById('novo-cidade').value;
+            const bai = document.getElementById('novo-bairro').value.trim();
+            if (!nome || !tel || !cid || !bai) { alert("Preencha todos os campos!"); return; }
+            
+            // Adicionado texto obrigatório no final
+            const msg = `CADASTRO SORTEIO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}\n\nSorteio do Dia 7 de Dezembro`;
+            
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // 3. Buscar Cadastro (Já Tenho)
+        function buscarCadastro() {
+            const inputTel = document.getElementById('busca-telefone').value;
+            const telLimpo = inputTel.replace(/\D/g, ''); 
+
+            if (!telLimpo || telLimpo.length < 6) {
+                alert("Por favor, digite pelo menos os últimos 6 números do seu telefone.");
                 return;
             }
 
-            // 2. Preparar animação
-            let tempoCorrido = 0;
-            const duracaoTotal = 8000; // 8 segundos
-            const velocidadeTroca = 70; 
-            
-            btn.disabled = true;
-            btn.innerText = "Sorteando...";
-            display.classList.remove('vencedor');
+            const btnBuscar = document.querySelector('#conteudo-ja-tenho button');
+            const textoOriginal = btnBuscar.innerHTML;
+            btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+            btnBuscar.disabled = true;
 
-            // 3. Loop
-            const intervalo = setInterval(() => {
-                const indiceAleatorio = Math.floor(Math.random() * nomes.length);
-                display.innerText = nomes[indiceAleatorio];
-                tempoCorrido += velocidadeTroca;
+            let clienteEncontrado = null;
+            if(typeof clientes !== 'undefined') {
+                 const inputSuffix = telLimpo.slice(-6);
 
-                // 4. Finalizar
-                if (tempoCorrido >= duracaoTotal) {
-                    clearInterval(intervalo);
+                 clienteEncontrado = clientes.find(c => {
+                    const cTelLimpo = c.telefone.replace(/\D/g, '');
+                    if (cTelLimpo.length < 6) return false;
                     
-                    // Vencedor Final
-                    const vencedorFinal = nomes[Math.floor(Math.random() * nomes.length)];
-                    display.innerText = vencedorFinal;
-                    
-                    // Estilos de Vitória
-                    display.classList.add('vencedor');
-                    celebrar();
-
-                    // Preparar para o PRÓXIMO sorteio
-                    numeroSorteio++; 
-                    
-                    btn.innerText = `Próximo Sorteio (Ir para Nº ${numeroSorteio}) >>`;
-                    btn.style.background = "linear-gradient(45deg, #f39c12, #f1c40f)";
-                    btn.disabled = false;
-                    
-                    btn.onclick = function() {
-                        prepararProximo();
-                    };
-                }
-            }, velocidadeTroca);
-        }
-
-        function prepararProximo() {
-            const display = document.getElementById('display-sorteio');
-            const btn = document.getElementById('btn-sortear');
-            const badge = document.getElementById('badge-numero');
-            const inputPremio = document.getElementById('input-premio');
-
-            // Limpa visual
-            display.classList.remove('vencedor');
-            display.innerText = "?";
-            
-            // Atualiza número na tela
-            badge.innerText = `Sorteio Nº ${numeroSorteio}`;
-            
-            // Sugere atualização do nome do prêmio
-            inputPremio.value = `Super Cesta #${numeroSorteio}`;
-
-            // Reseta botão
-            btn.innerText = "🚀 Iniciar Sorteio";
-            btn.style.background = "linear-gradient(45deg, #27ae60, #2ecc71)";
-            btn.onclick = iniciarSorteio; 
-        }
-
-        function celebrar() {
-            const cores = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#ffffff'];
-            for(let i=0; i<100; i++) {
-                const confete = document.createElement('div');
-                confete.classList.add('confetti');
-                confete.style.left = Math.random() * 100 + 'vw';
-                confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-                confete.style.top = '-20px';
-                confete.style.animationDuration = (Math.random() * 2 + 2) + 's'; 
-                document.body.appendChild(confete);
-                setTimeout(() => confete.remove(), 5000);
+                    const clientSuffix = cTelLimpo.slice(-6);
+                    return clientSuffix === inputSuffix;
+                });
+            } else {
+                console.error("Arquivo clientes.js não carregado ou variável não definida.");
             }
+
+            setTimeout(() => {
+                btnBuscar.innerHTML = textoOriginal;
+                btnBuscar.disabled = false;
+
+                if (clienteEncontrado) {
+                    document.getElementById('area-resultado-busca').style.display = 'block';
+                    document.getElementById('nome-cliente-encontrado').innerText = clienteEncontrado.nome;
+                    document.getElementById('busca-telefone').setAttribute('data-nome-encontrado', clienteEncontrado.nome);
+                } else {
+                    document.getElementById('area-resultado-busca').style.display = 'none';
+                    alert("Ops! Não encontramos seu cadastro com este número. Tente digitar de outra forma ou faça o cadastro na aba 'Primeira Vez'.");
+                }
+            }, 600);
         }
 
-        // Inicializa o contador ao carregar
-        atualizarContador();
+        // 4. Confirmar Cadastro Existente
+        function confirmarJaCadastrado() {
+            const inputTel = document.getElementById('busca-telefone').value;
+            const nomeEncontrado = document.getElementById('busca-telefone').getAttribute('data-nome-encontrado') || "Cliente";
+            
+            const msg = `JÁ SOU CADASTRADO:\nNome: ${nomeEncontrado}\nConfirmo minha participação com o telefone: ${inputTel}\n\nSorteio do Dia 7 de Dezembro`;
+            
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // ------------------------------------
+        // LÓGICA DE GALERIA (Mantida)
+        // ------------------------------------
+
+        let currentImages = [];
+        let currentIndex = 0;
+        function abrirGaleria(imgElement) {
+            if (!imgElement) return;
+            const container = imgElement.closest('.galeria-fotos');
+            const imgs = container.querySelectorAll('img');
+            currentImages = [];
+            imgs.forEach((img, index) => {
+                currentImages.push(img.src);
+                if (img === imgElement) currentIndex = index;
+            });
+            atualizarModalImagem();
+            document.getElementById('modalVisualizador').style.display = 'flex';
+        }
+        function atualizarModalImagem() {
+            document.getElementById('imgAmpliada').src = currentImages[currentIndex];
+            document.getElementById('contadorFotos').innerText = `${currentIndex + 1} / ${currentImages.length}`;
+        }
+        function mudarFoto(dir) {
+            currentIndex += dir;
+            if (currentIndex >= currentImages.length) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = currentImages.length - 1;
+            atualizarModalImagem();
+        }
+        function fecharImagem() { document.getElementById('modalVisualizador').style.display = 'none'; }
+        
+        // ------------------------------------
+        // LÓGICA DE PWA (Mantida)
+        // ------------------------------------
+        let deferredPrompt;
+        const avisoPwa = document.getElementById('aviso-instalar');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); 
+            deferredPrompt = e;
+            localStorage.removeItem('appInstalado'); 
+            if(!sessionStorage.getItem('bannerFechado')) {
+                avisoPwa.style.display = 'flex';
+                document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'flex'); /* Alterado para flex para funcionar com o novo CSS */
+            }
+        });
+        function instalarApp() {
+            if(deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((res) => {
+                    if(res.outcome === 'accepted') {
+                        localStorage.setItem('appInstalado', 'true');
+                        document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
+                        avisoPwa.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            } else { alert("Para instalar: Toque nos três pontinhos do navegador e escolha 'Adicionar à Tela Inicial'."); }
+        }
+        function fecharInstalacao() { avisoPwa.style.display = 'none'; sessionStorage.setItem('bannerFechado', 'true'); }
+
+        window.onload = function() {
+            if (localStorage.getItem('app-instalado')) {
+                 document.querySelectorAll('.pwa-install-promo').forEach(el => el.style.display = 'none');
+            }
+            // NOVO: Verifica o link ao carregar a página
+            verificarHash();
+        };
     </script>
 </body>
 </html>
