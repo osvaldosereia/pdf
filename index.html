@@ -451,7 +451,6 @@
         .opcao-nome { font-weight: bold; color: #333; }
         .opcao-preco { color: var(--cor-primaria); font-weight: 900; }
         .radio-custom { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; position: relative; }
-        .selected .radio-custom { border-color: var(--cor-primaria); }
         .selected .radio-custom::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: var(--cor-primaria); border-radius: 50%; }
         .btn-confirmar-pedido { width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
@@ -592,14 +591,14 @@
         /* --- RESPONSIVIDADE DESKTOP (CORREÇÃO 3) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
-                max-width: 700px; 
+                max-width: 900px; 
                 box-shadow: 0 0 25px rgba(0,0,0,0.15); 
             }
             header {
-                max-width: 700px; 
+                max-width: 900px; 
             }
             .header-background-bar {
-                max-width: 700px; 
+                max-width: 900px; 
                 left: 50%;
                 transform: translateX(-50%);
             }
@@ -878,7 +877,7 @@
         </div><!-- FIM SEÇÃO CESTAS -->
         
         <!-- SEÇÃO 2 & 3: PAGAMENTO E SORTEIO (Usando grid no desktop) -->
-        <div class="secoes-extras-grid">
+        <div classoes-extras-grid">
             
             <!-- CARD 1: FORMAS DE PAGAMENTO (EXTRAÍDO DO ANEXO) -->
             <div id="pag-pagamento" class="secao-conteudo">
@@ -1017,7 +1016,7 @@
             <div id="etapa1" class="etapa-modal ativa">
                 <h3 class="titulo-receptivo">BEM-VINDO! 👋</h3>
                 <p class="subtitulo-receptivo">
-                    Entregamos em Cuiabá e Várzea Grande. Encomende pela manhã e receba sua cesta no mesmo dia!
+                    Entregamos em Cuiabá e Várzea Grande.
                 </p>
                 <button class="btn-receptivo btn-ver-cestas" onclick="mudarEtapaPopup()">
                     <i class="fas fa-box" style="margin-right: 8px;"></i> Ver as Cestas
@@ -1030,13 +1029,13 @@
             <!-- ETAPA 2: BRINDE E CTA DIRETA -->
             <div id="etapa2" class="etapa-modal">
                 <i class="fas fa-gift" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
-                <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Ah, e tem mais!</h3>
+                <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Brinde!</h3>
                 <p class="subtitulo-receptivo">
                     Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!
                 </p>
                 <!-- O botão agora apenas fecha o modal, conforme solicitado -->
                 <button class="btn-receptivo btn-eu-quero" onclick="confirmarBrindeEFecar()">
-                    <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO o Brinde!
+                    <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO!
                 </button>
                 <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
                     Voltar para o site
@@ -1123,11 +1122,14 @@
                 event.preventDefault();
             }
             
-            // Tenta abrir o WhatsApp primeiro (mais chances de conversão)
+            // O link tel:... no HTML garante a chamada direta
+            // Aqui podemos adicionar uma função extra, como tentativa de WhatsApp
             const textoZap = `Olá, gostaria de falar com a Dona Antônia sobre as cestas.`;
-            window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            // Tenta abrir o WhatsApp
+            // window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
             
-            // Fallback para chamada normal - O link tel:... no HTML garante a chamada direta
+            // Para garantir que a chamada telefônica normal funcione (conforme solicitado),
+            // a melhor forma é confiar no href="tel:..." no HTML
         }
 
         // ===============================
@@ -1153,9 +1155,6 @@
             
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
-            
-            // Rola a página para a seção de cestas após fechar
-            // REMOVIDO SCROLL: A remoção dessa linha garante que o usuário permaneça no atalho (#)
             
             // NOVO: Inicia o timer de 40 segundos para o popup de retenção PWA
             iniciarPopupPWAComTimer(40);
@@ -1222,7 +1221,7 @@
          */
         function enviarOiWhatsApp() {
             const textoZap = `Olá, vim do site e quero saber mais sobre as cestas!`;
-            window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
             fecharModalPWA();
         }
         
@@ -1281,7 +1280,8 @@
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
             
-            // Se o timer de 40s (ou 15s) já expirou e o popup não foi mostrado, tenta mostrar em 1s
+            // Este bloco de fallback garante que se o deferredPrompt chegar depois do timer principal ter expirado,
+            // o popup ainda será mostrado rapidamente (1s).
              if (!isPwaPromptShown) {
                  clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
                  iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
