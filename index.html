@@ -409,13 +409,12 @@
             z-index: 5002; 
             box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
             animation: slideUp 0.3s ease-out;
-            /* Novo estilo: Borda no topo */
-            border-top: 3px solid var(--cor-sorteio);
+            /* REMOVIDO: border-top: 3px solid var(--cor-sorteio); */
         }
         .modal-pwa-content {
             background-color: white;
             padding: 15px 20px;
-            padding-top: 25px; /* Ajuste para a nova logo PWA */
+            padding-top: 40px; /* Mais espaço para a logo maior */
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             text-align: center;
@@ -425,14 +424,14 @@
             align-items: center;
         }
         
-        /* LOGO POPUP PWA */
+        /* LOGO POPUP PWA (AUMENTADA) */
         .modal-logo-pwa {
             position: absolute;
-            top: -20px; 
+            top: -30px; /* Metade do tamanho da logo de 60px */
             left: 50%;
             transform: translateX(-50%);
-            width: 40px; 
-            height: 40px; 
+            width: 60px; /* Aumentada de 40px para 60px */
+            height: 60px; 
             border-radius: 50%; 
             background-color: white;
             padding: 2px;
@@ -446,71 +445,92 @@
              border-radius: 50%;
         }
         
+        /* BOTÃO FECHAR PWA (MUDADO PARA A DIREITA) */
+        .pwa-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 20px; /* Aumentado para ser um bom target de toque */
+            cursor: pointer;
+            line-height: 1;
+            padding: 5px;
+        }
+
         @keyframes slideUp {
             from { transform: translate(-50%, 100%); }
             to { transform: translate(-50%, 0); }
         }
         /* Ajuste do texto para ficar mais harmonioso */
         .modal-pwa-content h3 {
-             color: var(--cor-sorteio); /* Usa a cor verde */
-             font-size: 1.1rem;
-             margin-top: 5px;
+             color: var(--cor-primaria); /* Alterado para Primaria (Vermelho) */
+             font-size: 1.3rem; /* Aumentado para destaque */
+             margin-top: 10px;
              margin-bottom: 5px;
              font-weight: 700;
         }
         .modal-pwa-content p {
-            font-size: 14px;
-            margin: 0 0 10px 0;
+            font-size: 15px;
+            margin: 0 0 15px 0;
             font-weight: 400;
-            color: #666;
+            color: #444;
         }
-        .btn-pwa-install {
-            background-color: var(--cor-sorteio); /* Mais destaque visual */
+        
+        /* Layout dos 2 botões */
+        .pwa-botoes-wrapper {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+        .btn-pwa-install, .btn-pwa-whatsapp {
+            flex: 1; /* Divide o espaço igualmente */
+            background-color: var(--cor-sorteio); /* Cor App */
             color: white;
-            padding: 12px;
+            padding: 12px 10px;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: transform 0.2s;
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
-            width: 90%; /* Deixa o botão centralizado e com margem */
-            max-width: 300px;
-        }
-        .btn-pwa-install:active { transform: scale(0.98); }
-        .pwa-close-btn {
-            background: none;
             border: none;
-            color: #999;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 5px;
+            text-decoration: none;
+        }
+        .btn-pwa-install:active, .btn-pwa-whatsapp:active { transform: scale(0.98); }
+
+        .btn-pwa-whatsapp {
+            background-color: var(--cor-whatsapp);
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+        }
+        .btn-pwa-install {
+            background-color: var(--cor-primaria); /* Cor App mais forte */
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
         }
 
-
-        /* --- RESPONSIVIDADE DESKTOP (AJUSTADA PARA 700PX) --- */
+        /* --- RESPONSIVIDADE DESKTOP (MANTIDA) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
-                max-width: 700px; /* Reduzido para ser mais parecido com o mobile */
+                max-width: 700px; 
                 box-shadow: 0 0 25px rgba(0,0,0,0.15); 
             }
             header {
-                max-width: 700px; /* Header acompanha o novo limite */
+                max-width: 700px; 
             }
             .header-background-bar {
-                max-width: 700px; /* Barra de fundo acompanha o novo limite */
+                max-width: 700px; 
                 left: 50%;
                 transform: translateX(-50%);
             }
-            /* O banner superior PWA foi removido, então não precisa de ajuste aqui */
-            
             .secao-conteudo {
                 padding: 20px 30px; 
             }
-            /* O modal PWA também acompanha o max-width */
             #modalPWA {
                  max-width: 700px; 
             }
@@ -518,34 +538,14 @@
         
         /* Layout de 2 colunas para Produtos (tablet/desktop) */
         @media (min-width: 768px) {
-            /* Banner de 8 anos ocupa toda a largura */
-            #pag-cestas .card:first-child {
-                grid-column: 1 / -1; 
-            }
-            
+            /* Mantido o layout anterior */
             .cesta-cards-grid {
                 display: grid;
-                grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
+                grid-template-columns: 1fr 1fr; 
                 gap: 20px; 
             }
-            .card-cesta {
-                width: 100%;
-                margin-bottom: 0 !important; 
-            }
-            /* Cards de Pagamento/Sorteio podem ficar lado a lado no desktop */
-            .secoes-extras-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr; 
-                gap: 20px;
+            .pwa-botoes-wrapper {
                 padding: 0 30px; 
-            }
-            /* Remove o padding interno da seção se o grid for usado */
-            #pag-pagamento, #pag-sorteio {
-                padding: 20px 0;
-            }
-            #pag-pagamento .section-icon-header, #pag-sorteio .section-icon-header {
-                 /* Centraliza o ícone separador entre as seções extras */
-                grid-column: 1 / -1;
             }
         }
     </style>
@@ -941,7 +941,7 @@
     <!-- NOVO POPUP 2: RETENÇÃO PWA (APAREECE NO SCROLL) -->
     <div id="modalPWA" style="display: none;">
         <div class="modal-pwa-content">
-            <!-- LOGO POPUP PWA (ADICIONADA COM ONERROR) -->
+            <!-- LOGO POPUP PWA (AUMENTADA E AJUSTADA NO TOPO) -->
             <div class="modal-logo-pwa">
                  <img src="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765" 
                      alt="Logo Dona Antônia" 
@@ -949,17 +949,24 @@
                      >
             </div>
             
-            <!-- Botão de fechar discreto -->
+            <!-- Botão de fechar (APENAS X, MUDADO PARA A DIREITA) -->
             <button class="pwa-close-btn" onclick="fecharModalPWA()">
-                <i class="fas fa-times"></i> Fechar
+                &times;
             </button>
             
-            <h3 style="margin-bottom: 5px;">Acesso Rápido Garantido!</h3>
-            <p>Baixe o App Dona Antônia (é grátis!) e nunca mais perca nosso contato.</p>
+            <!-- CONTEÚDO ATUALIZADO -->
+            <h3>Salve nosso contato</h3>
+            <p>Comprar com a gente compensa muito.</p>
             
-            <button class="btn-pwa-install" onclick="instalarPWA()">
-                <i class="fas fa-cloud-download-alt" style="margin-right: 8px;"></i> Instalar o App
-            </button>
+            <!-- BOTÕES DUPLOS -->
+            <div class="pwa-botoes-wrapper">
+                <button class="btn-pwa-install" onclick="instalarPWA()">
+                    <i class="fas fa-mobile-alt" style="margin-right: 8px;"></i> Aplicativo
+                </button>
+                <button class="btn-pwa-whatsapp" onclick="enviarOiWhatsApp()">
+                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> WhatsApp
+                </button>
+            </div>
         </div>
     </div>
     
@@ -1041,13 +1048,21 @@
         // ===============================
         
         /**
+         * NOVO: Envia um "oi" simples para o WhatsApp
+         */
+        function enviarOiWhatsApp() {
+            const textoZap = `Olá, vim do site e quero saber mais sobre as cestas!`;
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            fecharModalPWA();
+        }
+        
+        /**
          * Exibe o modal PWA na parte inferior da tela.
          */
         function mostrarModalPWA() {
             const modal = document.getElementById('modalPWA');
             
             // Só exibe se a variável de controle local e o prompt estiver definido
-            // (deferredPrompt != null significa que o PWA ainda não está instalado)
             if (modal.style.display !== 'block' && !isPwaPromptShown && deferredPrompt) {
                  modal.style.display = 'block'; 
                  // MANTEMOS A CHAVE AQUI PARA MARCAR QUE O USUÁRIO VIU O POPUP (mesmo em modo de teste)
@@ -1072,7 +1087,6 @@
          * Lógica de detecção de rolagem.
          */
         function checarRolagemParaPWA() {
-            // A checagem isPwaPromptShown foi REMOVIDA AQUI para facilitar a visualização de teste
             // A condição de parada AGORA é apenas baseada no deferredPrompt (se o app já está instalado)
             if (!deferredPrompt) { 
                 window.removeEventListener('scroll', checarRolagemParaPWA);
