@@ -76,7 +76,7 @@
             left: 50%; 
             transform: translateX(-50%); 
             width: 100%;
-            max-width: 480px; 
+            max-width: 480px; /* Padrão Mobile */
             z-index: 2100; /* Mais alto que o header */
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
@@ -102,7 +102,7 @@
             left: 50%; 
             transform: translateX(-50%); 
             width: 100%;
-            max-width: 480px; 
+            max-width: 480px; /* Padrão Mobile */
             z-index: 1000;
         }
 
@@ -617,8 +617,9 @@
                 max-width: 900px; 
                 box-shadow: 0 0 25px rgba(0,0,0,0.15); 
             }
-            header {
-                max-width: 900px; 
+            /* CORREÇÃO AQUI: Alinhamento da barra de aviso e header no Desktop */
+            #barra-aviso-topo, header {
+                 max-width: 900px; 
             }
             .header-background-bar {
                 max-width: 900px; 
@@ -1488,9 +1489,17 @@
                  logo.style.transform = 'translateX(-50%)'; 
                  
                  if(bar) {
-                     bar.style.left = '50%';
-                     bar.style.transform = 'translateX(-50%)';
+                    /* Corrigido para usar a nova largura no desktop */
+                    bar.style.maxWidth = '900px'; 
+                    bar.style.left = '50%';
+                    bar.style.transform = 'translateX(-50%)';
                  }
+                 /* Corrigido para a barra amarela */
+                 const aviso = document.getElementById('barra-aviso-topo');
+                 if (aviso) {
+                    aviso.style.maxWidth = '900px';
+                 }
+
 
             } else {
                 // Configurações Mobile
