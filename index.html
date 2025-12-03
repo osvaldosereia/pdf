@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cesta Básica em Cuiabá e Várzea Grande | Dona Antônia</title>
     
+    <!-- Metatags Open Graph (para compartilhamento) -->
+    <meta property="og:title" content="Cestas Básicas Dona Antônia: Qualidade e Preço Justo em Cuiabá e VG">
+    <meta property="og:description" content="A melhor opção em alimentos para sua família há 8 anos. Encomende agora!">
+    <!-- ATENÇÃO: A imagem será sempre a mesma para todos os links neste modelo de página única. -->
+    <meta property="og:image" content="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765">
+    <meta property="og:url" content="https://donaantonia.com.br/">
+
     <!-- Link para ícones (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -23,6 +30,7 @@
         :root {
             --cor-primaria: #D32F2F; /* Vermelho Principal */
             --cor-whatsapp: #25D366;
+            --cor-compartilhar: #1E88E5; /* Azul mais escuro/distinto para Compartilhar */
             --cor-texto: #222;
             --cor-fundo: #fafafa;
             --cor-pagamento: #2196F3; /* Azul */
@@ -31,7 +39,12 @@
             --cor-pwa: #4CAF50; /* Verde para o Banner PWA */
         }
 
-        html { background-color: #e0e0e0; scroll-behavior: smooth; }
+        /* CORREÇÃO 1: Adiciona padding para evitar que o header fixe cubra o conteúdo ancorado */
+        html { 
+            background-color: #e0e0e0; 
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px; /* Adicionado para a rolagem de atalho */
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -150,8 +163,19 @@
         h2 { color: var(--cor-primaria); margin-top: 0; font-size: 1.2rem; }
         
         /* Estilos para o Card de Produto (Cesta) */
-        .card-cesta { padding: 0; overflow: hidden; border: 1px solid #eee; }
-        .cesta-header { background-color: var(--cor-primaria); padding: 15px; text-align: center; color: white; }
+        .card-cesta { 
+            padding: 0; 
+            overflow: hidden; 
+            border: 1px solid #eee; 
+            /* CORREÇÃO 1: Adiciona um top padding para compensar a rolagem da âncora */
+            padding-top: 15px; 
+        }
+        .cesta-header { 
+            background-color: var(--cor-primaria); 
+            padding: 15px; 
+            text-align: center; 
+            color: white; 
+        }
         .cesta-header h3 { margin: 0; color: white; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
         .cesta-body { padding: 15px; }
 
@@ -205,15 +229,30 @@
         .item-preco strong { color: var(--cor-primaria); font-size: 18px; }
 
         /* Botão Encomendar Único */
-        .botoes-wrapper { display: flex; gap: 10px; margin-top: 15px; }
+        .botoes-wrapper { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 15px;
+            /* Garante que os botões se dividam em duas colunas */
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
         .btn {
             display: flex; align-items: center; justify-content: center;
             width: 100%; padding: 15px; border: none; border-radius: 8px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
+            font-size: 15px; /* Ligeiramente menor para caber 2 botões */
+            font-weight: bold; cursor: pointer;
             text-decoration: none; color: white; text-align: center;
-            background-color: var(--cor-whatsapp); /* Usando WhatsApp green para destaque */
+            
             box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
             transition: transform 0.2s;
+        }
+        .btn-encomendar {
+            background-color: var(--cor-whatsapp); /* Verde mais claro para Encomendar */
+        }
+        .btn-compartilhar {
+            background-color: var(--cor-compartilhar); /* Azul mais escuro para Compartilhar */
+            box-shadow: 0 4px 10px rgba(30, 136, 229, 0.4);
         }
         .btn:active { transform: scale(0.98); }
         
@@ -532,7 +571,7 @@
             
         }
 
-        /* --- RESPONSIVIDADE DESKTOP (MANTIDA) --- */
+        /* --- RESPONSIVIDADE DESKTOP (CORREÇÃO 3) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
                 max-width: 700px; 
@@ -563,9 +602,10 @@
                 gap: 20px; 
             }
             .pwa-botoes-wrapper {
-                 /* Em desktop, volta para 2 colunas */
+                 /* CORREÇÃO 3: Em desktop, volta para 2 colunas */
                 flex-direction: row; 
                 padding: 0 10px;
+                max-width: 100%; /* Permite usar a largura máxima no desktop */
             }
         }
     </style>
@@ -618,7 +658,7 @@
             <div class="cesta-cards-grid">
                 
                 <!-- PRODUTO 1: CESTA ECONÔMICA (1 PREÇO) -->
-                <div class="card card-cesta">
+                <div class="card card-cesta" id="cestaeconomica">
                     <div class="cesta-header"><h3>CESTA ECONÔMICA</h3></div>
                     <div class="cesta-body">
                         <!-- Galeria de 2 Fotos Quadradas -->
@@ -640,19 +680,23 @@
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO ÚNICO: Envia direto para WhatsApp (Preço único) -->
-                            <button class="btn" onclick="encomendarDireto('Cesta Econômica', '85,00')">
+                            <!-- BOTÃO 1: ENCOMENDAR -->
+                            <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
+                            </button>
+                             <!-- BOTÃO 2: COMPARTILHAR -->
+                            <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Econômica', '#cestaeconomica')">
+                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
 
                 <!-- PRODUTO 2: CESTA MINI (2 PREÇOS) -->
-                <div class="card card-cesta">
+                <div class="card card-cesta" id="cestamini">
                     <div class="cesta-header"><h3>CESTA MINI</h3></div>
                     <div class="cesta-body">
                         <!-- Galeria de 2 Fotos Quadradas -->
@@ -674,19 +718,23 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO ÚNICO: Abre modal para escolha da variação -->
-                            <button class="btn" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
+                            <!-- BOTÃO 1: ENCOMENDAR -->
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
+                            </button>
+                             <!-- BOTÃO 2: COMPARTILHAR -->
+                            <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Mini', '#cestamini')">
+                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
 
                 <!-- PRODUTO 3: CESTA PEQUENA (2 PREÇOS) -->
-                <div class="card card-cesta">
+                <div class="card card-cesta" id="cestapequena">
                     <div class="cesta-header"><h3>CESTA PEQUENA</h3></div>
                     <div class="cesta-body">
                         <!-- Galeria de 2 Fotos Quadradas -->
@@ -708,19 +756,23 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO ÚNICO: Abre modal para escolha da variação -->
-                            <button class="btn" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
+                            <!-- BOTÃO 1: ENCOMENDAR -->
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
+                            </button>
+                            <!-- BOTÃO 2: COMPARTILHAR -->
+                            <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Pequena', '#cestapequena')">
+                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
 
                 <!-- PRODUTO 4: CESTA MÉDIA (2 PREÇOS) -->
-                <div class="card card-cesta">
+                <div class="card card-cesta" id="cestamedia">
                     <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
                     <div class="cesta-body">
                         <!-- Galeria de 2 Fotos Quadradas -->
@@ -742,19 +794,23 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO ÚNICO: Abre modal para escolha da variação -->
-                            <button class="btn" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
+                             <!-- BOTÃO 1: ENCOMENDAR -->
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
+                            </button>
+                            <!-- BOTÃO 2: COMPARTILHAR -->
+                            <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Média', '#cestamedia')">
+                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
 
                 <!-- PRODUTO 5: CESTA GRANDE (2 PREÇOS) -->
-                <div class="card card-cesta">
+                <div class="card card-cesta" id="cestagrande">
                     <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
                     <div class="cesta-body">
                         <!-- Galeria de 2 Fotos Quadradas -->
@@ -776,13 +832,17 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO ÚNICO: Abre modal para escolha da variação -->
-                            <button class="btn" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
+                             <!-- BOTÃO 1: ENCOMENDAR -->
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
+                            </button>
+                            <!-- BOTÃO 2: COMPARTILHAR -->
+                            <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Grande', '#cestagrande')">
+                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -1043,14 +1103,17 @@
          * 2. Fecha o modal e rola para os produtos.
          */
         function fecharModalReceptivo() {
+            // Garante que o popup receptivo seja fechado visualmente
             document.getElementById('modalReceptivo').style.display = 'none';
-            // Manteve-se o setItem para, caso queira reativar a checagem, a função já estar aqui.
+            
+            // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
             // Rola a página para a seção de cestas após fechar
             document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
             
-            // NOVO: Inicia o timer para o popup de retenção PWA
+            // NOVO: Inicia o timer de 15 segundos para o popup de retenção PWA
+            // O timer só será iniciado se deferredPrompt existir e o popup não tiver sido exibido na sessão.
             iniciarPopupPWAComTimer();
         }
         
@@ -1070,7 +1133,6 @@
          * 4. Apenas fecha o modal e rola para os produtos. (Ação do botão "EU QUERO o Brinde!")
          */
         function confirmarBrindeEFecar() {
-            // O código de abertura do WhatsApp foi removido.
             // Apenas fecha o modal e rola para a seção de cestas.
             fecharModalReceptivo();
         }
@@ -1083,11 +1145,32 @@
          * NOVO: Inicia o temporizador para exibir o popup PWA após um delay.
          * @param {number} delaySeconds - Atraso em segundos.
          */
-        function iniciarPopupPWAComTimer(delaySeconds = 45) {
-            // Só inicia o timer se o app puder ser instalado e o popup não tiver sido visto
-             if (deferredPrompt && !isPwaPromptShown) {
-                popupTimer = setTimeout(mostrarModalPWA, delaySeconds * 3000);
+        function iniciarPopupPWAComTimer(delaySeconds = 15) {
+            // Limpa qualquer timer anterior para evitar múltiplos popups
+            clearTimeout(popupTimer);
+            
+            // Só inicia o timer se o app puder ser instalado e o popup não tiver sido exibido na sessão.
+            if (deferredPrompt && !isPwaPromptShown) {
+                console.log(`Timer iniciado: Popup PWA aparecerá em ${delaySeconds} segundos.`);
+                popupTimer = setTimeout(mostrarModalPWA, delaySeconds * 1000);
+            } else if (!deferredPrompt) {
+                 console.log("Popup PWA não será exibido: App já instalado ou navegador não elegível.");
             }
+        }
+        
+        /**
+         * NOVO: Função de compartilhamento com URL/link de atalho
+         * @param {string} nomeCesta - Nome da cesta.
+         * @param {string} hash - O hash do link de atalho (#cestagrande, #cestamini, etc).
+         */
+        function compartilharCesta(nomeCesta, hash) {
+            // Monta o link do site + hash. Assumindo que o domínio é donaantonia.com.br
+            const linkCompartilhamento = `https://donaantonia.com.br/${hash}`;
+            
+            const textoCompartilhar = `Olá, veja essa cesta básica da empresa Cestas Básicas Dona Antônia: ${nomeCesta}. Preço e detalhes aqui: ${linkCompartilhamento}`;
+            
+            // Abre o WhatsApp com o texto pré-definido.
+            window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhar)}`, '_blank');
         }
         
         /**
@@ -1100,7 +1183,7 @@
         }
         
         /**
-         * Aplica os estilos centralizados e exibe o modal PWA.
+         * Exibe o modal PWA.
          */
         function mostrarModalPWA() {
             const container = document.getElementById('modalPWAContainer');
@@ -1109,12 +1192,11 @@
             if (container.style.display !== 'flex' && deferredPrompt) {
                  container.style.display = 'flex'; 
                  
-                 // Marca como visto após a exibição (apenas para manter o controle)
+                 // Marca como visto após a exibição
                  localStorage.setItem(PWA_PROMPT_KEY, 'sim'); 
                  isPwaPromptShown = true;
                  
-                 // Limpa o timer para evitar execução dupla
-                 clearTimeout(popupTimer);
+                 console.log("Popup PWA exibido após o timer.");
             }
         }
         
@@ -1125,9 +1207,6 @@
              document.getElementById('modalPWAContainer').style.display = 'none';
         }
         
-        // O checarRolagemParaPWA e o listener de scroll foram removidos e substituídos pelo timer
-
-
         // ===============================
         // === LÓGICA DE INSTALAÇÃO PWA (MANTIDA) ===
         // ===============================
@@ -1158,8 +1237,9 @@
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
             
-            // Se o timer de 15s já expirou e o popup não foi mostrado (o que só acontece se deferredPrompt era null/tarde),
-            // podemos tentar mostrar o popup agora
+            // Se o timer de 15s já expirou (ou seja, passaram 15s desde o onload) e o popup não foi mostrado
+            // (o que só acontece se deferredPrompt era null/tarde),
+            // podemos tentar mostrar o popup agora.
              if (!isPwaPromptShown) {
                  clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
                  iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
@@ -1181,7 +1261,7 @@
                 // Espera o usuário responder ao prompt
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        // Limpa o prompt adiado, o que faz a lógica de scroll parar de disparar
+                        // Limpa o prompt adiado, o que faz a lógica de retenção parar
                         deferredPrompt = null; 
                         mostrarMensagemBusca("🎉 Aplicativo instalado com sucesso!", false);
                     } else {
