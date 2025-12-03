@@ -105,13 +105,18 @@
         
         .header-left, .header-icons { 
             display: flex; 
-            align-items: center; 
+            flex-direction: column; /* NOVO: Alinha os botões verticalmente */
+            justify-content: center;
+            align-items: flex-start; /* Alinha à esquerda */
             flex: 1; 
             z-index: 1001; 
+            gap: 5px; /* Espaçamento entre os botões */
         }
 
-        .header-left { justify-content: flex-start; }
-        .header-icons { justify-content: flex-end; gap: 8px; }
+        .header-icons { 
+            align-items: flex-end; /* Alinha à direita */
+            justify-content: center;
+        }
         
         /* Logo (FIXA e CENTRALIZADA) - Fundo Branco Adicionado */
         .logo-pequena { 
@@ -130,9 +135,9 @@
         }
 
         .header-btn {
-            padding: 6px 10px; 
+            padding: 4px 8px; /* Ajustado para menor tamanho */
             border-radius: 6px;
-            font-size: 13px; 
+            font-size: 11px; /* Ajustado para caber 2 botões */
             font-weight: bold;
             text-decoration: none;
             display: inline-flex; 
@@ -142,10 +147,21 @@
             white-space: nowrap; 
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             color: white; 
+            width: 100px; /* Largura fixa para alinhar as colunas */
         }
         .header-btn:active { transform: scale(0.95); }
-        .btn-whatsapp-save { background-color: var(--cor-whatsapp); }
-        .btn-insta-follow { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+        .btn-whatsapp-save { 
+            background-color: var(--cor-whatsapp); 
+        }
+        .btn-ligar {
+            background-color: #008000; /* Verde mais escuro para o botão Ligar */
+        }
+        .btn-insta-follow { 
+            background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); 
+        }
+        .btn-app-header {
+             background-color: #2196F3; /* Azul para o botão App */
+        }
         
         /* O banner de instalação PWA que ficava abaixo do header foi removido */
         
@@ -576,7 +592,7 @@
         /* --- RESPONSIVIDADE DESKTOP (CORREÇÃO 3) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
-                max-width: 900px; 
+                max-width: 700px; 
                 box-shadow: 0 0 25px rgba(0,0,0,0.15); 
             }
             header {
@@ -623,21 +639,31 @@
          alt="Logo Dona Antônia" 
          class="logo-pequena">
 
-    <!-- CABEÇALHO FIXO (Mantido do anexo) -->
+    <!-- CABEÇALHO FIXO -->
     <header>
         <div class="header-top">
-            <!-- WHATSAPP NA ESQUERDA -->
+            <!-- WHATSAPP E LIGAR NA ESQUERDA -->
             <div class="header-left">
+                 <!-- Botão WhatsApp -->
                  <a href="https://wa.me/5565998150975" class="header-btn btn-whatsapp-save" target="_blank" aria-label="Fazer Pedido por WhatsApp">
                     <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> WhatsApp
                 </a>
+                <!-- Botão Ligar -->
+                <a href="tel:+5565998150875" class="header-btn btn-ligar" onclick="ligarDireto(event)" aria-label="Ligar para o número (65) 99815-0875">
+                    <i class="fas fa-phone" style="margin-right: 5px;"></i> (65) 99815-0875
+                </a>
             </div>
             
-            <!-- INSTAGRAM NA DIREITA -->
+            <!-- INSTAGRAM E INSTALAR APP NA DIREITA -->
             <div class="header-icons">
+                <!-- Botão Instagram -->
                 <a href="https://instagram.com/super.cestas.dona.antonia/" class="header-btn btn-insta-follow" target="_blank" aria-label="Seguir no Instagram">
                     <i class="fab fa-instagram" style="margin-right: 5px;"></i> Instagram
                 </a>
+                <!-- Botão Instalar App (PWA) -->
+                 <button class="header-btn btn-app-header" onclick="instalarPWA()" aria-label="Instalar aplicativo (PWA)">
+                    <i class="fas fa-mobile-alt" style="margin-right: 5px;"></i> Instalar App
+                </button>
             </div>
         </div>
     </header>
@@ -692,7 +718,7 @@
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -730,7 +756,7 @@
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -768,7 +794,7 @@
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -806,7 +832,7 @@
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -844,7 +870,7 @@
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
+                            Garanta o Amaciante Ype de 2 Litros de Brinde!
                         </p>
                     </div>
                 </div>
@@ -991,7 +1017,7 @@
             <div id="etapa1" class="etapa-modal ativa">
                 <h3 class="titulo-receptivo">BEM-VINDO! 👋</h3>
                 <p class="subtitulo-receptivo">
-                    Entregamos em Cuiabá e Várzea Grande.
+                    Entregamos em Cuiabá e Várzea Grande. Encomende pela manhã e receba sua cesta no mesmo dia!
                 </p>
                 <button class="btn-receptivo btn-ver-cestas" onclick="mudarEtapaPopup()">
                     <i class="fas fa-box" style="margin-right: 8px;"></i> Ver as Cestas
@@ -1004,13 +1030,13 @@
             <!-- ETAPA 2: BRINDE E CTA DIRETA -->
             <div id="etapa2" class="etapa-modal">
                 <i class="fas fa-gift" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
-                <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Brinde!</h3>
+                <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Ah, e tem mais!</h3>
                 <p class="subtitulo-receptivo">
                     Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!
                 </p>
                 <!-- O botão agora apenas fecha o modal, conforme solicitado -->
                 <button class="btn-receptivo btn-eu-quero" onclick="confirmarBrindeEFecar()">
-                    <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO!
+                    <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO o Brinde!
                 </button>
                 <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
                     Voltar para o site
@@ -1071,6 +1097,7 @@
         
         // Número de telefone para contato via WhatsApp (998150975)
         const TELEFONE = "5565998150975"; 
+        const TELEFONE_LIGAR = "5565998150875"; // Novo número para ligação/WhatsApp
         
         // Variável para armazenar o prompt de instalação adiado do PWA
         let deferredPrompt; 
@@ -1086,6 +1113,24 @@
         
         // Timer global para o novo gatilho
         let popupTimer;
+        
+        /**
+         * NOVO: Função para o botão LIGAR na header
+         */
+        function ligarDireto(event) {
+            // Evita a ação padrão do link se não houver um target específico
+            if (event) {
+                event.preventDefault();
+            }
+            
+            // Tenta abrir o WhatsApp primeiro (mais chances de conversão)
+            const textoZap = `Olá, gostaria de falar com a Dona Antônia sobre as cestas.`;
+            window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            
+            // Fallback para chamada normal (adicionado para cumprir a função "ou normal")
+            // Nota: Em navegadores modernos, isso será bloqueado pelo popup do WhatsApp.
+            // A solução é deixar o atributo href="tel:..." no HTML para o fallback caso o JS falhe.
+        }
 
         // ===============================
         // === LÓGICA DO POPUP RECEPTIVO EM 2 ETAPAS (POPUP 1) ===
@@ -1111,11 +1156,11 @@
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
-            // REMOVIDO SCROLL: A remoção dessa linha garante que o usuário permaneça no atalho (#)
-            // document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
+            // Rola a página para a seção de cestas após fechar
+            // REMOVIDO: document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
             
-            // NOVO: Inicia o timer de 15 segundos para o popup de retenção PWA
-            iniciarPopupPWAComTimer(15);
+            // NOVO: Inicia o timer de 40 segundos para o popup de retenção PWA
+            iniciarPopupPWAComTimer(40);
         }
         
         /**
@@ -1179,8 +1224,8 @@
          * NOVO: Envia um "oi" simples para o WhatsApp
          */
         function enviarOiWhatsApp() {
-            const textoZap = `Olá, gostei das cestas e vou salvar seu contato. 🙏 !`;
-            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            const textoZap = `Olá, vim do site e quero saber mais sobre as cestas!`;
+            window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
             fecharModalPWA();
         }
         
@@ -1239,10 +1284,11 @@
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
             
-            // REMOVIDA LÓGICA DE TIMER DE FALLBACK AQUI
-            // O timer de 40s só deve ser iniciado APÓS o fechamento do primeiro modal.
-            // Se o deferredPrompt chega tarde, o timer de 40s é iniciado (ou ignorado se já passou o tempo)
-            // e o próximo clique no botão do primeiro modal iniciará o timer normalmente.
+            // Se o timer de 40s (ou 15s) já expirou e o popup não foi mostrado, tenta mostrar em 1s
+             if (!isPwaPromptShown) {
+                 clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
+                 iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
+             }
         });
 
         /**
