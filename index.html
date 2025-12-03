@@ -240,12 +240,14 @@
         .btn {
             display: flex; align-items: center; justify-content: center;
             width: 100%; padding: 15px; border: none; border-radius: 8px;
-            font-size: 15px; /* Ligeiramente menor para caber 2 botões */
+            font-size: 15px; 
             font-weight: bold; cursor: pointer;
             text-decoration: none; color: white; text-align: center;
             
             box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
             transition: transform 0.2s;
+            /* CORREÇÃO 2: Permite que o texto quebre em telas muito pequenas */
+            word-break: break-word; 
         }
         .btn-encomendar {
             background-color: var(--cor-whatsapp); /* Verde mais claro para Encomendar */
@@ -1109,12 +1111,11 @@
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
-            // Rola a página para a seção de cestas após fechar
-            document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
+            // REMOVIDO: document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
+            // Comentário: A remoção dessa linha garante que o usuário permaneça no atalho (#)
             
-            // NOVO: Inicia o timer de 15 segundos para o popup de retenção PWA
-            // O timer só será iniciado se deferredPrompt existir e o popup não tiver sido exibido na sessão.
-            iniciarPopupPWAComTimer();
+            // NOVO: Inicia o timer de 40 segundos para o popup de retenção PWA
+            iniciarPopupPWAComTimer(40);
         }
         
         /**
@@ -1145,7 +1146,7 @@
          * NOVO: Inicia o temporizador para exibir o popup PWA após um delay.
          * @param {number} delaySeconds - Atraso em segundos.
          */
-        function iniciarPopupPWAComTimer(delaySeconds = 40) {
+        function iniciarPopupPWAComTimer(delaySeconds) {
             // Limpa qualquer timer anterior para evitar múltiplos popups
             clearTimeout(popupTimer);
             
@@ -1237,9 +1238,7 @@
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
             
-            // Se o timer de 15s já expirou (ou seja, passaram 15s desde o onload) e o popup não foi mostrado
-            // (o que só acontece se deferredPrompt era null/tarde),
-            // podemos tentar mostrar o popup agora.
+            // Se o timer de 40s (ou 15s) já expirou e o popup não foi mostrado, tenta mostrar em 1s
              if (!isPwaPromptShown) {
                  clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
                  iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
