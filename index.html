@@ -299,7 +299,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- ESTILOS DO MODAL --- */
+        /* --- ESTILOS DO MODAL VARIAÇÃO (MANTIDO) --- */
         .modal-variacao {
             display: none;
             position: fixed;
@@ -312,6 +312,74 @@
             justify-content: center;
             align-items: center;
         }
+
+        /* --- NOVO ESTILO DO MODAL RECEPTIVO (POPUP) --- */
+        #modalReceptivo {
+            display: none; /* Escondido por padrão, só o JS exibe */
+            position: fixed;
+            z-index: 5000; /* Prioridade máxima */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-receptivo-content {
+            background-color: white;
+            width: 90%;
+            max-width: 380px;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efeito de molas */
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .titulo-receptivo {
+            color: var(--cor-primaria);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+        .subtitulo-receptivo {
+            color: #555;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .btn-receptivo {
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            display: block;
+            width: 100%;
+            border: none;
+        }
+        .btn-receptivo:active { transform: scale(0.98); }
+        .btn-ver-cestas {
+            background-color: var(--cor-primaria);
+            color: white;
+            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+        }
+        .btn-eu-quero {
+            background-color: var(--cor-whatsapp);
+            color: white;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+        }
+        .etapa-modal { display: none; }
+        .etapa-modal.ativa { display: block; }
+        
+        /* O resto dos estilos de modal-variacao-content, btn-fechar-modal-var, etc. são mantidos */
         .modal-variacao-content {
             background-color: white;
             width: 90%;
@@ -323,12 +391,6 @@
             animation: zoomIn 0.2s ease-out;
             text-align: center;
         }
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .titulo-modal-var { color: var(--cor-primaria); margin: 0 0 15px 0; font-size: 20px; text-transform: uppercase; }
-        .subtitulo-modal-var { color: #666; margin-bottom: 15px; font-size: 14px; }
         .btn-fechar-modal-var { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: #999; cursor: pointer; }
         .opcao-select {
             display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; text-align: left;
@@ -342,6 +404,7 @@
         .selected .radio-custom::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: var(--cor-primaria); border-radius: 50%; }
         .btn-confirmar-pedido { width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
+
 
         /* --- RESPONSIVIDADE DESKTOP (AJUSTADA PARA 700PX) --- */
         @media (min-width: 481px) {
@@ -434,8 +497,6 @@
     <div id="pwa-install-banner" onclick="instalarPWA()" role="button" aria-label="Instalar como Aplicativo">
         <i class="fas fa-mobile-alt"></i> <span>Instalar Dona Antônia Cestas como App!</span>
     </div>
-
-    <!-- O BOTÃO DE AÇÃO FLUTUANTE (FAB) E O MODAL DE ANIVERSÁRIO FORAM REMOVIDOS AQUI. -->
 
     <!-- CONTAINER DE CONTEÚDO PRINCIPAL -->
     <div class="main-content-wrapper">
@@ -718,7 +779,7 @@
         
     </div><!-- FIM MAIN-CONTENT-WRAPPER -->
 
-    <!-- MODAL DE ESCOLHA DE VARIAÇÃO -->
+    <!-- MODAL DE ESCOLHA DE VARIAÇÃO (MANTIDO) -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
             <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">&times;</button>
@@ -747,9 +808,47 @@
             </button>
         </div>
     </div>
-    
-    <!-- O MODAL DE ANIVERSÁRIO FOI REMOVIDO AQUI. -->
 
+    <!-- NOVO MODAL: POPUP RECEPTIVO E FUNIL EM DUAS ETAPAS -->
+    <div id="modalReceptivo" onclick="if(event.target === this) fecharModalReceptivo()" class="modal-variacao">
+        <div class="modal-receptivo-content">
+            
+            <!-- ETAPA 1: LOCALIZAÇÃO E VELOCIDADE -->
+            <div id="etapa1" class="etapa-modal ativa">
+                <img src="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765" 
+                     alt="Logo Dona Antônia" 
+                     style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+                <h3 class="titulo-receptivo">BEM-VINDO! 👋</h3>
+                <p class="subtitulo-receptivo">
+                    Entregamos em Cuiabá e Várzea Grande. Encomende pela manhã e receba sua cesta no mesmo dia!
+                </p>
+                <button class="btn-receptivo btn-ver-cestas" onclick="mudarEtapaPopup()">
+                    <i class="fas fa-box" style="margin-right: 8px;"></i> Ver as Cestas
+                </button>
+                <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
+                    Fechar e Continuar
+                </button>
+            </div>
+
+            <!-- ETAPA 2: BRINDE E CTA DIRETA -->
+            <div id="etapa2" class="etapa-modal">
+                <i class="fas fa-gift" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
+                <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Ah, e tem mais!</h3>
+                <p class="subtitulo-receptivo">
+                    Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!
+                </p>
+                <!-- O botão agora leva direto para o WhatsApp com uma mensagem de brinde -->
+                <button class="btn-receptivo btn-eu-quero" onclick="confirmarBrindeEWhatsApp()">
+                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> EU QUERO o Brinde!
+                </button>
+                <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
+                    Voltar para o site
+                </button>
+            </div>
+
+        </div>
+    </div>
+    
     <!-- SCRIPT JS PRINCIPAL -->
     <script>
         // Tenta carregar o arquivo de clientes (data/clientes.js)
@@ -771,7 +870,64 @@
         let opcaoEscolhida = ''; 
 
         // ===============================
-        // === LÓGICA DE INSTALAÇÃO PWA ===
+        // === NOVO: LÓGICA DO POPUP RECEPTIVO EM 2 ETAPAS ===
+        // ===============================
+        
+        const MODAL_RECEPTIVO_KEY = 'donaAntoniaVisitou';
+        
+        /**
+         * 1. Exibe o modal receptivo se for a primeira visita do usuário.
+         */
+        function iniciarPopupReceptivo() {
+            // Verifica se o usuário já visitou o site (se a chave está no localStorage)
+            if (localStorage.getItem(MODAL_RECEPTIVO_KEY) !== 'sim') {
+                document.getElementById('modalReceptivo').style.display = 'flex';
+            }
+        }
+
+        /**
+         * 2. Fecha o modal e marca no localStorage que o usuário já o viu.
+         */
+        function fecharModalReceptivo() {
+            document.getElementById('modalReceptivo').style.display = 'none';
+            // Marca a visita no localStorage
+            localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
+            
+            // Rola a página para a seção de cestas após fechar
+            document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        /**
+         * 3. Altera o conteúdo do modal da Etapa 1 para a Etapa 2.
+         * Esta é a função chamada pelo botão "Ver as Cestas".
+         */
+        function mudarEtapaPopup() {
+            const etapa1 = document.getElementById('etapa1');
+            const etapa2 = document.getElementById('etapa2');
+            
+            // Remove a classe ativa da Etapa 1 e adiciona na Etapa 2
+            etapa1.classList.remove('ativa');
+            etapa2.classList.add('ativa');
+        }
+        
+        /**
+         * 4. Envia o cliente para o WhatsApp com a mensagem do brinde.
+         * Esta é a função chamada pelo botão "EU QUERO o Brinde!".
+         */
+        function confirmarBrindeEWhatsApp() {
+            // Marca a visita no localStorage antes de sair (para não reabrir)
+            localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim'); 
+            
+            const textoZap = `Olá, vim pelo anúncio e pelo popup de boas-vindas! Quero fazer minha *primeira compra* para garantir o Amaciante Ypê de 2L de brinde.`;
+            
+            // Abre o WhatsApp e fecha o modal
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
+            fecharModalReceptivo();
+        }
+
+
+        // ===============================
+        // === LÓGICA DE INSTALAÇÃO PWA (MANTIDA) ===
         // ===============================
         
         /**
@@ -842,7 +998,7 @@
         }
 
         // ===============================
-        // === LÓGICA DE PRODUTOS/MODAL ===
+        // === LÓGICA DE PRODUTOS/MODAL (MANTIDA) ===
         // ===============================
         
         /**
@@ -925,7 +1081,7 @@
         }
         
         // ===============================
-        // === LÓGICA DE GALERIA DE FOTOS ===
+        // === LÓGICA DE GALERIA DE FOTOS (MANTIDA) ===
         // ===============================
         
         const CestaImages = {
@@ -983,7 +1139,7 @@
         }
 
         // ===============================
-        // === LÓGICA DE SORTEIO (Mantida) ===
+        // === LÓGICA DE SORTEIO (MANTIDA) ===
         // ===============================
         
         const cadastroEncontradoDiv = document.getElementById('cadastro-encontrado');
@@ -1146,6 +1302,8 @@
         window.onload = function() {
             // Garante que a logo e o header estão posicionados corretamente ao carregar
             ajustarPosicaoLogo();
+            // NOVO: Dispara o popup receptivo
+            iniciarPopupReceptivo(); 
             // PWA logic is now handled by the 'load' listener inside the script tag
         };
         
