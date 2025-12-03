@@ -1111,8 +1111,8 @@
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
-            // REMOVIDO: document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
-            // Comentário: A remoção dessa linha garante que o usuário permaneça no atalho (#)
+            // REMOVIDO SCROLL: A remoção dessa linha garante que o usuário permaneça no atalho (#)
+            // document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
             
             // NOVO: Inicia o timer de 40 segundos para o popup de retenção PWA
             iniciarPopupPWAComTimer(40);
@@ -1151,6 +1151,7 @@
             clearTimeout(popupTimer);
             
             // Só inicia o timer se o app puder ser instalado e o popup não tiver sido exibido na sessão.
+            // CORREÇÃO: Usar o valor de delaySeconds para iniciar o timer.
             if (deferredPrompt && !isPwaPromptShown) {
                 console.log(`Timer iniciado: Popup PWA aparecerá em ${delaySeconds} segundos.`);
                 popupTimer = setTimeout(mostrarModalPWA, delaySeconds * 1000);
@@ -1238,11 +1239,10 @@
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
             
-            // Se o timer de 40s (ou 15s) já expirou e o popup não foi mostrado, tenta mostrar em 1s
-             if (!isPwaPromptShown) {
-                 clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
-                 iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
-             }
+            // REMOVIDA LÓGICA DE TIMER DE FALLBACK AQUI
+            // O timer de 40s só deve ser iniciado APÓS o fechamento do primeiro modal.
+            // Se o deferredPrompt chega tarde, o timer de 40s é iniciado (ou ignorado se já passou o tempo)
+            // e o próximo clique no botão do primeiro modal iniciará o timer normalmente.
         });
 
         /**
