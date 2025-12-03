@@ -648,8 +648,8 @@
                     <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> WhatsApp
                 </a>
                 <!-- Botão Ligar -->
-                <a href="tel:+5565998150975" class="header-btn btn-ligar" aria-label="Ligar para o número 99815-0975">
-                    <i class="fas fa-phone" style="margin-right: 5px;"></i> 99815-0975
+                <a href="tel:+5565998150975" class="header-btn btn-ligar" aria-label="Ligar para o número (65) 99815-0975">
+                    <i class="fas fa-phone" style="margin-right: 5px;"></i> (65) 99815-0975
                 </a>
             </div>
             
@@ -698,7 +698,6 @@
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-economica2.jpg" alt="Cesta Econômica Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA+2'">
                             </div>
-                            <!-- Botão de Navegação entre fotos -->
                             <div class="swipe-indicator" onclick="event.stopPropagation(); mudarFotoNoCard('economica')">
                                 <span id="btn-foto-economica">VER PRODUTOS</span>
                             </div>
@@ -877,7 +876,7 @@
         </div><!-- FIM SEÇÃO CESTAS -->
         
         <!-- SEÇÃO 2 & 3: PAGAMENTO E SORTEIO (Usando grid no desktop) -->
-        <div classoes-extras-grid">
+        <div class="secoes-extras-grid">
             
             <!-- CARD 1: FORMAS DE PAGAMENTO (EXTRAÍDO DO ANEXO) -->
             <div id="pag-pagamento" class="secao-conteudo">
@@ -1045,44 +1044,8 @@
         </div>
     </div>
     
-    <!-- NOVO POPUP 2: RETENÇÃO PWA (APAREECE NO SCROLL) -->
-    <!-- Contêiner do Backdrop (usa .modal-variacao para o fundo escuro) -->
-    <div id="modalPWAContainer" class="modal-variacao" onclick="if(event.target === this) fecharModalPWA()">
-        <!-- Usando modal-receptivo-content para centralização e estilo -->
-        <div id="modalPWA" class="modal-receptivo-content" onclick="event.stopPropagation()">
-             
-            <!-- LOGO POPUP PWA (AUMENTADA E AJUSTADA NO TOPO) -->
-            <div class="modal-logo-receptivo">
-                 <img src="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765" 
-                     alt="Logo Dona Antônia" 
-                     onerror="this.src='img/logo1.png'"
-                     >
-            </div>
-            
-            <!-- Botão de fechar (APENAS X, MUDADO PARA A DIREITA) -->
-            <button class="pwa-close-btn" onclick="fecharModalPWA()">
-                &times;
-            </button>
-            
-            <!-- CONTEÚDO ATUALIZADO -->
-            <h3 class="titulo-receptivo">Salve nosso contato</h3>
-            <p class="subtitulo-receptivo" style="margin-bottom: 5px; margin-top: 5px;">Comprar com a gente compensa muito.</p>
-            
-            <!-- BOTÕES DUPLOS -->
-            <div class="pwa-botoes-wrapper">
-                 <button class="btn-pwa-whatsapp" onclick="enviarOiWhatsApp()">
-                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> WhatsApp
-                </button>
-                <button class="btn-pwa-install" onclick="instalarPWA()">
-                    <i class="fas fa-mobile-alt" style="margin-right: 8px;"></i> Aplicativo
-                </button>
-               
-            </div>
-             <button onclick="fecharModalPWA()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
-                Fechar e Continuar
-            </button>
-        </div>
-    </div>
+    <!-- O POPUP DE RETENÇÃO FOI REMOVIDO PARA MANTER APENAS OS DOIS POPUPS INICIAIS -->
+    <!-- (Bloco #modalPWAContainer removido) -->
     
     <!-- SCRIPT JS PRINCIPAL -->
     <script>
@@ -1105,12 +1068,11 @@
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
         let opcaoEscolhida = ''; 
         
-        // Variável de controle para o novo popup de retenção
+        // Variável de controle para o novo popup de retenção (MANTIDA APENAS PARA LIMPEZA DE ESCOPO)
         const PWA_PROMPT_KEY = 'pwaPromptShown';
-        // MANTIDO isPwaPromptShown = false para facilitar o teste no preview
         let isPwaPromptShown = false; 
         
-        // Timer global para o novo gatilho
+        // Timer global para o novo gatilho (MANTIDO APENAS PARA LIMPEZA DE ESCOPO)
         let popupTimer;
         
         /**
@@ -1121,15 +1083,7 @@
             if (event) {
                 event.preventDefault();
             }
-            
             // O link tel:... no HTML garante a chamada direta
-            // Aqui podemos adicionar uma função extra, como tentativa de WhatsApp
-            const textoZap = `Olá, gostaria de falar com a Dona Antônia sobre as cestas.`;
-            // Tenta abrir o WhatsApp
-            // window.open(`https://wa.me/${TELEFONE_LIGAR}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
-            
-            // Para garantir que a chamada telefônica normal funcione (conforme solicitado),
-            // a melhor forma é confiar no href="tel:..." no HTML
         }
 
         // ===============================
@@ -1156,8 +1110,8 @@
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
-            // NOVO: Inicia o timer de 40 segundos para o popup de retenção PWA
-            iniciarPopupPWAComTimer(40);
+            // REMOVIDO: A chamada ao iniciarPopupPWAComTimer (porque o popup 2 foi removido)
+            // A rolagem para o topo também foi removida, mantendo a posição do atalho.
         }
         
         /**
@@ -1181,25 +1135,14 @@
         }
 
         // ===============================
-        // === LÓGICA DO POPUP PWA DE RETENÇÃO (POPUP 2) ===
+        // === LÓGICA DO POPUP PWA DE RETENÇÃO (REMOVIDA) ===
         // ===============================
         
-        /**
-         * NOVO: Inicia o temporizador para exibir o popup PWA após um delay.
-         * @param {number} delaySeconds - Atraso em segundos.
+        /*
+         * As funções mostrarModalPWA(), fecharModalPWA(), iniciarPopupPWAComTimer(),
+         * e enviarOiWhatsApp() foram removidas para atender à solicitação de 
+         * manter apenas o popup inicial.
          */
-        function iniciarPopupPWAComTimer(delaySeconds) {
-            // Limpa qualquer timer anterior para evitar múltiplos popups
-            clearTimeout(popupTimer);
-            
-            // Só inicia o timer se o app puder ser instalado e o popup não tiver sido exibido na sessão.
-            if (deferredPrompt && !isPwaPromptShown) {
-                console.log(`Timer iniciado: Popup PWA aparecerá em ${delaySeconds} segundos.`);
-                popupTimer = setTimeout(mostrarModalPWA, delaySeconds * 1000);
-            } else if (!deferredPrompt) {
-                 console.log("Popup PWA não será exibido: App já instalado ou navegador não elegível.");
-            }
-        }
         
         /**
          * NOVO: Função de compartilhamento com URL/link de atalho
@@ -1216,42 +1159,8 @@
             window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhar)}`, '_blank');
         }
         
-        /**
-         * NOVO: Envia um "oi" simples para o WhatsApp
-         */
-        function enviarOiWhatsApp() {
-            const textoZap = `Olá, vim do site e quero saber mais sobre as cestas!`;
-            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
-            fecharModalPWA();
-        }
-        
-        /**
-         * Exibe o modal PWA.
-         */
-        function mostrarModalPWA() {
-            const container = document.getElementById('modalPWAContainer');
-            
-            // 1. Exibe o contêiner do backdrop
-            if (container.style.display !== 'flex' && deferredPrompt) {
-                 container.style.display = 'flex'; 
-                 
-                 // Marca como visto após a exibição
-                 localStorage.setItem(PWA_PROMPT_KEY, 'sim'); 
-                 isPwaPromptShown = true;
-                 
-                 console.log("Popup PWA exibido após o timer.");
-            }
-        }
-        
-        /**
-         * Fecha o modal PWA.
-         */
-        function fecharModalPWA() {
-             document.getElementById('modalPWAContainer').style.display = 'none';
-        }
-        
         // ===============================
-        // === LÓGICA DE INSTALAÇÃO PWA (MANTIDA) ===
+        // === LÓGICA DE INSTALAÇÃO PWA (SIMPLIFICADA) ===
         // ===============================
         
         /**
@@ -1272,42 +1181,28 @@
 
         /**
          * 2. Captura o evento de instalação (beforeinstallprompt)
-         * Se o evento não for capturado (deferredPrompt continua null), o app já está instalado.
+         * O listener é mantido caso o usuário queira instalar o PWA pelo botão do Header.
          */
         window.addEventListener('beforeinstallprompt', (e) => {
             // Previne que o mini-infobar padrão do Chrome apareça
             e.preventDefault();
             // Armazena o evento para que possa ser disparado mais tarde
             deferredPrompt = e;
-            
-            // Este bloco de fallback garante que se o deferredPrompt chegar depois do timer principal ter expirado,
-            // o popup ainda será mostrado rapidamente (1s).
-             if (!isPwaPromptShown) {
-                 clearTimeout(popupTimer); // Cancela o timer, caso ainda esteja rodando
-                 iniciarPopupPWAComTimer(1); // Tenta mostrar em 1s, agora que o deferredPrompt está pronto
-             }
         });
 
         /**
-         * 3. Função chamada ao clicar no botão "Instalar o App" no Modal de Retenção.
+         * 3. Função chamada ao clicar no botão "Instalar App" no Header.
          */
         function instalarPWA() {
             if (deferredPrompt) {
-                // Esconde o modal de retenção
-                const container = document.getElementById('modalPWAContainer');
-                container.style.display = 'none';
-
                 // Chama o prompt de instalação do navegador
                 deferredPrompt.prompt();
                 
-                // Espera o usuário responder ao prompt
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        // Limpa o prompt adiado, o que faz a lógica de retenção parar
                         deferredPrompt = null; 
                         mostrarMensagemBusca("🎉 Aplicativo instalado com sucesso!", false);
                     } else {
-                        mostrarModalPWA(); // Reabre o modal se o usuário recusar, mantendo a pressão
                         mostrarMensagemBusca("Instalação cancelada. Você pode tentar novamente mais tarde.", true);
                     }
                 });
