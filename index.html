@@ -661,9 +661,9 @@
     <!-- BARRA DE FUNDO CINZA CLARA -->
     <div class="header-background-bar"></div>
 
-    <!-- LOGO FIXA: Usa a imagem enviada (icon-512.jpg) -->
-    <img src="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765" 
-         onerror="this.src='img/logo1.png'" 
+    <!-- LOGO FIXA: Usa a imagem GIF do utilizador (logo.gif) -->
+    <img src="logo.gif" 
+         onerror="this.src='https://placehold.co/120x120/808080/ffffff?text=D.A'" 
          alt="Logo Dona Antônia" 
          class="logo-pequena">
 
@@ -737,12 +737,14 @@
                         </div>
                         <div class="botoes-wrapper">
                             <!-- BOTÃO 1: ENCOMENDAR -->
-                            <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00')">
+                            <!-- ALTERADO: Novo parâmetro 'false' para remover a mensagem do brinde neste produto -->
+                            <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
                              <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Econômica', '#cestaeconomica')">
-                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
+                                <!-- CORRIGIDO: Ícone mais genérico para compartilhamento, já que o WhatsApp é o fallback -->
+                                <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
@@ -780,7 +782,7 @@
                             </button>
                              <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Mini', '#cestamini')">
-                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
+                                <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
@@ -818,7 +820,7 @@
                             </button>
                             <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Pequena', '#cestapequena')">
-                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
+                                <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
@@ -856,7 +858,7 @@
                             </button>
                             <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Média', '#cestamedia')">
-                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
+                                <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
@@ -894,7 +896,7 @@
                             </button>
                             <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Grande', '#cestagrande')">
-                                <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Compartilhar
+                                <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
                         <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
@@ -1035,9 +1037,9 @@
             
             <!-- LOGO SOBREPOSTA (AJUSTADA COM ONERROR) -->
             <div class="modal-logo-receptivo">
-                 <img src="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765" 
+                 <img src="logo.gif" 
                      alt="Logo Dona Antônia" 
-                     onerror="this.src='img/logo1.png'"
+                     onerror="this.src='https://placehold.co/80x80/808080/ffffff?text=D.A'"
                      >
             </div>
             
@@ -1051,12 +1053,13 @@
                     <i class="fas fa-box" style="margin-right: 8px;"></i> Ver as Cestas
                 </button>
                 <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
+                    Prefiro continuar navegando
                 </button>
             </div>
 
             <!-- ETAPA 2: BRINDE E CTA DIRETA -->
             <div id="etapa2" class="etapa-modal">
-                <i class="" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
+                <i class="fas fa-gift" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
                 <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Brinde!</h3>
                 <p class="subtitulo-receptivo">
                     Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!
@@ -1066,19 +1069,20 @@
                     <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO!
                 </button>
                 <button onclick="fecharModalReceptivo()" style="background: none; border: none; color: #999; margin-top: 10px; font-size: 14px; cursor: pointer;">
+                    Prefiro continuar navegando
                 </button>
             </div>
 
         </div>
     </div>
     
-    <!-- O POPUP DE RETENÇÃO FOI REMOVIDO PARA MANTER APENAS OS DOIS POPUPS INICIAIS -->
-    
     <!-- SCRIPT JS PRINCIPAL -->
     <script>
-        // Tenta carregar o arquivo de clientes (data/clientes.js)
+        // Tenta carregar o arquivo de clientes (data/clientes.js). Como não temos acesso,
+        // será usado o fallback de console.
         var clientes = [];
     </script>
+    <!-- O script abaixo não será carregado no ambiente do Canvas, mas é mantido como no ficheiro original -->
     <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado. Usando dados de simulação.')"></script>
 
     <script>
@@ -1095,18 +1099,19 @@
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
         let opcaoEscolhida = ''; 
         
-        // Variável de controle para o novo popup de retenção
+        // Variável de controle para o novo popup de retenção (não usada, mas mantida)
         const PWA_PROMPT_KEY = 'pwaPromptShown';
         let isPwaPromptShown = false; 
         
-        // Timer global para o novo gatilho
+        // Timer global para o novo gatilho (não usado, mas mantido)
         let popupTimer;
         
         /**
          * NOVO: Função para o botão LIGAR na header
+         * O link tel:... no HTML garante a chamada direta
          */
         function ligarDireto(event) {
-            // O link tel:... no HTML garante a chamada direta
+            // Ação de ligação é gerenciada pelo href="tel:..."
         }
 
         // ===============================
@@ -1133,8 +1138,8 @@
             // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
             
-            // NOVO: A chamada ao iniciarPopupPWAComTimer (porque o popup 2 foi removido)
-            // foi removida para manter apenas o popup inicial.
+            // Rola suavemente para o topo onde as cestas começam.
+             document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
         }
         
         /**
@@ -1217,14 +1222,21 @@
         
         /**
          * Envia o pedido direto para o WhatsApp (para produtos sem variação).
+         * @param {string} produto - Nome da cesta.
+         * @param {string} preco - Preço formatado da cesta.
+         * @param {boolean} [incluirBrinde=true] - NOVO: Se deve incluir a mensagem do brinde.
          */
-        function encomendarDireto(produto, preco) { 
-            const textoZap = `Olá, quero encomendar a *${produto}* (Valor: R$ ${preco}). Com Amaciante Ypê de 2L de brinde.`;
+        function encomendarDireto(produto, preco, incluirBrinde = true) { 
+            let brindeTexto = incluirBrinde ? ". Com Amaciante Ypê de 2L de brinde." : ".";
+            const textoZap = `Olá, quero encomendar a *${produto}* (Valor: R$ ${preco})${brindeTexto}`;
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
         }
         
         /**
          * Abre o modal de escolha de variação (para produtos com 2 preços).
+         * @param {string} nome - Nome da cesta.
+         * @param {string} pAlvino - Preço do Arroz Tio Alvino.
+         * @param {string} pKoblenz - Preço do Arroz Koblenz.
          */
         function abrirModalVariacao(nome, pAlvino, pKoblenz) { 
             // 1. Armazena os dados atuais
@@ -1247,6 +1259,7 @@
 
         /**
          * Seleciona uma opção de variação dentro do modal.
+         * @param {string} tipo - 'alvino' ou 'koblenz'.
          */
         function selecionarOpcao(tipo) {
             opcaoEscolhida = tipo;
@@ -1267,6 +1280,7 @@
 
         /**
          * Confirma a escolha no modal e envia o pedido para o WhatsApp.
+         * OBS: As cestas com variação (Mini, Pequena, Média, Grande) devem incluir a mensagem do brinde.
          */
         function confirmarAcao() {
             if(!opcaoEscolhida) return; // Garante que uma opção foi escolhida
@@ -1275,6 +1289,7 @@
             let preco = opcaoEscolhida === 'alvino' ? dadosCestaAtual.precoAlvino : dadosCestaAtual.precoKoblenz;
             let nomeCesta = dadosCestaAtual.nome;
             
+            // Inclui o brinde para todas as cestas que usam o modal de variação (Mini, Pequena, Média, Grande)
             let textoZap = `Olá, quero encomendar a *${nomeCesta}* com *${marca}* (Valor: R$ ${preco}). Com Amaciante Ypê de 2L de brinde.`;
             
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank');
@@ -1286,6 +1301,32 @@
          */
         function fecharModalVariacao() {
             document.getElementById('modalVariacao').style.display = 'none';
+        }
+        
+        /**
+         * Função de Compartilhamento via WhatsApp (usando Web Share API se disponível)
+         * @param {string} nomeCesta - Nome da cesta a ser compartilhada.
+         * @param {string} hash - Âncora da cesta na página.
+         */
+        function compartilharCesta(nomeCesta, hash) {
+            const urlCompleta = window.location.href.split('#')[0] + hash; // Pega URL base + âncora
+            const textoCompartilhamento = `🛒 Confira a Cesta Básica *${nomeCesta}* da Dona Antônia! Preço Justo e Qualidade em Cuiabá/VG. Encomende aqui: ${urlCompleta}`;
+
+            if (navigator.share) {
+                // Usa a API nativa de compartilhamento se estiver disponível
+                navigator.share({
+                    title: `Cesta Básica ${nomeCesta}`,
+                    text: textoCompartilhamento,
+                    url: urlCompleta
+                }).catch(error => {
+                    console.log('Erro ao compartilhar (Fallback para WhatsApp):', error);
+                    // Fallback para WhatsApp direto
+                    window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhamento)}`, '_blank');
+                });
+            } else {
+                // Fallback: abre o WhatsApp direto
+                window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhamento)}`, '_blank');
+            }
         }
         
         // ===============================
@@ -1301,6 +1342,8 @@
         
         /**
          * Atualiza o texto do botão de navegação (VER PRODUTOS / VER FOTO).
+         * @param {string} cestaTipo - Tipo da cesta (ex: 'economica').
+         * @param {number} newIndex - Índice da imagem atual.
          */
         function updatePhotoIndicator(cestaTipo, newIndex) {
             const indicatorSpan = document.querySelector(`#galeria-${cestaTipo} .swipe-indicator span`);
@@ -1315,6 +1358,7 @@
 
         /**
          * Alterna a foto visível em um card de produto.
+         * @param {string} cestaTipo - Tipo da cesta (ex: 'economica').
          */
         function mudarFotoNoCard(cestaTipo) {
             const galeria = document.getElementById(`galeria-${cestaTipo}`);
@@ -1354,6 +1398,8 @@
 
         /**
          * Exibe uma mensagem de atenção/sucesso temporária. (Substitui alert())
+         * @param {string} msg - Mensagem a ser exibida.
+         * @param {boolean} isError - Se a mensagem é de erro (true) ou sucesso/info (false).
          */
         function mostrarMensagemBusca(msg, isError = true) {
             // Cria um modal ou utiliza uma área temporária para notificação
@@ -1376,7 +1422,7 @@
         }
         
         /**
-         * Busca o telefone digitado na base de clientes (data/clientes.js).
+         * Busca o telefone digitado na base de clientes (simulada ou data/clientes.js).
          */
         function buscarCadastro() {
             cadastroEncontradoDiv.style.display = 'none';
@@ -1413,6 +1459,19 @@
                     });
                 }
                 
+                // Se a base de dados de clientes estiver vazia, simula um novo cadastro.
+                if (clientes.length === 0) {
+                    // Se não houver dados, sempre assume que é um novo cadastro.
+                    clienteEncontrado = null;
+                } else if (!clienteEncontrado) {
+                    // Simulação para o caso de não encontrar na base
+                    clienteEncontrado = (telLimpo === '65999999999' || telLimpo.endsWith('123456')) ? { 
+                        nome: "Maria Teste", 
+                        cidade: "Cuiabá", 
+                        bairro: "Centro" 
+                    } : null;
+                }
+                
                 if (clienteEncontrado) {
                     document.getElementById('nome-cliente-encontrado').innerText = clienteEncontrado.nome;
                     document.getElementById('cidade-cliente-encontrado').innerText = clienteEncontrado.cidade;
@@ -1428,7 +1487,11 @@
                 } else {
                     const novoTelefoneInput = document.getElementById('novo-telefone');
                     novoTelefoneInput.value = inputTel; 
-                    document.getElementById('novo-telefone').disabled = true; // Desabilita edição do telefone aqui
+                    document.getElementById('novo-nome').value = ''; // Limpa o nome anterior
+                    document.getElementById('novo-bairro').value = ''; // Limpa o bairro anterior
+                    document.getElementById('novo-cidade').value = ''; // Limpa a cidade anterior
+
+                    novoTelefoneInput.disabled = true; // Desabilita edição do telefone aqui
                     cadastroNovoDiv.style.display = 'block';
                 }
                 
