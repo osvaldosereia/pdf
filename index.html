@@ -7,6 +7,12 @@
     
     <!-- Link para ícones (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- NOVO: Link do Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <style>
         /* ==================================================================== */
@@ -22,7 +28,7 @@
             --cor-pagamento: #2196F3; /* Azul */
             --cor-sorteio: #4CAF50; /* Verde */
             --cor-header-fundo: #f5f5f5;
-            --cor-aniversario: #E91E63; /* Rosa/Solidariedade */
+            --cor-pwa: #4CAF50; /* Verde para o Banner PWA */
         }
 
         html { background-color: #e0e0e0; scroll-behavior: smooth; }
@@ -127,6 +133,40 @@
         .header-btn:active { transform: scale(0.95); }
         .btn-whatsapp-save { background-color: var(--cor-whatsapp); }
         .btn-insta-follow { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+        
+        /* --- ESTILOS DO NOVO BANNER DE INSTALAÇÃO PWA --- */
+        #pwa-install-banner {
+            display: none; /* Escondido por padrão, só é exibido pelo JS */
+            background-color: var(--cor-pwa);
+            color: white;
+            text-align: center;
+            padding: 10px 15px;
+            position: fixed;
+            top: 70px; /* Abaixo do header */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            z-index: 900;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: top 0.3s ease-out; /* Transição para dar um efeito de slide */
+        }
+
+        #pwa-install-banner:hover {
+            background-color: #388E3C; /* Tom mais escuro */
+        }
+
+        #pwa-install-banner span {
+            margin-right: 10px;
+        }
+        
+        /* Ajuste do padding do body quando o banner PWA estiver visível */
+        body.pwa-active {
+            padding-top: 145px; /* 70px (header) + 5px (margem) + 45px (banner PWA) + 25px (logo top padding) */
+        }
         
         /* --- CARDS E SEÇÕES --- */
         .secao-conteudo { padding: 15px; }
@@ -303,31 +343,6 @@
         .btn-confirmar-pedido { width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* --- BOTÃO DE AÇÃO FLUTUANTE (FAB) - NOVO POSICIONAMENTO E TAMANHO --- */
-        .fab-btn {
-            position: fixed;
-            right: 20px;
-            top: 85px; /* NOVO: Abaixo do header (70px + margem) */
-            width: 45px; /* Menor */
-            height: 45px; /* Menor */
-            border-radius: 50%;
-            background-color: var(--cor-aniversario); /* Cor destacada para Aniversário Solidário */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .fab-btn:active { transform: scale(0.9); }
-        .fab-btn img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
         /* --- RESPONSIVIDADE DESKTOP (AJUSTADA PARA 700PX) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
@@ -342,12 +357,11 @@
                 left: 50%;
                 transform: translateX(-50%);
             }
+            #pwa-install-banner {
+                max-width: 700px;
+            }
             .secao-conteudo {
                 padding: 20px 30px; 
-            }
-            /* Move o botão flutuante para a borda do wrapper no desktop */
-             .fab-btn {
-                right: calc(50% - 700px/2 + 20px); /* Ajusta a posição para o lado direito do wrapper de 700px */
             }
         }
         
@@ -415,11 +429,13 @@
         </div>
     </header>
 
-    <!-- NOVO: BOTÃO DE AÇÃO FLUTUANTE (FAB) NO TOPO -->
-    <!-- Abre modal para redirecionamento. Link de destino é definido na função JS (LINK_ANIVERSARIO) -->
-    <a href="#" class="fab-btn" id="fabButton" aria-label="Aniversário Solidário" onclick="abrirModalAniversario()">
-        <img src="img/aniversario.png" alt="Aniversário Solidário" onerror="this.onerror=null;this.src='https://placehold.co/45x45/E91E63/ffffff?text=🎂'">
-    </a>
+    <!-- NOVO: BANNER DE INSTALAÇÃO DO PWA (ESCONDIDO POR PADRÃO) -->
+    <!-- Este banner será mostrado pelo JavaScript (beforeinstallprompt) -->
+    <div id="pwa-install-banner" onclick="instalarPWA()" role="button" aria-label="Instalar como Aplicativo">
+        <i class="fas fa-mobile-alt"></i> <span>Instalar Dona Antônia Cestas como App!</span>
+    </div>
+
+    <!-- O BOTÃO DE AÇÃO FLUTUANTE (FAB) E O MODAL DE ANIVERSÁRIO FORAM REMOVIDOS AQUI. -->
 
     <!-- CONTAINER DE CONTEÚDO PRINCIPAL -->
     <div class="main-content-wrapper">
@@ -732,24 +748,7 @@
         </div>
     </div>
     
-    <!-- NOVO: MODAL DE CONFIRMAÇÃO PARA ANIVERSÁRIO SOLIDÁRIO -->
-    <div id="modalAniversario" class="modal-variacao" onclick="if(event.target === this) fecharModalAniversario()">
-        <div class="modal-variacao-content" style="max-width: 400px; padding: 25px;">
-            <button class="btn-fechar-modal-var" onclick="fecharModalAniversario()">&times;</button>
-            
-            <h3 class="titulo-modal-var" style="color: var(--cor-aniversario);">🎉 Aniversário Solidário!</h3>
-            <p class="subtitulo-modal-var" style="font-size: 16px; color: #333; margin-bottom: 20px;">Você está prestes a ser redirecionado(a) para o site externo da nossa ação solidária. Deseja continuar?</p>
-            
-            <div class="botoes-wrapper" style="margin-top: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn" style="background-color: var(--cor-aniversario);" onclick="irParaAniversario()">
-                    <i class="fas fa-external-link-alt" style="margin-right: 8px;"></i> Ir para o Site
-                </button>
-                <button class="btn" style="background-color: #999;" onclick="fecharModalAniversario()">
-                    Fechar
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- O MODAL DE ANIVERSÁRIO FOI REMOVIDO AQUI. -->
 
     <!-- SCRIPT JS PRINCIPAL -->
     <script>
@@ -764,12 +763,83 @@
         // Número de telefone para contato via WhatsApp (998150975)
         const TELEFONE = "5565998150975"; 
         
-        // NOVO: Link do Aniversário Solidário (O usuário deve substituir este link)
-        const LINK_ANIVERSARIO = 'https://link-que-vc-vai-colocar.com.br'; 
-
+        // Variável para armazenar o prompt de instalação adiado do PWA
+        let deferredPrompt; 
+        
         // Variáveis globais para o modal de variação
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
         let opcaoEscolhida = ''; 
+
+        // ===============================
+        // === LÓGICA DE INSTALAÇÃO PWA ===
+        // ===============================
+        
+        /**
+         * 1. Registra o Service Worker (Essencial para PWA e funcionamento offline)
+         */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado com sucesso: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Falha no registro do Service Worker: ', error);
+                    });
+            });
+        }
+
+
+        /**
+         * 2. Captura o evento de instalação (beforeinstallprompt)
+         * O navegador dispara este evento quando o PWA é elegível para instalação.
+         */
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previne que o mini-infobar padrão do Chrome apareça
+            e.preventDefault();
+            // Armazena o evento para que possa ser disparado mais tarde
+            deferredPrompt = e;
+            // Exibe o banner de instalação customizado
+            const banner = document.getElementById('pwa-install-banner');
+            const body = document.body;
+            
+            // Define o banner como visível e ajusta o padding do body
+            banner.style.display = 'flex';
+            body.classList.add('pwa-active');
+
+            console.log("Evento 'beforeinstallprompt' capturado. Banner de instalação customizado visível.");
+        });
+
+        /**
+         * 3. Função chamada ao clicar no banner para iniciar a instalação.
+         */
+        function instalarPWA() {
+            if (deferredPrompt) {
+                // Esconde o banner de instalação
+                const banner = document.getElementById('pwa-install-banner');
+                const body = document.body;
+
+                banner.style.display = 'none';
+                body.classList.remove('pwa-active');
+
+                // Chama o prompt de instalação do navegador
+                deferredPrompt.prompt();
+                
+                // Espera o usuário responder ao prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        // Limpa o prompt adiado, pois foi usado
+                        deferredPrompt = null;
+                        mostrarMensagemBusca("🎉 Aplicativo instalado com sucesso!", false);
+                    } else {
+                        // Se o usuário recusar, o banner pode reaparecer no próximo 'beforeinstallprompt'
+                        mostrarMensagemBusca("Instalação cancelada. Você pode tentar novamente mais tarde.", true);
+                    }
+                });
+            } else {
+                 mostrarMensagemBusca("O aplicativo já está instalado ou o navegador não suporta a instalação PWA.", true);
+            }
+        }
 
         // ===============================
         // === LÓGICA DE PRODUTOS/MODAL ===
@@ -853,38 +923,6 @@
         function fecharModalVariacao() {
             document.getElementById('modalVariacao').style.display = 'none';
         }
-
-        // ===============================
-        // === LÓGICA DE MODAL ANIVERSÁRIO ===
-        // ===============================
-        
-        /**
-         * Abre o modal de aviso para redirecionamento ao Aniversário Solidário.
-         */
-        function abrirModalAniversario() { 
-            document.getElementById('modalAniversario').style.display = 'flex';
-        }
-
-        /**
-         * Fecha o modal de aviso.
-         */
-        function fecharModalAniversario() {
-            document.getElementById('modalAniversario').style.display = 'none';
-        }
-        
-        /**
-         * Redireciona para o site do Aniversário Solidário.
-         */
-        function irParaAniversario() {
-            fecharModalAniversario();
-            if (LINK_ANIVERSARIO && LINK_ANIVERSARIO !== 'https://link-que-vc-vai-colocar.com.br') {
-                // Link configurado, redireciona
-                window.open(LINK_ANIVERSARIO, '_blank');
-            } else {
-                // Link não configurado, mostra aviso
-                mostrarMensagemBusca("⚠️ Por favor, configure o LINK_ANIVERSARIO no código JavaScript.", true);
-            }
-        }
         
         // ===============================
         // === LÓGICA DE GALERIA DE FOTOS ===
@@ -945,12 +983,9 @@
         }
 
         // ===============================
-        // === LÓGICA DE SORTEIO (Mantida do anexo) ===
+        // === LÓGICA DE SORTEIO (Mantida) ===
         // ===============================
         
-        // Se data/clientes.js não for carregado, 'clientes' será um array vazio, o que é seguro.
-        // Se o carregamento for bem-sucedido, a variável será sobrescrita com os dados do arquivo.
-
         const cadastroEncontradoDiv = document.getElementById('cadastro-encontrado');
         const cadastroNovoDiv = document.getElementById('cadastro-novo');
         const buscaTelefoneInput = document.getElementById('busca-telefone');
@@ -962,7 +997,12 @@
          * @param {boolean} isError - Se é uma mensagem de erro (true) ou sucesso (false).
          */
         function mostrarMensagemBusca(msg, isError = true) {
+            // Cria um modal ou utiliza uma área temporária para notificação
+            // Usaremos temporariamente a área de cadastro encontrado para mensagens
             const originalContent = cadastroEncontradoDiv.innerHTML;
+            
+            // Previne que a mensagem temporária tente disparar a lógica do sorteio
+            cadastroEncontradoDiv.style.pointerEvents = 'none'; 
             
             cadastroEncontradoDiv.innerHTML = `<h2>${isError ? '⚠️ Atenção!' : '🎉 Sucesso!'}</h2><p>${msg}</p>`;
             cadastroEncontradoDiv.style.backgroundColor = isError ? '#ffebee' : '#e8f5e9';
@@ -971,7 +1011,8 @@
             
             setTimeout(() => { 
                 cadastroEncontradoDiv.style.display = 'none'; 
-                cadastroEncontradoDiv.innerHTML = originalContent;
+                cadastroEncontradoDiv.innerHTML = originalContent; // Restaura o conteúdo original
+                cadastroEncontradoDiv.style.pointerEvents = 'auto'; // Restaura a interatividade
             }, 3000);
         }
         
@@ -1028,6 +1069,7 @@
                 } else {
                     const novoTelefoneInput = document.getElementById('novo-telefone');
                     novoTelefoneInput.value = inputTel; 
+                    document.getElementById('novo-telefone').disabled = true; // Desabilita edição do telefone aqui
                     cadastroNovoDiv.style.display = 'block';
                 }
                 
@@ -1104,6 +1146,7 @@
         window.onload = function() {
             // Garante que a logo e o header estão posicionados corretamente ao carregar
             ajustarPosicaoLogo();
+            // PWA logic is now handled by the 'load' listener inside the script tag
         };
         
         // Adiciona um listener de resize para garantir a correção no desktop
