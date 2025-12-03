@@ -22,6 +22,7 @@
             --cor-pagamento: #2196F3; /* Azul */
             --cor-sorteio: #4CAF50; /* Verde */
             --cor-header-fundo: #f5f5f5;
+            --cor-aniversario: #E91E63; /* Rosa/Solidariedade */
         }
 
         html { background-color: #e0e0e0; scroll-behavior: smooth; }
@@ -93,7 +94,7 @@
         .header-left { justify-content: flex-start; }
         .header-icons { justify-content: flex-end; gap: 8px; }
         
-        /* Logo (FIXA e CENTRALIZADA) */
+        /* Logo (FIXA e CENTRALIZADA) - Fundo Branco Adicionado */
         .logo-pequena { 
             height: 120px; 
             width: 120px; 
@@ -104,7 +105,9 @@
             top: 8px; 
             z-index: 2000; 
             left: 50%; 
-            transform: translateX(-50%); 
+            transform: translateX(-50%);
+            background-color: white; /* NOVO: Fundo branco */
+            padding: 2px; /* Pequeno padding para garantir que o fundo branco envolva a imagem */
         }
 
         .header-btn {
@@ -300,22 +303,51 @@
         .btn-confirmar-pedido { width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
 
+        /* --- BOTÃO DE AÇÃO FLUTUANTE (FAB) - NOVO POSICIONAMENTO E TAMANHO --- */
+        .fab-btn {
+            position: fixed;
+            right: 20px;
+            top: 85px; /* NOVO: Abaixo do header (70px + margem) */
+            width: 45px; /* Menor */
+            height: 45px; /* Menor */
+            border-radius: 50%;
+            background-color: var(--cor-aniversario); /* Cor destacada para Aniversário Solidário */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .fab-btn:active { transform: scale(0.9); }
+        .fab-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
         /* --- RESPONSIVIDADE DESKTOP (AJUSTADA PARA 700PX) --- */
         @media (min-width: 481px) {
             .main-content-wrapper {
-                max-width: 700px; /* NOVO: Reduzido para ser mais parecido com o mobile */
+                max-width: 700px; /* Reduzido para ser mais parecido com o mobile */
                 box-shadow: 0 0 25px rgba(0,0,0,0.15); 
             }
             header {
-                max-width: 700px; /* NOVO: Header acompanha o novo limite */
+                max-width: 700px; /* Header acompanha o novo limite */
             }
             .header-background-bar {
-                max-width: 700px; /* NOVO: Barra de fundo acompanha o novo limite */
+                max-width: 700px; /* Barra de fundo acompanha o novo limite */
                 left: 50%;
                 transform: translateX(-50%);
             }
             .secao-conteudo {
                 padding: 20px 30px; 
+            }
+            /* Move o botão flutuante para a borda do wrapper no desktop */
+             .fab-btn {
+                right: calc(50% - 700px/2 + 20px); /* Ajusta a posição para o lado direito do wrapper de 700px */
             }
         }
         
@@ -382,6 +414,12 @@
             </div>
         </div>
     </header>
+
+    <!-- NOVO: BOTÃO DE AÇÃO FLUTUANTE (FAB) NO TOPO -->
+    <!-- Abre modal para redirecionamento. Link de destino é definido na função JS (LINK_ANIVERSARIO) -->
+    <a href="#" class="fab-btn" id="fabButton" aria-label="Aniversário Solidário" onclick="abrirModalAniversario()">
+        <img src="img/aniversario.png" alt="Aniversário Solidário" onerror="this.onerror=null;this.src='https://placehold.co/45x45/E91E63/ffffff?text=🎂'">
+    </a>
 
     <!-- CONTAINER DE CONTEÚDO PRINCIPAL -->
     <div class="main-content-wrapper">
@@ -693,14 +731,42 @@
             </button>
         </div>
     </div>
+    
+    <!-- NOVO: MODAL DE CONFIRMAÇÃO PARA ANIVERSÁRIO SOLIDÁRIO -->
+    <div id="modalAniversario" class="modal-variacao" onclick="if(event.target === this) fecharModalAniversario()">
+        <div class="modal-variacao-content" style="max-width: 400px; padding: 25px;">
+            <button class="btn-fechar-modal-var" onclick="fecharModalAniversario()">&times;</button>
+            
+            <h3 class="titulo-modal-var" style="color: var(--cor-aniversario);">🎉 Aniversário Solidário!</h3>
+            <p class="subtitulo-modal-var" style="font-size: 16px; color: #333; margin-bottom: 20px;">Você está prestes a ser redirecionado(a) para o site externo da nossa ação solidária. Deseja continuar?</p>
+            
+            <div class="botoes-wrapper" style="margin-top: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn" style="background-color: var(--cor-aniversario);" onclick="irParaAniversario()">
+                    <i class="fas fa-external-link-alt" style="margin-right: 8px;"></i> Ir para o Site
+                </button>
+                <button class="btn" style="background-color: #999;" onclick="fecharModalAniversario()">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- SCRIPT JS PRINCIPAL -->
+    <script>
+        // Tenta carregar o arquivo de clientes (data/clientes.js)
+        var clientes = [];
+    </script>
+    <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado. Usando dados de simulação.')"></script>
+
     <script>
         // Instruções Detalhadas e Documentação
         
         // Número de telefone para contato via WhatsApp (998150975)
         const TELEFONE = "5565998150975"; 
         
+        // NOVO: Link do Aniversário Solidário (O usuário deve substituir este link)
+        const LINK_ANIVERSARIO = 'https://link-que-vc-vai-colocar.com.br'; 
+
         // Variáveis globais para o modal de variação
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
         let opcaoEscolhida = ''; 
@@ -789,6 +855,38 @@
         }
 
         // ===============================
+        // === LÓGICA DE MODAL ANIVERSÁRIO ===
+        // ===============================
+        
+        /**
+         * Abre o modal de aviso para redirecionamento ao Aniversário Solidário.
+         */
+        function abrirModalAniversario() { 
+            document.getElementById('modalAniversario').style.display = 'flex';
+        }
+
+        /**
+         * Fecha o modal de aviso.
+         */
+        function fecharModalAniversario() {
+            document.getElementById('modalAniversario').style.display = 'none';
+        }
+        
+        /**
+         * Redireciona para o site do Aniversário Solidário.
+         */
+        function irParaAniversario() {
+            fecharModalAniversario();
+            if (LINK_ANIVERSARIO && LINK_ANIVERSARIO !== 'https://link-que-vc-vai-colocar.com.br') {
+                // Link configurado, redireciona
+                window.open(LINK_ANIVERSARIO, '_blank');
+            } else {
+                // Link não configurado, mostra aviso
+                mostrarMensagemBusca("⚠️ Por favor, configure o LINK_ANIVERSARIO no código JavaScript.", true);
+            }
+        }
+        
+        // ===============================
         // === LÓGICA DE GALERIA DE FOTOS ===
         // ===============================
         
@@ -850,11 +948,8 @@
         // === LÓGICA DE SORTEIO (Mantida do anexo) ===
         // ===============================
         
-        // Simulação de clientes cadastrados (para teste)
-        var clientes = [
-            { nome: "Simulado A", cidade: "Cuiabá", bairro: "Simulados", telefone: "65998150975" },
-            { nome: "Simulado B", cidade: "Várzea Grande", bairro: "Centro", telefone: "65991234567" }
-        ];
+        // Se data/clientes.js não for carregado, 'clientes' será um array vazio, o que é seguro.
+        // Se o carregamento for bem-sucedido, a variável será sobrescrita com os dados do arquivo.
 
         const cadastroEncontradoDiv = document.getElementById('cadastro-encontrado');
         const cadastroNovoDiv = document.getElementById('cadastro-novo');
@@ -881,7 +976,7 @@
         }
         
         /**
-         * Busca o telefone digitado na base de clientes simulada.
+         * Busca o telefone digitado na base de clientes (data/clientes.js).
          */
         function buscarCadastro() {
             cadastroEncontradoDiv.style.display = 'none';
@@ -907,6 +1002,7 @@
                 
                 let clienteEncontrado = null;
                 
+                // Cliente deve ser procurado na variável global 'clientes'
                 if(typeof clientes !== 'undefined' && Array.isArray(clientes)) {
                      const inputSuffix = telLimpo.slice(-6);
                      clienteEncontrado = clientes.find(c => {
