@@ -277,31 +277,31 @@
         .modal-variacao, #modalContatos, #modalInformacoes {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; backdrop-filter: blur(2px);
-            padding: 20px; /* Adicionado Padding para evitar que o modal toque as bordas da tela */
+            padding: 20px;
         }
         #modalContatos { z-index: 4500; }
         #modalInformacoes { z-index: 4600; }
 
         .modal-info-content {
             background-color: white; width: 100%; max-width: 420px; border-radius: 12px; 
-            overflow: hidden; display: flex; flex-direction: column; max-height: 90vh; /* Altura Maxima */
+            overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;
             box-shadow: 0 5px 25px rgba(0,0,0,0.3); animation: zoomIn 0.2s;
         }
         
         .modal-info-header {
             background-color: var(--cor-fundo); padding: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd;
-            flex-shrink: 0; /* Header não encolhe */
+            flex-shrink: 0;
         }
         .modal-info-header h3 { margin: 0; color: var(--cor-primaria); font-size: 18px; margin-left: 10px;}
         .btn-fechar-modal-info { background: none; border: none; font-size: 28px; color: #999; cursor: pointer; padding: 0 10px; }
 
-        /* ABAS (CORREÇÃO DE SCROLLBAR) */
+        /* ABAS */
         .tabs { 
             display: flex; 
             background-color: white; 
             border-bottom: 2px solid #eee; 
             overflow-x: auto;
-            flex-shrink: 0; /* Abas não encolhem */
+            flex-shrink: 0; 
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
@@ -316,7 +316,7 @@
         
         /* CONTEÚDO DAS ABAS */
         .tab-content-area {
-            padding: 20px; overflow-y: auto; /* Scroll apenas no conteúdo */
+            padding: 20px; overflow-y: auto;
             flex: 1; 
         }
         .tab-pane { display: none; }
@@ -331,46 +331,45 @@
         @keyframes zoomIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* CORREÇÃO MODAL VARIAÇÃO / CONTATOS */
+        /* MODAL VARIAÇÃO / CONTATOS */
         .modal-variacao-content {
             background-color: white; width: 100%; max-width: 350px; border-radius: 16px; padding: 20px;
             position: relative; text-align: center;
-            max-height: 85vh; /* Limite de altura */
-            overflow-y: auto; /* Habilita scroll se conteúdo for grande */
+            max-height: 85vh; 
+            overflow-y: auto;
             display: flex; flex-direction: column;
         }
 
         .btn-fechar-modal-var { 
             position: absolute; top: 10px; right: 15px; 
-            background: rgba(255,255,255,0.9); /* Fundo leve para garantir visibilidade */
+            background: rgba(255,255,255,0.9);
             border: none; font-size: 26px; color: #999; cursor: pointer; 
-            z-index: 100; /* Garante que fique por cima */
+            z-index: 100;
             width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             line-height: 1;
         }
 
         .titulo-modal-var, .modal-variacao-content h3 {
-            margin-top: 10px; /* Espaço para não bater no X */
-            padding-right: 25px; /* Espaço lateral para o X não cobrir texto */
+            margin-top: 10px; 
+            padding-right: 25px;
         }
         
         .opcao-select {
             display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #eee; 
             border-radius: 8px; margin-bottom: 10px; cursor: pointer; text-align: left;
-            flex-shrink: 0; /* Impede que encolham */
+            flex-shrink: 0;
         }
         .opcao-select.selected { border-color: var(--cor-primaria); background-color: #ffebee; }
         .opcao-nome { font-weight: bold; color: #333; }
         .opcao-preco { color: var(--cor-primaria); font-weight: 900; }
         .radio-custom { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; position: relative; }
         .selected .radio-custom::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: var(--cor-primaria); border-radius: 50%; }
-        
         .btn-confirmar-pedido { 
             width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; 
             border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; 
             display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase;
-            flex-shrink: 0; /* Garante tamanho do botão */
+            flex-shrink: 0;
         }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
 
@@ -762,10 +761,7 @@
         </div>
     </div>
     
-    <script>
-        var clientes = [];
-    </script>
-    <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado.')"></script>
+    <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado ou erro de sintaxe.')"></script>
 
     <script>
         const LOGO_ESTATICA_SRC = 'img/logo1.png';
@@ -994,8 +990,30 @@
         function mostrarMensagemBusca(msg, isError = true) {
             mostrarMensagemToast(msg, isError ? "error" : "success");
         }
+
+        // Função para garantir o carregamento dos dados (mesmo se o arquivo for JSON puro)
+        async function carregarDadosClientes() {
+            if (typeof clientes !== 'undefined' && clientes.length > 0) return; // Já carregado
+
+            try {
+                const response = await fetch('data/clientes.js');
+                if (response.ok) {
+                    const text = await response.text();
+                    try {
+                        // Tenta remover "const clientes =" e ";" se existirem, para parsear o conteúdo do array
+                        const jsonText = text.replace(/const\s+clientes\s*=\s*/, '').replace(/;\s*$/, '');
+                        clientes = JSON.parse(jsonText);
+                        console.log("Clientes carregados via Fetch/JSON (tratado).");
+                    } catch (e) {
+                         console.warn("Falha ao parsear clientes.js via fetch. O arquivo pode ter carregado via script tag ou ter erro de sintaxe.");
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao tentar carregar base de clientes:", err);
+            }
+        }
         
-        function buscarCadastro(sufixoId) {
+        async function buscarCadastro(sufixoId) {
             // Elementos
             const cadastroEncontradoDiv = document.getElementById('cadastro-encontrado' + sufixoId);
             const cadastroNovoDiv = document.getElementById('cadastro-novo' + sufixoId);
@@ -1025,6 +1043,9 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...'; 
             btn.disabled = true;
 
+            // Garante que os dados estejam carregados
+            await carregarDadosClientes();
+
             setTimeout(() => {
                 btn.innerHTML = txtOriginal; 
                 btn.disabled = false;
@@ -1032,16 +1053,17 @@
                 let cliente = null;
                 
                 // Lógica de Busca Robusta
-                // Verifica se a variável 'clientes' foi carregada corretamente do arquivo .js
-                if(typeof clientes !== 'undefined' && Array.isArray(clientes)) {
+                if(typeof clientes !== 'undefined' && Array.isArray(clientes) && clientes.length > 0) {
                     cliente = clientes.find(c => {
-                        // Converte para string e limpa o telefone do cadastro
+                        // Converte para string e limpa o telefone do cadastro (remove traços, espaços, etc)
                         const telCadastro = String(c.telefone || '').replace(/\D/g, '');
                         // Verifica se o telefone do cadastro termina com o termo buscado
                         return telCadastro.endsWith(termoBusca);
                     });
                 } else {
-                    console.warn('Variável clientes não encontrada ou vazia.');
+                    console.warn('Base de clientes vazia ou não carregada.');
+                    mostrarMensagemBusca("Erro ao conectar com a base de dados. Tente atualizar a página.", true);
+                    return;
                 }
                 
                 if (cliente) {
@@ -1087,6 +1109,7 @@
 
         window.onload = function() {
             iniciarLoopLogoAnimada(); 
+            carregarDadosClientes(); // Inicia tentativa de carregamento extra
         };
     </script>
 </body>
