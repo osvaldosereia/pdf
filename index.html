@@ -231,6 +231,44 @@
             .linha-destaque-vermelho { font-size: 0.7rem; }
         }
 
+        /* --- BARRA DE CONFIANÇA (NOVO) --- */
+        .trust-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #E3F2FD; /* Azul muito suave */
+            border: 1px solid #BBDEFB;
+            border-radius: 8px;
+            padding: 10px 5px;
+            margin-bottom: 15px;
+        }
+        
+        .trust-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--cor-primaria);
+            font-weight: 600;
+            line-height: 1.2;
+            padding: 0 2px;
+        }
+        
+        .trust-item i {
+            font-size: 1rem;
+            color: var(--cor-destaque-vermelho);
+            margin-bottom: 4px;
+        }
+        
+        .trust-divider {
+            width: 1px;
+            height: 25px;
+            background-color: #BBDEFB;
+        }
+
         /* --- CARDS & TIPOGRAFIA OTIMIZADA --- */
         .secao-conteudo { padding: 15px; }
         
@@ -338,6 +376,7 @@
             box-shadow: none;
         } 
         
+        /* Botão Share com Estilo Atualizado */
         .btn-share {
             grid-area: share;
             background-color: #E8F5E9; 
@@ -347,6 +386,8 @@
             border: 1px solid #C8E6C9;
             box-shadow: none;
         }
+        /* Ajuste do ícone no botão share */
+        .btn-share i { margin-right: 5px; font-size: 1rem; }
 
         .btn:active { transform: scale(0.97); }
         
@@ -672,6 +713,24 @@
     <div class="main-content-wrapper">
         <div id="pag-cestas" class="secao-conteudo">
             
+            <!-- BARRA DE CONFIANÇA (TRUST BAR) -->
+            <div class="trust-bar">
+                <div class="trust-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Cuiabá e<br>Várzea Grande</span>
+                </div>
+                <div class="trust-divider"></div>
+                <div class="trust-item">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Pague na<br>Entrega</span>
+                </div>
+                <div class="trust-divider"></div>
+                <div class="trust-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Entrega<br>Grátis</span>
+                </div>
+            </div>
+
             <div class="cesta-cards-grid">
                 <!-- CESTA ECONÔMICA -->
                 <div class="card card-cesta" id="cestaeconomica">
@@ -790,7 +849,7 @@
             </div>
         </div>
         
-        <!-- SEÇÕES EXTRAS -->
+        <!-- SEÇÕES EXTRAS (COM IDS PARA NAVEGAÇÃO) -->
         <div class="secoes-extras-grid">
             
             <!-- 1. SORTEIO -->
@@ -877,7 +936,7 @@
             <!-- 3. ENTREGA -->
             <div id="pag-entrega" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <img src="img/caminhao.png" alt="Entrega de Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
+                    <img src="img/entrega.png" alt="Entrega de Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
                 </div>
                 <div class="card">
                     <h2 style="color: #F57C00;">🚚 Entrega Grátis</h2>
