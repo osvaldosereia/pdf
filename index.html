@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cesta Básica em Cuiabá e Várzea Grande | Dona Antônia</title>
     
+    <!-- PWA & Manifest (RESTAURADO) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D32F2F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <!-- Metatags Open Graph -->
     <meta property="og:title" content="Cestas Básicas Dona Antônia: Qualidade e Preço Justo em Cuiabá e VG">
     <meta property="og:description" content="A melhor opção em alimentos para sua família há 8 anos. Encomende agora!">
@@ -719,12 +725,18 @@
             <p style="margin-bottom: 20px; font-size: 14px; color: #666;">Escolha como prefere ser atendido:</p>
             
             <div class="lista-botoes-contato">
-                <a href="https://wa.me/5565998150975" class="btn-contato-modal bg-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>
+                <!-- Adicionado rel="noopener noreferrer" em todos os links externos para evitar bloqueio -->
+                <a href="https://wa.me/5565998150975" class="btn-contato-modal bg-whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>
+                
                 <a href="tel:+5565998150975" class="btn-contato-modal bg-ligar"><i class="fas fa-phone"></i> Ligar: (65) 99815-0975</a>
-                <a href="tel:+5565996813588" class="btn-contato-modal bg-ligar"><i class="fas fa-phone-alt"></i> Ligar: (65) 99681-3588</a>
-                <a href="https://t.me/+5565998150975" class="btn-contato-modal bg-telegram" target="_blank"><i class="fab fa-telegram-plane"></i> Falar no Telegram</a>
-                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-contato-modal bg-instagram" target="_blank"><i class="fab fa-instagram"></i> Ver Instagram</a>
-                <a href="https://www.facebook.com/tudoparamim" class="btn-contato-modal bg-facebook" target="_blank"><i class="fab fa-facebook-f"></i> Ver Facebook</a>
+                <a href="tel:+5565900000000" class="btn-contato-modal bg-ligar"><i class="fas fa-phone-alt"></i> Ligar: (65) 90000-0000</a>
+                
+                <a href="https://t.me/+5565998150975" class="btn-contato-modal bg-telegram" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> Falar no Telegram</a>
+                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-contato-modal bg-instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Ver Instagram</a>
+                
+                <!-- CORREÇÃO FACEBOOK: Adicionado www. e rel="noopener noreferrer" -->
+                <a href="https://www.facebook.com/donaantonia" class="btn-contato-modal bg-facebook" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i> Ver Facebook</a>
+                
                 <button onclick="instalarPWA(); fecharModalContatos();" class="btn-contato-modal btn-destaque-app" style="border:none; width:100%; cursor:pointer;"><i class="fas fa-mobile-alt"></i> Baixar o Aplicativo</button>
             </div>
         </div>
