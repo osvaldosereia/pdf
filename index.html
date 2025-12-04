@@ -461,25 +461,96 @@
         }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        .lista-botoes-contato { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        .btn-contato-modal {
-            display: flex; align-items: center; justify-content: flex-start; padding: 12px 15px;
-            border-radius: 8px; text-decoration: none; font-weight: 600; color: white;
-            transition: opacity 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            flex-shrink: 0;
+        /* ESTILOS NOVOS PARA O MODAL DE CONTATO OTIMIZADO */
+        .btn-whatsapp-hero {
+            background-color: var(--cor-whatsapp);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            flex-direction: column;
+            animation: pulsoBotao 2s infinite;
         }
-        .btn-contato-modal:active { opacity: 0.8; transform: scale(0.98); }
-        .btn-contato-modal i { font-size: 20px; width: 30px; text-align: center; margin-right: 10px; }
+        .btn-whatsapp-hero i { font-size: 32px; margin-bottom: 8px; }
+        .btn-whatsapp-hero span { font-size: 13px; font-weight: normal; opacity: 0.9; }
+
+        .modal-section-title {
+            font-size: 14px;
+            color: #888;
+            margin: 15px 0 10px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .modal-section-title::before, .modal-section-title::after {
+            content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: #eee;
+        }
+        .modal-section-title::before { left: 0; }
+        .modal-section-title::after { right: 0; }
+
+        .grid-botoes-modal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-secundario-modal {
+            background-color: #f9f9f9;
+            color: #555;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-secundario-modal:active { background-color: #e0e0e0; transform: scale(0.98); }
+        .btn-secundario-modal i { margin-right: 8px; color: var(--cor-primaria); }
+
+        .social-buttons-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-social-icon {
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+        .btn-social-icon:active { transform: scale(0.9); }
         
+        .btn-app-link {
+            background: none; border: none; 
+            color: #1976D2; font-weight: bold; font-size: 14px; 
+            margin-top: 10px; cursor: pointer; text-decoration: underline;
+        }
+
         .bg-whatsapp { background-color: var(--cor-whatsapp); }
         .bg-telegram { background-color: var(--cor-telegram); }
         .bg-instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
         .bg-facebook { background-color: var(--cor-facebook); }
-        .bg-ligar { background-color: #2e7d32; }
-        .btn-destaque-app {
-            background: linear-gradient(45deg, #FFD700, #FFA000); color: #222 !important; border: 2px solid white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15); font-weight: 700; margin-top: 5px; justify-content: center; text-transform: uppercase; font-size: 14px;
-        }
 
         /* --- NOVA BARRA DE NAVEGAÇÃO INFERIOR --- */
         .bottom-nav {
@@ -488,7 +559,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 100%;
-            max-width: 480px; /* Igual ao main wrapper no mobile */
+            max-width: 480px; 
             height: var(--altura-bottom-nav);
             background-color: white;
             display: flex;
@@ -507,7 +578,7 @@
             color: #666;
             font-size: 10px;
             text-decoration: none;
-            width: 25%;
+            width: 20%; /* Ajustado para 5 itens */
             height: 100%;
             transition: color 0.2s;
         }
@@ -525,7 +596,6 @@
         /* --- RESPONSIVIDADE AVANÇADA PARA DESKTOP --- */
         @media (min-width: 481px) {
             .main-content-wrapper, header, .header-background-bar { max-width: 900px; }
-            /* Aumenta a barra de navegação no desktop para acompanhar */
             .bottom-nav { max-width: 900px; }
             .secao-conteudo { padding: 20px 30px; }
         }
@@ -536,9 +606,9 @@
 
         /* --- NOVO: LAYOUT DE 3 COLUNAS PARA DESKTOP GRANDE --- */
         @media (min-width: 1024px) {
-            .main-content-wrapper, header, .header-background-bar { max-width: 1200px; }
-            .bottom-nav { max-width: 1200px; } /* Ajuste Nav */
-            .logo-pequ { margin-left: calc(-600px + 20px); } 
+            .main-content-wrapper, header, .header-background-bar { max-width: 900px; }
+            .bottom-nav { max-width: 900px; } 
+            .logo-pequ { margin-left: calc(-450px + 20px); } 
             .cesta-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
             .secoes-extras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 15px; }
             .secoes-extras-grid .secao-conteudo { padding: 0; margin-bottom: 0; }
@@ -553,7 +623,7 @@
 
     <div class="header-background-bar"></div>
 
-    <!-- LOGO FIXA (SEM LOOP) -->
+    <!-- LOGO FIXA -->
     <img src="img/logo1.png" id="logo-principal" onerror="this.src='https://placehold.co/120x120?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
 
     <header>
@@ -818,6 +888,11 @@
             <i class="fas fa-truck" style="color: var(--cor-entrega);"></i>
             <span>Entrega</span>
         </a>
+        <!-- Novo Botão de Contato -->
+        <a href="#" onclick="event.preventDefault(); abrirModalContatos();" class="nav-item">
+            <i class="fas fa-comments" style="color: var(--cor-primaria);"></i>
+            <span>Contato</span>
+        </a>
     </nav>
 
     <!-- MODAL DE ESCOLHA -->
@@ -858,28 +933,46 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONTATOS -->
+    <!-- MODAL DE CONTATOS (OTIMIZADO) -->
     <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
-        <div class="modal-variacao-content">
+        <div class="modal-variacao-content" style="padding-top: 40px;">
             <button class="btn-fechar-modal-var" onclick="fecharModalContatos()">&times;</button>
-            <h3 style="color: var(--cor-primaria); margin-bottom: 5px;">Fale Conosco</h3>
-            <p style="margin-bottom: 20px; font-size: 14px; color: #666;">Escolha como prefere ser atendido:</p>
             
-            <div class="lista-botoes-contato">
-                <a href="https://wa.me/5565998150975" class="btn-contato-modal bg-whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Falar no WhatsApp</a>
-                
-                <a href="tel:+5565998150975" class="btn-contato-modal bg-ligar"><i class="fas fa-phone"></i> Ligar: (65) 99815-0975</a>
-                <a href="tel:+5565996813588" class="btn-contato-modal bg-ligar"><i class="fas fa-phone-alt"></i> Ligar: (65) 99681-3588</a>
-                
-                <a href="https://t.me/+5565998150975" class="btn-contato-modal bg-telegram" target="_blank" rel="noopener noreferrer"><i class="fab fa-telegram-plane"></i> Falar no Telegram</a>
-                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-contato-modal bg-instagram" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i> Seguir no Instagram</a>
-                
-                <a href="https://chat.whatsapp.com/HH8eJ4lz5E04bZFW1fUf9t" class="btn-contato-modal bg-facebook" target="_blank" rel="noopener noreferrer">
-                    <i class="fas fa-users"></i> Participar do Grupo de Sorteio
+            <!-- HERO: WHATSAPP -->
+            <a href="https://wa.me/5565998150975" class="btn-whatsapp-hero" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i> 
+                FALAR NO WHATSAPP
+                <span>Resposta Rápida</span>
+            </a>
+
+            <!-- SECUNDÁRIO: TELEFONES -->
+            <div class="modal-section-title">Ligar para Nós</div>
+            <div class="grid-botoes-modal">
+                <a href="tel:+5565998150975" class="btn-secundario-modal">
+                    <i class="fas fa-phone-alt"></i> (65) 99815-0975
                 </a>
-                
-                <button onclick="instalarPWA(); fecharModalContatos();" class="btn-contato-modal btn-destaque-app" style="border:none; width:100%; cursor:pointer;"><i class="fas fa-mobile-alt"></i> Baixar o Aplicativo</button>
+                <a href="tel:+5565996813588" class="btn-secundario-modal">
+                    <i class="fas fa-phone-alt"></i> (65) 99681-3588
+                </a>
             </div>
+
+            <!-- TERCIÁRIO: REDES SOCIAIS (ICONES) -->
+            <div class="modal-section-title">Redes Sociais</div>
+            <div class="social-buttons-row">
+                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-social-icon bg-instagram" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://t.me/+5565998150975" class="btn-social-icon bg-telegram" target="_blank">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+                <a href="https://chat.whatsapp.com/HH8eJ4lz5E04bZFW1fUf9t" class="btn-social-icon bg-facebook" target="_blank" title="Grupo Sorteio">
+                    <i class="fas fa-users"></i>
+                </a>
+            </div>
+            
+            <button onclick="instalarPWA(); fecharModalContatos();" class="btn-app-link">
+                <i class="fas fa-download"></i> Baixar o Aplicativo
+            </button>
         </div>
     </div>
     
