@@ -8,45 +8,36 @@
     <!-- Metatags Open Graph (para compartilhamento) -->
     <meta property="og:title" content="Cestas Básicas Dona Antônia: Qualidade e Preço Justo em Cuiabá e VG">
     <meta property="og:description" content="A melhor opção em alimentos para sua família há 8 anos. Encomende agora!">
-    <!-- ATENÇÃO: A imagem será sempre a mesma para todos os links neste modelo de página única. -->
-    <meta property="og:image" content="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765">
+    <meta property="og:image" content="https://placehold.co/512x512?text=Logo">
     <meta property="og:url" content="https://donaantonia.com.br/">
 
     <!-- Link para ícones (Font Awesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- NOVO: Link do Manifest PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="uploaded:icon-512.jpg-e6b1d93e-bd40-4cbe-8eb9-1ce2d7412765">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
     <style>
         /* ==================================================================== */
-        /* === ESTILOS GLOBAIS E ESTRUTURA (ADAPTADOS DO ARQUIVO ANEXO) ==== */
+        /* === ESTILOS GLOBAIS E ESTRUTURA ==== */
         /* ==================================================================== */
         * { box-sizing: border-box; }
 
         :root {
             --cor-primaria: #D32F2F; /* Vermelho Principal */
             --cor-whatsapp: #25D366;
-            --cor-compartilhar: #1E88E5; /* Azul mais escuro/distinto para Compartilhar */
+            --cor-telegram: #0088cc;
+            --cor-facebook: #1877F2; /* Azul Facebook */
+            --cor-compartilhar: #1E88E5; /* Azul */
             --cor-texto: #222;
             --cor-fundo: #fafafa;
             --cor-pagamento: #2196F3; /* Azul */
             --cor-sorteio: #4CAF50; /* Verde */
             --cor-header-fundo: #f5f5f5;
-            --cor-pwa: #4CAF50; /* Verde para o Banner PWA */
-            --altura-aviso: 30px; /* Altura da nova barra amarela */
-            --altura-header: 80px; /* Nova altura do header fixo (Aumentada de 70px) */
+            --altura-header: 90px;
         }
 
-        /* CORREÇÃO 1: Adiciona padding para evitar que o header fixe cubra o conteúdo ancorado */
         html { 
             background-color: #e0e0e0; 
             scroll-behavior: smooth;
-            /* Nova altura total para scroll: 80px (header) + 30px (aviso) = 110px */
-            scroll-padding-top: calc(var(--altura-header) + var(--altura-aviso) + 5px); 
+            scroll-padding-top: calc(var(--altura-header) + 5px); 
         }
 
         body {
@@ -55,34 +46,15 @@
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            /* Novo padding superior para acomodar a barra de aviso e o header */
-            padding-top: calc(var(--altura-header) + var(--altura-aviso) + 5px); 
+            padding-top: calc(var(--altura-header) + 5px); 
             padding-bottom: 20px;
             min-height: 10vh;
             position: relative; 
             width: 100%;
         }
 
-        /* --- BARRA DE AVISO AMARELA (NOVA) --- */
-        #barra-aviso-topo {
-            background-color: #FFEB3B; /* Amarelo Ovo */
-            color: var(--cor-texto);
-            font-size: 14px;
-            text-align: center;
-            padding: 5px 10px;
-            height: var(--altura-aviso);
-            position: fixed;
-            top: 0;
-            left: 50%; 
-            transform: translateX(-50%); 
-            width: 100%;
-            max-width: 480px; /* Padrão Mobile */
-            z-index: 2100; /* Mais alto que o header */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
         .main-content-wrapper {
-            max-width: 480px; /* Padrão mobile */
+            max-width: 480px;
             margin: 0 auto; 
             background-color: var(--cor-fundo); 
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -91,18 +63,17 @@
         /* --- CABEÇALHO FIXO --- */
         header {
             background-color: white;
-            height: var(--altura-header); /* NOVA ALTURA: 80px */
+            height: var(--altura-header);
             padding: 0;
             display: flex;
-            flex-direction: column;
+            flex-direction: row; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.08);
             position: fixed;
-            /* POSIÇÃO: Abaixo da barra de aviso */
-            top: var(--altura-aviso); 
+            top: 0;
             left: 50%; 
             transform: translateX(-50%); 
             width: 100%;
-            max-width: 480px; /* Padrão Mobile */
+            max-width: 480px;
             z-index: 1000;
         }
 
@@ -111,84 +82,78 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: var(--altura-header); /* NOVA ALTURA: 80px */
+            height: var(--altura-header);
             background-color: var(--cor-header-fundo);
             z-index: 999;
         }
         
         .header-top {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end; /* Conteúdo à direita */
             align-items: center;
             width: 100%;
-            height: var(--altura-header); /* NOVA ALTURA: 80px */
+            height: 100%;
             padding: 5px 15px;
-        }
-        
-        .header-left, .header-icons { 
-            display: flex; 
-            flex-direction: column; /* NOVO: Alinha os botões verticalmente */
-            justify-content: center;
-            align-items: flex-start; /* Alinha à esquerda */
-            flex: 1; 
-            z-index: 1001; 
-            gap: 5px; /* Espaçamento entre os botões */
+            position: relative;
+            z-index: 1002;
         }
 
-        .header-icons { 
-            align-items: flex-end; /* Alinha à direita */
-            justify-content: center;
-        }
-        
-        /* Logo (FIXA e CENTRALIZADA) - Fundo Branco Adicionado */
-        .logo-pequena { 
-            height: 120px; 
-            width: 120px; 
-            object-fit: cover; 
-            border-radius: 50%; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
-            position: fixed;
-            /* Posição da logo deve estar centralizada entre a barra de aviso e o header */
-            top: calc(var(--altura-aviso) + 8px); 
-            z-index: 2000; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background-color: white; /* NOVO: Fundo branco */
-            padding: 2px; /* Pequeno padding para garantir que o fundo branco envolva a imagem */
-        }
-
-        .header-btn {
-            padding: 6px 10px; /* Aumentado um pouco o padding dos botões */
-            border-radius: 6px;
-            font-size: 11px; /* Ajustado para caber 2 botões */
-            font-weight: bold;
-            text-decoration: none;
-            display: inline-flex; 
+        /* --- NOVO BOTÃO ÚNICO DE CONTATO --- */
+        .btn-contato-principal {
+            display: flex;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s, transform 0.2s;
-            white-space: nowrap; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            color: white; 
-            width: 100px; /* Largura fixa para alinhar as colunas */
+            background-color: #FFEB3B;
+            color: #333;
+            border: 1px solid #fdd835;
+            border-radius: 8px;
+            padding: 8px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            max-width: 240px;
+            margin-left: auto;
+            text-align: left;
         }
-        .header-btn:active { transform: scale(0.95); }
-        .btn-whatsapp-save { 
-            background-color: var(--cor-whatsapp); 
-        }
-        .btn-ligar {
-            background-color: #008000; /* Verde mais escuro para o botão Ligar */
-        }
-        .btn-insta-follow { 
-            background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); 
-        }
-        .btn-app-header {
-             background-color: #2196F3; /* Azul para o botão App */
-        }
+        .btn-contato-principal:active { transform: scale(0.96); }
         
-        /* O banner de instalação PWA que ficava abaixo do header foi removido */
-        
-        /* --- CARDS E SEÇÕES --- */
+        .btn-contato-icon {
+            font-size: 20px;
+            margin-right: 10px;
+            color: var(--cor-primaria);
+        }
+        .btn-contato-text-main {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+        .btn-contato-text-sub {
+            display: block;
+            font-size: 11px;
+            font-weight: 400;
+            color: #555;
+        }
+
+        /* --- LOGO NA ESQUERDA (FIXA) --- */
+        .logo-pequ { 
+            height: 100px;
+            width: 100px; 
+            object-fit: cover; 
+            border-radius: 50%; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            position: fixed;
+            top: 5px; 
+            left: 50%; 
+            margin-left: calc(-240px + 10px); 
+            z-index: 2000; 
+            background-color: white;
+            padding: 2px;
+        }
+
+        /* --- CARDS E CONTEÚDO --- */
         .secao-conteudo { padding: 15px; }
         .card { 
             background: white; 
@@ -201,508 +166,219 @@
         
         h2 { color: var(--cor-primaria); margin-top: 0; font-size: 1.2rem; }
         
-        /* Estilos para o Card de Produto (Cesta) */
-        .card-cesta { 
-            padding: 0; 
-            overflow: hidden; 
-            border: 1px solid #eee; 
-            /* CORREÇÃO 2: Removemos o padding-top de 15px daqui */
-            /* padding-top: 15px; */ 
-        }
-        .cesta-header { 
-            background-color: var(--cor-primaria); 
-            padding: 15px; 
-            text-align: center; 
-            color: white; 
-        }
+        /* Estilos Card Produto */
+        .card-cesta { padding: 0; overflow: hidden; border: 1px solid #eee; }
+        .cesta-header { background-color: var(--cor-primaria); padding: 15px; text-align: center; color: white; }
         .cesta-header h3 { margin: 0; color: white; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
         .cesta-body { padding: 15px; }
 
-        /* Galeria de Fotos Quadradas */
+        /* Galeria */
         .galeria-fotos { 
             position: relative; 
             margin-bottom: 15px; 
             border-radius: 12px; 
             overflow: hidden; 
             width: 100%; 
-            aspect-ratio: 1 / 1; /* Formato Quadrado */
+            aspect-ratio: 1 / 1; 
             background: #eee;
         }
         .img-wrapper {
-            position: absolute; 
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; transition: opacity 0.3s ease;
         }
         .img-wrapper.active { opacity: 1; position: relative; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; }
         
-        /* Indicador de Swipe/Botão de Foto */
         .swipe-indicator {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 60; 
-            color: white; 
-            background: rgba(0, 0, 0, 0.7);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            transition: opacity 0.3s ease, background 0.2s;
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); z-index: 60; 
+            color: white; background: rgba(0, 0, 0, 0.7); padding: 6px 12px; border-radius: 6px;
+            font-size: 13px; font-weight: 600; cursor: pointer; 
         }
 
-        /* Lista de Preços */
+        /* Lista Preços */
         .lista-precos-cesta {
-            background-color: #f9f9f9; border-radius: 8px; padding: 12px;
-            margin: 15px 0; border: 1px solid #eee;
+            background-color: #f9f9f9; border-radius: 8px; padding: 12px; margin: 15px 0; border: 1px solid #eee;
         }
         .item-preco { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 15px; color: #444; }
         .item-preco:last-child { margin-bottom: 0; }
         .item-preco strong { color: var(--cor-primaria); font-size: 18px; }
 
-        /* Botão Encomendar Único */
+        /* Botões Ação */
         .botoes-wrapper { 
-            display: flex; 
-            gap: 10px; 
-            margin-top: 15px;
-            /* Garante que os botões se dividam em duas colunas */
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;
         }
         .btn {
-            display: flex; align-items: center; justify-content: center;
-            width: 100%; padding: 15px; border: none; border-radius: 8px;
-            font-size: 15px; 
-            font-weight: bold; cursor: pointer;
-            text-decoration: none; color: white;
-            
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
-            transition: transform 0.2s;
-            /* CORREÇÃO 2: Permite que o texto quebre em telas muito pequenas */
+            display: flex; align-items: center; justify-content: center; width: 100%; padding: 15px; 
+            border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer;
+            text-decoration: none; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;
             word-break: break-word; 
         }
-        .btn-encomendar {
-            background-color: var(--cor-whatsapp); /* Verde mais claro para Encomendar */
-        }
-        .btn-compartilhar {
-            background-color: var(--cor-compartilhar); /* Azul mais escuro para Compartilhar */
-            box-shadow: 0 4px 10px rgba(30, 136, 229, 0.4);
-        }
+        .btn-encomendar { background-color: var(--cor-whatsapp); }
+        .btn-compartilhar { background-color: var(--cor-compartilhar); }
         .btn:active { transform: scale(0.98); }
         
-        /* --- ESTILOS PAGAMENTO E SORTEIO --- */
+        /* --- EXTRAS --- */
         .section-icon-header { text-align: center; margin-bottom: 20px; position: relative; z-index: 10; }
         .section-icon-header img {
-            width: 60px; 
-            height: 60px;
-            object-fit: contain;
-            background-color: var(--cor-primaria);
-            border-radius: 50%;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 60px; height: 60px; object-fit: contain; background-color: var(--cor-primaria);
+            border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .lista-pagamento { list-style: none; padding: 0; }
-        .lista-pagamento li { 
-            padding: 10px 0; 
-            border-bottom: 1px solid #eee; 
-            font-size: 16px; 
-            display: flex; 
-            align-items: center; 
-        }
-        .lista-pagamento li span.emoji-icon {
-            font-size: 20px; 
-            width: 30px;
-            text-align: center;
-            line-height: 1;
-            margin-right: 5px;
-        }
+        .lista-pagamento li { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 16px; display: flex; align-items: center; }
+        .lista-pagamento li span.emoji-icon { font-size: 20px; width: 30px; text-align: center; margin-right: 5px; }
 
         .area-resultado-busca {
-            background-color: #e8f5e9; 
-            border: 1px solid #a5d6a7;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            text-align: center;
-            animation: fadeIn 0.3s ease;
+            background-color: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; padding: 15px; margin-top: 15px; text-align: center;
         }
         .area-resultado-busca h2 { color: #388e3c; } 
-        #cadastro-novo {
-            background-color: #fff3e0; 
-            border: 1px solid #ffcc80;
-        }
+        #cadastro-novo { background-color: #fff3e0; border: 1px solid #ffcc80; }
         #cadastro-novo h2 { color: #e65100; } 
         input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 16px; }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { transform: translateY(0); }
+        /* --- MODAIS GERAIS --- */
+        .modal-variacao, #modalReceptivo, #modalContatos {
+            display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; backdrop-filter: blur(2px);
         }
+        #modalReceptivo { z-index: 5000; background-color: rgba(0,0,0,0.7); }
+        #modalContatos { z-index: 4500; }
 
-        /* --- ESTILOS DO MODAL VARIAÇÃO (BACKDROP) --- */
-        .modal-variacao {
-            display: none;
-            position: fixed;
-            z-index: 4000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(2px); /* Adicionado blur para o PWA Container também */
-        }
-
-        /* --- ESTILO DO MODAL RECEPTIVO (POPUP 1) --- */
-        /* NOTE: Este estilo define a aparência CENTRALIZADA */
-        #modalReceptivo {
-            display: none; 
-            position: fixed;
-            z-index: 5000; 
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(2px);
-        }
         .modal-receptivo-content {
-            background-color: white;
-            width: 90%;
-            max-width: 380px;
-            border-radius: 16px;
-            padding: 25px;
-            padding-top: 60px; /* Espaço para a logo sobreposta */
-            position: relative; 
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-            animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background-color: white; width: 90%; max-width: 380px; border-radius: 16px; padding: 25px; padding-top: 60px;
+            position: relative; text-align: center; box-shadow: 0 8px 30px rgba(0,0,0,0.4); animation: zoomIn 0.3s;
         }
         
-        /* LOGO SOBREPOSTA - POPUP INICIAL */
         .modal-logo-receptivo {
-            position: absolute;
-            top: -40px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            background-color: white;
-            padding: 3px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
-            z-index: 5001; 
+            position: absolute; top: -40px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px;
+            border-radius: 50%; background-color: white; padding: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 5001; 
         }
-        .modal-logo-receptivo img {
-             width: 100%;
-             height: 100%;
-             object-fit: cover;
-             border-radius: 50%;
-        }
+        .modal-logo-receptivo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-        @keyframes zoomIn {
-            from { transform: scale(0.7); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .titulo-receptivo {
-            color: var(--cor-primaria);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            font-weight: 700; 
-        }
-        .subtitulo-receptivo {
-            color: #555;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            font-weight: 400; 
-            line-height: 1.4;
-        }
+        @keyframes zoomIn { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .titulo-receptivo { color: var(--cor-primaria); font-size: 1.5rem; margin-bottom: 10px; font-weight: 700; }
+        .subtitulo-receptivo { color: #555; font-size: 1.1rem; margin-bottom: 25px; line-height: 1.4; }
         .btn-receptivo {
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            display: block;
-            width: 100%;
-            border: none;
+            padding: 15px 25px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer;
+            display: block; width: 100%; border: none; transition: transform 0.2s;
         }
-        .btn-receptivo:active { transform: scale(0.98); }
-        .btn-ver-cestas {
-            background-color: var(--cor-primaria);
-            color: white;
-            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
-        }
-        .btn-eu-quero {
-            background-color: var(--cor-whatsapp);
-            color: white;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
-        }
+        .btn-ver-cestas { background-color: var(--cor-primaria); color: white; }
+        .btn-eu-quero { background-color: var(--cor-whatsapp); color: white; }
         .etapa-modal { display: none; }
         .etapa-modal.ativa { display: block; }
         
-        /* Estilos do modal de variação (mantido) */
+        /* Modal Variação */
         .modal-variacao-content {
-            background-color: white;
-            width: 90%;
-            max-width: 350px;
-            border-radius: 16px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            animation: zoomIn 0.2s ease-out;
-            text-align: center;
+            background-color: white; width: 90%; max-width: 350px; border-radius: 16px; padding: 20px;
+            position: relative; text-align: center;
         }
         .btn-fechar-modal-var { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: #999; cursor: pointer; }
         .opcao-select {
-            display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; text-align: left;
+            display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #eee; 
+            border-radius: 8px; margin-bottom: 10px; cursor: pointer; text-align: left;
         }
-        .opcao-select:active { transform: scale(0.98); }
         .opcao-select.selected { border-color: var(--cor-primaria); background-color: #ffebee; }
         .opcao-nome { font-weight: bold; color: #333; }
         .opcao-preco { color: var(--cor-primaria); font-weight: 900; }
         .radio-custom { width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%; position: relative; }
         .selected .radio-custom::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: var(--cor-primaria); border-radius: 50%; }
-        .btn-confirmar-pedido { width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-confirmar-pedido { 
+            width: 100%; padding: 15px; background-color: var(--cor-whatsapp); color: white; border: none; 
+            border-radius: 8px; font-weight: bold; font-size: 16px; margin-top: 10px; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase;
+        }
         .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
 
-        /* --- NOVO MODAL PWA DE RETENÇÃO (POPUP 2) --- */
-        
-        /* A classe .modal-variacao será o backdrop (modalPWAContainer). */
-        #modalPWAContainer {
-            z-index: 5005; /* Z-Index alto para o backdrop */
-            /* FORÇAR ALINHAMENTO CENTRAL PARA TODOS */
-            justify-content: center !important; 
-            align-items: center !important;
-        }
-        
-        /* MODOS TOP: AGORA É CENTRALIZADO PARA TODOS */
-        #modalPWA {
-            /* Retira as propriedades fixed de posição que estavam forçando topo/fundo */
-            position: relative; 
-            left: auto;
-            top: auto;
-            transform: none;
-            width: 90%; /* Pega 90% da largura do contêiner */
-            max-width: 380px; /* Mantém o tamanho max. */
-            z-index: 5006; 
-            
-            /* Remove animações de slide, usa zoomIn como o popup inicial */
-            animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-        }
-
-        .modal-pwa-content {
-            background-color: white;
-            padding: 25px; /* Padding ajustado para o modo centralizado */
-            padding-top: 60px; /* Espaço para a logo sobreposta */
-            text-align: center;
-            position: relative; 
+        /* --- ESTILOS DO NOVO MODAL DE CONTATOS --- */
+        .lista-botoes-contato {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            border-radius: 16px; /* Bordas arredondadas do modal central */
+            gap: 12px;
+            margin-top: 20px;
         }
-
-        /* LOGO POPUP PWA (MANTIDA) */
-        .modal-logo-pwa {
-            position: absolute;
-            top: -40px; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            background-color: white;
-            padding: 3px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4); 
-            z-index: 5003; 
-        }
-        .modal-logo-pwa img {
-             width: 100%;
-             height: 100%;
-             object-fit: cover;
-             border-radius: 50%;
-        }
-        
-        /* BOTÃO FECHAR PWA (MANTIDO) */
-        .pwa-close-btn {
-            position: absolute;
-            top: 5px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 20px; 
-            cursor: pointer;
-            line-height: 1;
-            padding: 5px;
-        }
-
-        /* Animações de Slide não são mais usadas neste modo */
-        @keyframes slideDown {
-            from { opacity: 0; } 
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; } 
-            to { opacity: 1; }
-        }
-        
-        /* Ajuste do texto para ficar mais harmonioso */
-        .modal-pwa-content h3 {
-             color: var(--cor-primaria); 
-             font-size: 1.5rem; /* Aumentado para igualar o popup inicial */
-             margin-top: 10px;
-             margin-bottom: 5px;
-             font-weight: 700;
-        }
-        .modal-pwa-content p {
-            font-size: 1.1rem; /* Aumentado para igualar o popup inicial */
-            margin: 0 0 25px 0;
-            font-weight: 400;
-            color: #555;
-        }
-        
-        /* Layout dos 2 botões */
-        .pwa-botoes-wrapper {
+        .btn-contato-modal {
             display: flex;
-            flex-direction: column; /* Deixa os botões em coluna para se parecer mais com o estilo dos botões iniciais */
-            gap: 10px;
-            width: 100%;
-            padding: 0;
-            margin-bottom: 10px;
-            max-width: 300px; /* Para não ocupar 100% da largura em telas grandes, como o botão inicial */
-        }
-        /* Estilo dos botões alterado para parecer com o botão principal do popup inicial */
-        .btn-pwa-install, .btn-pwa-whatsapp {
-            width: 100%;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: bold;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-            border: none;
             text-decoration: none;
+            font-weight: 600;
+            color: white;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .btn-contato-modal:active { opacity: 0.8; transform: scale(0.98); }
+        .btn-contato-modal i { font-size: 20px; width: 30px; text-align: center; margin-right: 10px; }
+        
+        .bg-whatsapp { background-color: var(--cor-whatsapp); }
+        .bg-telegram { background-color: var(--cor-telegram); }
+        .bg-instagram { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
+        .bg-facebook { background-color: var(--cor-facebook); }
+        .bg-ligar { background-color: #2e7d32; }
+        
+        /* NOVO ESTILO DE DESTAQUE PARA O APP */
+        .btn-destaque-app {
+            background: linear-gradient(45deg, #FFD700, #FFA000); /* Dourado/Laranja de destaque */
+            color: #222 !important; /* Texto escuro para contraste no amarelo */
+            border: 2px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            font-weight: 700;
+            margin-top: 5px; /* Separa um pouco dos outros */
+            justify-content: center; /* Centraliza o conteúdo no destaque */
+            text-transform: uppercase;
+            font-size: 14px;
         }
 
-        .btn-pwa-whatsapp {
-            background-color: var(--cor-whatsapp);
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
-            order: 1; /* Coloca o WhatsApp em cima (Prioridade de contato) */
-        }
-        .btn-pwa-install {
-            background-color: var(--cor-primaria); /* Cor App mais forte */
-            box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
-            order: 2; /* Coloca o App em baixo */
-            
-        }
-
-        /* --- RESPONSIVIDADE DESKTOP (CORREÇÃO 3) --- */
+        /* --- RESPONSIVIDADE DESKTOP --- */
         @media (min-width: 481px) {
-            .main-content-wrapper {
-                max-width: 900px; 
-                box-shadow: 0 0 25px rgba(0,0,0,0.15); 
+            .main-content-wrapper, header, .header-background-bar { max-width: 900px; }
+            .header-background-bar { left: 50%; transform: translateX(-50%); }
+            
+            /* Ajuste de logo no Desktop */
+            .logo-pequ { 
+                margin-left: calc(-450px + 20px); /* Ajuste para container de 900px */
             }
-            /* CORREÇÃO AQUI: Alinhamento da barra de aviso e header no Desktop */
-            #barra-aviso-topo, header {
-                 max-width: 900px; 
-            }
-            .header-background-bar {
-                max-width: 900px; 
-                left: 50%;
-                transform: translateX(-50%);
-            }
-            .secao-conteudo {
-                padding: 20px 30px; 
-            }
-            #modalPWA {
-                 max-width: 700px; 
-            }
+            .secao-conteudo { padding: 20px 30px; }
         }
         
-        /* Layout de 2 colunas para Produtos (tablet/desktop) */
         @media (min-width: 768px) {
-            /* Mantido o layout anterior */
-            .cesta-cards-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr; 
-                gap: 20px; 
-            }
-            .pwa-botoes-wrapper {
-                 /* CORREÇÃO 3: Em desktop, volta para 2 colunas */
-                flex-direction: row; 
-                padding: 0 10px;
-                max-width: 100%; /* Permite usar a largura máxima no desktop */
-            }
+            .cesta-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         }
     </style>
 </head>
 <body>
     
-    <!-- BARRA FIXA AMARELA (NOVA) -->
-    <div id="barra-aviso-topo">
-        <strong style="font-weight: 700;">Salve nosso contato.</strong> Aqui compensa muito comprar!
-    </div>
-
     <!-- BARRA DE FUNDO CINZA CLARA -->
     <div class="header-background-bar"></div>
 
-    <!-- LOGO FIXA: AGORA USA O GIF ANIMADO. O JS irá recarregar este GIF a cada 20s. -->
+    <!-- LOGO FIXA: MOVIDA PARA A ESQUERDA (CSS AJUSTADO) -->
     <img src="img/logo2.gif" 
          id="logo-principal" 
-         onerror="this.src='img/logo1.png'" 
+         onerror="this.src='https://placehold.co/120x120?text=LOGO'" 
          alt="Logo Dona Antônia" 
-         class="logo-pequena">
+         class="logo-pequ">
 
     <!-- CABEÇALHO FIXO -->
     <header>
         <div class="header-top">
-            <!-- WHATSAPP E LIGAR NA ESQUERDA -->
-            <div class="header-left">
-                 <!-- Botão WhatsApp -->
-                 <a href="https://wa.me/5565998150975" class="header-btn btn-whatsapp-save" target="_blank" aria-label="Fazer Pedido por WhatsApp">
-                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> WhatsApp
-                </a>
-                <!-- Botão Ligar -->
-                <a href="tel:+5565998150975" class="header-btn btn-ligar" aria-label="Ligar para o número (65) 99815-0975">
-                    <i class="fas fa-phone" style="margin-right: 5px;"></i> 99815-0975
-                </a>
-            </div>
-            
-            <!-- INSTAGRAM E INSTALAR APP NA DIREITA -->
-            <div class="header-icons">
-                <!-- Botão Instagram -->
-                <a href="https://instagram.com/super.cestas.dona.antonia/" class="header-btn btn-insta-follow" target="_blank" aria-label="Seguir no Instagram">
-                    <i class="fab fa-instagram" style="margin-right: 5px;"></i> Instagram
-                </a>
-                <!-- Botão Instalar App (PWA) -->
-                 <button class="header-btn btn-app-header" onclick="instalarPWA()" aria-label="Instalar aplicativo (PWA)">
-                    <i class="fas fa-mobile-alt" style="margin-right: 5px;"></i> Instalar App
-                </button>
-            </div>
+            <!-- BOTÃO ÚNICO DE CONTATO (SUBSTITUI OS 4 ANTIGOS) -->
+            <button class="btn-contato-principal" onclick="abrirModalContatos()">
+                <div class="btn-contato-icon">
+                    <i class="fas fa-address-book"></i>
+                </div>
+                <div>
+                    <span class="btn-contato-text-main">Salve nosso contato.</span>
+                    <span class="btn-contato-text-sub">Aqui compensa muito comprar!</span>
+                </div>
+            </button>
         </div>
     </header>
 
-    <!-- O BANNER DE INSTALAÇÃO PWA QUE ESTAVA AQUI FOI REMOVIDO (#pwa-install-banner) -->
-
-    <!-- CONTAINER DE CONTEÚDO PRINCIPAL -->
+    <!-- CONTAINER PRINCIPAL -->
     <div class="main-content-wrapper">
         
-        <!-- SEÇÃO 1: PRODUTOS (Cestas) -->
+        <!-- SEÇÃO 1: PRODUTOS -->
         <div id="pag-cestas" class="secao-conteudo">
             <div class="card" style="text-align: center; background-color: #fff3e0;">
                 <h1 style="margin: 0; font-size: 1.1rem; font-weight: bold; color: #E65100;">
@@ -711,24 +387,20 @@
                 <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #666;">Cestas básicas com preço justo e qualidade garantida.</p>
             </div>
 
-            <!-- GRID PARA OS CARDS DE CESTA -->
+            <!-- GRID CESTAS -->
             <div class="cesta-cards-grid">
                 
-                <!-- PRODUTO 1: CESTA ECONÔMICA (1 PREÇO) -->
+                <!-- CESTA ECONÔMICA -->
                 <div class="card card-cesta" id="cestaeconomica">
                     <div class="cesta-header"><h3>CESTA ECONÔMICA</h3></div>
                     <div class="cesta-body">
-                        <!-- Galeria de 2 Fotos Quadradas -->
                         <div class="galeria-fotos" id="galeria-economica">
-                            <!-- Imagem 1 (CONECTADO: img/cesta-economica1.jpg) -->
                             <div class="img-wrapper active" data-img-index="0">
                                 <img src="img/cesta-economica1.jpg" alt="Cesta Econômica" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA+1'">
                             </div>
-                            <!-- Imagem 2 (CONECTADO: img/cesta-economica2.jpg) -->
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-economica2.jpg" alt="Cesta Econômica Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA+2'">
                             </div>
-                            <!-- Botão de Navegação entre fotos -->
                             <div class="swipe-indicator" onclick="event.stopPropagation(); mudarFotoNoCard('economica')">
                                 <span id="btn-foto-economica">VER PRODUTOS</span>
                             </div>
@@ -737,34 +409,24 @@
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO 1: ENCOMENDAR -->
-                            <!-- ALTERADO: Novo parâmetro 'false' para remover a mensagem do brinde neste produto -->
                             <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
-                             <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Econômica', '#cestaeconomica')">
-                                <!-- CORRIGIDO: Ícone mais genérico para compartilhamento, já que o WhatsApp é o fallback -->
                                 <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
-                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
-                        </p>
                     </div>
                 </div>
 
-                <!-- PRODUTO 2: CESTA MINI (2 PREÇOS) -->
+                <!-- CESTA MINI -->
                 <div class="card card-cesta" id="cestamini">
                     <div class="cesta-header"><h3>CESTA MINI</h3></div>
                     <div class="cesta-body">
-                        <!-- Galeria de 2 Fotos Quadradas -->
                         <div class="galeria-fotos" id="galeria-mini">
-                            <!-- Imagem 1 (CONECTADO: img/cesta-mini1.jpg) -->
                             <div class="img-wrapper active" data-img-index="0">
                                 <img src="img/cesta-mini1.jpg" alt="Cesta Mini" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MINI+1'">
                             </div>
-                            <!-- Imagem 2 (CONECTADO: img/cesta-mini2.jpg) -->
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-mini2.jpg" alt="Cesta Mini Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MINI+2'">
                             </div>
@@ -777,32 +439,24 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO 1: ENCOMENDAR -->
                             <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
-                             <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Mini', '#cestamini')">
                                 <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
-                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
-                        </p>
                     </div>
                 </div>
 
-                <!-- PRODUTO 3: CESTA PEQUENA (2 PREÇOS) -->
+                <!-- CESTA PEQUENA -->
                 <div class="card card-cesta" id="cestapequena">
                     <div class="cesta-header"><h3>CESTA PEQUENA</h3></div>
                     <div class="cesta-body">
-                        <!-- Galeria de 2 Fotos Quadradas -->
                         <div class="galeria-fotos" id="galeria-pequena">
-                            <!-- Imagem 1 (CONECTADO: img/cesta-pequena1.jpg) -->
                             <div class="img-wrapper active" data-img-index="0">
                                 <img src="img/cesta-pequena1.jpg" alt="Cesta Pequena" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=PEQUENA+1'">
                             </div>
-                            <!-- Imagem 2 (CONECTADO: img/cesta-pequena2.jpg) -->
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-pequena2.jpg" alt="Cesta Pequena Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=PEQUENA+2'">
                             </div>
@@ -815,32 +469,24 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <!-- BOTÃO 1: ENCOMENDAR -->
                             <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
-                            <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Pequena', '#cestapequena')">
                                 <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
-                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
-                        </p>
                     </div>
                 </div>
 
-                <!-- PRODUTO 4: CESTA MÉDIA (2 PREÇOS) -->
+                <!-- CESTA MÉDIA -->
                 <div class="card card-cesta" id="cestamedia">
                     <div class="cesta-header"><h3>CESTA MÉDIA</h3></div>
                     <div class="cesta-body">
-                        <!-- Galeria de 2 Fotos Quadradas -->
                         <div class="galeria-fotos" id="galeria-media">
-                            <!-- Imagem 1 (CONECTADO: img/cesta-media1.jpg) -->
                             <div class="img-wrapper active" data-img-index="0">
                                 <img src="img/cesta-media1.jpg" alt="Cesta Média" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MÉDIA+1'">
                             </div>
-                            <!-- Imagem 2 (CONECTADO: img/cesta-media2.jpg) -->
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-media2.jpg" alt="Cesta Média Detalhe" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=MÉDIA+2'">
                             </div>
@@ -853,32 +499,24 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                             <!-- BOTÃO 1: ENCOMENDAR -->
                             <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
-                            <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Média', '#cestamedia')">
                                 <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
-                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
-                        </p>
                     </div>
                 </div>
 
-                <!-- PRODUTO 5: CESTA GRANDE (2 PREÇOS) -->
+                <!-- CESTA GRANDE -->
                 <div class="card card-cesta" id="cestagrande">
                     <div class="cesta-header"><h3>CESTA GRANDE</h3></div>
                     <div class="cesta-body">
-                        <!-- Galeria de 2 Fotos Quadradas -->
                         <div class="galeria-fotos" id="galeria-grande">
-                            <!-- Imagem 1 (CONECTADO: img/cesta-grande1.jpg) -->
                             <div class="img-wrapper active" data-img-index="0">
                                 <img src="img/cesta-grande1.jpg" alt="Cesta Básica Grande" onerror="this.src='https://placehold.co/400x400?text=GRANDE+1'">
                             </div>
-                            <!-- Imagem 2 (CONECTADO: img/cesta-grande2.jpg) -->
                             <div class="img-wrapper" data-img-index="1">
                                 <img src="img/cesta-grande2.jpg" alt="Cesta Básica Grande Detalhe" onerror="this.src='https://placehold.co/400x400?text=GRANDE+2'">
                             </div>
@@ -891,30 +529,22 @@
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                             <!-- BOTÃO 1: ENCOMENDAR -->
                             <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Encomendar
                             </button>
-                            <!-- BOTÃO 2: COMPARTILHAR -->
                             <button class="btn btn-compartilhar" onclick="compartilharCesta('Cesta Grande', '#cestagrande')">
                                 <i class="fas fa-share-alt" style="margin-right: 8px;"></i> Compartilhar
                             </button>
                         </div>
-                        <p style="text-align: center; font-size: 13px; color: #555; margin-top: 10px;">
-                            
-                        </p>
                     </div>
                 </div>
-            </div><!-- FIM GRID PRODUTOS -->
-        </div><!-- FIM SEÇÃO CESTAS -->
+            </div>
+        </div>
         
-        <!-- SEÇÃO 2 & 3: PAGAMENTO E SORTEIO (Usando grid no desktop) -->
+        <!-- EXTRAS: PAGAMENTO E SORTEIO -->
         <div class="secoes-extras-grid">
-            
-            <!-- CARD 1: FORMAS DE PAGAMENTO (EXTRAÍDO DO ANEXO) -->
             <div id="pag-pagamento" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <!-- ÍCONE PAGAMENTO (CONECTADO: img/pagamento.png) -->
                     <img src="img/pagamento.png" alt="Pagamento Icone" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
                 </div>
                 <div class="card">
@@ -924,26 +554,21 @@
                         <li><span class="emoji-icon">✨</span> Pix</li>
                         <li><span class="emoji-icon">💳</span> Cartão de Débito</li>
                         <li><span class="emoji-icon">💳</span> Cartão de Crédito (até 3x sem juros)</li>
-                        <li><span class="emoji-icon">🥗</span> Alelo Alimentação/Refeição</li>
-                        <li><span class="emoji-icon">🥗</span> Sodexo Alimentação/Refeição</li>
-                        <li><span class="emoji-icon">🥗</span> Pluxee Alimentação/Refeição</li>
-                        <li><span class="emoji-icon">📱</span> Ifood Benefícios, Caju e Flash</li>
+                        <li><span class="emoji-icon">🥗</span> Alelo, Sodexo, Pluxee</li>
+                        <li><span class="emoji-icon">📱</span> Ifood, Caju e Flash</li>
                     </ul>
-                    <p style="color: red; font-size: 18px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> Não vendemos a prazo para 30 dias.</p>
+                    <p style="color: red; font-size: 18px; text-align: center; margin-top: 20px;"><strong>⚠️ Atenção:</strong> Não vendemos a prazo.</p>
                 </div>
             </div>
 
-            <!-- CARD 2: CADASTRO PARA SORTEIO (EXTRAÍDO DO ANEXO) -->
             <div id="pag-sorteio" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <!-- ÍCONE SORTEIO (CONECTADO: img/cesta.png) -->
                     <img src="img/cesta.png" alt="Sorteio Icone" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
                 </div>
                 <div class="card">
                     <h2>🎉 Sorteio todo Domingo.</h2>
                     <p>Próximo Sorteio dia 7 de Dezembro as 18h. Válido para moradores de Cuiabá e VG</p>
                     
-                    <!-- ETAPA 1: BUSCA POR TELEFONE -->
                     <div id="area-busca-telefone" class="card" style="margin-bottom: 15px;">
                         <h2>🍀 Participe</h2>
                         <label>Telefone (Whatsapp): <span style="color:red">*</span></label>
@@ -953,31 +578,26 @@
                         </button>
                     </div>
 
-                    <!-- ETAPA 2A: CADASTRO ENCONTRADO (Escondido inicialmente) -->
                     <div id="cadastro-encontrado" class="area-resultado-busca" style="display: none;">
                         <h2>✅ Cadastro Encontrado!</h2>
                         <p style="margin-bottom: 10px;">Confira seus dados:</p>
-                        
                         <div style="text-align: left;">
                             <p><strong>Nome:</strong> <span id="nome-cliente-encontrado"></span></p>
                             <p><strong>Cidade:</strong> <span id="cidade-cliente-encontrado"></span></p>
                             <p><strong>Bairro:</strong> <span id="bairro-cliente-encontrado"></span></p>
                         </div>
-                        
                         <button onclick="confirmarJaCadastrado()" class="btn" style="background-color: var(--cor-whatsapp); margin-top: 15px;">
                             <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Confirmar e Participar
                         </button>
                     </div>
                     
-                    <!-- ETAPA 2B: NOVO CADASTRO (Escondido inicialmente) -->
-                    <div id="cadastro-novo" class="card" style="display: none; background-color: #fff3e0; border: 1px solid #ffcc80;">
+                    <div id="cadastro-novo" class="card" style="display: none;">
                         <h2>📝 Novo Cadastro</h2>
-                        <p style="margin-bottom: 15px; color: #D32F2F;">Não encontramos seu número. Preencha seus dados para participar:</p>
-                        
+                        <p style="margin-bottom: 15px; color: #D32F2F;">Não encontramos seu número. Preencha seus dados:</p>
                         <form onsubmit="event.preventDefault(); enviarNovoCadastro();">
                             <label>Nome Completo: <span style="color:red">*</span></label>
                             <input type="text" id="novo-nome" placeholder="Seu nome" required>
-                            <label>Telefone (Whatsapp): <span style="color:red">*</span></label>
+                            <label>Telefone: <span style="color:red">*</span></label>
                             <input type="tel" id="novo-telefone" placeholder="(65) 9..." required disabled> 
                             <label>Cidade: <span style="color:red">*</span></label>
                             <select id="novo-cidade" required>
@@ -990,66 +610,44 @@
                             <button type="submit" class="btn"><i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Cadastrar e Participar</button>
                         </form>
                     </div>
-
                 </div>
             </div>
-
-        </div><!-- FIM SEÇÕES EXTRAS GRID -->
+        </div>
 
         <div class="seo-text-block" style="text-align: center; font-size: 12px; color: #888; padding: 15px 30px;">
-            <p><strong>Cesta Básica Dona Antônia</strong> - A melhor opção em alimentos para sua família. Atendemos com rapidez e qualidade os bairros: CPA 1, 2, 3 e 4, Tijucal, Pedra 90, Osmar Cabral, Parque Cuiabá, Cristo Rei, Mapim e toda a Grande Cuiabá e Várzea Grande.</p>
+            <p><strong>Cesta Básica Dona Antônia</strong> - A melhor opção em alimentos para sua família.</p>
         </div>
-        
-    </div><!-- FIM MAIN-CONTENT-WRAPPER -->
+    </div>
 
-    <!-- MODAL DE ESCOLHA DE VARIAÇÃO (MANTIDO) -->
+    <!-- MODAL DE ESCOLHA -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
             <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">&times;</button>
-            
             <h3 class="titulo-modal-var" id="tituloCestaModal">Cesta X</h3>
             <p class="subtitulo-modal-var">Escolha a marca do arroz para continuar:</p>
-            
             <div class="opcao-select" id="optAlvino" onclick="selecionarOpcao('alvino')">
-                <div class="opcao-info">
-                    <span class="opcao-nome">Arroz Tio Alvino</span>
-                    <span class="opcao-preco" id="precoAlvinoDisplay">R$ 0,00</span>
-                </div>
+                <div class="opcao-info"><span class="opcao-nome">Arroz Tio Alvino</span><span class="opcao-preco" id="precoAlvinoDisplay">R$ 0,00</span></div>
                 <div class="radio-custom"></div>
             </div>
-
             <div class="opcao-select" id="optKoblenz" onclick="selecionarOpcao('koblenz')">
-                <div class="opcao-info">
-                    <span class="opcao-nome">Arroz Koblenz</span>
-                    <span class="opcao-preco" id="precoKoblenzDisplay">R$ 0,00</span>
-                </div>
+                <div class="opcao-info"><span class="opcao-nome">Arroz Koblenz</span><span class="opcao-preco" id="precoKoblenzDisplay">R$ 0,00</span></div>
                 <div class="radio-custom"></div>
             </div>
-
             <button class="btn-confirmar-pedido" id="btnConfirmarPedido" onclick="confirmarAcao()" disabled>
                 <i class="fab fa-whatsapp"></i> Enviar Pedido
             </button>
         </div>
     </div>
 
-    <!-- POPUP 1: RECEPTIVO E FUNIL EM DUAS ETAPAS -->
+    <!-- POPUP RECEPTIVO -->
     <div id="modalReceptivo" onclick="if(event.target === this) fecharModalReceptivo()" class="modal-variacao">
         <div class="modal-receptivo-content">
-            
-            <!-- LOGO SOBREPOSTA: AGORA USA O PNG ESTÁTICO -->
             <div class="modal-logo-receptivo">
-                 <img src="img/logo1.png" 
-                     alt="Logo Dona Antônia" 
-                     onerror="this.src='https://placehold.co/80x80/808080/ffffff?text=D.A'"
-                     >
+                 <img src="img/logo1.png" alt="Logo Dona Antônia" onerror="this.src='https://placehold.co/80x80/808080/ffffff?text=D.A'">
             </div>
-            
-            <!-- ETAPA 1: LOCALIZAÇÃO E VELOCIDADE -->
             <div id="etapa1" class="etapa-modal ativa">
                 <h3 class="titulo-receptivo">BEM-VINDO! 👋</h3>
-                <p class="subtitulo-receptivo">
-                    Entregamos em Cuiabá e Várzea Grande.
-                </p>
+                <p class="subtitulo-receptivo">Entregamos em Cuiabá e Várzea Grande.</p>
                 <button class="btn-receptivo btn-ver-cestas" onclick="mudarEtapaPopup()">
                     <i class="fas fa-box" style="margin-right: 8px;"></i> Ver as Cestas
                 </button>
@@ -1057,15 +655,10 @@
                     Prefiro continuar navegando
                 </button>
             </div>
-
-            <!-- ETAPA 2: BRINDE E CTA DIRETA -->
             <div id="etapa2" class="etapa-modal">
                 <i class="fas fa-gift" style="font-size: 50px; color: var(--cor-whatsapp); margin-bottom: 15px;"></i>
                 <h3 class="titulo-receptivo" style="color: var(--cor-whatsapp);">🎉 Brinde!</h3>
-                <p class="subtitulo-receptivo">
-                    Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!
-                </p>
-                <!-- O botão agora apenas fecha o modal, conforme solicitado -->
+                <p class="subtitulo-receptivo">Na sua primeira compra, vamos te dar um Amaciante Ypê de 2 Litros de Brinde!</p>
                 <button class="btn-receptivo btn-eu-quero" onclick="confirmarBrindeEFecar()">
                     <i class="fas fa-arrow-down" style="margin-right: 8px;"></i> EU QUERO!
                 </button>
@@ -1073,565 +666,257 @@
                     Prefiro continuar navegando
                 </button>
             </div>
+        </div>
+    </div>
 
+    <!-- NOVO MODAL: LISTA DE CONTATOS (REORGANIZADO) -->
+    <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
+        <div class="modal-variacao-content">
+            <button class="btn-fechar-modal-var" onclick="fecharModalContatos()">&times;</button>
+            <h3 style="color: var(--cor-primaria); margin-bottom: 5px;">Fale Conosco</h3>
+            <p style="margin-bottom: 20px; font-size: 14px; color: #666;">Escolha como prefere ser atendido:</p>
+            
+            <div class="lista-botoes-contato">
+                <!-- 1. WhatsApp -->
+                <a href="https://wa.me/5565998150975" class="btn-contato-modal bg-whatsapp" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Falar no WhatsApp
+                </a>
+
+                <!-- 2. Ligar 1 -->
+                <a href="tel:+5565998150975" class="btn-contato-modal bg-ligar">
+                    <i class="fas fa-phone"></i> Ligar: (65) 99815-0975
+                </a>
+                
+                <!-- 3. Ligar 2 -->
+                <a href="tel:+5565900000000" class="btn-contato-modal bg-ligar">
+                    <i class="fas fa-phone-alt"></i> Ligar: (65) 90000-0000
+                </a>
+
+                <!-- 4. Telegram -->
+                <a href="https://t.me/+5565998150975" class="btn-contato-modal bg-telegram" target="_blank">
+                    <i class="fab fa-telegram-plane"></i> Falar no Telegram
+                </a>
+                
+                <!-- 5. Instagram -->
+                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-contato-modal bg-instagram" target="_blank">
+                    <i class="fab fa-instagram"></i> Ver Instagram
+                </a>
+                
+                <!-- 6. Facebook (NOVO) -->
+                <a href="https://facebook.com/donaantonia" class="btn-contato-modal bg-facebook" target="_blank">
+                    <i class="fab fa-facebook-f"></i> Ver Facebook
+                </a>
+
+                <!-- 7. Instalar App (DESTACADO) -->
+                <button onclick="instalarPWA(); fecharModalContatos();" class="btn-contato-modal btn-destaque-app" style="border:none; width:100%; cursor:pointer;">
+                    <i class="fas fa-mobile-alt"></i> Baixar o Aplicativo
+                </button>
+            </div>
         </div>
     </div>
     
-    <!-- SCRIPT JS PRINCIPAL -->
     <script>
-        // Tenta carregar o arquivo de clientes (data/clientes.js). Como não temos acesso,
-        // será usado o fallback de console.
         var clientes = [];
     </script>
-    <!-- O script abaixo não será carregado no ambiente do Canvas, mas é mantido como no ficheiro original -->
-    <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado. Usando dados de simulação.')"></script>
+    <script src="data/clientes.js" onerror="console.warn('Arquivo data/clientes.js não encontrado.')"></script>
 
     <script>
-        // Caminhos das imagens
         const LOGO_ESTATICA_SRC = 'img/logo1.png';
-        const LOGO_ANIMADA_SRC = 'img/logo2.gif'; // O caminho para o GIF
+        const LOGO_ANIMADA_SRC = 'img/logo2.gif';
         const LOGO_ELEMENT_ID = 'logo-principal';
-
-        // Intervalo de tempo para o loop (20 segundos)
         const INTERVALO_LOOP_MS = 50000; 
-        // Duração da reprodução do GIF animado (2 segundos)
-        const DURACAO_ANIMACAO_MS = 114000; 
-        
-        // Instruções Detalhadas e Documentação
-        
-        // Número de telefone para contato via WhatsApp (998150975)
         const TELEFONE = "5565998150975"; 
-        const TELEFONE_LIGAR = "5565998150975"; // CORRIGIDO: Número para ligação
         
-        // Variável para armazenar o prompt de instalação adiado do PWA
         let deferredPrompt; 
-        
-        // Variáveis globais para o modal de variação
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
         let opcaoEscolhida = ''; 
         
-        // Variável de controle para o novo popup de retenção (não usada, mas mantida)
-        const PWA_PROMPT_KEY = 'pwaPromptShown';
-        let isPwaPromptShown = false; 
-        
-        // Timer global para o novo gatilho (não usado, mas mantido)
-        let popupTimer;
-        
-        /**
-         * NOVO: Controla a reprodução do GIF animado a cada 20 segundos.
-         * A logo principal deve ter o ID 'logo-principal'.
-         */
         function iniciarLoopLogoAnimada() {
             const logo = document.getElementById(LOGO_ELEMENT_ID);
             if (!logo) return;
-
-            // Função que alterna entre PNG e GIF
-            const alternarLogo = () => {
-                // 1. Inicia a animação (muda para o GIF forçando o recarregamento)
-                // Adicionar um timestamp força o navegador a recarregar a imagem e iniciar a animação.
-                logo.src = LOGO_ANIMADA_SRC + `?t=${new Date().getTime()}`;
-                
-                // 2. Agenda a volta para a imagem estática (após a duração da animação)
-                // Comentado para deixar o GIF rodar continuamente até o próximo reinício
-                // Se for um GIF com looping nativo, esta etapa é desnecessária.
-                
-                // Opção alternativa (se o GIF for muito longo ou se a intenção for mostrar a animação e parar):
-                /*
-                setTimeout(() => {
-                    logo.src = LOGO_ESTATICA_SRC; // Volta para o PNG estático após a animação
-                }, DURACAO_ANIMACAO_MS);
-                */
-            };
-
-            // A logo principal já começa com o GIF (img/logo2.gif).
-            // O setInterval garante que ele recarrega a cada 20 segundos para reiniciar a animação.
-            
-            // 3. Inicia o loop para repetir o reinício do GIF a cada 20 segundos
+            const alternarLogo = () => { logo.src = LOGO_ANIMADA_SRC + `?t=${new Date().getTime()}`; };
             setInterval(alternarLogo, INTERVALO_LOOP_MS);
-            
-            // Executa o primeiro reinício (se o GIF for carregado, a animação deve rodar)
             alternarLogo();
         }
 
-        /**
-         * NOVO: Função para o botão LIGAR na header
-         * O link tel:... no HTML garante a chamada direta
-         */
-        function ligarDireto(event) {
-            // Ação de ligação é gerenciada pelo href="tel:..."
+        /* --- ATUALIZADO: AJUSTE DE LOGO REMOVIDO PARA RESPEITAR O CSS (LEFT) --- */
+        function ajustarPosicaoLogo() {
+            // Função simplificada. O posicionamento agora é feito 100% via CSS.
         }
 
-        // ===============================
-        // === LÓGICA DO POPUP RECEPTIVO EM 2 ETAPAS (POPUP 1) ===
-        // ===============================
-        
+        // --- FUNÇÕES POPUP ---
         const MODAL_RECEPTIVO_KEY = 'donaAntoniaVisitou';
-        
-        /**
-         * 1. Exibe o modal receptivo em TODO ACESSO.
-         */
-        function iniciarPopupReceptivo() {
-            // A checagem do localStorage foi removida para exibir o popup em todos os acessos.
-            document.getElementById('modalReceptivo').style.display = 'flex';
-        }
-
-        /**
-         * 2. Fecha o modal e rola para os produtos.
-         */
+        function iniciarPopupReceptivo() { document.getElementById('modalReceptivo').style.display = 'flex'; }
         function fecharModalReceptivo() {
-            // Garante que o popup receptivo seja fechado visualmente
             document.getElementById('modalReceptivo').style.display = 'none';
-            
-            // Marca a sessão como visitada para controle (se fosse em produção)
             localStorage.setItem(MODAL_RECEPTIVO_KEY, 'sim');
-            
-            // Rola suavemente para o topo onde as cestas começam.
-             document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('pag-cestas').scrollIntoView({ behavior: 'smooth' });
         }
-        
-        /**
-         * 3. Altera o conteúdo do modal da Etapa 1 para a Etapa 2.
-         */
         function mudarEtapaPopup() {
-            const etapa1 = document.getElementById('etapa1');
-            const etapa2 = document.getElementById('etapa2');
-            
-            // Remove a classe ativa da Etapa 1 e adiciona na Etapa 2
-            etapa1.classList.remove('ativa');
-            etapa2.classList.add('ativa');
+            document.getElementById('etapa1').classList.remove('ativa');
+            document.getElementById('etapa2').classList.add('ativa');
         }
-        
-        /**
-         * 4. Apenas fecha o modal e rola para os produtos. (Ação do botão "EU QUERO o Brinde!")
-         */
-        function confirmarBrindeEFecar() {
-            // Apenas fecha o modal e rola para a seção de cestas.
-            fecharModalReceptivo();
+        function confirmarBrindeEFecar() { fecharModalReceptivo(); }
+
+        // --- FUNÇÕES NOVO MODAL CONTATOS ---
+        function abrirModalContatos() {
+            document.getElementById('modalContatos').style.display = 'flex';
+        }
+        function fecharModalContatos() {
+            document.getElementById('modalContatos').style.display = 'none';
         }
 
-        // ===============================
-        // === LÓGICA DE INSTALAÇÃO PWA (SIMPLIFICADA) ===
-        // ===============================
-        
-        /**
-         * 1. Registra o Service Worker (Essencial para PWA e funcionamento offline)
-         */
+        // --- PWA ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./service-worker.js')
-                    .then(registration => {
-                        console.log('Service Worker registrado com sucesso: ', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Falha no registro do Service Worker: ', error);
-                    });
+                navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW falhou', err));
             });
         }
-
-
-        /**
-         * 2. Captura o evento de instalação (beforeinstallprompt)
-         * O listener é mantido caso o usuário queira instalar o PWA pelo botão do Header.
-         */
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Previne que o mini-infobar padrão do Chrome apareça
-            e.preventDefault();
-            // Armazena o evento para que possa ser disparado mais tarde
-            deferredPrompt = e;
-        });
-
-        /**
-         * 3. Função chamada ao clicar no botão "Instalar App" no Header.
-         */
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
         function instalarPWA() {
             if (deferredPrompt) {
-                mostrarMensagemBusca("Iniciando instalação...", false);
-
-                // Chama o prompt de instalação do navegador
                 deferredPrompt.prompt();
-                
                 deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        deferredPrompt = null; 
-                        mostrarMensagemBusca("🎉 Aplicativo instalado com sucesso!", false);
-                    } else {
-                        mostrarMensagemBusca("Instalação cancelada. Você pode tentar novamente mais tarde.", true);
-                    }
+                    if (choiceResult.outcome === 'accepted') { deferredPrompt = null; mostrarMensagemBusca("Instalado com sucesso!", false); }
                 });
-            } else {
-                 mostrarMensagemBusca("O aplicativo já está instalado ou o navegador não suporta a instalação PWA.", true);
-            }
+            } else { mostrarMensagemBusca("Instalação não disponível no momento.", true); }
         }
 
-        // ===============================
-        // === LÓGICA DE PRODUTOS/MODAL (MANTIDA) ===
-        // ===================================
-        
-        /**
-         * Envia o pedido direto para o WhatsApp (para produtos sem variação).
-         * @param {string} produto - Nome da cesta.
-         * @param {string} preco - Preço formatado da cesta.
-         * @param {boolean} [incluirBrinde=true] - Se deve incluir a mensagem do brinde.
-         */
+        // --- FUNÇÕES PRODUTO ---
         function encomendarDireto(produto, preco, incluirBrinde = true) { 
             let brindeTexto = incluirBrinde ? ". Com Amaciante Ypê de 2L de brinde." : ".";
             const textoZap = `Olá, quero encomendar a *${produto}* (Valor: R$ ${preco})${brindeTexto}`;
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank'); 
         }
         
-        /**
-         * Abre o modal de escolha de variação (para produtos com 2 preços).
-         * @param {string} nome - Nome da cesta.
-         * @param {string} pAlvino - Preço do Arroz Tio Alvino.
-         * @param {string} pKoblenz - Preço do Arroz Koblenz.
-         */
         function abrirModalVariacao(nome, pAlvino, pKoblenz) { 
-            // 1. Armazena os dados atuais
             dadosCestaAtual = { nome, precoAlvino: pAlvino, precoKoblenz: pKoblenz };
             opcaoEscolhida = '';
-            
-            // 2. Preenche o modal
             document.getElementById('tituloCestaModal').innerText = nome;
             document.getElementById('precoAlvinoDisplay').innerText = 'R$ ' + pAlvino;
             document.getElementById('precoKoblenzDisplay').innerText = 'R$ ' + pKoblenz;
-            
-            // 3. Reseta o estado do modal
             document.getElementById('optAlvino').classList.remove('selected');
             document.getElementById('optKoblenz').classList.remove('selected');
             document.getElementById('btnConfirmarPedido').disabled = true;
-
-            // 4. Exibe o modal
             document.getElementById('modalVariacao').style.display = 'flex';
         }
 
-        /**
-         * Seleciona uma opção de variação dentro do modal.
-         * @param {string} tipo - 'alvino' ou 'koblenz'.
-         */
         function selecionarOpcao(tipo) {
             opcaoEscolhida = tipo;
-            
-            // Remove a seleção de ambos e adiciona à opção correta
             document.getElementById('optAlvino').classList.remove('selected');
             document.getElementById('optKoblenz').classList.remove('selected');
-            
-            if(tipo === 'alvino') {
-                document.getElementById('optAlvino').classList.add('selected');
-            } else {
-                document.getElementById('optKoblenz').classList.add('selected');
-            }
-            
-            // Habilita o botão de confirmação
+            if(tipo === 'alvino') { document.getElementById('optAlvino').classList.add('selected'); } 
+            else { document.getElementById('optKoblenz').classList.add('selected'); }
             document.getElementById('btnConfirmarPedido').disabled = false;
         }
 
-        /**
-         * Confirma a escolha no modal e envia o pedido para o WhatsApp.
-         * OBS: As cestas com variação (Mini, Pequena, Média, Grande) devem incluir a mensagem do brinde.
-         */
         function confirmarAcao() {
-            if(!opcaoEscolhida) return; // Garante que uma opção foi escolhida
-
+            if(!opcaoEscolhida) return;
             let marca = opcaoEscolhida === 'alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
             let preco = opcaoEscolhida === 'alvino' ? dadosCestaAtual.precoAlvino : dadosCestaAtual.precoKoblenz;
-            let nomeCesta = dadosCestaAtual.nome;
-            
-            // Inclui o brinde para todas as cestas que usam o modal de variação (Mini, Pequena, Média, Grande)
-            let textoZap = `Olá, quero encomendar a *${nomeCesta}* com *${marca}* (Valor: R$ ${preco}). Com Amaciante Ypê de 2L de brinde.`;
-            
+            let textoZap = `Olá, quero encomendar a *${dadosCestaAtual.nome}* com *${marca}* (Valor: R$ ${preco}). Com Amaciante Ypê de 2L de brinde.`;
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(textoZap)}`, '_blank');
             fecharModalVariacao();
         }
 
-        /**
-         * Fecha o modal de variação.
-         */
-        function fecharModalVariacao() {
-            document.getElementById('modalVariacao').style.display = 'none';
-        }
+        function fecharModalVariacao() { document.getElementById('modalVariacao').style.display = 'none'; }
         
-        /**
-         * Função de Compartilhamento via WhatsApp (usando Web Share API se disponível)
-         * @param {string} nomeCesta - Nome da cesta a ser compartilhada.
-         * @param {string} hash - Âncora da cesta na página.
-         */
         function compartilharCesta(nomeCesta, hash) {
-            const urlCompleta = window.location.href.split('#')[0] + hash; // Pega URL base + âncora
-            const textoCompartilhamento = `🛒 Confira a Cesta Básica *${nomeCesta}* da Dona Antônia! Preço Justo e Qualidade em Cuiabá/VG. Encomende aqui: ${urlCompleta}`;
-
-            if (navigator.share) {
-                // Usa a API nativa de compartilhamento se estiver disponível
-                navigator.share({
-                    title: `Cesta Básica ${nomeCesta}`,
-                    text: textoCompartilhamento,
-                    url: urlCompleta
-                }).catch(error => {
-                    console.log('Erro ao compartilhar (Fallback para WhatsApp):', error);
-                    // Fallback para WhatsApp direto
-                    window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhamento)}`, '_blank');
-                });
-            } else {
-                // Fallback: abre o WhatsApp direto
-                window.open(`https://wa.me/?text=${encodeURIComponent(textoCompartilhamento)}`, '_blank');
-            }
+            const url = window.location.href.split('#')[0] + hash;
+            const texto = `🛒 Confira a Cesta Básica *${nomeCesta}* da Dona Antônia! Encomende aqui: ${url}`;
+            if (navigator.share) { navigator.share({ title: `Cesta ${nomeCesta}`, text: texto, url: url }).catch(() => window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank')); } 
+            else { window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank'); }
         }
         
-        // ===============================
-        // === LÓGICA DE GALERIA DE FOTOS (MANTIDA) ===
-        // ===============================
+        // --- GALERIA ---
+        const CestaImages = { 'economica': 2, 'mini': 2, 'pequena': 2, 'media': 2, 'grande': 2 };
+        let currentPhotoIndex = { 'economica': 0, 'mini': 0, 'pequena': 0, 'media': 0, 'grande': 0 };
         
-        const CestaImages = {
-            'economica': 2, 'mini': 2, 'pequena': 2, 'media': 2, 'grande': 2,
-        };
-        let currentPhotoIndex = {
-            'economica': 0, 'mini': 0, 'pequena': 0, 'media': 0, 'grande': 0
-        };
-        
-        /**
-         * Atualiza o texto do botão de navegação (VER PRODUTOS / VER FOTO).
-         * @param {string} cestaTipo - Tipo da cesta (ex: 'economica').
-         * @param {number} newIndex - Índice da imagem atual.
-         */
-        function updatePhotoIndicator(cestaTipo, newIndex) {
-            const indicatorSpan = document.querySelector(`#galeria-${cestaTipo} .swipe-indicator span`);
-            if (indicatorSpan) {
-                if (newIndex === 0) {
-                    indicatorSpan.innerText = 'VER PRODUTOS';
-                } else {
-                    indicatorSpan.innerText = 'VER FOTO';
-                }
-            }
-        }
-
-        /**
-         * Alterna a foto visível em um card de produto.
-         * @param {string} cestaTipo - Tipo da cesta (ex: 'economica').
-         */
         function mudarFotoNoCard(cestaTipo) {
             const galeria = document.getElementById(`galeria-${cestaTipo}`);
-            if (!galeria || !CestaImages[cestaTipo] || CestaImages[cestaTipo] < 2) return;
-
-            const totalImages = CestaImages[cestaTipo];
-            let newIndex = (currentPhotoIndex[cestaTipo] + 1) % totalImages;
+            if (!galeria) return;
+            const total = CestaImages[cestaTipo];
+            let newIndex = (currentPhotoIndex[cestaTipo] + 1) % total;
             
-            // Remove 'active' da foto atual
-            const currentWrapper = galeria.querySelector(`.img-wrapper.active`);
-            if (currentWrapper) {
-                currentWrapper.classList.remove('active');
-            }
-
-            // Adiciona 'active' na nova foto
-            const newWrapper = galeria.querySelector(`.img-wrapper[data-img-index="${newIndex}"]`);
-            if (newWrapper) {
-                newWrapper.classList.add('active');
-            } else {
-                // Fallback de segurança
-                galeria.querySelector(`.img-wrapper[data-img-index="0"]`).classList.add('active');
-                newIndex = 0;
-            }
-
+            galeria.querySelector(`.img-wrapper.active`)?.classList.remove('active');
+            const next = galeria.querySelector(`.img-wrapper[data-img-index="${newIndex}"]`) || galeria.querySelector(`.img-wrapper[data-img-index="0"]`);
+            next.classList.add('active');
             currentPhotoIndex[cestaTipo] = newIndex;
-            updatePhotoIndicator(cestaTipo, newIndex);
+            
+            const btnSpan = galeria.querySelector('.swipe-indicator span');
+            if(btnSpan) btnSpan.innerText = newIndex === 0 ? 'VER PRODUTOS' : 'VER FOTO';
         }
 
-        // ===============================
-        // === LÓGICA DE SORTEIO (MANTIDA) ===
-        // ===============================
-        
+        // --- SORTEIO ---
         const cadastroEncontradoDiv = document.getElementById('cadastro-encontrado');
         const cadastroNovoDiv = document.getElementById('cadastro-novo');
         const buscaTelefoneInput = document.getElementById('busca-telefone');
-        const areaBuscaTelefoneDiv = document.getElementById('area-busca-telefone');
-
-        /**
-         * Exibe uma mensagem de atenção/sucesso temporária. (Substitui alert())
-         * @param {string} msg - Mensagem a ser exibida.
-         * @param {boolean} isError - Se a mensagem é de erro (true) ou sucesso/info (false).
-         */
+        
         function mostrarMensagemBusca(msg, isError = true) {
-            // Cria um modal ou utiliza uma área temporária para notificação
-            // Usaremos temporariamente a área de cadastro encontrado para mensagens
             const originalContent = cadastroEncontradoDiv.innerHTML;
-            
-            // Previne que a mensagem temporária tente disparar a lógica do sorteio
             cadastroEncontradoDiv.style.pointerEvents = 'none'; 
-            
             cadastroEncontradoDiv.innerHTML = `<h2>${isError ? '⚠️ Atenção!' : '🎉 Sucesso!'}</h2><p>${msg}</p>`;
             cadastroEncontradoDiv.style.backgroundColor = isError ? '#ffebee' : '#e8f5e9';
-            cadastroEncontradoDiv.style.borderColor = isError ? '#ffcdd2' : '#a5d6a7';
             cadastroEncontradoDiv.style.display = 'block';
-            
             setTimeout(() => { 
                 cadastroEncontradoDiv.style.display = 'none'; 
-                cadastroEncontradoDiv.innerHTML = originalContent; // Restaura o conteúdo original
-                cadastroEncontradoDiv.style.pointerEvents = 'auto'; // Restaura a interatividade
+                cadastroEncontradoDiv.innerHTML = originalContent; 
+                cadastroEncontradoDiv.style.pointerEvents = 'auto'; 
             }, 3000);
         }
         
-        /**
-         * Busca o telefone digitado na base de clientes (simulada ou data/clientes.js).
-         */
         function buscarCadastro() {
             cadastroEncontradoDiv.style.display = 'none';
             cadastroNovoDiv.style.display = 'none';
-
-            const inputTel = buscaTelefoneInput.value;
-            const telLimpo = inputTel.replace(/\D/g, ''); 
+            const inputTel = buscaTelefoneInput.value.replace(/\D/g, ''); 
             
-            if (!telLimpo || telLimpo.length < 6) {
-                mostrarMensagemBusca("Por favor, digite o número completo ou os últimos 6 dígitos do seu telefone.");
-                return;
-            }
+            if (inputTel.length < 6) { mostrarMensagemBusca("Digite seu telefone completo."); return; }
 
-            const btnBuscar = areaBuscaTelefoneDiv.querySelector('.btn');
-            const textoOriginal = btnBuscar.innerHTML;
-            btnBuscar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
-            btnBuscar.disabled = true;
+            const btn = document.querySelector('#area-busca-telefone .btn');
+            const txtOriginal = btn.innerHTML;
+            btn.innerHTML = 'Buscando...'; btn.disabled = true;
 
-            // Simulação de delay de busca
             setTimeout(() => {
-                btnBuscar.innerHTML = textoOriginal;
-                btnBuscar.disabled = false;
+                btn.innerHTML = txtOriginal; btn.disabled = false;
+                let cliente = null;
+                if(typeof clientes !== 'undefined') cliente = clientes.find(c => c.telefone.replace(/\D/g, '').endsWith(inputTel.slice(-6)));
                 
-                let clienteEncontrado = null;
-                
-                // Cliente deve ser procurado na variável global 'clientes'
-                if(typeof clientes !== 'undefined' && Array.isArray(clientes)) {
-                     const inputSuffix = telLimpo.slice(-6);
-                     clienteEncontrado = clientes.find(c => {
-                        const cTelLimpo = c.telefone.replace(/\D/g, '');
-                        if (cTelLimpo.length < 6) return false;
-                        const clientSuffix = cTelLimpo.slice(-6);
-                        return clientSuffix === inputSuffix;
-                    });
-                }
-                
-                // Se a base de dados de clientes estiver vazia, simula um novo cadastro.
-                if (clientes.length === 0) {
-                    // Se não houver dados, sempre assume que é um novo cadastro.
-                    clienteEncontrado = null;
-                } else if (!clienteEncontrado) {
-                    // Simulação para o caso de não encontrar na base
-                    clienteEncontrado = (telLimpo === '65999999999' || telLimpo.endsWith('123456')) ? { 
-                        nome: "Maria Teste", 
-                        cidade: "Cuiabá", 
-                        bairro: "Centro" 
-                    } : null;
-                }
-                
-                if (clienteEncontrado) {
-                    document.getElementById('nome-cliente-encontrado').innerText = clienteEncontrado.nome;
-                    document.getElementById('cidade-cliente-encontrado').innerText = clienteEncontrado.cidade;
-                    document.getElementById('bairro-cliente-encontrado').innerText = clienteEncontrado.bairro;
-                    
-                    // Armazena dados para a confirmação
-                    buscaTelefoneInput.setAttribute('data-nome-encontrado', clienteEncontrado.nome);
-                    buscaTelefoneInput.setAttribute('data-cidade-encontrada', clienteEncontrado.cidade);
-                    buscaTelefoneInput.setAttribute('data-bairro-encontrado', clienteEncontrado.bairro);
-                    
+                if (cliente) {
+                    document.getElementById('nome-cliente-encontrado').innerText = cliente.nome;
+                    document.getElementById('cidade-cliente-encontrado').innerText = cliente.cidade;
+                    document.getElementById('bairro-cliente-encontrado').innerText = cliente.bairro;
+                    buscaTelefoneInput.setAttribute('data-nome', cliente.nome);
+                    buscaTelefoneInput.setAttribute('data-cidade', cliente.cidade);
+                    buscaTelefoneInput.setAttribute('data-bairro', cliente.bairro);
                     cadastroEncontradoDiv.style.display = 'block';
-                    
                 } else {
-                    const novoTelefoneInput = document.getElementById('novo-telefone');
-                    novoTelefoneInput.value = inputTel; 
-                    document.getElementById('novo-nome').value = ''; // Limpa o nome anterior
-                    document.getElementById('novo-bairro').value = ''; // Limpa o bairro anterior
-                    document.getElementById('novo-cidade').value = ''; // Limpa a cidade anterior
-
-                    novoTelefoneInput.disabled = true; // Desabilita edição do telefone aqui
+                    document.getElementById('novo-telefone').value = buscaTelefoneInput.value; 
                     cadastroNovoDiv.style.display = 'block';
                 }
-                
             }, 600); 
         }
 
-        /**
-         * Envia os dados do novo cadastro para o WhatsApp.
-         */
         function enviarNovoCadastro() {
             const nome = document.getElementById('novo-nome').value.trim();
             const tel = document.getElementById('novo-telefone').value.trim(); 
             const cid = document.getElementById('novo-cidade').value;
             const bai = document.getElementById('novo-bairro').value.trim();
-            
-            if (!nome || !tel || !cid || !bai) { mostrarMensagemBusca("Preencha todos os campos do novo cadastro!", true); return; }
-            
-            const msg = `CADASTRO SORTEIO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}\n\nSolicito participação no sorteio.`;
-            
-            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
+            if (!nome || !tel) return;
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(`CADASTRO SORTEIO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}`)}`, '_blank');
         }
 
-        /**
-         * Confirma o cadastro existente e envia a confirmação para o WhatsApp.
-         */
         function confirmarJaCadastrado() {
             const tel = buscaTelefoneInput.value;
-            const nome = buscaTelefoneInput.getAttribute('data-nome-encontrado') || "Cliente";
-            const cidade = buscaTelefoneInput.getAttribute('data-cidade-encontrada') || "N/A";
-            const bairro = buscaTelefoneInput.getAttribute('data-bairro-encontrado') || "N/A";
-            
-            const msg = `JÁ SOU CADASTRADO:\nNome: ${nome}\nTelefone: ${tel}\nCidade: ${cidade}\nBairro: ${bairro}\n\nConfirmo minha participação no Sorteio.`;
-            
-            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        // ===============================
-        // === LÓGICA DE CARREGAMENTO INICIAL (MANTIDA) ===
-        // ===============================
-
-        /**
-         * Ajusta a posição da logo e do cabeçalho no desktop para ficarem centralizados
-         * com a área de conteúdo principal.
-         */
-        function ajustarPosicaoLogo() {
-            const logo = document.querySelector('.logo-pequena');
-            const header = document.querySelector('header');
-            const bar = document.querySelector('.header-background-bar');
-
-            if (!logo || !header || !bar) return;
-
-            // O CSS já garante o max-width e a centralização
-            if (window.innerWidth > 480) {
-                 // Configurações Desktop: garante a centralização de elementos fixos
-                 logo.style.left = '50%';
-                 logo.style.transform = 'translateX(-50%)'; 
-                 
-                 if(bar) {
-                    /* Corrigido para usar a nova largura no desktop */
-                    bar.style.maxWidth = '900px'; 
-                    bar.style.left = '50%';
-                    bar.style.transform = 'translateX(-50%)';
-                 }
-                 /* Corrigido para a barra amarela */
-                 const aviso = document.getElementById('barra-aviso-topo');
-                 if (aviso) {
-                    aviso.style.maxWidth = '900px';
-                 }
-
-
-            } else {
-                // Configurações Mobile
-                 logo.style.left = '50%';
-                 logo.style.transform = 'translateX(-50%)';
-                 if(bar) {
-                    bar.style.left = '50%';
-                    bar.style.transform = 'translateX(-50%)';
-                 }
-            }
+            const nome = buscaTelefoneInput.getAttribute('data-nome') || "Cliente";
+            const cid = buscaTelefoneInput.getAttribute('data-cidade') || "";
+            const bai = buscaTelefoneInput.getAttribute('data-bairro') || "";
+            window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(`JÁ SOU CADASTRADO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}`)}`, '_blank');
         }
 
         window.onload = function() {
-            // Garante que a logo e o header estão posicionados corretamente ao carregar
-            ajustarPosicaoLogo();
-            // Dispara o popup receptivo
             iniciarPopupReceptivo(); 
-            // Inicia o loop animado da logo após o carregamento inicial da página
             iniciarLoopLogoAnimada(); 
         };
-        
-        // Adiciona um listener de resize para garantir a correção no desktop
-        window.addEventListener('resize', ajustarPosicaoLogo);
-
     </script>
 </body>
 </html>
