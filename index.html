@@ -156,7 +156,7 @@
         html { 
             background-color: #e0e0e0; 
             scroll-behavior: smooth;
-            scroll-padding-top: calc(var(--altura-header) + 20px); /* Ajustado para compensar a aba de navegação */
+            scroll-padding-top: calc(var(--altura-header) + 40px); /* Ajustado para compensar a aba de navegação dupla */
             font-size: 14.5px; 
         }
 
@@ -183,47 +183,57 @@
             transition: max-width 0.3s ease; 
         }
 
-        /* --- MENU DE ANCORAS (NOVO) --- */
+        /* === MENU DE ANCORAS (ATUALIZADO) === */
         .menu-ancoras-cestas {
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 10px 5px 15px 5px;
-            margin-bottom: 10px;
-            white-space: nowrap;
-            /* Esconde a barra de rolagem mas mantém funcional */
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
+            gap: 6px; /* Mais próximos no mobile */
+            padding: 8px 5px;
+            margin-bottom: 5px;
+            
+            /* Configuração Mobile: Wrap para ajustar à tela sem scroll */
+            flex-wrap: wrap; 
+            justify-content: center; /* Centraliza em mobile e desktop */
+            
             position: sticky;
             top: var(--altura-header);
             background: var(--cor-fundo);
-            z-index: 90; /* Abaixo do header, acima do conteudo */
+            z-index: 90; 
             border-bottom: 1px solid #eee;
-        }
-        .menu-ancoras-cestas::-webkit-scrollbar { 
-            display: none; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
         }
 
         .chip-ancora {
             background: #fff;
             border: 1px solid #ddd;
-            padding: 8px 16px;
-            border-radius: 20px;
+            
+            /* Mobile Style: Compacto e menos arredondado */
+            padding: 6px 12px;
+            border-radius: 8px; 
+            font-size: 0.8rem;
+            
             text-decoration: none;
             color: var(--cor-primaria);
             font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
+            
+            /* Flex para ajustar tamanhos uniformes se necessário */
+            flex: 1 1 auto;
+            text-align: center;
+            max-width: 120px; /* Impede que fiquem gigantes ao quebrar linha */
         }
 
-        .chip-ancora:hover, .chip-ancora:active {
-            background: var(--cor-primaria);
+        .chip-ancora:hover {
+            transform: translateY(-1px);
+            border-color: var(--cor-primaria);
+        }
+
+        /* Estado ATIVO (Clicado ou Scroll) */
+        .chip-ancora.active {
+            background-color: var(--cor-primaria);
             color: white;
             border-color: var(--cor-primaria);
-            transform: translateY(-2px);
+            box-shadow: 0 2px 6px rgba(15, 37, 70, 0.3);
         }
 
         /* --- TOAST NOTIFICATION --- */
@@ -830,6 +840,19 @@
             html { font-size: 15px; } 
             h2 { font-size: 1.5rem; }
             .cesta-header h3 { font-size: 1.15rem; }
+
+            /* Desktop: Botões maiores e em linha */
+            .menu-ancoras-cestas {
+                gap: 15px; 
+                padding: 15px;
+                flex-wrap: nowrap; /* Linha única no desktop */
+            }
+            .chip-ancora {
+                padding: 8px 20px;
+                font-size: 0.95rem;
+                border-radius: 20px; /* Mais arredondado no desktop */
+                flex: 0 1 auto; /* Não estica */
+            }
         }
         @media (min-width: 940px) { .logo-pequ { left: 50%; margin-left: calc(-550px + 20px); } }
         @media (min-width: 768px) { 
@@ -888,13 +911,13 @@
                 </div>
             </div>
 
-            <!-- === MENU DE ÂNCORAS RÁPIDO === -->
+            <!-- === MENU DE ÂNCORAS RÁPIDO (COM SCROLL SPY) === -->
             <div class="menu-ancoras-cestas">
-                <a href="#cestaeconomica" class="chip-ancora">Econômica</a>
-                <a href="#cestamini" class="chip-ancora">Mini</a>
-                <a href="#cestapequena" class="chip-ancora">Pequena</a>
-                <a href="#cestamedia" class="chip-ancora">Média</a>
-                <a href="#cestagrande" class="chip-ancora">Grande</a>
+                <a href="#cestaeconomica" class="chip-ancora" onclick="ativarChip(this)">Econômica</a>
+                <a href="#cestamini" class="chip-ancora" onclick="ativarChip(this)">Mini</a>
+                <a href="#cestapequena" class="chip-ancora" onclick="ativarChip(this)">Pequena</a>
+                <a href="#cestamedia" class="chip-ancora" onclick="ativarChip(this)">Média</a>
+                <a href="#cestagrande" class="chip-ancora" onclick="ativarChip(this)">Grande</a>
             </div>
 
             <div class="cesta-cards-grid">
@@ -1554,6 +1577,38 @@
             const bai = buscaTelefoneInput.getAttribute('data-bairro') || "";
             window.open(`https://wa.me/${TELEFONE}?text=${encodeURIComponent(`JÁ SOU CADASTRADO:\nNome: ${nome}\nTel: ${tel}\nCidade: ${cid}\nBairro: ${bai}`)}`, '_blank');
         }
+
+        // === NOVO SCRIPT SCROLL SPY ===
+        // Função para ativar chip manualmente ao clicar
+        function ativarChip(element) {
+            document.querySelectorAll('.chip-ancora').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Função automática ao rolar a tela
+        window.addEventListener('scroll', function() {
+            const secoes = document.querySelectorAll('.card-cesta');
+            const navLinks = document.querySelectorAll('.chip-ancora');
+            
+            let currentId = "";
+
+            secoes.forEach(section => {
+                const sectionTop = section.offsetTop;
+                // Ajuste de offset para compensar cabeçalho (aprox 160px)
+                if (window.scrollY >= (sectionTop - 180)) {
+                    currentId = section.getAttribute('id');
+                }
+            });
+
+            if(currentId) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if(link.getAttribute('href') === '#' + currentId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
 
         window.onload = function() {
             carregarDadosClientes(); 
