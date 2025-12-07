@@ -6,6 +6,12 @@ const clientes = [
     "bairro": "Areao"
   },
   {
+  "nome": "IZAMAIRA AUGUSTA RODRIGUES",
+  "telefone": "65993094881",
+  "cidade": "Cuiabá",
+  "bairro": "Doutor Fábio Leite"
+},
+  {
   "nome": "ALCIONE AUGUSTA GOMES FERREIRA CUIABÁ",
   "telefone": "65992586859",
   "cidade": "Cuiabá",
