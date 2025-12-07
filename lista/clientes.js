@@ -1,4 +1,4 @@
-const clientes = [
+const clientesLimpos = [
   {
     "nome": "ALESSANDRA PEREIRA RODRIGUES",
     "telefone": "65999742889",
@@ -178,7 +178,7 @@ const clientes = [
     "telefone": "65992050436",
     "cidade": "Cuiabá",
     "bairro": "Três barras"
-  }, 
+  },
   {
     "nome": "SUELLEN MARIA DOS SANTOS",
     "telefone": "65992923920",
@@ -192,40 +192,16 @@ const clientes = [
     "bairro": "Residencial Sao Carlos"
   },
   {
-    "nome": "Rosalina mara cristina de  lima silva",
-    "telefone": "65992910757",
-    "cidade": "CUIABÁ",
-    "bairro": "Praeiro"
-  },
-   {
-    "nome": "Ivete vitoriano vitorino",
-    "telefone": "06692345531",
-    "cidade": "Várzea Grande",
-    "bairro": "mARAJOARA"
-  }, 
-  {
     "nome": "Noelvis Castillo Chavez",
     "telefone": "9584257073",
     "cidade": "Cuiabá",
     "bairro": "Vela Vista"
   },
   {
-    "nome": "Ariane Moreira de barros",
-    "telefone": "65998178271",
-    "cidade": "Várzea Grande",
-    "bairro": "Marajoara"
-  },
-  {
     "nome": "Makeila dos santos",
     "telefone": "65984051713",
     "cidade": "Cuiabá",
     "bairro": "Doutor fabio"
-  },
-  {
-    "nome": "Silvia mikaely Rodrigues dos santos",
-    "telefone": "65996951410",
-    "cidade": "Várzea Grande",
-    "bairro": "Solaris taruma"
   },
   {
     "nome": "Uanderson costa toledo",
@@ -238,18 +214,6 @@ const clientes = [
     "telefone": "65993568815",
     "cidade": "Várzea Grande",
     "bairro": "Marajoara"
-  },
-  {
-    "nome": "Rogerio jose santo de souza",
-    "telefone": "65992972470",
-    "cidade": "Várzea Grande",
-    "bairro": "Icaraí"
-  },
-  {
-    "nome": "Kamila Jesus de arruda osmar cabral",
-    "telefone": "65981042321",
-    "cidade": "Cuiabá",
-    "bairro": "Osmar cabral"
   },
   {
     "nome": "Rejane de Souza melo",
@@ -270,12 +234,6 @@ const clientes = [
     "bairro": "J.florinoplis"
   },
   {
-    "nome": "Fellype césar",
-    "telefone": "65992770590",
-    "cidade": "Várzea Grande",
-    "bairro": "Costa verde"
-  },
-  {
     "nome": "Johana del carmen Betancourt Motta",
     "telefone": "65992524315",
     "cidade": "Cuiabá",
@@ -286,12 +244,6 @@ const clientes = [
     "telefone": "65981233921",
     "cidade": "Cuiabá",
     "bairro": "Brasil 21"
-  },
-  {
-    "nome": "Michelly thainara da Silva Almeida",
-    "telefone": "65993384574",
-    "cidade": "Cuiabá",
-    "bairro": "jardim Florianópolis"
   },
   {
     "nome": "MARTA Chávez infante",
@@ -492,12 +444,6 @@ const clientes = [
     "bairro": "8 de abril"
   },
   {
-    "nome": "Ivete vitoriano vitorino",
-    "telefone": "06692345531",
-    "cidade": "Várzea Grande",
-    "bairro": "Marajuara"
-  },
-  {
     "nome": "Adriane Cardoso",
     "telefone": "65993245786",
     "cidade": "Cuiabá",
@@ -520,12 +466,6 @@ const clientes = [
     "telefone": "992567529",
     "cidade": "Cuiabá",
     "bairro": "Tijucal"
-  },
-  {
-    "nome": "Amarilys Ramirez castillo",
-    "telefone": "9584032049",
-    "cidade": "Cuiabá",
-    "bairro": "8 de abril"
   },
   {
     "nome": "Aneliet Gamboa Mejias",
@@ -556,12 +496,6 @@ const clientes = [
     "telefone": "65993518831",
     "cidade": "Várzea Grande",
     "bairro": "São Simão"
-  },
-  {
-    "nome": "Noelvis Castillo Chavez",
-    "telefone": "9584257073",
-    "cidade": "Cuiabá",
-    "bairro": "Vela Vista"
   },
   {
     "nome": "Adrieli Verônica Dourado Drewlo",
