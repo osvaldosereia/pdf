@@ -6,6 +6,18 @@ const clientes = [
     "bairro": "Areao"
   },
   {
+  "nome": "DANIELA RODRIGUES REI",
+  "telefone": "65993584085",
+  "cidade": "Cuiabá",
+  "bairro": "Renacer"
+},
+  {
+  "nome": "CRISTIANE ALVES DA SILVA",
+  "telefone": "65981034279",
+  "cidade": "Várzea Grande",
+  "bairro": "Princesa do sol"
+},
+  {
   "nome": "ANDERSON TEIXEIRA",
   "telefone": "66992614828",
   "cidade": "Cuiabá",
