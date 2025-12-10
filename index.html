@@ -34,7 +34,8 @@
       gtag('config', 'G-9XS8B8Z8BV');
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Removido user-scalable=no para melhor acessibilidade, conforme recomendação do PageSpeed -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
     <title>Cesta Básica em Cuiabá e VG | Entrega Grátis | Dona Antônia</title>
     
@@ -76,7 +77,6 @@
             background-color: #e0e0e0; 
             scroll-behavior: smooth;
             scroll-padding-top: calc(var(--altura-header) + 40px); 
-            /* AUMENTADO DE 14.5px PARA 17px PARA AUMENTAR TEXTOS GERAIS */
             font-size: 17px; 
         }
 
@@ -86,7 +86,6 @@
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            /* AUMENTADO padding-top para acomodar o mini banner (aprox +35px) */
             padding-top: calc(var(--altura-header) + 40px); 
             padding-bottom: calc(var(--altura-bottom-nav) + 20px); 
             min-height: 10vh;
@@ -308,7 +307,7 @@
             .linha-destaque-top { font-size: 0.75rem; }
         }
 
-        /* --- BARRA DE CONFIANÇA (ANIMADA) --- */
+        /* --- BARRA DE CONFIANÇA (OTIMIZADA - SEM ANIMAÇÃO DE ENTRADA) --- */
         .trust-bar {
             display: flex;
             justify-content: space-between;
@@ -341,17 +340,9 @@
             font-weight: 600;
             line-height: 1.2;
             padding: 0 2px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: slideUpFade 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-        
-        .trust-item:nth-child(1) { animation-delay: 0.5s; }
-        .trust-item:nth-child(3) { animation-delay: 1.2s; } 
-        .trust-item:nth-child(5) { animation-delay: 1.9s; }
-
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
+            /* REMOVIDO: opacity: 0 e animation para melhorar LCP */
+            opacity: 1; 
+            transform: none;
         }
         
         .trust-item i {
@@ -366,29 +357,7 @@
             background-color: #BBDEFB;
         }
 
-        /* --- OVERLAY FOSCO (INTRO) --- */
-        #intro-overlay {
-            position: fixed;
-            top: var(--altura-header); 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px; 
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.65); 
-            z-index: 95; 
-            pointer-events: none; 
-            animation: fadeOutOverlay 0.8s ease forwards;
-            animation-delay: 3.2s; 
-        }
-
-        @keyframes fadeOutOverlay {
-            to { opacity: 0; visibility: hidden; }
-        }
-
-        @media (min-width: 481px) {
-            #intro-overlay { max-width: 1100px; }
-        }
+        /* REMOVIDO: #intro-overlay e @keyframes fadeOutOverlay */
 
         /* --- CARDS --- */
         .secao-conteudo { padding: 15px; }
@@ -419,7 +388,6 @@
         .cesta-header h3 { 
             margin: 0; 
             color: white; 
-            /* MANTIDO FIXO PARA NÃO AUMENTAR (Era 1rem que seria 17px, fixado em 15px) */
             font-size: 15px; 
             font-weight: 600;
             text-transform: uppercase; 
@@ -430,6 +398,7 @@
 
         .foto-cesta-unica { 
             width: 100%; 
+            height: auto;
             aspect-ratio: 1 / 0.8; 
             object-fit: cover; 
             display: block;
@@ -867,13 +836,14 @@
         <span id="mini-banner-text" class="mini-banner-content">🚚 Entregamos em Cuiabá e VG</span>
     </div>
 
-    <div id="intro-overlay"></div>
+    <!-- REMOVIDO: <div id="intro-overlay"></div> -->
 
-    <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.png" id="logo-principal" onerror="this.src='https://placehold.co/120x120?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
+    <!-- ADICIONADO: width e height para melhorar CLS -->
+    <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.png" width="100" height="100" id="logo-principal" onerror="this.src='https://placehold.co/120x120?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
 
     <header>
         <div class="header-top">
-            <button class="btn-contato-principal" onclick="abrirModalContatos()">
+            <button class="btn-contato-principal" onclick="abrirModalContatos()" aria-label="Abrir opções de contato">
                 <div class="linha-destaque-top">
                     <i class="fab fa-whatsapp"></i> SALVAR CONTATO WHATSAPP
                 </div>
@@ -913,18 +883,19 @@
                 <div class="card card-cesta" id="cestaeconomica">
                     <div class="cesta-header"><h3>Cesta Econômica</h3></div>
                     <div class="cesta-body">
-                        <img src="img/cesta-basica-cuiaba-varzea-grande-economica.jpg" class="foto-cesta-unica" alt="Cesta Básica Econômica Entrega Rápida Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
+                        <!-- ADICIONADO: width e height nas imagens -->
+                        <img src="img/cesta-basica-cuiaba-varzea-grande-economica.jpg" width="400" height="320" class="foto-cesta-unica" alt="Cesta Básica Econômica Entrega Rápida Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
                         <div class="lista-precos-cesta">
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
+                            <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00', false)" aria-label="Encomendar Cesta Econômica">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
                             </button>
-                            <button class="btn btn-info" onclick="abrirModalInfo('economica')">
+                            <button class="btn btn-info" onclick="abrirModalInfo('economica')" aria-label="Ver produtos da Cesta Econômica">
                                 <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
                             </button>
-                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Econômica', '85,00')">
+                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Econômica', '85,00')" aria-label="Compartilhar Cesta Econômica">
                                 <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
                             </button>
                         </div>
@@ -934,19 +905,19 @@
                 <div class="card card-cesta" id="cestamini">
                     <div class="cesta-header"><h3>Cesta Mini</h3></div>
                     <div class="cesta-body">
-                        <img src="img/cesta-basica-cuiaba-varzea-grande-mini.jpg" class="foto-cesta-unica" alt="Cesta Básica Mini Completa em Várzea Grande - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MINI'">
+                        <img src="img/cesta-basica-cuiaba-varzea-grande-mini.jpg" width="400" height="320" class="foto-cesta-unica" alt="Cesta Básica Mini Completa em Várzea Grande - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MINI'">
                         <div class="lista-precos-cesta">
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 165,00</strong></div>
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')" aria-label="Encomendar Cesta Mini">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
                             </button>
-                            <button class="btn btn-info" onclick="abrirModalInfo('mini')">
+                            <button class="btn btn-info" onclick="abrirModalInfo('mini')" aria-label="Ver produtos da Cesta Mini">
                                 <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
                             </button>
-                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Mini', '165,00')">
+                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Mini', '165,00')" aria-label="Compartilhar Cesta Mini">
                                 <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
                             </button>
                         </div>
@@ -956,19 +927,19 @@
                 <div class="card card-cesta" id="cestapequena">
                     <div class="cesta-header"><h3>Cesta Pequena</h3></div>
                     <div class="cesta-body">
-                        <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.jpg" class="foto-cesta-unica" alt="Cesta Básica Pequena com Entrega Grátis no CPA e Coxipó" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
+                        <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.jpg" width="400" height="320" class="foto-cesta-unica" alt="Cesta Básica Pequena com Entrega Grátis no CPA e Coxipó" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
                         <div class="lista-precos-cesta">
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 215,00</strong></div>
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')" aria-label="Encomendar Cesta Pequena">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
                             </button>
-                            <button class="btn btn-info" onclick="abrirModalInfo('pequena')">
+                            <button class="btn btn-info" onclick="abrirModalInfo('pequena')" aria-label="Ver produtos da Cesta Pequena">
                                 <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
                             </button>
-                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Pequena', '215,00')">
+                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Pequena', '215,00')" aria-label="Compartilhar Cesta Pequena">
                                 <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
                             </button>
                         </div>
@@ -978,19 +949,19 @@
                 <div class="card card-cesta" id="cestamedia">
                     <div class="cesta-header"><h3>Cesta Média</h3></div>
                     <div class="cesta-body">
-                        <img src="img/cesta-basica-cuiaba-varzea-grande-media.jpg" class="foto-cesta-unica" alt="Cesta Básica Média em Oferta Cuiabá e VG - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
+                        <img src="img/cesta-basica-cuiaba-varzea-grande-media.jpg" width="400" height="320" class="foto-cesta-unica" alt="Cesta Básica Média em Oferta Cuiabá e VG - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
                         <div class="lista-precos-cesta">
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 320,00</strong></div>
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')" aria-label="Encomendar Cesta Média">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
                             </button>
-                            <button class="btn btn-info" onclick="abrirModalInfo('media')">
+                            <button class="btn btn-info" onclick="abrirModalInfo('media')" aria-label="Ver produtos da Cesta Média">
                                 <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
                             </button>
-                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Média', '320,00')">
+                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Média', '320,00')" aria-label="Compartilhar Cesta Média">
                                 <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
                             </button>
                         </div>
@@ -1000,19 +971,19 @@
                 <div class="card card-cesta" id="cestagrande">
                     <div class="cesta-header"><h3>Cesta Grande</h3></div>
                     <div class="cesta-body">
-                        <img src="img/cesta-basica-cuiaba-varzea-grande-grande.jpg" class="foto-cesta-unica" alt="Cesta Básica Grande Família Completa Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
+                        <img src="img/cesta-basica-cuiaba-varzea-grande-grande.jpg" width="400" height="320" class="foto-cesta-unica" alt="Cesta Básica Grande Família Completa Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
                         <div class="lista-precos-cesta">
                             <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 380,00</strong></div>
                             <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
                         </div>
                         <div class="botoes-wrapper">
-                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
+                            <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')" aria-label="Encomendar Cesta Grande">
                                 <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
                             </button>
-                            <button class="btn btn-info" onclick="abrirModalInfo('grande')">
+                            <button class="btn btn-info" onclick="abrirModalInfo('grande')" aria-label="Ver produtos da Cesta Grande">
                                 <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
                             </button>
-                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Grande', '380,00')">
+                            <button class="btn btn-share" onclick="compartilharCesta('Cesta Grande', '380,00')" aria-label="Compartilhar Cesta Grande">
                                 <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
                             </button>
                         </div>
@@ -1025,7 +996,7 @@
             
             <div id="pag-sorteio" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <img src="img/cesta.png" alt="Sorteio Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
+                    <img src="img/cesta.png" width="60" height="60" alt="Sorteio Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
                 </div>
                 <div class="card">
                     <h2>🎉 Sorteio todo Domingo.</h2>
@@ -1086,7 +1057,7 @@
 
             <div id="pag-pagamento" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <img src="img/pagamento.png" alt="Formas de Pagamento" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
+                    <img src="img/pagamento.png" width="60" height="60" alt="Formas de Pagamento" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
                 </div>
                 <div class="card">
                     <h2>💳 Formas de Pagamento</h2>
@@ -1104,7 +1075,7 @@
 
             <div id="pag-entrega" class="secao-conteudo">
                 <div class="section-icon-header">
-                    <img src="img/entrega.png" alt="Entrega de Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
+                    <img src="img/entrega.png" width="60" height="60" alt="Entrega de Cesta Básica" onerror="this.onerror=null;this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
                 </div>
                 <div class="card">
                     <h2 style="color: #F57C00;">🚚 Entrega Grátis</h2>
@@ -1153,7 +1124,7 @@
 
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
-            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">&times;</button>
+            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()" aria-label="Fechar">&times;</button>
             <h3 class="titulo-modal-var" id="tituloCestaModal">Cesta X</h3>
             <p class="subtitulo-modal-var">Escolha a marca do arroz para continuar:</p>
             <div class="opcao-select" id="optAlvino" onclick="selecionarOpcao('alvino')">
@@ -1174,7 +1145,7 @@
         <div class="modal-info-content">
             <div class="modal-info-header">
                 <h3 id="tituloModalInfo">Itens da Cesta</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">&times;</button>
+                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()" aria-label="Fechar">&times;</button>
             </div>
             
             <div class="modal-body-scroll">
@@ -1187,7 +1158,7 @@
 
     <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
         <div class="modal-variacao-content" style="padding-top: 40px;">
-            <button class="btn-fechar-modal-var" onclick="fecharModalContatos()">&times;</button>
+            <button class="btn-fechar-modal-var" onclick="fecharModalContatos()" aria-label="Fechar">&times;</button>
             
             <a href="https://wa.me/5565998150975?text=Ol%C3%A1%2C%20estou%20salvando%20seu%20contato." class="btn-whatsapp-hero" target="_blank" rel="noopener noreferrer">
                 <i class="fab fa-whatsapp"></i> 
@@ -1206,13 +1177,13 @@
 
             <div class="modal-section-title">Redes Sociais</div>
             <div class="social-buttons-row">
-                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-social-icon bg-instagram" target="_blank">
+                <a href="https://instagram.com/super.cestas.dona.antonia/" class="btn-social-icon bg-instagram" target="_blank" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://t.me/+5565998150975" class="btn-social-icon bg-telegram" target="_blank">
+                <a href="https://t.me/+5565998150975" class="btn-social-icon bg-telegram" target="_blank" aria-label="Telegram">
                     <i class="fab fa-telegram-plane"></i>
                 </a>
-                <a href="https://chat.whatsapp.com/HH8eJ4lz5E04bZFW1fUf9t" class="btn-social-icon bg-facebook" target="_blank" title="Grupo Sorteio">
+                <a href="https://chat.whatsapp.com/HH8eJ4lz5E04bZFW1fUf9t" class="btn-social-icon bg-facebook" target="_blank" title="Grupo Sorteio" aria-label="Grupo WhatsApp">
                     <i class="fas fa-users"></i>
                 </a>
             </div>
@@ -1449,7 +1420,6 @@
 
         async function carregarDadosClientes() {
             try {
-                // Tentativa de carregar local (falhará no preview, caindo no catch)
                 const response = await fetch('lista/clientes.js');
                 if (response.ok) {
                     const text = await response.text();
@@ -1460,7 +1430,6 @@
                 }
             } catch (err) { 
                 console.warn("Modo preview: usando dados fictícios (mock)."); 
-                // Não faz nada, pois a variável 'clientes' já foi inicializada no script acima
             }
         }
         
