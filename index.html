@@ -264,6 +264,9 @@
             font-weight: bold;
         }
         
+        /* === ELEMENTOS EXCLUSIVOS DESKTOP (Invisíveis no Mobile) === */
+        .desktop-only { display: none !important; }
+
         @media (min-width: 481px) {
             .mini-banner { max-width: 1100px; }
         }
@@ -957,13 +960,107 @@
 
         @media (min-width: 1024px) {
             .main-content-wrapper, header, .header-background-bar { max-width: 1100px; } 
-            .bottom-nav { max-width: 1100px; } 
-            .logo-pequ { margin-left: calc(-550px + 20px); } 
+            .bottom-nav { 
+                /* NOVO: Esconder barra inferior no desktop */
+                display: none !important; 
+            }
+            
+            /* NOVO: Ajustes de layout para desktop */
+            body { padding-bottom: 20px; } 
+            
+            .logo-pequ { 
+                /* NOVO: Esconder logo flutuante no desktop */
+                display: none !important; 
+            }
+            
+            /* NOVO: Estilo Header Desktop */
+            .header-top {
+                max-width: 1100px;
+                margin: 0 auto;
+                justify-content: space-between;
+                padding: 5px 30px;
+            }
+            
+            .desktop-only { display: flex !important; }
+            
+            /* OTIMIZAÇÃO: Logo Desktop Grande e Flutuante */
+            .desktop-logo-wrapper {
+                position: relative;
+                width: 60px; /* Mantém o espaço reservado no flex */
+            }
+            
+            .big-logo-desktop {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+                border: 4px solid white;
+                position: absolute;
+                top: -15px; /* Ajuste para centralizar verticalmente em relação ao header */
+                left: 0;
+                z-index: 3000;
+                transition: transform 0.3s ease;
+            }
+            
+            .big-logo-desktop:hover {
+                transform: scale(1.05);
+            }
+            
+            .desktop-nav {
+                display: flex;
+                gap: 25px;
+                align-items: center;
+                height: 100%;
+                margin-left: 100px; /* Empurrar nav para não colidir com logo grande */
+            }
+            
+            .desktop-nav a {
+                text-decoration: none;
+                color: var(--cor-primaria);
+                font-weight: 700;
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 5px 0;
+                position: relative;
+                transition: color 0.3s;
+            }
+            
+            .desktop-nav a:hover {
+                color: var(--cor-destaque-vermelho);
+            }
+            
+            .desktop-nav a::after {
+                content: '';
+                position: absolute;
+                width: 0;
+                height: 2px;
+                bottom: 0;
+                left: 0;
+                background-color: var(--cor-destaque-vermelho);
+                transition: width 0.3s;
+            }
+            
+            .desktop-nav a:hover::after {
+                width: 100%;
+            }
+            
+            .btn-contato-principal {
+                margin-left: 0; 
+                width: auto;
+            }
+            
             .cesta-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
             .secoes-extras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 15px; }
             .secoes-extras-grid .secao-conteudo { padding: 0; margin-bottom: 0; }
             .secoes-extras-grid .card { height: 100%; }
             .secoes-extras-grid .section-icon-header { margin-top: 15px; }
+            
+            /* OTIMIZAÇÃO: Espaçamento Rodapé Desktop */
+            .seo-text-block {
+                margin-top: 60px; /* Afastar dos boxes */
+                padding-bottom: 40px; /* Dar ar para os ícones */
+            }
         }
     </style>
 </head>
@@ -982,9 +1079,22 @@
 
     <header>
         <div class="header-top">
+            <!-- NOVO: Logo visível apenas no Desktop (Sem Texto, Grande e Sobreposta) -->
+            <div class="desktop-only desktop-logo-wrapper">
+                <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="big-logo-desktop" alt="Logo Dona Antônia Grande">
+            </div>
+
+            <!-- NOVO: Menu de Navegação Desktop -->
+            <nav class="desktop-nav desktop-only">
+                <a href="#pag-cestas">Início</a>
+                <a href="#pag-sorteio">Sorteio</a>
+                <a href="#pag-pagamento">Pagamento</a>
+                <a href="#pag-entrega">Entrega</a>
+            </nav>
+
             <button class="btn-contato-principal" onclick="abrirModalContatos()" aria-label="Abrir opções de contato">
                 <div class="linha-destaque-top">
-                    <i class="fab fa-whatsapp"></i> SALVAR CONTATO WHATSAPP
+                    <i class="fab fa-whatsapp"></i> <span class="desktop-only" style="display: inline !important;">&nbsp;FALE CONOSCO</span><span style="display: inline;" class="mobile-text">SALVAR CONTATO</span>
                 </div>
             </button>
         </div>
