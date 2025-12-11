@@ -524,7 +524,9 @@
         .card-cesta { padding: 0; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
         
         .cesta-header { background-color: var(--cor-primaria); padding: 8px; text-align: center; color: white; }
-        .cesta-header h3 { 
+        
+        /* CORREÇÃO SEMÂNTICA: Ajustado seletor de h3 para h2 para manter o estilo visual */
+        .cesta-header h2 { 
             margin: 0; 
             color: white; 
             font-size: 15px; 
@@ -1025,7 +1027,7 @@
 
                 <div class="cesta-cards-grid">
                     <div class="card card-cesta" id="cestaeconomica">
-                        <div class="cesta-header"><h3>Cesta Econômica</h3></div>
+                        <div class="cesta-header"><h2>Cesta Econômica</h2></div>
                         <div class="cesta-body">
                             <!-- OTIMIZAÇÃO: fetchpriority="high" para LCP (primeira imagem visível) e dimensões explícitas -->
                             <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="320" fetchpriority="high" class="foto-cesta-unica" alt="Cesta Básica Econômica Entrega Rápida Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
@@ -1047,7 +1049,7 @@
                     </div>
 
                     <div class="card card-cesta" id="cestamini">
-                        <div class="cesta-header"><h3>Cesta Mini</h3></div>
+                        <div class="cesta-header"><h2>Cesta Mini</h2></div>
                         <div class="cesta-body">
                             <!-- OTIMIZAÇÃO: loading="lazy" para imagens fora da tela inicial -->
                             <img src="img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Mini Completa em Várzea Grande - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MINI'">
@@ -1070,7 +1072,7 @@
                     </div>
 
                     <div class="card card-cesta" id="cestapequena">
-                        <div class="cesta-header"><h3>Cesta Pequena</h3></div>
+                        <div class="cesta-header"><h2>Cesta Pequena</h2></div>
                         <div class="cesta-body">
                             <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Pequena com Entrega Grátis no CPA e Coxipó" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
                             <div class="lista-precos-cesta">
@@ -1092,7 +1094,7 @@
                     </div>
 
                     <div class="card card-cesta" id="cestamedia">
-                        <div class="cesta-header"><h3>Cesta Média</h3></div>
+                        <div class="cesta-header"><h2>Cesta Média</h2></div>
                         <div class="cesta-body">
                             <img src="img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Média em Oferta Cuiabá e VG - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
                             <div class="lista-precos-cesta">
@@ -1114,7 +1116,7 @@
                     </div>
 
                     <div class="card card-cesta" id="cestagrande">
-                        <div class="cesta-header"><h3>Cesta Grande</h3></div>
+                        <div class="cesta-header"><h2>Cesta Grande</h2></div>
                         <div class="cesta-body">
                             <img src="img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Grande Família Completa Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
                             <div class="lista-precos-cesta">
@@ -1679,41 +1681,39 @@
             element.classList.add('active');
         }
 
-        // OTIMIZAÇÃO INP: Adicionado throttling com requestAnimationFrame
-        // para evitar recálculos pesados a cada pixel rolado
-        let isScrolling = false;
-        const secoes = document.querySelectorAll('.card-cesta');
-        const navLinks = document.querySelectorAll('.chip-ancora');
+        // SUBSTITUIÇÃO: IntersectionObserver em vez de Scroll Listener
+        // Isso remove a carga do processador (Main Thread), melhorando drasticamente o INP.
+        window.addEventListener('load', function() {
+            carregarDadosClientes(); 
 
-        window.addEventListener('scroll', function() {
-            if (!isScrolling) {
-                window.requestAnimationFrame(function() {
-                    let currentId = "";
+            // Configuração do "Vigia" (Observer)
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: '-40% 0px -60% 0px', // Ativa quando o elemento está no "meio" da tela
+                threshold: 0
+            };
 
-                    secoes.forEach(section => {
-                        const sectionTop = section.offsetTop;
-                        if (window.scrollY >= (sectionTop - 180)) {
-                            currentId = section.getAttribute('id');
-                        }
-                    });
-
-                    if(currentId) {
-                        navLinks.forEach(link => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        
+                        // Atualiza o menu de âncoras (chips)
+                        document.querySelectorAll('.chip-ancora').forEach(link => {
                             link.classList.remove('active');
-                            if(link.getAttribute('href') === '#' + currentId) {
+                            if(link.getAttribute('href') === '#' + id) {
                                 link.classList.add('active');
                             }
                         });
                     }
-                    isScrolling = false;
                 });
-            }
-            isScrolling = true;
-        });
+            }, observerOptions);
 
-        window.onload = function() {
-            carregarDadosClientes(); 
-        };
+            // Começa a vigiar todas as seções de cestas
+            document.querySelectorAll('.card-cesta').forEach(section => {
+                observer.observe(section);
+            });
+        });
     </script>
 </body>
 </html>
