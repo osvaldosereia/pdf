@@ -967,24 +967,19 @@
             .cesta-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } 
         }
 
+        /* --- AJUSTES DESKTOP (SIDEBAR) --- */
         @media (min-width: 1024px) {
-            .main-content-wrapper, header, .header-background-bar { max-width: 1100px; } 
+            .main-content-wrapper, header, .header-background-bar { max-width: 1200px; } 
             .bottom-nav { 
-                /* NOVO: Esconder barra inferior no desktop */
                 display: none !important; 
             }
             
-            /* NOVO: Ajustes de layout para desktop */
             body { padding-bottom: 20px; } 
+            .logo-pequ { display: none !important; }
             
-            .logo-pequ { 
-                /* NOVO: Esconder logo flutuante no desktop */
-                display: none !important; 
-            }
-            
-            /* NOVO: Estilo Header Desktop */
+            /* Header Desktop */
             .header-top {
-                max-width: 1100px;
+                max-width: 1200px;
                 margin: 0 auto;
                 justify-content: space-between;
                 padding: 5px 30px;
@@ -992,10 +987,9 @@
             
             .desktop-only { display: flex !important; }
             
-            /* OTIMIZAÇÃO: Logo Desktop Grande e Flutuante */
             .desktop-logo-wrapper {
                 position: relative;
-                width: 60px; /* Mantém o espaço reservado no flex */
+                width: 60px; 
             }
             
             .big-logo-desktop {
@@ -1005,22 +999,21 @@
                 box-shadow: 0 4px 15px rgba(0,0,0,0.15);
                 border: 4px solid white;
                 position: absolute;
-                top: -15px; /* Ajuste para centralizar verticalmente em relação ao header */
+                top: -15px; 
                 left: 0;
                 z-index: 3000;
                 transition: transform 0.3s ease;
             }
             
-            .big-logo-desktop:hover {
-                transform: scale(1.05);
-            }
+            .big-logo-desktop:hover { transform: scale(1.05); }
             
+            /* Navbar Header */
             .desktop-nav {
                 display: flex;
                 gap: 25px;
                 align-items: center;
                 height: 100%;
-                margin-left: 100px; /* Empurrar nav para não colidir com logo grande */
+                margin-left: 100px;
             }
             
             .desktop-nav a {
@@ -1035,9 +1028,7 @@
                 transition: color 0.3s;
             }
             
-            .desktop-nav a:hover {
-                color: var(--cor-destaque-vermelho);
-            }
+            .desktop-nav a:hover { color: var(--cor-destaque-vermelho); }
             
             .desktop-nav a::after {
                 content: '';
@@ -1049,26 +1040,103 @@
                 background-color: var(--cor-destaque-vermelho);
                 transition: width 0.3s;
             }
+            .desktop-nav a:hover::after { width: 100%; }
             
-            .desktop-nav a:hover::after {
-                width: 100%;
+            .btn-contato-principal { margin-left: 0; width: auto; }
+            
+            /* --- NOVO LAYOUT COM SIDEBAR --- */
+            .main-content-wrapper {
+                display: grid;
+                grid-template-columns: 280px 1fr; /* Coluna Sidebar fixa | Coluna Conteúdo flexível */
+                gap: 20px;
+                padding: 20px 30px;
+                background-color: transparent;
+                box-shadow: none;
+                align-items: start;
             }
-            
-            .btn-contato-principal {
-                margin-left: 0; 
-                width: auto;
-            }
-            
-            .cesta-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-            .secoes-extras-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 15px; }
-            .secoes-extras-grid .secao-conteudo { padding: 0; margin-bottom: 0; }
-            .secoes-extras-grid .card { height: 100%; }
-            .secoes-extras-grid .section-icon-header { margin-top: 15px; }
-            
-            /* OTIMIZAÇÃO: Espaçamento Rodapé Desktop */
+
+            /* Forçar Footer a ocupar toda largura embaixo */
             .seo-text-block {
-                margin-top: 60px; /* Afastar dos boxes */
-                padding-bottom: 40px; /* Dar ar para os ícones */
+                grid-column: 1 / -1;
+                margin-top: 30px;
+                background: white;
+                border-radius: 10px;
+            }
+
+            /* Área Principal (Direita) */
+            #pag-cestas {
+                grid-column: 2;
+                grid-row: 1;
+                background: transparent;
+            }
+            
+            /* Grid das Cestas (2 Colunas conforme pedido) */
+            .cesta-cards-grid { 
+                display: grid; 
+                grid-template-columns: repeat(2, 1fr) !important; /* Força 2 colunas */
+                gap: 15px; 
+            }
+
+            /* Esconder elementos que não fazem sentido no layout novo */
+            .menu-ancoras-cestas { display: none !important; }
+
+            /* Área da Sidebar (Esquerda) */
+            .secoes-extras-grid { 
+                grid-column: 1;
+                grid-row: 1;
+                display: flex !important; 
+                flex-direction: column; 
+                gap: 15px; 
+                padding: 0;
+                
+                /* REMOVIDO: Efeito Sticky para rolar normal com a página */
+                /* position: sticky; */
+                /* top: 100px; */
+                /* height: fit-content; */
+                /* max-height: 85vh; */
+                /* overflow-y: auto; */
+            }
+            
+            .secoes-extras-grid .secao-conteudo { 
+                padding: 0; 
+                margin-bottom: 0; 
+            }
+            
+            /* Ajuste visual dos cards da sidebar */
+            .secoes-extras-grid .card { 
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+            
+            /* Removemos os ícones flutuantes grandes para um visual mais limpo na sidebar */
+            .secoes-extras-grid .section-icon-header { display: none; }
+
+            /* Estilo da Lista de Produtos na Sidebar */
+            .sidebar-menu-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            .sidebar-menu-list li {
+                border-bottom: 1px solid #eee;
+            }
+            .sidebar-menu-list li:last-child { border-bottom: none; }
+            .sidebar-menu-list a {
+                display: block;
+                padding: 10px 5px;
+                text-decoration: none;
+                color: #555;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.2s;
+            }
+            .sidebar-menu-list a:hover {
+                color: var(--cor-primaria);
+                padding-left: 5px;
+                background-color: #f9f9f9;
+            }
+            .sidebar-menu-list a.active {
+                color: var(--cor-destaque-vermelho);
+                font-weight: bold;
             }
         }
     </style>
@@ -1261,6 +1329,20 @@
         
         <div class="secoes-extras-grid">
             
+            <!-- NOVO: MENU LATERAL (Aparece apenas no Desktop) -->
+            <div class="card desktop-only" id="menu-lateral-produtos">
+                <h3 style="color:var(--cor-primaria); margin-top:0; font-size:1.1rem; border-bottom:1px solid #eee; padding-bottom:8px;">
+                    <i class="fas fa-shopping-basket"></i> Nossas Cestas
+                </h3>
+                <ul class="sidebar-menu-list">
+                    <li><a href="#cestaeconomica">Cesta Econômica</a></li>
+                    <li><a href="#cestamini">Cesta Mini</a></li>
+                    <li><a href="#cestapequena">Cesta Pequena</a></li>
+                    <li><a href="#cestamedia">Cesta Média</a></li>
+                    <li><a href="#cestagrande">Cesta Grande</a></li>
+                </ul>
+            </div>
+
             <div id="pag-sorteio" class="secao-conteudo">
                 <div class="section-icon-header">
                     <!-- OTIMIZAÇÃO: loading="lazy" -->
