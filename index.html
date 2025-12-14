@@ -1572,6 +1572,30 @@
             { nome: "Cliente Teste", telefone: "65999991234", cidade: "Cuiabá", bairro: "Centro" },
             { nome: "Maria Silva", telefone: "65988885678", cidade: "Várzea Grande", bairro: "Cristo Rei" }
         ];
+        // --- CÓDIGO DO LINK INTELIGENTE DE INSTALAÇÃO ---
+        window.addEventListener('load', function() {
+            // Verifica se o link tem "?instalar=agora" no final
+            const params = new URLSearchParams(window.location.search);
+            
+            if (params.get('instalar') === 'agora') {
+                // Espera meio segundo para o site carregar e abre o modal
+                setTimeout(() => {
+                    abrirModalContatos();
+                    mostrarMensagemToast("Toque no botão abaixo para instalar! 👇", "success");
+                    
+                    // Dá um destaque visual no botão de baixar
+                    const btnInstall = document.querySelector('.btn-app-link');
+                    if(btnInstall) {
+                        btnInstall.style.backgroundColor = "#FFF9C4";
+                        btnInstall.style.transform = "scale(1.1)";
+                        setTimeout(() => {
+                            btnInstall.style.transform = "scale(1)";
+                            btnInstall.style.backgroundColor = "transparent";
+                        }, 1000);
+                    }
+                }, 800);
+            }
+        });
     </script>
     <script>
         const TELEFONE = "5565996813588"; 
