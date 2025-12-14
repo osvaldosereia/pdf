@@ -622,7 +622,7 @@
         /* =========================================
            7. MODAIS & LIGHTBOX
         ========================================== */
-        .modal-variacao, #modalContatos, #modalInformacoes, #modalSorteio {
+        .modal-variacao, #modalContatos, #modalInformacoes, #modalSorteio, #modalRedirecionamento {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.65); justify-content: center; align-items: center; backdrop-filter: blur(3px);
             padding: 20px;
@@ -630,6 +630,7 @@
         #modalContatos { z-index: 4500; }
         #modalInformacoes { z-index: 4600; }
         #modalSorteio { z-index: 4700; }
+        #modalRedirecionamento { z-index: 9999; } /* Prioridade máxima */
 
         .modal-info-content, .modal-variacao-content {
             background-color: white; 
@@ -1043,6 +1044,25 @@
         </button>
     </div>
 
+    <!-- MODAL REDIRECIONAMENTO (NOVO) -->
+    <div id="modalRedirecionamento" class="modal-variacao" style="display: none;">
+        <div class="modal-variacao-content" style="padding: 25px; text-align: center;">
+            <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" alt="Dona Antônia" style="width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+            
+            <h2 style="font-size: 1.3rem; color: var(--cor-primaria); font-weight: 700; margin-bottom: 10px; line-height: 1.3;">
+                Quero participar do sorteio das 20 cestas dia 20 de dezembro
+            </h2>
+            
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">
+                Para garantir sua participação, abra nosso site oficial.
+            </p>
+            
+            <button onclick="abrirSiteExterno()" class="btn-float-action" style="width: 100%; background-color: var(--cor-whatsapp); color: white; display: flex; justify-content: center; align-items: center; padding: 16px; font-size: 1rem;">
+                Abrir Site <i class="fas fa-external-link-alt" style="margin-left: 8px;"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- MODAIS -->
     <!-- Modal Variação -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
@@ -1088,8 +1108,8 @@
             <div style="padding: 25px 20px;">
                 <div style="text-align: center; margin-bottom: 15px;">
                     <img src="img/cesta.png" width="60" height="60" loading="lazy" alt="Sorteio" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
-                    <h3 style="margin: 10px 0 5px; font-size: 1.4rem; color: var(--cor-primaria); font-weight: 700;">Sorteio de 20 Cestas Econômicas</h3>
-                    <p style="font-size: 0.9rem; color: #666; margin: 0;">Dia 22 de Dezembro. Participe!</p>
+                    <h3 style="margin: 10px 0 5px; font-size: 1.4rem; color: var(--cor-primaria); font-weight: 700;">Sorteio Semanal</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin: 0;">Participe todo domingo!</p>
                 </div>
                 
                 <!-- Busca -->
@@ -1290,6 +1310,24 @@
         function abrirModalContatos() { document.getElementById('modalContatos').style.display = 'flex'; }
         function fecharModalSorteio() { document.getElementById('modalSorteio').style.display = 'none'; }
         function abrirModalSorteio() { document.getElementById('modalSorteio').style.display = 'flex'; }
+        
+        // --- FUNÇÃO DE ABRIR SITE EXTERNO (PARA SAIR DO INSTA/FACE) ---
+        function abrirSiteExterno() {
+            // Tenta abrir no navegador do sistema (funciona bem em Android)
+            const url = window.location.href;
+            
+            // Se for Android, tenta usar Intent para abrir no Chrome
+            if (/Android/i.test(navigator.userAgent)) {
+                window.location.href = `intent:${url}#Intent;scheme=https;package=com.android.chrome;end`;
+            } else {
+                // Fallback para iOS ou outros
+                // Tenta abrir numa nova janela, o que as vezes força o navegador externo
+                window.open(url, '_system');
+            }
+            
+            // Fecha o modal após tentativa
+            document.getElementById('modalRedirecionamento').style.display = 'none';
+        }
 
         // --- LÓGICA DO SORTEIO ---
         async function buscarCadastro(sufix) {
@@ -1355,6 +1393,14 @@
 
         // 2. Lógica de Instalação e Estado
         window.addEventListener('load', () => {
+            
+            // DETECÇÃO DE IN-APP BROWSER (Instagram / Facebook)
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            if (/Instagram|FBAN|FBAV/i.test(ua)) {
+                // Abre o modal de redirecionamento
+                document.getElementById('modalRedirecionamento').style.display = 'flex';
+            }
+            
             carregarDadosClientes();
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
