@@ -96,6 +96,70 @@
           "url": "https://donaantonia.com.br/#cestaeconomica",
           "priceValidUntil": "2025-12-31"
         }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Cesta Básica Mini",
+        "image": "https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif",
+        "description": "Cesta Mini completa com alimentos e itens de limpeza. Opção com Arroz Tio Alvino ou Koblenz.",
+        "sku": "CESTA-MINI",
+        "offers": {
+          "@type": "Offer",
+          "price": "165.00",
+          "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock",
+          "url": "https://donaantonia.com.br/#cestamini",
+          "priceValidUntil": "2025-12-31"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Cesta Básica Pequena",
+        "image": "https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif",
+        "description": "Cesta Pequena ideal para casais. Contém 2 pacotes de Arroz 5kg, limpeza completa e alimentos.",
+        "sku": "CESTA-PEQ",
+        "offers": {
+          "@type": "Offer",
+          "price": "215.00",
+          "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock",
+          "url": "https://donaantonia.com.br/#cestapequena",
+          "priceValidUntil": "2025-12-31"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Cesta Básica Média",
+        "image": "https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif",
+        "description": "Cesta Média robusta com 3 pacotes de Arroz 5kg e variedade de itens de mercearia e limpeza.",
+        "sku": "CESTA-MED",
+        "offers": {
+          "@type": "Offer",
+          "price": "320.00",
+          "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock",
+          "url": "https://donaantonia.com.br/#cestamedia",
+          "priceValidUntil": "2025-12-31"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "Cesta Básica Grande",
+        "image": "https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif",
+        "description": "Nossa maior cesta. 4 pacotes de Arroz 5kg, feijão, óleo e kit limpeza completo para famílias grandes.",
+        "sku": "CESTA-GRD",
+        "offers": {
+          "@type": "Offer",
+          "price": "380.00",
+          "priceCurrency": "BRL",
+          "availability": "https://schema.org/InStock",
+          "url": "https://donaantonia.com.br/#cestagrande",
+          "priceValidUntil": "2025-12-31"
+        }
       }
     ]
     </script>
@@ -146,7 +210,8 @@
             background-color: #e0e0e0; 
             scroll-behavior: smooth;
             scroll-padding-top: calc(var(--altura-header) + 40px); 
-            font-size: 17px; 
+            /* AJUSTE FONTE MOBILE: Reduzido de 17px para 14.5px */
+            font-size: 14.5px; 
         }
 
         body {
@@ -155,7 +220,7 @@
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            padding-top: calc(var(--altura-header) + 40px); 
+            padding-top: calc(var(--altura-header) + 10px); 
             padding-bottom: calc(var(--altura-bottom-nav) + 20px); 
             min-height: 10vh;
             position: relative; 
@@ -171,50 +236,9 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             transition: max-width 0.3s ease; 
         }
-
-        /* === MINI BANNER ROTATIVO === */
-        .mini-banner {
-            position: fixed;
-            top: var(--altura-header); 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            height: 35px; 
-            background-color: #FFF9C4; 
-            color: #5d4037;
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 0 15px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end; 
-            text-align: right;
-            z-index: 998; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-bottom: 1px solid #FFF59D;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .mini-banner-content {
-            transition: opacity 0.5s ease-in-out;
-            opacity: 1;
-        }
-
-        .mini-banner a {
-            color: #E65100;
-            text-decoration: none;
-            border-bottom: 1px dotted #E65100;
-            font-weight: bold;
-        }
         
         /* === ELEMENTOS EXCLUSIVOS DESKTOP (Invisíveis no Mobile) === */
         .desktop-only { display: none !important; }
-
-        @media (min-width: 481px) {
-            .mini-banner { max-width: 1100px; }
-        }
 
         /* === TITULO H1 SEO === */
         .seo-main-title {
@@ -397,56 +421,7 @@
             .linha-destaque-top { font-size: 0.75rem; }
         }
 
-        /* --- BARRA DE CONFIANÇA --- */
-        .trust-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #E3F2FD; 
-            border: 1px solid #BBDEFB;
-            border-radius: 8px;
-            padding: 10px 5px;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 101; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-        }
-
-        @media (max-width: 480px) {
-            .trust-bar {
-                margin-top: 20px; 
-            }
-        }
-        
-        .trust-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 0.7rem;
-            color: var(--cor-primaria);
-            font-weight: 600;
-            line-height: 1.2;
-            padding: 0 2px;
-            opacity: 1; 
-            transform: none;
-        }
-        
-        .trust-item i {
-            font-size: 1rem;
-            color: var(--cor-destaque-vermelho);
-            margin-bottom: 4px;
-        }
-        
-        .trust-divider {
-            width: 1px;
-            height: 25px;
-            background-color: #BBDEFB;
-        }
-
-        /* --- CARDS --- */
+        /* --- CARDS E CONTEÚDO --- */
         .secao-conteudo { padding: 15px; }
         
         .card { 
@@ -468,104 +443,203 @@
             font-weight: 700;
             letter-spacing: -0.3px;
         }
-        
-        .card-cesta { padding: 0; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
-        
-        .cesta-header { background-color: var(--cor-primaria); padding: 8px; text-align: center; color: white; }
-        
-        /* CORREÇÃO SEMÂNTICA: Ajustado seletor de h3 para h2 para manter o estilo visual */
-        .cesta-header h2 { 
-            margin: 0; 
-            color: white; 
-            font-size: 15px; 
-            font-weight: 600;
-            text-transform: uppercase; 
-            letter-spacing: 0.8px;
-        }
-        
-        .cesta-body { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
 
-        .foto-cesta-unica { 
-            width: 100%; 
-            height: auto;
-            aspect-ratio: 1 / 0.8; 
-            object-fit: cover; 
+        /* === NOVO LAYOUT HORIZONTAL CARD CESTA === */
+        .card-cesta-horizontal {
+            display: flex;
+            flex-direction: row;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            overflow: hidden;
+            min-height: 130px;
+            transition: box-shadow 0.2s;
+        }
+
+        .card-cesta-horizontal:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Lado da Imagem (Esquerda) */
+        .cesta-img-container {
+            width: 110px;
+            min-width: 110px;
+            position: relative;
+            background-color: #f5f5f5;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .cesta-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             display: block;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            background: #eee;
         }
 
-        .lista-precos-cesta {
-            background-color: #f8f9fa; border-radius: 6px; 
-            padding: 6px 10px; 
-            margin: 5px 0 8px 0; 
-            border: 1px solid #e9ecef; margin-top: auto;
-        }
-        .item-preco { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; font-size: 0.9rem; color: #444; }
-        .item-preco:last-child { margin-bottom: 0; }
-        
-        .item-preco strong { 
-            color: var(--cor-destaque-vermelho); 
-            font-size: 1.15rem; 
-            font-weight: 800;
+        .zoom-overlay-icon {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            pointer-events: none; 
         }
 
-        /* --- BOTÕES --- */
-        .botoes-wrapper { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            grid-template-rows: auto auto;
-            grid-template-areas: 
-                "hero hero"
-                "info share";
-            gap: 6px; 
-            margin-top: 0; 
+        /* Lado das Informações (Direita) */
+        .cesta-info-container {
+            flex-grow: 1;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        
-        .btn {
-            display: flex; align-items: center; justify-content: center; width: 100%; padding: 10px; 
-            border: none; border-radius: 6px; cursor: pointer;
-            text-decoration: none; color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            transition: transform 0.2s, filter 0.2s;
-            font-family: inherit;
+
+        .cesta-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
         }
-        
-        .btn-encomendar { 
-            grid-area: hero;
-            background-color: var(--cor-whatsapp); 
-            font-size: 0.95rem; 
+
+        .cesta-title-row h2 {
+            /* AJUSTE FONTE: Aumentado para 1.3rem */
+            font-size: 1.3rem; 
+            margin: 0;
+            color: var(--cor-primaria);
             font-weight: 700;
+            line-height: 1.2;
             text-transform: uppercase;
-            padding: 12px;
-            box-shadow: 0 3px 8px rgba(37, 211, 102, 0.25);
-            margin-bottom: 2px;
-            letter-spacing: 0.3px;
         }
-        
-        .btn-info { 
-            grid-area: info;
-            background-color: #E3F2FD; 
-            color: #1565C0; 
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid #BBDEFB;
-            box-shadow: none;
-        } 
-        
-        .btn-share {
-            grid-area: share;
-            background-color: #E8F5E9; 
-            color: #2E7D32; 
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid #C8E6C9;
-            box-shadow: none;
-        }
-        .btn-share i { margin-right: 5px; font-size: 1rem; }
 
-        .btn:active { transform: scale(0.97); }
+        .cesta-price-tag {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
         
+        .cesta-price-highlight {
+            color: var(--cor-destaque-vermelho);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* Botões Horizontais */
+        .cesta-actions-row {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap; /* Permite quebrar linha se necessário */
+            align-items: center;
+        }
+
+        .btn-cta-small {
+            background-color: var(--cor-whatsapp);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            flex-grow: 1; /* Ocupa espaço disponível */
+            cursor: pointer;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 100px; /* Garante tamanho mínimo */
+        }
+        
+        /* NOVO BOTÃO VER PRODUTOS (Amplo e com texto) */
+        .btn-ver-produtos {
+            background-color: #E3F2FD;
+            color: #1565C0;
+            border: 1px solid #BBDEFB;
+            border-radius: 6px;
+            padding: 8px 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-grow: 1; /* Ocupa espaço disponível igual ao CTA */
+            cursor: pointer;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-width: 100px;
+        }
+
+        .btn-share-small {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+            border: 1px solid #C8E6C9;
+            border-radius: 6px;
+            padding: 8px;
+            width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0; /* Não encolhe */
+        }
+        
+        /* === LIGHTBOX (ZOOM) === */
+        #modalZoomImagem {
+            display: none;
+            position: fixed;
+            z-index: 9000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .zoom-img-container {
+            max-width: 95%;
+            max-height: 85%;
+            position: relative;
+        }
+
+        .img-zoom-full {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+
+        .btn-fechar-zoom {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .zoom-caption {
+            color: white;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
         /* --- EXTRAS --- */
         .section-icon-header { text-align: center; margin-bottom: 15px; position: relative; z-index: 10; }
         .section-icon-header img {
@@ -884,8 +958,7 @@
             
             html { font-size: 15px; } 
             h2 { font-size: 1.5rem; }
-            .cesta-header h3 { font-size: 1.15rem; }
-
+            
             .menu-ancoras-cestas {
                 gap: 15px; 
                 padding: 15px;
@@ -896,6 +969,12 @@
                 font-size: 0.95rem;
                 border-radius: 20px; 
                 flex: 0 1 auto; 
+            }
+
+            /* No desktop, a imagem pode ser um pouco maior */
+            .cesta-img-container {
+                width: 140px;
+                min-width: 140px;
             }
         }
         @media (min-width: 940px) { .logo-pequ { left: 50%; margin-left: calc(-550px + 20px); } }
@@ -1028,6 +1107,13 @@
                 flex-direction: column; 
                 gap: 15px; 
                 padding: 0;
+                
+                /* REMOVIDO: Efeito Sticky para rolar normal com a página */
+                /* position: sticky; */
+                /* top: 100px; */
+                /* height: fit-content; */
+                /* max-height: 85vh; */
+                /* overflow-y: auto; */
             }
             
             .secoes-extras-grid .secao-conteudo { 
@@ -1072,110 +1158,15 @@
                 font-weight: bold;
             }
         }
-
-        /* --- ESTILO DO POPUP ESPECIAL DE INSTALAÇÃO --- */
-        #modalInstalacao {
-            display: none; /* Começa escondido */
-            position: fixed;
-            z-index: 9999; /* Fica acima de TUDO */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85); /* Fundo bem escuro para foco */
-            backdrop-filter: blur(5px); /* Desfoque no fundo */
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .install-box {
-            background-color: white;
-            padding: 30px 20px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 350px;
-            width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            position: relative;
-            animation: zoomIn 0.3s ease;
-        }
-
-        .install-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .btn-install-destaque {
-            background-color: var(--cor-whatsapp); /* Verde chamativo */
-            color: white;
-            border: none;
-            padding: 15px;
-            width: 100%;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 50px;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            animation: pulse 2s infinite; /* Animação de pulso */
-        }
-
-        .btn-fechar-install {
-            background: none;
-            border: none;
-            color: #999;
-            font-size: 0.9rem;
-            margin-top: 10px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        /* Animação para chamar atenção */
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
     </style>
 </head>
 <body>
     
-    <!-- MODAL ESPECIAL DE INSTALAÇÃO (Só aparece com o link especial) -->
-    <div id="modalInstalacao">
-        <div class="install-box">
-            <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="install-logo" alt="Logo App">
-            <h2 style="color: #333; margin: 0 0 5px 0;">Instalar Aplicativo</h2>
-            <p style="color: #666; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px;">
-                Tenha a Dona Antônia no seu celular para pedir mais rápido! 📲
-            </p>
-            
-            <!-- Botão que chama a função de instalar -->
-            <button class="btn-install-destaque" onclick="instalarPWA(); fecharModalInstalacao();">
-                <i class="fas fa-download"></i> BAIXAR AGORA
-            </button>
-            
-            <button class="btn-fechar-install" onclick="fecharModalInstalacao()">
-                Não, obrigado. Continuar no site.
-            </button>
-        </div>
-    </div>
-
     <div id="toast-container"></div> 
 
     <div class="header-background-bar"></div>
 
-    <div id="mini-banner" class="mini-banner">
-        <span id="mini-banner-text" class="mini-banner-content">🚚 Entregamos em Cuiabá e VG</span>
-    </div>
+    <!-- MINI BANNER REMOVIDO CONFORME PEDIDO -->
 
     <!-- OTIMIZAÇÃO: width e height explícitos para evitar Layout Shift (CLS) -->
     <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" width="100" height="100" id="logo-principal" onerror="this.src='https://placehold.co/120x120?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
@@ -1213,22 +1204,8 @@
             </div>
 
             <div class="secao-conteudo">
-                <div class="trust-bar">
-                    <div class="trust-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Cuiabá e<br>Várzea Grande</span>
-                    </div>
-                    <div class="trust-divider"></div>
-                    <div class="trust-item">
-                        <i class="fas fa-hand-holding-usd"></i>
-                        <span>Pague na<br>Entrega</span>
-                    </div>
-                    <div class="trust-divider"></div>
-                    <div class="trust-item">
-                        <i class="fas fa-truck"></i>
-                        <span>Entrega<br>Grátis</span>
-                    </div>
-                </div>
+                
+                <!-- BARRA DE CONFIANÇA (TRUST BAR) REMOVIDA CONFORME PEDIDO -->
 
                 <div class="menu-ancoras-cestas">
                     <a href="#cestaeconomica" class="chip-ancora" onclick="ativarChip(this)">Econômica</a>
@@ -1239,112 +1216,147 @@
                 </div>
 
                 <div class="cesta-cards-grid">
-                    <div class="card card-cesta" id="cestaeconomica">
-                        <div class="cesta-header"><h2>Cesta Econômica</h2></div>
-                        <div class="cesta-body">
-                            <!-- OTIMIZAÇÃO: fetchpriority="high" para LCP (primeira imagem visível) e dimensões explícitas -->
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="320" fetchpriority="high" class="foto-cesta-unica" alt="Cesta Básica Econômica Entrega Rápida Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
-                            <div class="lista-precos-cesta">
-                                <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 85,00</strong></div>
+                    
+                    <!-- CESTA ECONÔMICA (HORIZONTAL) -->
+                    <div class="card-cesta-horizontal" id="cestaeconomica">
+                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" alt="Cesta Básica Econômica" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
+                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                        </div>
+                        <div class="cesta-info-container">
+                            <div>
+                                <div class="cesta-title-row">
+                                    <h2>Cesta Econômica</h2>
+                                </div>
+                                <div class="cesta-price-tag">
+                                    A partir de <span class="cesta-price-highlight">R$ 85,00</span>
+                                </div>
                             </div>
-                            <div class="botoes-wrapper">
-                                <button class="btn btn-encomendar" onclick="encomendarDireto('Cesta Econômica', '85,00', false)" aria-label="Encomendar Cesta Econômica">
-                                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
+                            <div class="cesta-actions-row">
+                                <button class="btn-cta-small" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
+                                    <i class="fab fa-whatsapp"></i> Encomendar
                                 </button>
-                                <button class="btn btn-info" onclick="abrirModalInfo('economica')" aria-label="Ver produtos da Cesta Econômica">
-                                    <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
+                                <button class="btn-ver-produtos" onclick="abrirModalInfo('economica')" aria-label="Ver produtos">
+                                    <i class="fas fa-list"></i> Ver Itens
                                 </button>
-                                <button class="btn btn-share" onclick="compartilharCesta('Cesta Econômica', '85,00')" aria-label="Compartilhar Cesta Econômica">
-                                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
+                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Econômica', '85,00')" aria-label="Compartilhar">
+                                    <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card card-cesta" id="cestamini">
-                        <div class="cesta-header"><h2>Cesta Mini</h2></div>
-                        <div class="cesta-body">
-                            <!-- OTIMIZAÇÃO: loading="lazy" para imagens fora da tela inicial -->
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Mini Completa em Várzea Grande - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MINI'">
-                            <div class="lista-precos-cesta">
-                                <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 165,00</strong></div>
-                                <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 170,00</strong></div>
+                    <!-- CESTA MINI (HORIZONTAL) -->
+                    <div class="card-cesta-horizontal" id="cestamini">
+                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-mini.avif', 'Cesta Mini')">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-mini.avif" loading="lazy" alt="Cesta Básica Mini" onerror="this.src='https://placehold.co/400x400?text=MINI'">
+                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                        </div>
+                        <div class="cesta-info-container">
+                            <div>
+                                <div class="cesta-title-row">
+                                    <h2>Cesta Mini</h2>
+                                </div>
+                                <div class="cesta-price-tag">
+                                    A partir de <span class="cesta-price-highlight">R$ 165,00</span>
+                                </div>
                             </div>
-                            <div class="botoes-wrapper">
-                                <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')" aria-label="Encomendar Cesta Mini">
-                                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
+                            <div class="cesta-actions-row">
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar
                                 </button>
-                                <button class="btn btn-info" onclick="abrirModalInfo('mini')" aria-label="Ver produtos da Cesta Mini">
-                                    <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
+                                <button class="btn-ver-produtos" onclick="abrirModalInfo('mini')">
+                                    <i class="fas fa-list"></i> Ver Itens
                                 </button>
-                                <button class="btn btn-share" onclick="compartilharCesta('Cesta Mini', '165,00')" aria-label="Compartilhar Cesta Mini">
-                                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
+                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Mini', '165,00')">
+                                    <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card card-cesta" id="cestapequena">
-                        <div class="cesta-header"><h2>Cesta Pequena</h2></div>
-                        <div class="cesta-body">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Pequena com Entrega Grátis no CPA e Coxipó" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
-                            <div class="lista-precos-cesta">
-                                <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 215,00</strong></div>
-                                <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 220,00</strong></div>
+                    <!-- CESTA PEQUENA (HORIZONTAL) -->
+                    <div class="card-cesta-horizontal" id="cestapequena">
+                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-pequena.avif', 'Cesta Pequena')">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.avif" loading="lazy" alt="Cesta Básica Pequena" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
+                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                        </div>
+                        <div class="cesta-info-container">
+                            <div>
+                                <div class="cesta-title-row">
+                                    <h2>Cesta Pequena</h2>
+                                </div>
+                                <div class="cesta-price-tag">
+                                    A partir de <span class="cesta-price-highlight">R$ 215,00</span>
+                                </div>
                             </div>
-                            <div class="botoes-wrapper">
-                                <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')" aria-label="Encomendar Cesta Pequena">
-                                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
+                            <div class="cesta-actions-row">
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar
                                 </button>
-                                <button class="btn btn-info" onclick="abrirModalInfo('pequena')" aria-label="Ver produtos da Cesta Pequena">
-                                    <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
+                                <button class="btn-ver-produtos" onclick="abrirModalInfo('pequena')">
+                                    <i class="fas fa-list"></i> Ver Itens
                                 </button>
-                                <button class="btn btn-share" onclick="compartilharCesta('Cesta Pequena', '215,00')" aria-label="Compartilhar Cesta Pequena">
-                                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
+                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Pequena', '215,00')">
+                                    <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card card-cesta" id="cestamedia">
-                        <div class="cesta-header"><h2>Cesta Média</h2></div>
-                        <div class="cesta-body">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Média em Oferta Cuiabá e VG - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
-                            <div class="lista-precos-cesta">
-                                <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 320,00</strong></div>
-                                <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 325,00</strong></div>
+                    <!-- CESTA MÉDIA (HORIZONTAL) -->
+                    <div class="card-cesta-horizontal" id="cestamedia">
+                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-media.avif', 'Cesta Média')">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-media.avif" loading="lazy" alt="Cesta Básica Média" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
+                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                        </div>
+                        <div class="cesta-info-container">
+                            <div>
+                                <div class="cesta-title-row">
+                                    <h2>Cesta Média</h2>
+                                </div>
+                                <div class="cesta-price-tag">
+                                    A partir de <span class="cesta-price-highlight">R$ 320,00</span>
+                                </div>
                             </div>
-                            <div class="botoes-wrapper">
-                                <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')" aria-label="Encomendar Cesta Média">
-                                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
+                            <div class="cesta-actions-row">
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar
                                 </button>
-                                <button class="btn btn-info" onclick="abrirModalInfo('media')" aria-label="Ver produtos da Cesta Média">
-                                    <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
+                                <button class="btn-ver-produtos" onclick="abrirModalInfo('media')">
+                                    <i class="fas fa-list"></i> Ver Itens
                                 </button>
-                                <button class="btn btn-share" onclick="compartilharCesta('Cesta Média', '320,00')" aria-label="Compartilhar Cesta Média">
-                                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
+                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Média', '320,00')">
+                                    <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card card-cesta" id="cestagrande">
-                        <div class="cesta-header"><h2>Cesta Grande</h2></div>
-                        <div class="cesta-body">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="320" loading="lazy" class="foto-cesta-unica" alt="Cesta Básica Grande Família Completa Cuiabá - Dona Antônia" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
-                            <div class="lista-precos-cesta">
-                                <div class="item-preco"><span>Com Arroz Tio Alvino:</span><strong>R$ 380,00</strong></div>
-                                <div class="item-preco"><span>Com Arroz Koblenz:</span><strong>R$ 390,00</strong></div>
+                    <!-- CESTA GRANDE (HORIZONTAL) -->
+                    <div class="card-cesta-horizontal" id="cestagrande">
+                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-grande.avif', 'Cesta Grande')">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-grande.avif" loading="lazy" alt="Cesta Básica Grande" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
+                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                        </div>
+                        <div class="cesta-info-container">
+                            <div>
+                                <div class="cesta-title-row">
+                                    <h2>Cesta Grande</h2>
+                                </div>
+                                <div class="cesta-price-tag">
+                                    A partir de <span class="cesta-price-highlight">R$ 380,00</span>
+                                </div>
                             </div>
-                            <div class="botoes-wrapper">
-                                <button class="btn btn-encomendar" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')" aria-label="Encomendar Cesta Grande">
-                                    <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> ENCOMENDAR AGORA
+                            <div class="cesta-actions-row">
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar
                                 </button>
-                                <button class="btn btn-info" onclick="abrirModalInfo('grande')" aria-label="Ver produtos da Cesta Grande">
-                                    <i class="fas fa-list" style="margin-right: 5px;"></i> VER PRODUTOS
+                                <button class="btn-ver-produtos" onclick="abrirModalInfo('grande')">
+                                    <i class="fas fa-list"></i> Ver Itens
                                 </button>
-                                <button class="btn btn-share" onclick="compartilharCesta('Cesta Grande', '380,00')" aria-label="Compartilhar Cesta Grande">
-                                    <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Mostrar para alguém
+                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Grande', '380,00')">
+                                    <i class="fas fa-share-alt"></i>
                                 </button>
                             </div>
                         </div>
@@ -1588,6 +1600,15 @@
             </button>
         </div>
     </div>
+
+    <!-- MODAL ZOOM IMAGEM -->
+    <div id="modalZoomImagem" onclick="if(event.target === this) fecharZoom()">
+        <div class="zoom-img-container">
+            <button class="btn-fechar-zoom" onclick="fecharZoom()">&times;</button>
+            <img id="imgZoomAlvo" src="" class="img-zoom-full" alt="Zoom Imagem">
+            <div id="captionZoom" class="zoom-caption"></div>
+        </div>
+    </div>
     
     <script>
         var clientes = [
@@ -1598,27 +1619,7 @@
     <script>
         const TELEFONE = "5565996813588"; 
         
-        // --- SCRIPT DO MINI BANNER ROTATIVO ---
-        const bannerTexts = [
-            { html: "🚚 Entregamos em Cuiabá e VG" },
-            { html: "🎁 <a href='https://presente.social' target='_blank'>Conheça o Presente.Social</a>" }
-        ];
-        let bannerStep = 0;
-        
-        function rotacionarBanner() {
-            bannerStep = (bannerStep + 1) % bannerTexts.length;
-            const el = document.getElementById('mini-banner-text');
-            if(!el) return;
-            
-            el.style.opacity = 0; // Fade out
-            setTimeout(() => {
-                el.innerHTML = bannerTexts[bannerStep].html;
-                el.style.opacity = 1; // Fade in
-            }, 500);
-        }
-        
-        // Inicia a rotação a cada 4 segundos
-        setInterval(rotacionarBanner, 4000);
+        // --- SCRIPT DO MINI BANNER REMOVIDO ---
 
         let deferredPrompt; 
         let dadosCestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '' };
@@ -1686,6 +1687,20 @@
             const texto = `Olha essa cesta: *${nomeCesta}* por *R$ ${precoCesta}*.\nAcesse o site: https://donaantonia.com.br/`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
         }
+        
+        // --- FUNÇÃO DE ZOOM (NOVO) ---
+        function abrirZoom(src, titulo) {
+            document.getElementById('imgZoomAlvo').src = src;
+            document.getElementById('imgZoomAlvo').onerror = function() {
+                this.src = 'https://placehold.co/800x600?text=Imagem+N%C3%A3o+Dispon%C3%ADvel';
+            };
+            document.getElementById('captionZoom').innerText = titulo;
+            document.getElementById('modalZoomImagem').style.display = 'flex';
+        }
+
+        function fecharZoom() {
+            document.getElementById('modalZoomImagem').style.display = 'none';
+        }
 
         // --- MODAL INFO (SIMPLIFICADO E COM BRINDE) ---
         function abrirModalInfo(cestaTipo) {
@@ -1731,16 +1746,6 @@
         // --- MODAL CONTATOS ---
         function abrirModalContatos() { document.getElementById('modalContatos').style.display = 'flex'; }
         function fecharModalContatos() { document.getElementById('modalContatos').style.display = 'none'; }
-
-        // --- FUNÇÕES DO MODAL ESPECIAL ---
-        
-        function abrirModalInstalacao() {
-            document.getElementById('modalInstalacao').style.display = 'flex';
-        }
-
-        function fecharModalInstalacao() {
-            document.getElementById('modalInstalacao').style.display = 'none';
-        }
 
         // --- PWA LOGIC (CORRIGIDA) ---
         // 1. Registro do Service Worker
@@ -1995,18 +2000,9 @@
             }, observerOptions);
 
             // Começa a vigiar todas as seções de cestas
-            document.querySelectorAll('.card-cesta').forEach(section => {
+            document.querySelectorAll('.card-cesta-horizontal').forEach(section => {
                 observer.observe(section);
             });
-
-            // --- LÓGICA DO POPUP AUTOMÁTICO VIA LINK ---
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('instalar') === 'app') {
-                // Delay para garantir que o site carregou visualmente
-                setTimeout(() => {
-                    abrirModalInstalacao();
-                }, 1000);
-            }
         });
     </script>
 </body>
