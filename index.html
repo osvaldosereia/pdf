@@ -651,10 +651,24 @@
         }
         .modal-info-header h3 { margin: 0; color: var(--cor-primaria); font-size: 1.1rem; font-weight: 700;}
         
-        .btn-fechar-modal-info, .btn-fechar-modal-var { 
-            background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; padding: 0 10px; line-height: 1;
+        /* NOVO BOTÃO FECHAR ESTILIZADO */
+        .btn-fechar-modal-info {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .btn-fechar-modal-var { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;}
+        .btn-fechar-modal-info:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-fechar-modal-var { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: none; font-size: 1.5rem; color: #888; cursor: pointer;}
 
         .modal-body-scroll { padding: 20px; overflow-y: auto; flex: 1; }
         
@@ -1019,7 +1033,7 @@
 
     <!-- BOTÕES FLUTUANTES INFERIORES -->
     <div class="floating-buttons-container">
-        <!-- BOTÃO SORTEIO (APARECE SÓ NO APP) -->
+        <!-- BOTÃO SORTEIO (APARECE SÓ NO APP OU JÁ INSTALADO) -->
         <button id="btnSorteio" onclick="abrirModalSorteio()" class="btn-float-action btn-float-sorteio">
             <i class="fas fa-gift"></i> Participar do Sorteio
         </button>
@@ -1052,12 +1066,13 @@
         </div>
     </div>
 
-    <!-- Modal Informações -->
+    <!-- Modal Informações (COM BOTÃO FECHAR ESTILIZADO) -->
     <div id="modalInformacoes" class="modal-variacao" onclick="if(event.target === this) fecharModalInfo()">
         <div class="modal-info-content">
             <div class="modal-info-header">
                 <h3 id="tituloModalInfo">Itens da Cesta</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">&times;</button>
+                <!-- NOVO BOTÃO FECHAR -->
+                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">Fechar</button>
             </div>
             <div class="modal-body-scroll">
                 <div id="brindeArea"></div>
@@ -1074,7 +1089,7 @@
                 <div style="text-align: center; margin-bottom: 15px;">
                     <img src="img/cesta.png" width="60" height="60" loading="lazy" alt="Sorteio" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
                     <h3 style="margin: 10px 0 5px; font-size: 1.4rem; color: var(--cor-primaria); font-weight: 700;">Sorteio Semanal</h3>
-                    <p style="font-size: 0.9rem; color: #666; margin: 0;">Sorteio dia 22 de Dezembro</p>
+                    <p style="font-size: 0.9rem; color: #666; margin: 0;">Participe todo domingo!</p>
                 </div>
                 
                 <!-- Busca -->
@@ -1338,12 +1353,42 @@
             });
         }
 
-        // 2. Evento de instalação
+        // 2. Lógica de Instalação e Estado
+        window.addEventListener('load', () => {
+            carregarDadosClientes();
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if(e.isIntersecting) {
+                        document.querySelectorAll('.chip-ancora').forEach(c => {
+                            c.classList.toggle('active', c.getAttribute('href') === '#'+e.target.id);
+                        });
+                    }
+                });
+            }, {rootMargin: '-40% 0px -60% 0px'});
+            document.querySelectorAll('.card-cesta-horizontal').forEach(s => obs.observe(s));
+
+            // VERIFICAÇÃO DE ESTADO PWA
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            const isInstalledStorage = localStorage.getItem('appInstalled') === 'true';
+
+            // Se estiver em standalone OU já tiver sido instalado antes -> Mostra Sorteio
+            if (isStandalone || isInstalledStorage) {
+                document.getElementById('btnInstallApp').style.setProperty('display', 'none', 'important');
+                document.getElementById('btnSorteio').style.setProperty('display', 'flex', 'important');
+            }
+        });
+
+        // Evento que dispara se a app NÃO estiver instalada (ou se o navegador permitir instalar)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Garante que o botão está visível se ainda não estiver instalado
-            document.getElementById('btnInstallApp').style.display = 'flex';
+            
+            // Se este evento disparou, significa que o navegador acha que NÃO está instalado.
+            // Por segurança, removemos a flag de localStorage e mostramos o botão de instalar.
+            localStorage.removeItem('appInstalled');
+            
+            document.getElementById('btnInstallApp').style.setProperty('display', 'flex', 'important');
+            document.getElementById('btnSorteio').style.setProperty('display', 'none', 'important');
         });
         
         async function instalarPWA() {
@@ -1378,6 +1423,9 @@
             console.log('PWA foi instalado com sucesso');
             deferredPrompt = null;
             
+            // Salva na memória persistente
+            localStorage.setItem('appInstalled', 'true');
+            
             // 1. Esconde botão de instalar
             document.getElementById('btnInstallApp').style.setProperty('display', 'none', 'important');
             
@@ -1387,21 +1435,6 @@
             
             // 3. Feedback visual
             mostrarMensagemToast("🎉 App Instalado! Você já pode participar.", "success");
-        });
-
-        // --- OBSERVER PARA MENU ---
-        window.addEventListener('load', () => {
-            carregarDadosClientes();
-            const obs = new IntersectionObserver((entries) => {
-                entries.forEach(e => {
-                    if(e.isIntersecting) {
-                        document.querySelectorAll('.chip-ancora').forEach(c => {
-                            c.classList.toggle('active', c.getAttribute('href') === '#'+e.target.id);
-                        });
-                    }
-                });
-            }, {rootMargin: '-40% 0px -60% 0px'});
-            document.querySelectorAll('.card-cesta-horizontal').forEach(s => obs.observe(s));
         });
         
         function ativarChip(el) {
