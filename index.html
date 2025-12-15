@@ -561,10 +561,35 @@
         }
         .modal-info-header h3 { margin: 0; color: var(--cor-primaria); font-size: 1.1rem; font-weight: 700;}
         
+        /* NOVO ESTILO DO BOTÃO FECHAR */
         .btn-fechar-modal-info, .btn-fechar-modal-var { 
-            background: none; border: none; font-size: 1.5rem; color: #888; cursor: pointer; padding: 0 10px; line-height: 1;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #555;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            line-height: 1.2;
+            width: auto; /* Garante que o texto caiba */
         }
-        .btn-fechar-modal-var { position: absolute; top: 10px; right: 10px; z-index: 10; background: rgba(255,255,255,0.8); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;}
+        .btn-fechar-modal-info:hover, .btn-fechar-modal-var:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        
+        /* Ajuste para o botão fechar do modal de variação que fica absoluto */
+        .btn-fechar-modal-var { 
+            position: absolute; 
+            top: 15px; 
+            right: 15px; 
+            z-index: 10; 
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
         .modal-body-scroll {
             padding: 20px; overflow-y: auto;
@@ -597,7 +622,24 @@
         /* ZOOM */
         .zoom-img-container { max-width: 100%; max-height: 100%; position: relative; display: flex; justify-content: center; align-items: center;}
         .img-zoom-full { max-width: 95%; max-height: 80vh; object-fit: contain; }
-        .btn-fechar-zoom { position: absolute; top: 20px; right: 20px; color: white; font-size: 36px; background: none; border: none; cursor: pointer; z-index: 9001;}
+        
+        /* Botão fechar do zoom também atualizado para estilo textual */
+        .btn-fechar-zoom { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            background-color: rgba(255,255,255,0.2);
+            color: white; 
+            font-size: 0.9rem; 
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer; 
+            z-index: 9001;
+            text-transform: uppercase;
+        }
+
         .zoom-caption { color: white; margin-top: 15px; font-size: 1.1rem; font-weight: 500; }
 
         .section-icon-header { text-align: center; margin-bottom: 15px; }
@@ -1112,7 +1154,7 @@
     <!-- MODAL VARIACAO -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
-            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">&times;</button>
+            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">Fechar</button>
             <div style="padding: 20px;">
                 <h3 class="titulo-modal-var" id="tituloCestaModal">Cesta X</h3>
                 <p class="subtitulo-modal-var">Escolha a marca do arroz:</p>
@@ -1136,7 +1178,7 @@
         <div class="modal-info-content">
             <div class="modal-info-header">
                 <h3 id="tituloModalInfo">Itens da Cesta</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">&times;</button>
+                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">Fechar</button>
             </div>
             <div class="modal-body-scroll">
                 <div id="brindeArea"></div>
@@ -1148,7 +1190,7 @@
     <!-- MODAL SORTEIO -->
     <div id="modalSorteio" class="modal-variacao" onclick="if(event.target === this) fecharModalSorteio()">
         <div class="modal-variacao-content">
-            <button class="btn-fechar-modal-var" onclick="fecharModalSorteio()">&times;</button>
+            <button class="btn-fechar-modal-var" onclick="fecharModalSorteio()">Fechar</button>
             <div style="padding: 25px 20px;">
                 <div style="text-align: center; margin-bottom: 15px;">
                     <img src="img/cesta.png" width="60" height="60" loading="lazy" alt="Sorteio" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
@@ -1202,7 +1244,7 @@
         <div class="modal-info-content" style="max-width: 340px;">
             <div class="modal-info-header">
                 <h3>Fale Conosco</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalContatos()">&times;</button>
+                <button class="btn-fechar-modal-info" onclick="fecharModalContatos()">Fechar</button>
             </div>
             <div style="padding: 20px;">
                 <a href="https://wa.me/5565996813588" class="btn-whatsapp-hero" target="_blank">
@@ -1226,7 +1268,7 @@
 
     <!-- MODAL ZOOM IMAGEM -->
     <div id="modalZoomImagem" onclick="if(event.target === this) fecharZoom()">
-        <button class="btn-fechar-zoom" onclick="fecharZoom()">&times;</button>
+        <button class="btn-fechar-zoom" onclick="fecharZoom()">Fechar</button>
         <div class="zoom-img-container">
             <img id="imgZoomTarget" class="img-zoom-full" src="" alt="Zoom">
         </div>
@@ -1241,91 +1283,157 @@
                 titulo: 'Cesta Econômica',
                 brinde: null, // SEM BRINDE
                 itens: [
-                    '01 Pc. Arroz 5kg (Tio Alvino ou Similar)',
-                    '01 Pc. Açúcar 2kg (Itamarati)',
-                    '01 Lt. Óleo 900ml (Concórdia)',
-                    '01 Pc. Café 250g (3 Corações)',
-                    '01 Pc. Feijão 1kg (Carioca)',
-                    '01 Pc. Sal 1kg (Lebre)',
-                    '01 Pc. Trigo 1kg (Rosa Branca)',
-                    '01 Pc. Macarrão 500g (Dona Benta)',
-                    '01 Pc. Fubá 500g (Yoki)',
-                    '01 Pc. Extrato 340g (Elefante)',
-                    '01 Pc. Farofa 400g (Yoki)'
+                    '<b>Alimentos:</b>',
+                    '1 Arroz de 5kg',
+                    '1 Açúcar Cristal de 2kg',
+                    '1 Óleo de Soja de 900ml',
+                    '1 Feijão Dona Dê de 1kg',
+                    '1 Café 250g',
+                    '1 Espaguete de 400g',
+                    '1 Trigo de 1kg',
+                    '1 Farinha de Mandioca de 1kg',
+                    '1 Sal de 1kg',
+                    '1 Molho Tomate 300g',
+                    '1 Milho Lata ou sachê de 250g',
+                    '1 Bolacha Recheada',
+                    '1 Miojo Apti',
+                    '1 Suco Pó'
                 ]
             },
             'mini': {
                 titulo: 'Cesta Mini',
                 brinde: '🧴 1 AMACIANTE YPÊ 2L',
                 itens: [
-                    '01 Pc. Arroz 5kg (Marca a escolha)',
-                    '02 Pc. Açúcar 2kg',
-                    '02 Lt. Óleo 900ml',
-                    '01 Pc. Café 500g',
-                    '02 Pc. Feijão 1kg',
-                    '01 Pc. Sal 1kg',
-                    '01 Pc. Trigo 1kg',
-                    '02 Pc. Macarrão 500g',
-                    '01 Pc. Fubá 500g',
-                    '02 Un. Sabonete',
-                    '01 Un. Creme Dental',
-                    '01 Pc. Papel Higiênico (4 rolos)'
+                    '<b>Alimentos:</b>',
+                    '1 Arroz de 5kg',
+                    '1 Açúcar Cristal de 2kg',
+                    '2 Óleo de Soja de 900ml',
+                    '2 Feijão Da Casa de 1kg',
+                    '1 Café Caboclo de 250g',
+                    '1 Espaguete de 500g',
+                    '1 Sal de 1kg',
+                    '1 Molho Tomate FUGINI',
+                    '1 Milho Lata de 250g',
+                    '1 Bolacha Recheada My Bit',
+                    '1 Miojo Apti',
+                    '2 Suco Pó',
+                    '<b>Limpeza e Higiene:</b>',
+                    '1 Sabão Barra YPE c/ 5 un',
+                    '1 Creme Dental Sorriso 70g',
+                    '1 Papel Higiênico c/ 4un',
+                    '1 Amaciante Ype de 2 Litros',
+                    '1 Desinfetante Remmus 2 L',
+                    '1 Sabão Pó OMO 800g',
+                    '1 Detergente Ype de 500ml',
+                    '1 Qboa de 1 Litro',
+                    '2 Sabonete Palmolive 90g',
+                    '1 Esponja de Aço Assolan',
+                    '1 Esponja de Lavar Louça'
                 ]
             },
             'pequena': {
                 titulo: 'Cesta Pequena',
                 brinde: '🧴 1 AMACIANTE YPÊ 2L',
                 itens: [
-                    '01 Pc. Arroz 5kg (Marca a escolha)',
-                    '02 Pc. Açúcar 2kg',
-                    '03 Lt. Óleo 900ml',
-                    '02 Pc. Café 250g',
-                    '03 Pc. Feijão 1kg',
-                    '01 Pc. Sal 1kg',
-                    '02 Pc. Trigo 1kg',
-                    '03 Pc. Macarrão 500g',
-                    '01 Un. Goiabada',
-                    '01 Lt. Sardinha',
-                    '01 Pc. Farofa Pronta'
+                    '<b>Alimentos:</b>',
+                    '2 Arroz de 5kg',
+                    '1 Açúcar Cristal de 2kg',
+                    '2 Óleo de Soja de 900ml',
+                    '2 Feijão Da Casa de 1kg',
+                    '1 Café Caboclo de 250g',
+                    '12 Ovos',
+                    '1 Mistura para Bolo 400g',
+                    '1 Espaguete de 500g',
+                    '1 Trigo de 1kg',
+                    '1 Sal de 1kg',
+                    '1 Molho Tomate Fugini',
+                    '1 Milho Lata de 250g',
+                    '1 Tempero Pronto de 300g',
+                    '2 Bolacha Recheada My Bit',
+                    '2 Miojo Yolle',
+                    '2 Suco Pó',
+                    '<b>Limpeza e Higiene:</b>',
+                    '1 Sabão Barra YPE c/ 5 un',
+                    '1 Creme Dental Sorriso 70g',
+                    '1 Papel Higiênico c/ 4un',
+                    '1 Amaciante Ype de 2 Litros',
+                    '1 Desinfetante Remmus 2 L',
+                    '1 Sabão Pó OMO 800g',
+                    '2 Detergente Ype de 500ml',
+                    '1 Qboa de 1 Litro',
+                    '2 Sabonete Palmolive 90g',
+                    '1 Esponja de Aço Assolan',
+                    '1 Bucha de lavar louça'
                 ]
             },
             'media': {
                 titulo: 'Cesta Média',
                 brinde: '🧴 1 AMACIANTE YPÊ 2L',
                 itens: [
-                    '02 Pc. Arroz 5kg (Total 10kg)',
-                    '03 Pc. Açúcar 2kg',
-                    '04 Lt. Óleo 900ml',
-                    '03 Pc. Café 250g',
-                    '04 Pc. Feijão 1kg',
-                    '01 Pc. Sal 1kg',
-                    '03 Pc. Trigo 1kg',
-                    '04 Pc. Macarrão 500g',
-                    '02 Un. Molho de Tomate',
-                    '01 Un. Maionese',
-                    '02 Lt. Sardinha',
-                    '01 Un. Milho Verde'
+                    '<b>Alimentos:</b>',
+                    '3 Arroz de 5kg',
+                    '2 Açúcar Cristal de 2kg',
+                    '3 Óleo de Soja de 900ml',
+                    '3 Feijão Da Casa de 1kg',
+                    '1 Café Caboclo 500g',
+                    '12 Ovos',
+                    '1 Mistura para Bolo 400g',
+                    '2 Espaguete de 500g',
+                    '1 Trigo de 1kg',
+                    '1 Sal de 1kg',
+                    '2 Molho Tomate FUGINI 340g',
+                    '1 Milho Lata/sachê de 250g',
+                    '1 Tempero Pronto de 300g',
+                    '2 Bolacha Recheada My Bit',
+                    '2 Miojo Apti',
+                    '3 Suco Pó',
+                    '<b>Limpeza e Higiene:</b>',
+                    '1 Sabão Barra YPE c/ 5 un',
+                    '2 Creme Dental Sorriso 70g',
+                    '2 Papel Higiênico c/ 4un',
+                    '1 Amaciante Ype de 2 Litros',
+                    '1 Desinfetante Remmus 2 L',
+                    '1 Sabão Pó OMO 800g',
+                    '2 Detergente Ype de 500ml',
+                    '1 Qboa de 1 Litro',
+                    '3 Sabonete Palmolive 90g',
+                    '1 Esponja de Aço Assolan',
+                    '1 Esponja de Lavar Louça'
                 ]
             },
             'grande': {
                 titulo: 'Cesta Grande',
                 brinde: '🧴 1 AMACIANTE YPÊ 2L',
                 itens: [
-                    '03 Pc. Arroz 5kg (Total 15kg)',
-                    '04 Pc. Açúcar 2kg',
-                    '05 Lt. Óleo 900ml',
-                    '04 Pc. Café 250g',
-                    '05 Pc. Feijão 1kg',
-                    '02 Pc. Sal 1kg',
-                    '04 Pc. Trigo 1kg',
-                    '05 Pc. Macarrão 500g',
-                    '03 Un. Sabonete',
-                    '02 Un. Creme Dental',
-                    '02 Pc. Papel Higiênico',
-                    '01 Un. Sabão em Pó 1kg',
-                    '01 Un. Amaciante 2L',
-                    '01 Un. Detergente',
-                    '01 Un. Esponja de Aço'
+                    '<b>Alimentos:</b>',
+                    '4 Arroz de 5kg',
+                    '3 Açúcar Cristal de 2kg',
+                    '4 Óleo de Soja de 900ml',
+                    '4 Feijão Da Casa de 1kg',
+                    '1 Café Caboclo 500g',
+                    '3 Espaguetes de 500g',
+                    '12 Ovos',
+                    '1 Mistura para Bolo 400g',
+                    '1 Trigo de 1kg',
+                    '1 Sal de 1kg',
+                    '2 Molho Tomate FUGINI 340g',
+                    '1 Milho Lata ou sachê de 250g',
+                    '1 Tempero Pronto de 300g',
+                    '2 Bolacha Recheada My Bit',
+                    '2 Miojo Apti',
+                    '4 Suco Pó',
+                    '<b>Limpeza e Higiene:</b>',
+                    '1 Sabão Barra YPE c/ 5 un',
+                    '2 Creme Dental Sorriso 70g',
+                    '2 Papel Higiênico c/ 4un',
+                    '1 Amaciante Ype de 2 Litros',
+                    '1 Desinfetante Remmus 2 L',
+                    '1 Sabão Pó OMO 800g',
+                    '2 Detergente Ype de 500ml',
+                    '1 Qboa de 1 Litro',
+                    '4 Sabonete Palmolive 90g',
+                    '1 Esponja de Aço Assolan',
+                    '1 Esponja de Lavar Louça'
                 ]
             }
         };
@@ -1362,7 +1470,17 @@
             // Renderizar Itens
             dados.itens.forEach(item => {
                 const li = document.createElement('li');
-                li.innerHTML = `<i class="fas fa-check" style="color: #4CAF50; margin-right: 10px; margin-top: 4px;"></i> ${item}`;
+                // Se o item contém tags HTML (negrito), renderiza diferente ou sem check
+                if(item.includes('<b>')) {
+                    li.innerHTML = item; // Apenas o título da seção
+                    li.style.borderBottom = "none";
+                    li.style.marginTop = "10px";
+                    li.style.backgroundColor = "#f0f0f0";
+                    li.style.padding = "5px 10px";
+                    li.style.borderRadius = "4px";
+                } else {
+                    li.innerHTML = `<i class="fas fa-check" style="color: #4CAF50; margin-right: 10px; margin-top: 4px;"></i> ${item}`;
+                }
                 lista.appendChild(li);
             });
 
