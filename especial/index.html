@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    
+    <!-- SEO: Canonical Tag -->
+    <link rel="canonical" href="https://donaantonia.com.br/" />
+
+    <!-- OTIMIZAÇÃO: Preconnect e DNS-Prefetch -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://maps.google.com">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dona Antônia">
+    <link rel="apple-touch-icon" href="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
+    <link rel="shortcut icon" href="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
+
+    <title>Monte sua Cesta | Dona Antônia</title>
+    
+    <meta name="description" content="Monte sua cesta básica personalizada em Cuiabá. Escolha os itens e receba em casa.">
+    <meta name="keywords" content="cesta básica personalizada, mercado online cuiabá, compras online">
+    
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Monte sua Cesta - Dona Antônia" />
+    <meta property="og:description" content="Escolha seus produtos e monte a cesta ideal para sua família." />
+    <meta property="og:url" content="https://donaantonia.com.br/" />
+    <meta property="og:image" content="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" />
+    <meta property="og:site_name" content="Dona Antônia Alimentos" />
+
+    <meta name="geo.region" content="BR-MT" />
+    <meta name="geo.placename" content="Cuiabá" />
+    <meta name="geo.position" content="-15.6025;-56.0968" />
+    <meta name="ICBM" content="-15.6025, -56.0968" />
+
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Super Cestas Básicas Dona Antônia">
+    <meta name="theme-color" content="#0F2546"> 
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    
+    <style>
+        /* === ESTILOS GLOBAIS E TIPOGRAFIA === */
+        * { box-sizing: border-box; }
+
+        :root {
+            --cor-primaria: #0F2546; 
+            --cor-destaque-vermelho: #D32F2F; 
+            --cor-destaque-dourado: #FFC107; 
+            --cor-whatsapp: #128C7E; 
+            --cor-info: #1565C0; 
+            --cor-texto: #333; 
+            --cor-fundo: #fafafa;
+            --cor-pagamento: #0277BD; 
+            --cor-sorteio: #2E7D32; 
+            --cor-entrega: #EF6C00; 
+            --cor-header-fundo: #f5f5f5;
+            --altura-header: 80px; 
+            --largura-logo: 100px; 
+        }
+
+        html { 
+            background-color: #e0e0e0; 
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--altura-header) + 40px); 
+            font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background-color: #e0e0e0; 
+            color: var(--cor-texto);
+            margin: 0; 
+            padding: 0;
+            padding-top: calc(var(--altura-header) + 10px); 
+            padding-bottom: 90px; 
+            min-height: 10vh;
+            position: relative; 
+            width: 100%;
+            line-height: 1.5; 
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--cor-primaria);
+            margin-top: 0;
+            line-height: 1.2;
+        }
+
+        .main-content-wrapper {
+            max-width: 480px; 
+            margin: 0 auto; 
+            background-color: var(--cor-fundo); 
+            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            transition: max-width 0.3s ease; 
+        }
+        
+        .desktop-only { display: none !important; }
+
+        /* === TITULO H1 SEO === */
+        .seo-main-title {
+            text-align: center;
+            padding: 20px 15px 10px 15px;
+            background: #fff;
+        }
+        .seo-main-title h1 {
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .seo-main-title p {
+            font-size: 0.95rem;
+            color: #666;
+            margin: 6px 0 0 0;
+            font-weight: 400;
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            background-color: white;
+            height: var(--altura-header);
+            padding: 0;
+            display: flex;
+            flex-direction: row; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            position: fixed;
+            top: 0;
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 100%;
+            max-width: 480px; 
+            z-index: 1000;
+            transition: max-width 0.3s ease;
+            contain: layout size; 
+        }
+
+        .header-background-bar {
+            position: absolute;
+            top: 0;
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px; 
+            height: var(--altura-header);
+            background-color: var(--cor-header-fundo);
+            z-index: 999;
+            transition: max-width 0.3s ease;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: flex-end; 
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 5px 15px;
+            position: relative;
+            z-index: 1002;
+        }
+
+        .logo-pequ { 
+            height: var(--largura-logo);
+            width: var(--largura-logo); 
+            object-fit: cover; 
+            border-radius: 50%; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            position: fixed;
+            top: 5px; 
+            left: 15px; 
+            z-index: 2000; 
+            background-color: white;
+            padding: 0; 
+        }
+
+        .btn-contato-principal {
+            display: flex;
+            align-items: center;    
+            justify-content: center;
+            background-color: var(--cor-primaria);
+            color: var(--cor-destaque-dourado); 
+            border: 1px solid var(--cor-destaque-dourado); 
+            border-radius: 50px; 
+            padding: 8px 20px; 
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(15, 37, 70, 0.2);
+            margin-left: auto;
+            text-align: center;
+            max-width: calc(100% - var(--largura-logo) - 10px);
+        }
+
+        .linha-destaque-top {
+            font-weight: 700;
+            font-size: 0.85rem; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 380px) {
+            :root { --largura-logo: 85px; --altura-header: 75px; }
+            .logo-pequ { left: 10px; }
+            .linha-destaque-top { font-size: 0.75rem; }
+        }
+
+        /* === ESTILOS DA GRADE DE PRODUTOS PERSONALIZADA === */
+        .secao-conteudo { padding: 15px; }
+        
+        .monte-sua-cesta-container {
+            padding: 10px;
+        }
+
+        .instrucoes-cesta {
+            background-color: #E3F2FD;
+            color: #1565C0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            text-align: left;
+            border: 1px solid #BBDEFB;
+        }
+        .instrucoes-cesta ul { margin: 10px 0 0 20px; padding: 0; }
+        .instrucoes-cesta li { margin-bottom: 5px; }
+
+        .categoria-titulo {
+            grid-column: 1 / -1;
+            font-size: 1.1rem;
+            color: var(--cor-primaria);
+            background-color: #e0e0e0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-left: 5px solid var(--cor-destaque-dourado);
+        }
+
+        .produtos-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Mobile: 2 colunas */
+            gap: 15px;
+        }
+
+        .produto-item {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+        .produto-item:hover {
+            border-color: var(--cor-primaria);
+        }
+
+        .prod-img-wrapper {
+            width: 100%;
+            height: 90px;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 5px;
+        }
+        .prod-img-wrapper img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .prod-info {
+            padding: 10px;
+            text-align: center;
+            background: #fdfdfd;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .prod-nome {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            min-height: 35px; /* Altura fixa para alinhar */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.1;
+        }
+
+        .controle-qtd {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #f5f5f5;
+            border-radius: 20px;
+            padding: 4px;
+        }
+
+        .btn-qtd {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background-color: white;
+            color: var(--cor-primaria);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+        .btn-qtd:active { background-color: #ddd; transform: scale(0.95); }
+        
+        .qtd-display {
+            font-weight: 700;
+            color: var(--cor-primaria);
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        /* BARRA DE AÇÕES */
+        .barra-acoes {
+            background-color: white;
+            border-top: 1px solid #eee;
+            padding: 15px;
+            position: sticky;
+            bottom: 0;
+            z-index: 900;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .resumo-total {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--cor-primaria);
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #E3F2FD;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #BBDEFB;
+        }
+
+        .grid-botoes-acao {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .btn-acao {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background: white;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-acao:hover { background-color: #f9f9f9; border-color: #bbb; }
+        
+        .btn-destaque {
+            background-color: var(--cor-whatsapp);
+            color: white;
+            border: none;
+            grid-column: span 2; /* Ocupa linha inteira */
+            font-size: 1.1rem;
+            padding: 14px;
+            opacity: 0.6; /* Inicia desabilitado visualmente */
+            pointer-events: none;
+        }
+        .btn-destaque.ativo {
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+        }
+        
+        .btn-calc {
+            background-color: var(--cor-primaria);
+            color: white;
+            border: none;
+            grid-column: span 1;
+        }
+        
+        .btn-salvar {
+             grid-column: span 1;
+        }
+
+        /* OUTRAS SEÇÕES */
+        .card { 
+            background: white; 
+            border-radius: 12px;
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border: 1px solid #f0f0f0; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
+            height: 100%; 
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card h2 { 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            letter-spacing: -0.3px;
+            margin-bottom: 10px;
+        }
+
+        .section-icon-header { text-align: center; margin-bottom: 15px; }
+        .section-icon-header img {
+            width: 50px; height: 50px; object-fit: contain; background-color: var(--cor-primaria);
+            border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem; display: flex; align-items: center; color: #555; }
+        .emoji-icon { margin-right: 10px; font-size: 1.2rem; }
+
+        /* MODAIS SIMPLES */
+        .modal-variacao {
+            display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.65); justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            padding: 20px;
+        }
+        .modal-info-content {
+            background-color: white; width: 100%; max-width: 340px; border-radius: 16px; 
+            overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .modal-info-header {
+            background-color: var(--cor-fundo); padding: 15px; display: flex; 
+            justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;
+        }
+        .btn-fechar-modal-info { 
+            background-color: #f5f5f5; border: 1px solid #ddd; color: #555; cursor: pointer;
+            padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold;
+        }
+
+        /* TOAST */
+        #toast-container { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); z-index: 6000; }
+        .toast-message { background-color: #333; color: white; padding: 15px 25px; border-radius: 8px; font-weight: 600; margin-top: 10px; white-space: normal; box-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center; max-width: 90%; font-size: 0.9rem; }
+
+        /* FOOTER */
+        .footer-map-container {
+            width: 100%; height: 250px; border-radius: 12px; overflow: hidden; margin-top: 15px; border: 1px solid #eee;
+        }
+        .footer-links-seo { margin-top: 15px; font-size: 0.85rem; }
+        .footer-links-seo a { color: #666; text-decoration: none; margin: 0 5px; }
+
+        @media (min-width: 481px) {
+            .main-content-wrapper, header, .header-background-bar { max-width: 1100px; } 
+            .secao-conteudo { padding: 25px 40px; }
+            html { font-size: 16px; } 
+            
+            /* DESKTOP 3 COLUNAS PARA A GRADE DE PRODUTOS */
+            .produtos-grid {
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 20px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .main-content-wrapper, header, .header-background-bar, .header-top { max-width: 1200px; } 
+            body { padding-bottom: 20px; } 
+            .logo-pequ { display: none !important; }
+            .header-top { margin: 0 auto; justify-content: space-between; padding: 5px 20px; }
+            .desktop-only { display: flex !important; }
+            .desktop-logo-wrapper { position: relative; width: 60px; }
+            .big-logo-desktop { width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: 4px solid white; position: absolute; top: -25px; left: 0; z-index: 3000; }
+            .desktop-nav { display: flex; gap: 30px; align-items: center; height: 100%; margin-left: 120px; }
+            .desktop-nav a { text-decoration: none; color: var(--cor-primaria); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; padding: 5px 0; }
+            
+            .main-content-wrapper { 
+                display: grid; grid-template-columns: 270px 1fr; gap: 30px; 
+                padding: 30px 20px; background-color: transparent; box-shadow: none; align-items: start; 
+            }
+            .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: white; border-radius: 12px; padding: 30px; }
+            #pag-cestas { grid-column: 2; grid-row: 1; background: transparent; }
+            .secoes-extras-grid { 
+                grid-column: 1; grid-row: 1; display: flex !important; 
+                flex-direction: column; gap: 20px; padding: 0; width: 100%;
+            }
+            .barra-acoes {
+                position: static; /* No desktop não precisa fixar */
+                margin-top: 20px;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="toast-container"></div> 
+    <div class="header-background-bar"></div>
+
+    <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" width="100" height="100" id="logo-principal" onerror="this.src='https://placehold.co/120x120?text=DA'" alt="Logo Dona Antônia" class="logo-pequ">
+
+    <header>
+        <div class="header-top">
+            <div class="desktop-only desktop-logo-wrapper">
+                <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="big-logo-desktop" width="120" height="120" alt="Logo Dona Antônia" onerror="this.src='https://placehold.co/120x120?text=DA'">
+            </div>
+
+            <nav class="desktop-nav desktop-only">
+                <a href="#pag-cestas">Início</a>
+                <a href="#pag-pagamento">Pagamento</a>
+                <a href="#pag-entrega">Entrega</a>
+            </nav>
+
+            <button class="btn-contato-principal" onclick="abrirModalContatos()" aria-label="Abrir opções de contato">
+                <div class="linha-destaque-top">
+                    <i class="fab fa-whatsapp"></i> <span class="desktop-only" style="display: inline !important;">&nbsp;FALE CONOSCO</span><span style="display: inline;" class="mobile-text">SALVAR CONTATO</span>
+                </div>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content-wrapper">
+        <div id="pag-cestas">
+            <div class="seo-main-title">
+                <h1>Monte sua Cesta Personalizada</h1>
+                <p>Escolha os produtos e a quantidade que sua família precisa.</p>
+            </div>
+
+            <div class="secao-conteudo">
+                <div class="monte-sua-cesta-container">
+                    <div class="instrucoes-cesta">
+                        <strong><i class="fas fa-exclamation-circle"></i> Regras para Encomendar:</strong>
+                        <ul>
+                            <li>Mínimo de <strong>10 produtos diferentes</strong>.</li>
+                            <li>Mínimo de <strong>20 itens no total</strong> da cesta.</li>
+                            <li>Clique em <strong>CALCULAR</strong> para ver o valor.</li>
+                        </ul>
+                    </div>
+
+                    <!-- GRADE DE PRODUTOS INJETADA VIA JS -->
+                    <div id="gridProdutos" class="produtos-grid">
+                        <!-- Itens serão carregados aqui -->
+                    </div>
+                </div>
+
+                <!-- BARRA DE AÇÕES -->
+                <div class="barra-acoes">
+                    <div class="resumo-total">
+                        <span>Total Estimado:</span>
+                        <span id="totalValor" style="font-size: 0.9rem; color: #666;">Clique em Calcular</span>
+                    </div>
+                    <div class="grid-botoes-acao">
+                        <button class="btn-acao btn-salvar" onclick="salvarCesta()">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                        <button class="btn-acao btn-calc" onclick="calcularTotal()">
+                            <i class="fas fa-calculator"></i> Calcular
+                        </button>
+                        <!-- Botão Encomendar inicia "desativado" visualmente até calcular e validar -->
+                        <button id="btnEncomendar" class="btn-acao btn-destaque" onclick="encomendarCesta()">
+                            <i class="fab fa-whatsapp"></i> Encomendar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secoes-extras-grid">
+            <div id="pag-pagamento" class="secao-conteudo">
+                <div class="card">
+                    <div class="section-icon-header">
+                        <img src="img/pagamento.png" width="60" height="60" alt="Pagamento" onerror="this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
+                    </div>
+                    <h2 style="text-align: center;">Formas de Pagamento</h2>
+                    <ul class="lista-pagamento">
+                        <li><span class="emoji-icon">💵</span> Dinheiro</li>
+                        <li><span class="emoji-icon">✨</span> Pix</li>
+                        <li><span class="emoji-icon">💳</span> Cartão de Débito e Crédito</li>
+                        <li><span class="emoji-icon">🥗</span> Alimentação: Alelo, Sodexo, Pluxee</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="pag-entrega" class="secao-conteudo">
+                <div class="card">
+                    <div class="section-icon-header">
+                        <img src="img/entrega.png" width="60" height="60" alt="Entrega" onerror="this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
+                    </div>
+                    <h2 style="text-align: center; color: var(--cor-entrega);">Entrega Grátis</h2>
+                    <p style="text-align: center; color: #555;">Em toda Cuiabá e Várzea Grande.</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="seo-text-block" style="text-align: center; font-size: 0.85rem; color: #888; padding: 20px;">
+            <p><strong>Dona Antônia - Cestas Personalizadas</strong></p>
+            <p>Cuiabá - MT &bull; Várzea Grande - MT</p>
+            <div class="footer-map-container" style="margin-top: 20px;">
+                <iframe src="https://maps.google.com/maps?q=9W4X%2BGX%20Jardim%20Nossa%20Sra.%20Aparecida%2C%20Cuiabá%20-%20MT&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </footer>
+    </main>
+
+    <!-- MODAL CONTATOS -->
+    <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
+        <div class="modal-info-content" style="max-width: 340px;">
+            <div class="modal-info-header">
+                <h3>Fale Conosco</h3>
+                <button class="btn-fechar-modal-info" onclick="fecharModalContatos()">Fechar</button>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <a href="https://wa.me/5565996813588" class="btn-acao btn-destaque" target="_blank" style="margin-bottom: 15px; opacity: 1; pointer-events: auto;">
+                    <i class="fab fa-whatsapp"></i> Chamar no WhatsApp
+                </a>
+                <p>Ou ligue: (65) 99681-3588</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === LISTA DE PRODUTOS ===
+        // Categorizados conforme solicitado e com preços estimados (internos)
+        const produtos = [
+            // ALIMENTOS
+            { id: 1, categoria: "alimentos", nome: "Arroz 5kg", preco: 25.00, img: "img/arroz.png" },
+            { id: 2, categoria: "alimentos", nome: "Açúcar Cristal 2kg", preco: 9.50, img: "img/acucar.png" },
+            { id: 3, categoria: "alimentos", nome: "Óleo de Soja 900ml", preco: 6.00, img: "img/oleo.png" },
+            { id: 4, categoria: "alimentos", nome: "Feijão Da Casa 1kg", preco: 8.50, img: "img/feijao.png" },
+            { id: 5, categoria: "alimentos", nome: "Café Caboclo 500g", preco: 18.00, img: "img/cafe.png" },
+            { id: 6, categoria: "alimentos", nome: "Espaguete 500g", preco: 4.50, img: "img/macarrao.png" },
+            { id: 7, categoria: "alimentos", nome: "Ovos (Cartela 12)", preco: 12.00, img: "img/ovos.png" },
+            { id: 8, categoria: "alimentos", nome: "Mistura p/ Bolo 400g", preco: 5.00, img: "img/bolo.png" },
+            { id: 9, categoria: "alimentos", nome: "Trigo 1kg", preco: 5.50, img: "img/trigo.png" },
+            { id: 10, categoria: "alimentos", nome: "Sal 1kg", preco: 2.00, img: "img/sal.png" },
+            { id: 11, categoria: "alimentos", nome: "Molho Tomate FUGINI 340g", preco: 3.00, img: "img/molho.png" },
+            { id: 12, categoria: "alimentos", nome: "Milho Lata/Sachê 250g", preco: 3.50, img: "img/milho.png" },
+            { id: 13, categoria: "alimentos", nome: "Tempero Pronto 300g", preco: 4.00, img: "img/tempero.png" },
+            { id: 14, categoria: "alimentos", nome: "Bolacha Recheada My Bit", preco: 3.50, img: "img/bolacha.png" },
+            { id: 15, categoria: "alimentos", nome: "Miojo Apti", preco: 2.00, img: "img/miojo.png" },
+            { id: 16, categoria: "alimentos", nome: "Suco em Pó", preco: 1.50, img: "img/suco.png" },
+            
+            // LIMPEZA E HIGIENE
+            { id: 17, categoria: "limpeza", nome: "Sabão Barra YPE (5 un)", preco: 11.00, img: "img/sabao_barra.png" },
+            { id: 18, categoria: "limpeza", nome: "Creme Dental Sorriso 70g", preco: 4.50, img: "img/creme.png" },
+            { id: 19, categoria: "limpeza", nome: "Papel Higiênico (4un)", preco: 6.00, img: "img/papel.png" },
+            { id: 20, categoria: "limpeza", nome: "Amaciante Ype 2 Litros", preco: 15.00, img: "img/amaciante.png" },
+            { id: 21, categoria: "limpeza", nome: "Desinfetante Remmus 2L", preco: 8.00, img: "img/desinfetante.png" },
+            { id: 22, categoria: "limpeza", nome: "Sabão Pó OMO 800g", preco: 13.00, img: "img/sabao_po.png" },
+            { id: 23, categoria: "limpeza", nome: "Detergente Ype 500ml", preco: 2.50, img: "img/detergente.png" },
+            { id: 24, categoria: "limpeza", nome: "Qboa 1 Litro", preco: 5.00, img: "img/qboa.png" },
+            { id: 25, categoria: "limpeza", nome: "Sabonete Palmolive 90g", preco: 2.80, img: "img/sabonete.png" },
+            { id: 26, categoria: "limpeza", nome: "Esponja Aço Assolan", preco: 2.20, img: "img/aco.png" },
+            { id: 27, categoria: "limpeza", nome: "Esponja Lavar Louça", preco: 1.50, img: "img/bucha.png" }
+        ];
+
+        // Estado das quantidades
+        let cesta = {}; 
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarProdutos();
+            // Carregar cesta salva comentado para iniciar zerado conforme solicitado nesta etapa,
+            // ou podemos manter para conveniência. Vou manter, mas a lógica de iniciar zerada se refere
+            // aos valores padrão (0). Se o usuário salvou antes, ele recupera.
+            carregarCestaSalva();
+        });
+
+        function renderizarProdutos() {
+            const grid = document.getElementById('gridProdutos');
+            grid.innerHTML = '';
+
+            // Renderizar ALIMENTOS
+            adicionarCabecalho(grid, 'Alimentos');
+            produtos.filter(p => p.categoria === 'alimentos').forEach(prod => criarCard(prod, grid));
+
+            // Renderizar LIMPEZA
+            adicionarCabecalho(grid, 'Limpeza e Higiene');
+            produtos.filter(p => p.categoria === 'limpeza').forEach(prod => criarCard(prod, grid));
+        }
+
+        function adicionarCabecalho(container, texto) {
+            const div = document.createElement('div');
+            div.className = 'categoria-titulo';
+            div.innerText = texto;
+            container.appendChild(div);
+        }
+
+        function criarCard(prod, container) {
+            const qtd = cesta[prod.id] || 0;
+            const card = document.createElement('div');
+            card.className = 'produto-item';
+            // OBS: Removido mostrador de preço
+            card.innerHTML = `
+                <div class="prod-img-wrapper">
+                    <img src="${prod.img}" alt="${prod.nome}" onerror="this.src='https://placehold.co/150x150/eee/999?text=Item'">
+                </div>
+                <div class="prod-info">
+                    <div class="prod-nome">${prod.nome}</div>
+                    <div class="controle-qtd">
+                        <button class="btn-qtd" onclick="alterarQtd(${prod.id}, -1)">-</button>
+                        <span class="qtd-display" id="qtd-${prod.id}">${qtd}</span>
+                        <button class="btn-qtd" onclick="alterarQtd(${prod.id}, 1)">+</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function alterarQtd(id, delta) {
+            if (!cesta[id]) cesta[id] = 0;
+            cesta[id] += delta;
+            
+            if (cesta[id] < 0) cesta[id] = 0;
+            
+            // Atualiza visual apenas do número
+            document.getElementById(`qtd-${id}`).innerText = cesta[id];
+            
+            // RESETAR O CALCULO VISUAL PARA FORÇAR O USUÁRIO A CLICAR EM "CALCULAR" NOVAMENTE
+            // E desabilitar o botão encomendar
+            document.getElementById('totalValor').innerText = "Clique em Calcular";
+            document.getElementById('totalValor').style.color = "#666";
+            document.getElementById('totalValor').style.fontWeight = "normal";
+            
+            const btnEncomendar = document.getElementById('btnEncomendar');
+            btnEncomendar.classList.remove('ativo');
+        }
+
+        function calcularTotal() {
+            let total = 0;
+            let itensCount = 0;
+            let produtosDiferentesCount = 0;
+            
+            produtos.forEach(prod => {
+                const qtd = cesta[prod.id] || 0;
+                if (qtd > 0) {
+                    total += qtd * prod.preco;
+                    itensCount += qtd;
+                    produtosDiferentesCount++;
+                }
+            });
+
+            // VALIDAÇÃO DAS REGRAS
+            // Minimo 10 produtos diferentes E Minimo 20 itens no total
+            const minProdutosDif = 10;
+            const minItensTotal = 20;
+
+            if (produtosDiferentesCount < minProdutosDif || itensCount < minItensTotal) {
+                let msgErro = "Para calcular, sua cesta precisa ter:\n";
+                if (produtosDiferentesCount < minProdutosDif) msgErro += `🔴 ${minProdutosDif} produtos diferentes (Você tem ${produtosDiferentesCount})\n`;
+                else msgErro += `🟢 ${minProdutosDif} produtos diferentes (OK)\n`;
+                
+                if (itensCount < minItensTotal) msgErro += `🔴 ${minItensTotal} itens no total (Você tem ${itensCount})`;
+                else msgErro += `🟢 ${minItensTotal} itens no total (OK)`;
+
+                mostrarToast(msgErro);
+                
+                document.getElementById('totalValor').innerText = "Requisitos não atingidos";
+                document.getElementById('totalValor').style.color = "red";
+                
+                const btnEncomendar = document.getElementById('btnEncomendar');
+                btnEncomendar.classList.remove('ativo');
+                
+                return false; // Indica falha
+            }
+
+            // SE PASSAR NA VALIDAÇÃO
+            const valorFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            const labelTotal = document.getElementById('totalValor');
+            labelTotal.innerText = valorFormatado;
+            labelTotal.style.color = "var(--cor-destaque-vermelho)";
+            labelTotal.style.fontWeight = "800";
+            
+            // Ativa o botão encomendar
+            const btnEncomendar = document.getElementById('btnEncomendar');
+            btnEncomendar.classList.add('ativo');
+            
+            mostrarToast(`Cesta validada! Total: ${valorFormatado}. Pode encomendar.`);
+            return true; // Indica sucesso
+        }
+
+        function encomendarCesta() {
+            // Tenta calcular novamente para garantir que nada mudou
+            const valido = calcularTotal();
+            if (!valido) return;
+
+            // Recalcula para pegar valores
+            let total = 0;
+            let mensagem = "*Olá! Montei minha Cesta Personalizada no site:*\n\n";
+            
+            // Separar lista por categoria no whatsapp
+            let itensAlimentos = "";
+            let itensLimpeza = "";
+
+            produtos.forEach(prod => {
+                const qtd = cesta[prod.id] || 0;
+                if (qtd > 0) {
+                    total += qtd * prod.preco;
+                    if(prod.categoria === 'alimentos') {
+                        itensAlimentos += `▪ ${qtd}x ${prod.nome}\n`;
+                    } else {
+                        itensLimpeza += `▪ ${qtd}x ${prod.nome}\n`;
+                    }
+                }
+            });
+
+            if(itensAlimentos) {
+                mensagem += "*[ ALIMENTOS ]*\n" + itensAlimentos + "\n";
+            }
+            if(itensLimpeza) {
+                mensagem += "*[ LIMPEZA E HIGIENE ]*\n" + itensLimpeza;
+            }
+
+            mensagem += `\n*Total Estimado: R$ ${total.toFixed(2).replace('.', ',')}*`;
+            mensagem += `\n\n_Aguardo a confirmação do pedido e entrega._`;
+
+            const url = `https://wa.me/5565996813588?text=${encodeURIComponent(mensagem)}`;
+            window.open(url, '_blank');
+        }
+
+        function salvarCesta() {
+            localStorage.setItem('minhaCestaPersonalizada', JSON.stringify(cesta));
+            mostrarToast("Cesta salva neste celular!");
+        }
+
+        function carregarCestaSalva() {
+            const salva = localStorage.getItem('minhaCestaPersonalizada');
+            if (salva) {
+                cesta = JSON.parse(salva);
+                produtos.forEach(prod => {
+                    const el = document.getElementById(`qtd-${prod.id}`);
+                    if(el) el.innerText = cesta[prod.id] || 0;
+                });
+                // Não calculamos automaticamente para forçar o clique e a validação visual
+            }
+        }
+
+        function mostrarToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-message';
+            toast.innerText = msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 4000); // Um pouco mais de tempo para ler
+        }
+
+        function abrirModalContatos() { document.getElementById('modalContatos').style.display = 'flex'; }
+        function fecharModalContatos() { document.getElementById('modalContatos').style.display = 'none'; }
+    </script>
+</body>
+</html>
