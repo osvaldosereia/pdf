@@ -373,6 +373,47 @@
             flex-direction: column;
             gap: 8px;
         }
+        
+        /* ESTILOS DA GAMIFICAÇÃO (BARRAS DE PROGRESSO) */
+        .gamificacao-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 5px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #eee;
+        }
+        .meta-texto {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .progress-bg {
+            height: 6px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #FFC107; /* Amarelo (atenção) inicial */
+            width: 0%;
+            transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s;
+        }
+        .progress-fill.concluido {
+            background-color: #2E7D32; /* Verde (sucesso) */
+        }
+        .meta-check {
+            color: #ccc;
+        }
+        .meta-check.ativo {
+            color: #2E7D32;
+        }
 
         .resumo-linha-top {
             display: flex;
@@ -671,6 +712,29 @@
 
                 <!-- BARRA DE AÇÕES COMPACTA -->
                 <div class="barra-acoes">
+                    
+                    <!-- GAMIFICAÇÃO: PROGRESSO -->
+                    <div class="gamificacao-container">
+                        <div class="meta-item">
+                            <div class="meta-texto">
+                                <span class="meta-label">Prod. Diferentes <i id="icon-dif" class="fas fa-check-circle meta-check"></i></span>
+                                <span id="label-dif" class="meta-valor">0/10</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div id="bar-dif" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-texto">
+                                <span class="meta-label">Total Itens <i id="icon-total" class="fas fa-check-circle meta-check"></i></span>
+                                <span id="label-total" class="meta-valor">0/20</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div id="bar-total" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="resumo-linha-top">
                         <div style="display:flex; align-items: baseline;">
                             <span class="total-estimado-label">Total Estimado:</span>
@@ -877,8 +941,63 @@
             const btnEncomendar = document.getElementById('btnEncomendar');
             btnEncomendar.classList.remove('ativo');
             
+            // ATUALIZA GAMIFICAÇÃO EM TEMPO REAL
+            atualizarBarrasProgresso();
+
             // Salva estado atual (auto-save discreto)
             localStorage.setItem('minhaCestaPersonalizada', JSON.stringify(cesta));
+        }
+
+        function atualizarBarrasProgresso() {
+            let itensCount = 0;
+            let produtosDiferentesCount = 0;
+            
+            produtos.forEach(prod => {
+                const qtd = cesta[prod.id] || 0;
+                if (qtd > 0) {
+                    itensCount += qtd;
+                    produtosDiferentesCount++;
+                }
+            });
+
+            // Metas
+            const metaDif = 10;
+            const metaTotal = 20;
+
+            // Calcula porcentagens (max 100%)
+            const pctDif = Math.min((produtosDiferentesCount / metaDif) * 100, 100);
+            const pctTotal = Math.min((itensCount / metaTotal) * 100, 100);
+
+            // Atualiza Labels
+            document.getElementById('label-dif').innerText = `${produtosDiferentesCount}/${metaDif}`;
+            document.getElementById('label-total').innerText = `${itensCount}/${metaTotal}`;
+
+            // Atualiza Barras
+            const barDif = document.getElementById('bar-dif');
+            const barTotal = document.getElementById('bar-total');
+            const iconDif = document.getElementById('icon-dif');
+            const iconTotal = document.getElementById('icon-total');
+
+            barDif.style.width = `${pctDif}%`;
+            barTotal.style.width = `${pctTotal}%`;
+
+            // Verifica Conclusão (Diferentes)
+            if (produtosDiferentesCount >= metaDif) {
+                barDif.classList.add('concluido');
+                iconDif.classList.add('ativo');
+            } else {
+                barDif.classList.remove('concluido');
+                iconDif.classList.remove('ativo');
+            }
+
+            // Verifica Conclusão (Total)
+            if (itensCount >= metaTotal) {
+                barTotal.classList.add('concluido');
+                iconTotal.classList.add('ativo');
+            } else {
+                barTotal.classList.remove('concluido');
+                iconTotal.classList.remove('ativo');
+            }
         }
 
         function calcularTotal() {
@@ -1035,6 +1154,9 @@
                 }
             });
 
+            // Atualiza Barras
+            atualizarBarrasProgresso();
+
             // Tenta calcular e validar
             calcularTotal();
             
@@ -1064,6 +1186,8 @@
                         else card.classList.remove('selecionado');
                     }
                 });
+                // Chama para setar o estado inicial das barras
+                atualizarBarrasProgresso();
             }
         }
 
