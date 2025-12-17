@@ -416,9 +416,9 @@
         }
         
         .btn-ver-produtos {
-            background-color: #E3F2FD;
-            color: #1565C0 !important;
-            border: 1px solid #BBDEFB;
+            background-color: #1565C0; /* ALTERADO: Cor sólida (Azul Royal) para maior visibilidade */
+            color: white !important; /* ALTERADO: Texto branco */
+            border: none; /* ALTERADO: Sem borda */
             border-radius: 8px;
             padding: 10px 12px;
             font-size: 0.85rem;
@@ -1136,7 +1136,8 @@
 
             <button class="btn-contato-principal" onclick="abrirModalContatos()" aria-label="Abrir opções de contato">
                 <div class="linha-destaque-top">
-                    <i class="fab fa-whatsapp"></i> <span class="desktop-only" style="display: inline !important;">&nbsp;FALE CONOSCO</span><span style="display: inline;" class="mobile-text">SALVAR CONTATO</span>
+                    <!-- ALTERADO: TEXTO UNIFICADO -->
+                    <i class="fab fa-whatsapp"></i> &nbsp;Falar com a Dona Antônia
                 </div>
             </button>
         </div>
@@ -1184,10 +1185,12 @@
                             </div>
                             <div class="cesta-actions-row">
                                 <button class="btn-cta-small" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
-                                    <i class="fab fa-whatsapp"></i> Encomendar
+                                    <!-- ALTERADO -->
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('economica')">
-                                    <i class="fas fa-list"></i> Ver Itens
+                                    <!-- ALTERADO -->
+                                    <i class="fas fa-list"></i> VER PRODUTOS
                                 </button>
                                 <button class="btn-share-small" onclick="compartilharCesta('Cesta Econômica', '85,00')">
                                     <i class="fas fa-share-alt"></i>
@@ -1209,10 +1212,12 @@
                             </div>
                             <div class="cesta-actions-row">
                                 <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
-                                    <i class="fab fa-whatsapp"></i> Encomendar
+                                    <!-- ALTERADO -->
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('mini')">
-                                    <i class="fas fa-list"></i> Ver Itens
+                                    <!-- ALTERADO -->
+                                    <i class="fas fa-list"></i> VER PRODUTOS
                                 </button>
                                 <button class="btn-share-small" onclick="compartilharCesta('Cesta Mini', '165,00')">
                                     <i class="fas fa-share-alt"></i>
@@ -1233,10 +1238,12 @@
                             </div>
                             <div class="cesta-actions-row">
                                 <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
-                                    <i class="fab fa-whatsapp"></i> Encomendar
+                                    <!-- ALTERADO -->
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('pequena')">
-                                    <i class="fas fa-list"></i> Ver Itens
+                                    <!-- ALTERADO -->
+                                    <i class="fas fa-list"></i> VER PRODUTOS
                                 </button>
                                 <button class="btn-share-small" onclick="compartilharCesta('Cesta Pequena', '215,00')">
                                     <i class="fas fa-share-alt"></i>
@@ -1257,10 +1264,12 @@
                             </div>
                             <div class="cesta-actions-row">
                                 <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
-                                    <i class="fab fa-whatsapp"></i> Encomendar
+                                    <!-- ALTERADO -->
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('media')">
-                                    <i class="fas fa-list"></i> Ver Itens
+                                    <!-- ALTERADO -->
+                                    <i class="fas fa-list"></i> VER PRODUTOS
                                 </button>
                                 <button class="btn-share-small" onclick="compartilharCesta('Cesta Média', '320,00')">
                                     <i class="fas fa-share-alt"></i>
@@ -1281,10 +1290,12 @@
                             </div>
                             <div class="cesta-actions-row">
                                 <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
-                                    <i class="fab fa-whatsapp"></i> Encomendar
+                                    <!-- ALTERADO -->
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('grande')">
-                                    <i class="fas fa-list"></i> Ver Itens
+                                    <!-- ALTERADO -->
+                                    <i class="fas fa-list"></i> VER PRODUTOS
                                 </button>
                                 <button class="btn-share-small" onclick="compartilharCesta('Cesta Grande', '380,00')">
                                     <i class="fas fa-share-alt"></i>
@@ -1800,10 +1811,11 @@
                 el.style.backgroundColor = 'transparent';
                 el.style.borderColor = '#ccc';
             });
-            const selectedRadio = document.querySelector(`#opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'} .radio-custom`);
-            if(selectedRadio) {
-                selectedRadio.style.backgroundColor = 'var(--cor-primaria)';
-                selectedRadio.style.borderColor = 'var(--cor-primaria)';
+            const selectedRadio = document.querySelector(`#opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'}`).classList.add('radio-custom');
+            const radio = document.querySelector(`#opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'} .radio-custom`);
+            if(radio) {
+                radio.style.backgroundColor = 'var(--cor-primaria)';
+                radio.style.borderColor = 'var(--cor-primaria)';
             }
 
             document.getElementById('btnConfirmarPedido').disabled = false;
