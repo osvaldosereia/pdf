@@ -567,6 +567,22 @@
             animation: pulse-green 2s infinite;
         }
 
+        /* Estilo Instagram */
+        .btn-float-instagram {
+            background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+            box-shadow: 0 4px 15px rgba(253, 29, 29, 0.4);
+            min-width: auto; /* Mais compacto */
+            padding: 12px 16px;
+        }
+
+        /* Estilo Google */
+        .btn-float-google {
+            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+            min-width: auto; /* Mais compacto */
+            padding: 12px 16px;
+        }
+
         @keyframes pulse-green {
             0% { box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(46, 125, 50, 0); }
@@ -1390,13 +1406,25 @@
 
     <!-- BOTÕES FLUTUANTES INFERIORES -->
     <div class="floating-buttons-container">
+        <!-- BOTÃO SORTEIO (SEMPRE VISÍVEL) -->
         <button onclick="abrirModalSorteio()" class="btn-float-action btn-float-sorteio">
             <i class="fas fa-ticket-alt"></i> SORTEIO
         </button>
-        <!-- BOTÃO ALTERADO -->
-        <button onclick="abrirModalBrinde()" class="btn-float-action btn-float-whatsapp">
+        
+        <!-- BOTÃO BRINDE (SOME APÓS INSTALAÇÃO) -->
+        <button id="btn-brinde-float" onclick="abrirModalBrinde()" class="btn-float-action btn-float-whatsapp">
             <i class="fas fa-gift"></i> COMPRAR COM BRINDE
         </button>
+
+        <!-- NOVOS BOTÕES PÓS-INSTALAÇÃO (APARECEM APÓS INSTALAÇÃO) -->
+        <div id="botoes-pos-install" style="display: none; gap: 10px;">
+            <a href="https://instagram.com/donaantoniacestas" target="_blank" class="btn-float-action btn-float-instagram">
+                <i class="fab fa-instagram"></i> INSTAGRAM
+            </a>
+            <a href="https://www.google.com/search?q=Super+Cestas+Básicas+Dona+Antônia+avaliações" target="_blank" class="btn-float-action btn-float-google">
+                <i class="fab fa-google"></i> AVALIE
+            </a>
+        </div>
     </div>
 
     <!-- MODAL VARIACAO -->
@@ -1470,7 +1498,7 @@
                 </div>
 
                 <p id="legenda-install" style="font-size: 0.8rem; color: #888; margin-top: 10px;">
-                    (Ative o Modo Brinde antes de encomendar.)
+                    (Clique para simular a instalação e desbloquear os brindes)
                 </p>
             </div>
         </div>
@@ -1644,8 +1672,12 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./service-worker.js')
-                    .then((reg) => console.log('Service Worker registrado!', reg))
-                    .catch((err) => console.log('Erro ao registrar Service Worker:', err));
+                    .then((reg) => {
+                        console.log('Service Worker registrado com sucesso:', reg);
+                    })
+                    .catch((err) => {
+                        console.log('Falha ao registrar o Service Worker:', err);
+                    });
             });
         }
 
@@ -1656,6 +1688,9 @@
             // Guarda o evento para ser disparado depois
             deferredPrompt = e;
             console.log("PWA: Evento de instalação capturado e salvo.");
+            
+            // Opcional: Mostrar botão de instalação se estivesse oculto
+            // document.getElementById('btn-install-android').style.display = 'block';
         });
 
         // === DADOS DAS CESTAS ===
@@ -1829,6 +1864,20 @@
             const isSimulated = localStorage.getItem('donaAntoniaAppInstalado') === 'true';
             
             return isStandalone || isSimulated;
+        }
+
+        // Função para atualizar a visibilidade dos botões flutuantes
+        function atualizarBotoesFlutuantes() {
+            const btnBrinde = document.getElementById('btn-brinde-float');
+            const btnsPosInstall = document.getElementById('botoes-pos-install');
+
+            if (isAppInstalled()) {
+                if(btnBrinde) btnBrinde.style.display = 'none';
+                if(btnsPosInstall) btnsPosInstall.style.display = 'flex';
+            } else {
+                if(btnBrinde) btnBrinde.style.display = 'flex';
+                if(btnsPosInstall) btnsPosInstall.style.display = 'none';
+            }
         }
 
         // === FUNÇÕES DOS MODAIS ===
@@ -2009,10 +2058,12 @@
             const marcaNome = cestaAtual.selecao === 'alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
             const precoFinal = cestaAtual.selecao === 'alvino' ? cestaAtual.precoAlvino : cestaAtual.precoKoblenz;
             
-            // Adicionar aviso de brinde no pedido se app instalado
+            // Lógica de Mensagem Específica de Brinde
             let textoBrinde = "";
-            if (isAppInstalled()) {
-                textoBrinde = " (COM BRINDE APP ATIVADO)";
+            
+            // Se o app estiver instalado E NÃO for a Cesta Econômica
+            if (isAppInstalled() && cestaAtual.nome !== 'Cesta Econômica') {
+                textoBrinde = " + 🎁 Brinde: Amaciante Ypê 2L";
             }
             
             const texto = `Olá! Gostaria de encomendar a *${cestaAtual.nome}* com *${marcaNome}* no valor de *R$ ${precoFinal}*${textoBrinde}.`;
@@ -2023,10 +2074,12 @@
         }
 
         function encomendarDireto(nome, preco) {
-            // Adicionar aviso de brinde no pedido se app instalado
+            // Lógica de Mensagem Específica de Brinde
             let textoBrinde = "";
-            if (isAppInstalled()) {
-                textoBrinde = " (COM BRINDE APP ATIVADO)";
+            
+            // Se o app estiver instalado E NÃO for a Cesta Econômica
+            if (isAppInstalled() && nome !== 'Cesta Econômica') {
+                textoBrinde = " + 🎁 Brinde: Amaciante Ypê 2L";
             }
             
             const texto = `Olá! Gostaria de encomendar a *${nome}* no valor de *R$ ${preco}*${textoBrinde}.`;
@@ -2189,7 +2242,10 @@
         }
 
         // Iniciar verificação ao carregar
-        window.addEventListener('load', verificarApresentacao);
+        window.addEventListener('load', () => {
+            verificarApresentacao();
+            atualizarBotoesFlutuantes(); // Verifica o estado dos botões ao carregar
+        });
 
     </script>
 </body>
