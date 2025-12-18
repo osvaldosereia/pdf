@@ -1438,19 +1438,20 @@
                     Ao instalar nosso aplicativo oficial, você ativa automaticamente o <strong>MODO BRINDE</strong>.
                 </p>
 
+                <!-- LISTA DE BRINDES ATUALIZADA: APENAS O DO MÊS -->
                 <div style="background-color: #E3F2FD; border-radius: 12px; padding: 15px; margin-bottom: 20px; text-align: left;">
-                    <p style="font-weight: 700; color: #1565C0; margin: 0 0 10px 0; font-size: 0.9rem;">🎁 Brindes disponíveis nas cestas:</p>
-                    <ul style="margin: 0; padding-left: 20px; color: #333; font-size: 0.9rem;">
-                        <li>Amaciante Ypê 2L</li>
-                        <li>Sabão em Pó OMO</li>
-                        <li>Café Premiado 250g</li>
-                        <li>Desinfetante Remmus</li>
-                    </ul>
+                    <p style="font-weight: 700; color: #1565C0; margin: 0 0 10px 0; font-size: 0.9rem;">🎁 Brinde do Mês:</p>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <i class="fas fa-pump-soap" style="font-size: 20px; color: #1565C0;"></i>
+                        <span style="font-weight: 700; color: #333; font-size: 1rem;">Amaciante Ypê 2L</span>
+                    </div>
+
                     <p style="font-size: 0.75rem; color: #666; margin-top: 10px;">*Válido para cestas Mini, Pequena, Média e Grande.</p>
                 </div>
 
                 <!-- Botão de Instalação (Simulado) - PADRÃO (Android/Desktop) -->
-                <button id="btn-install-android" onclick="simularInstalacaoApp()" style="background-color: #2E7D32; color: white; width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <button id="btn-install-android" onclick="tentarInstalarApp()" style="background-color: #2E7D32; color: white; width: 100%; padding: 14px; border: none; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3); display: flex; align-items: center; justify-content: center; gap: 10px;">
                     <i class="fas fa-download"></i> INSTALAR APP AGORA
                 </button>
                 
@@ -1638,6 +1639,15 @@
     <script>
         // === VARIÁVEL PARA INSTALAÇÃO PWA ===
         let deferredPrompt = null;
+
+        // REGISTRAR O SERVICE WORKER (OBRIGATÓRIO PARA INSTALAÇÃO)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((reg) => console.log('Service Worker registrado!', reg))
+                    .catch((err) => console.log('Erro ao registrar Service Worker:', err));
+            });
+        }
 
         // Escutar evento de instalação (antes de aparecer o prompt nativo)
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -1938,7 +1948,13 @@
             } else {
                 // Se não suporta instalação nativa (ou já instalou/não capturou evento), usa o fallback
                 console.log("Instalação nativa não disponível. Usando fallback.");
-                simularInstalacaoApp();
+                
+                // VERIFICAÇÃO EXTRA: Se já estiver em modo standalone, apenas avisa
+                if (window.matchMedia('(display-mode: standalone)').matches) {
+                     alert("O App já está instalado! O Modo Brinde já deve estar ativo.");
+                } else {
+                     simularInstalacaoApp();
+                }
             }
         }
 
