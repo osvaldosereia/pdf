@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dona Antônia | Super Cestas Básicas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones FontAwesome (Mesmo padrão do seu site) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fontes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CORES DA SUA MARCA (Extraídas do seu HTML) */
+        :root {
+            --cor-primaria: #0F2546; /* Azul Escuro */
+            --cor-destaque-vermelho: #D32F2F; 
+            --cor-destaque-dourado: #FFC107; 
+            --cor-whatsapp: #25D366; 
+            --cor-fundo: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            background-image: radial-gradient(#ccc 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .bg-azul-marca { background-color: var(--cor-primaria); }
+        .text-azul-marca { color: var(--cor-primaria); }
+        .bg-dourado-marca { background-color: var(--cor-destaque-dourado); }
+        .text-dourado-marca { color: var(--cor-destaque-dourado); }
+        
+        /* Animação de entrada */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Efeitos nos Botões */
+        .btn-link {
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
+        }
+        .btn-link:active { transform: scale(0.96); }
+        .btn-link:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+
+        /* Pulse do Zap */
+        .pulse-green {
+            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        /* Aviso de Navegador */
+        #browser-warning { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-6 px-4">
+
+    <!-- AVISO ANTI-INSTAGRAM BROWSER -->
+    <div id="browser-warning" class="fixed top-0 left-0 w-full bg-red-600 text-white text-sm font-bold p-3 text-center z-50 shadow-xl animate-pulse">
+        <div class="flex items-center justify-center gap-2 max-w-md mx-auto">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Toque nos 3 pontinhos (⋮) e escolha <strong>"Abrir no Navegador"</strong> para carregar o site!</span>
+        </div>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden fade-in-up border-t-8 border-[#FFC107]">
+        
+        <!-- HEADER (Identidade Visual Forte) -->
+        <header class="bg-[#0F2546] p-8 text-center relative overflow-hidden">
+            <!-- Efeito de fundo sutil -->
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/food.png')]"></div>
+            
+            <div class="relative z-10">
+                <div class="w-28 h-28 mx-auto bg-white rounded-full p-1 shadow-lg mb-4 flex items-center justify-center border-4 border-[#FFC107]">
+                    <!-- Placeholder do Logo (Substitua pela URL real se tiver online, ou use esse ícone) -->
+                    <i class="fas fa-shopping-basket text-5xl text-[#0F2546]"></i>
+                </div>
+                <h1 class="text-2xl font-black text-white uppercase tracking-wide leading-tight">
+                    Dona Antônia
+                </h1>
+                <p class="text-[#FFC107] font-bold text-sm mt-1 uppercase tracking-wider">
+                    Super Cestas Básicas
+                </p>
+                <div class="mt-3 inline-block bg-blue-900/50 rounded-full px-3 py-1 text-xs text-blue-100 border border-blue-700">
+                    <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> Cuiabá e Várzea Grande
+                </div>
+            </div>
+        </header>
+
+        <!-- SEÇÃO DE LINKS (Foco em Conversão) -->
+        <div class="p-6 space-y-4 bg-gray-50">
+            
+            <!-- BOTÃO 1: WHATSAPP (Ação Principal) -->
+            <a href="https://wa.me/5565998150975?text=Ol%C3%A1!%20Vim%20pelo%20Instagram%20e%20quero%20ver%20as%20Cestas%20B%C3%A1sicas." 
+               class="btn-link pulse-green flex items-center p-4 bg-[#25D366] text-white rounded-xl shadow-lg relative overflow-hidden group">
+                <div class="bg-white/20 p-2 rounded-full mr-4 group-hover:rotate-12 transition-transform">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                </div>
+                <div class="flex-1 text-left">
+                    <span class="block text-xs font-bold text-green-100 uppercase mb-0.5">Atendimento Rápido</span>
+                    <span class="block text-lg font-black leading-none">PEDIR NO WHATSAPP</span>
+                </div>
+                <i class="fas fa-chevron-right text-white/50"></i>
+            </a>
+
+            <!-- BOTÃO 2: SITE OFICIAL (Catálogo) -->
+            <a href="https://donaantonia.com.br/" 
+               class="btn-link flex items-center p-4 bg-white border-2 border-[#0F2546] text-[#0F2546] rounded-xl hover:bg-blue-50 group">
+                <div class="bg-blue-100 p-2 rounded-full mr-4 text-[#0F2546]">
+                    <i class="fas fa-globe text-xl"></i>
+                </div>
+                <div class="flex-1 text-left">
+                    <span class="block text-lg font-bold">Acessar Site Oficial</span>
+                    <span class="block text-xs text-gray-500 font-medium">Ver preços e fotos das cestas</span>
+                </div>
+                <i class="fas fa-external-link-alt text-gray-400"></i>
+            </a>
+
+            <!-- BOTÃO 3: SORTEIO (Isca de Lead) -->
+            <a href="#" onclick="alert('Dica: Abra o site oficial para se cadastrar no sorteio!')" 
+               class="btn-link flex items-center justify-center p-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl shadow-md font-bold text-sm uppercase tracking-wide gap-2">
+                <i class="fas fa-ticket-alt"></i>
+                Participar do Sorteio
+            </a>
+
+             <!-- BOTÃO 4: PWA/APP (Isca de Brinde) -->
+             <div class="bg-[#E3F2FD] border border-blue-200 rounded-xl p-3 flex items-center gap-3">
+                <div class="bg-blue-600 text-white w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-lg">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-blue-900 leading-tight">Ganhe Brindes!</p>
+                    <p class="text-xs text-blue-700">Baixe nosso App e ganhe 1 Amaciante na compra.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER INFORMATIVO -->
+        <footer class="bg-gray-100 p-5 text-center border-t border-gray-200 text-gray-500 text-sm">
+            <div class="flex justify-center gap-4 mb-4">
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-truck text-[#0F2546] text-xl mb-1"></i>
+                    <span class="text-xs font-bold">Entrega<br>Grátis</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-credit-card text-[#0F2546] text-xl mb-1"></i>
+                    <span class="text-xs font-bold">Aceitamos<br>Card</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fas fa-utensils text-[#0F2546] text-xl mb-1"></i>
+                    <span class="text-xs font-bold">Alimentação<br>(Alelo/Sodexo)</span>
+                </div>
+            </div>
+            <p class="text-xs opacity-70">© 2025 Dona Antônia Alimentos.<br>R. Trinta, 105 - Jardim N. Sra. Aparecida</p>
+        </footer>
+    </main>
+
+    <script>
+        // LÓGICA DE DETECÇÃO DO INSTAGRAM (ESSENCIAL PARA SUA ESTRATÉGIA)
+        document.addEventListener("DOMContentLoaded", function() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            // Detecta Instagram (IG), Facebook (FB) e TikTok
+            var isInApp = (ua.indexOf('Instagram') > -1) || (ua.indexOf('FBAN') > -1) || (ua.indexOf('FBAV') > -1) || (ua.indexOf('TikTok') > -1);
+            
+            if (isInApp) {
+                var warning = document.getElementById('browser-warning');
+                warning.style.display = 'block';
+                
+                // Animação extra para chamar atenção
+                setInterval(function() {
+                    warning.classList.toggle('bg-red-700');
+                    warning.classList.toggle('bg-red-600');
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
