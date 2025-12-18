@@ -14,9 +14,9 @@
       "purpose": "any maskable"
     },
     {
-      "src": "img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif",
+      "src": "img/icon-512-1.png",
       "sizes": "512x512",
-      "type": "image/avif",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
