@@ -3,321 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dona Antônia | Super Cestas Básicas</title>
-    <!-- Tailwind CSS -->
+    <title>Organizador de Clientes</title>
+    <!-- Usando Tailwind CSS para um design bonito e rápido -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Ícones FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Fontes Google -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --cor-primaria: #0F2546; 
-            --cor-destaque-vermelho: #D32F2F; 
-            --cor-destaque-dourado: #FFC107; 
-            --cor-whatsapp: #25D366; 
-            --cor-fundo: #e0e0e0;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--cor-fundo);
-            background-image: radial-gradient(#ccc 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-        
-        /* Animação de entrada */
-        .fade-in-up {
-            animation: fadeInUp 0.6s ease-out forwards;
-            opacity: 0;
-            transform: translateY(15px);
-        }
-        
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Efeitos nos Botões */
-        .btn-link {
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s;
-        }
-        .btn-link:active { transform: scale(0.96); }
-        .btn-link:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-
-        /* Pulse do Zap */
-        .pulse-green {
-            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-            animation: pulse-green 2s infinite;
-        }
-        @keyframes pulse-green {
-            0% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
-            100% { transform: scale(0.98); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-
-        /* Esconder barra de rolagem mas permitir scroll */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="min-h-screen flex flex-col items-center py-6 px-4">
+<body class="bg-slate-100 text-slate-800 font-sans">
 
-    <!-- CONTAINER PRINCIPAL -->
-    <main class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden fade-in-up border-t-8 border-[#FFC107]">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
         
-        <!-- HEADER -->
-        <header class="bg-[#0F2546] p-8 text-center relative overflow-hidden">
-            <!-- Efeito de fundo sutil -->
-            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/food.png')]"></div>
-            
-            <div class="relative z-10">
-                <div class="w-32 h-32 mx-auto bg-white rounded-full p-1 shadow-lg mb-4 flex items-center justify-center border-4 border-[#FFC107] overflow-hidden">
-                    <!-- LOGO ATUALIZADA -->
-                    <img src="img/logo2 (3).png" 
-                         alt="Dona Antônia Logo" 
-                         class="w-full h-full object-cover" 
-                         onerror="this.onerror=null; this.src='https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif'; this.parentElement.innerHTML='<img src=\'https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif\' class=\'w-full h-full object-cover\'>'">
-                </div>
-                <h1 class="text-2xl font-black text-white uppercase tracking-wide leading-tight">
-                    Dona Antônia
-                </h1>
-                <p class="text-[#FFC107] font-bold text-sm mt-1 uppercase tracking-wider">
-                    Super Cestas Básicas
-                </p>
-                <div class="mt-3 inline-block bg-blue-900/50 rounded-full px-3 py-1 text-xs text-blue-100 border border-blue-700">
-                    <i class="fas fa--marker-alt text-red-400 mr-1"></i> Cuiabá e Várzea Grande
-                </div>
-            </div>
+        <!-- Cabeçalho -->
+        <header class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-blue-700 mb-2">
+                <i class="fas fa-users-cog mr-2"></i>Organizador de Clientes
+            </h1>
+            <p class="text-gray-600">Selecione seus arquivos .js de clientes para visualizar e exportar a lista limpa.</p>
         </header>
 
-        <!-- SEÇÃO DE LINKS (Ações Rápidas) -->
-        <div class="p-6 space-y-4 bg-gray-50 pb-2">
-            
-            <!-- BOTÃO 1: WHATSAPP (Destaque Principal) -->
-            <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Vim%20pelo%20Instagram%20e%20quero%20ver%20as%20Cestas%20B%C3%A1sicas." 
-               class="btn-link pulse-green flex items-center p-4 bg-[#25D366] text-white rounded-xl shadow-lg relative overflow-hidden group">
-                <div class="bg-white/20 p-2 rounded-full mr-4 group-hover:rotate-12 transition-transform">
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                </div>
-                <div class="flex-1 text-left">
-                    <span class="block text-xs font-bold text-green-100 uppercase mb-0.5">Atendimento Rápido</span>
-                    <span class="block text-lg font-black leading-none">PEDIR NO WHATSAPP</span>
-                </div>
-                <i class="fas fa-chevron-right text-white/50"></i>
-            </a>
-
-            <!-- BOTÃO 2: LIGAR (Telefone) -->
-            <a href="tel:5565996813588" 
-               class="btn-link flex items-center p-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 group hover:border-gray-400">
-                <div class="bg-gray-100 p-2 rounded-full mr-4 text-gray-600">
-                    <i class="fas fa-phone-alt text-xl"></i>
-                </div>
-                <div class="flex-1 text-left">
-                    <span class="block text-lg font-bold">Ligar Agora</span>
-                    <span class="block text-xs text-gray-500 font-medium">(65) 99681-3588</span>
-                </div>
-                <i class="fas fa-phone text-gray-300"></i>
-            </a>
-
-            <!-- BOTÃO 3: LOCALIZAÇÃO (REMOVIDO DAQUI) -->
-
-        </div>
-
-        <!-- SLIDER / CARROSSEL DE CESTAS -->
-        <div class="relative w-full bg-gray-100 py-6 border-t border-gray-200">
-            
-            <!-- Setas de Navegação -->
-            <button onclick="scrollSlider(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-md text-[#0F2546] w-8 h-8 rounded-full flex items-center justify-center hover:bg-white">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button onclick="scrollSlider(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-white/90 shadow-md text-[#0F2546] w-8 h-8 rounded-full flex items-center justify-center hover:bg-white">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-
-            <!-- Container do Slider -->
-            <div id="slider-cestas" class="flex overflow-x-auto gap-4 px-6 snap-x snap-mandatory scrollbar-hide scroll-smooth">
-                
-                <!-- 1. CHAMADA INICIAL -->
-                <div class="min-w-[240px] snap-center bg-blue-900 rounded-xl shadow-lg p-6 flex flex-col items-center justify-center text-center text-white border-2 border-[#FFC107]">
-                    <div class="bg-[#FFC107] text-[#0F2546] w-14 h-14 rounded-full flex items-center justify-center mb-3 shadow-lg">
-                        <i class="fas fa-shopping-basket text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-black uppercase leading-tight mb-2">Conheça<br>nossas Cestas</h3>
-                    <p class="text-sm opacity-90">Deslize para ver os modelos e preços <i class="fas fa-arrow-right ml-1"></i></p>
-                </div>
-
-                <!-- 2. INFORMAÇÃO ENTREGA -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md p-5 flex flex-col items-center justify-center text-center border border-gray-200">
-                    <i class="fas fa-truck text-3xl text-blue-600 mb-3"></i>
-                    <h3 class="font-bold text-gray-800 uppercase mb-2">Entrega Grátis</h3>
-                    <p class="text-sm text-gray-600">Entregamos em toda área urbana de <strong>Cuiabá e Várzea Grande</strong>.</p>
-                </div>
-
-                <!-- 3. INFORMAÇÃO PAGAMENTO (ATUALIZADO) -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md p-5 flex flex-col items-center justify-center text-center border border-gray-200">
-                    <i class="fas fa-credit-card text-3xl text-green-600 mb-2"></i>
-                    <h3 class="font-bold text-gray-800 uppercase mb-1">Pagamento</h3>
-                    <p class="text-xs text-gray-700 font-bold mb-1">
-                        Cartão de Crédito em 3x sem juros
-                    </p>
-                    <p class="text-[11px] text-gray-500 mb-3 leading-tight px-1">
-                        Aceitamos: Alelo, Sodexo, Pluxee, Flash, iFood, Caju.
-                    </p>
-                    <div class="bg-red-100 text-red-700 text-xs font-black px-3 py-1 rounded uppercase">
-                        ⚠️ Não vendemos a prazo
-                    </div>
-                </div>
-
-                <!-- 4. CESTA ECONÔMICA -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-200">
-                    <!-- AUMENTO DE ALTURA (h-48) -->
-                    <div class="h-48 bg-gray-200 relative">
-                        <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif" alt="Cesta Econômica" class="w-full h-full object-cover">
-                        <div class="absolute top-0 right-0 bg-[#FFC107] text-[#0F2546] text-xs font-bold px-2 py-1">Mais Vendida</div>
-                    </div>
-                    <div class="p-4 flex flex-col flex-1 text-center">
-                        <h3 class="font-bold text-[#0F2546] text-lg">Cesta Econômica</h3>
-                        <div class="text-[#D32F2F] font-black text-xl my-2">R$ 85,00</div>
-                        <a href="https://wa.me/556599681-588?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20a%20Cesta%20Econ%C3%B4mica." class="mt-auto bg-[#25D366] text-white py-2 px-4 rounded-lg font-bold text-sm uppercase shadow hover:bg-green-600 transition">
-                            <i class="fab fa-whatsapp mr-1"></i> Conhecer
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 5. CESTA MINI -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-200">
-                    <!-- AUMENTO DE ALTURA (h-48) -->
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" alt="Cesta Mini" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4 flex flex-col flex-1 text-center">
-                        <h3 class="font-bold text-[#0F2546] text-lg">Cesta Mini</h3>
-                        <div class="text-[#D32F2F] font-black text-xl my-2">R$ 165,00</div>
-                        <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20a%20Cesta%20Mini." class="mt-auto bg-[#25D366] text-white py-2 px-4 rounded-lg font-bold text-sm uppercase shadow hover:bg-green-600 transition">
-                            <i class="fab fa-whatsapp mr-1"></i> Conhecer
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 6. CESTA PEQUENA -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-200">
-                    <!-- AUMENTO DE ALTURA (h-48) -->
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" alt="Cesta Pequena" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4 flex flex-col flex-1 text-center">
-                        <h3 class="font-bold text-[#0F2546] text-lg">Cesta Pequena</h3>
-                        <div class="text-[#D32F2F] font-black text-xl my-2">R$ 215,00</div>
-                        <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20a%20Cesta%20Pequena." class="mt-auto bg-[#25D366] text-white py-2 px-4 rounded-lg font-bold text-sm uppercase shadow hover:bg-green-600 transition">
-                            <i class="fab fa-whatsapp mr-1"></i> Conhecer
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 7. CESTA MÉDIA -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-200">
-                    <!-- AUMENTO DE ALTURA (h-48) -->
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" alt="Cesta Média" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4 flex flex-col flex-1 text-center">
-                        <h3 class="font-bold text-[#0F2546] text-lg">Cesta Média</h3>
-                        <div class="text-[#D32F2F] font-black text-xl my-2">R$ 320,00</div>
-                        <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20a%20Cesta%20M%C3%A9dia." class="mt-auto bg-[#25D366] text-white py-2 px-4 rounded-lg font-bold text-sm uppercase shadow hover:bg-green-600 transition">
-                            <i class="fab fa-whatsapp mr-1"></i> Conhecer
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 8. CESTA GRANDE -->
-                <div class="min-w-[240px] snap-center bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-gray-200">
-                    <!-- AUMENTO DE ALTURA (h-48) -->
-                    <div class="h-48 bg-gray-200">
-                        <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" alt="Cesta Grande" class="w-full h-full object-cover">
-                    </div>
-                    <div class="p-4 flex flex-col flex-1 text-center">
-                        <h3 class="font-bold text-[#0F2546] text-lg">Cesta Grande</h3>
-                        <div class="text-[#D32F2F] font-black text-xl my-2">R$ 380,00</div>
-                        <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Gostaria%20de%20conhecer%20a%20Cesta%20Grande." class="mt-auto bg-[#25D366] text-white py-2 px-4 rounded-lg font-bold text-sm uppercase shadow hover:bg-green-600 transition">
-                            <i class="fab fa-whatsapp mr-1"></i> Conhecer
-                        </a>
-                    </div>
-                </div>
-
-                 <!-- 9. CTA FINAL -->
-                 <div class="min-w-[240px] snap-center bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center justify-center text-center text-white">
-                    <h3 class="text-lg font-bold uppercase mb-2">Ainda com dúvida?</h3>
-                    <p class="text-sm opacity-80 mb-4">Fale com nossa equipe agora mesmo.</p>
-                    <a href="https://wa.me/5565996813588" class="bg-[#25D366] text-white py-3 px-6 rounded-full font-bold shadow-lg hover:bg-green-600 transition w-full">
-                        <i class="fab fa-whatsapp mr-2"></i> Chamar
-                    </a>
-                </div>
-
+        <!-- Área de Upload -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6 border border-gray-200">
+            <label class="block mb-2 text-sm font-medium text-gray-900">Carregar Arquivos (.js)</label>
+            <div class="flex gap-2">
+                <input type="file" id="fileInput" multiple accept=".js,.txt" 
+                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none p-2.5">
+                <button onclick="processarArquivos()" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center">
+                    <i class="fas fa-play mr-2"></i> Processar
+                </button>
             </div>
+            <p class="mt-2 text-xs text-gray-500">Suporta múltiplos arquivos simultaneamente (clientes.js, clientes2.js, etc).</p>
         </div>
 
-        <!-- SEÇÃO RETIRE E GANHE (DESTAQUE INTEGRADO) -->
-        <div class="px-4 pb-6 w-full mt-4">
-            <div class="bg-gradient-to-br from-red-600 to-orange-600 rounded-2xl p-6 text-center text-white shadow-xl relative overflow-hidden group border-2 border-white/20">
-                <!-- Efeito de brilho de fundo -->
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-yellow-400/20 rounded-full blur-3xl"></div>
-                
-                <div class="relative z-10">
-                    <div class="inline-block bg-white/20 p-4 rounded-full mb-4 backdrop-blur-sm shadow-inner">
-                        <i class="fas fa-store-alt text-4xl text-yellow-300"></i>
-                    </div>
-                    
-                    <h3 class="text-2xl font-black uppercase tracking-tight mb-1 text-white drop-shadow-md leading-none">
-                        Retire e Ganhe<br><span class="text-yellow-300 text-3xl">Desconto!</span>
-                    </h3>
-                    
-                    <div class="my-4 flex justify-center">
-                        <span class="bg-black/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide border border-white/10">
-                            <i class="far fa-clock mr-1 text-yellow-300"></i> Seg a Sáb: 08h às 12h
-                        </span>
-                    </div>
-
-                    <p class="text-sm mb-3 leading-relaxed opacity-95 font-medium bg-white/10 rounded-lg p-2 border border-white/5">
-                        R. Trinta, 105 - Jardim Nossa Sra. Aparecida, Cuiabá-MT
-                    </p>
-
-                    <!-- BOTÃO NOVO: VER NO MAPS (Integrado) -->
-                    <a href="https://maps.app.goo.gl/Vj1DisJ79GZzYysR6" target="_blank"
-                       class="inline-flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 text-white text-xs font-bold uppercase tracking-wide py-2 px-4 rounded-full mb-5 transition border border-white/30 w-full max-w-[200px]">
-                        <i class="fas fa--marked-alt text-yellow-300"></i> ABRIR NO GOOGLE MAPS
-                    </a>
-
-                    <!-- BOTÃO ZAP DESCONTO -->
-                    <a href="https://wa.me/5565996813588?text=Ol%C3%A1!%20Vi%20no%20link%20da%20bio%20que%20tem%20desconto%20para%20retirar%20a%20cesta.%20Qual%20o%20valor?" 
-                       class="block w-full bg-white text-red-600 font-black py-4 rounded-xl shadow-lg hover:bg-gray-50 transition transform hover:scale-[1.02] flex items-center justify-center gap-2 group-hover:shadow-2xl">
-                        <i class="fab fa-whatsapp text-2xl text-green-500"></i>
-                        QUAL MEU DESCONTO?
-                    </a>
-                </div>
-            </div>
+        <!-- Botões de Ação (Aparecem após processar) -->
+        <div id="actionArea" class="hidden flex justify-between items-center mb-4">
+            <span id="totalCounter" class="font-semibold text-gray-700 bg-gray-200 px-3 py-1 rounded-full text-sm">
+                0 Contatos encontrados
+            </span>
+            <button onclick="baixarListaTxt()" 
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-200 flex items-center">
+                <i class="fas fa-download mr-2"></i> Baixar Lista (.txt)
+            </button>
         </div>
 
-        <!-- FOOTER (Copyright) -->
-        <footer class="bg-gray-100 p-4 text-center border-t border-gray-200 text-gray-500 text-sm">
-            <p class="text-xs opacity-60">© 2025 Dona Antônia Alimentos.</p>
-        </footer>
-    </main>
+        <!-- Tabela de Resultados -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
+                        <th class="py-3 px-6 text-left">Nome</th>
+                        <th class="py-3 px-6 text-left">Cidade</th>
+                        <th class="py-3 px-6 text-left">Bairro / Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody id="listaClientes" class="text-gray-600 text-sm font-light">
+                    <!-- Linhas serão inseridas aqui via JavaScript -->
+                    <tr>
+                        <td colspan="3" class="py-8 text-center text-gray-400 italic">
+                            Nenhum arquivo processado ainda.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <script>
-        function scrollSlider(direction) {
-            const container = document.getElementById('slider-cestas');
-            const scrollAmount = 240; // Largura do card + gap aproximado
-            container.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
+        // Variável global para armazenar todos os clientes processados
+        let todosClientes = [];
+
+        async function processarArquivos() {
+            const input = document.getElementById('fileInput');
+            const tbody = document.getElementById('listaClientes');
+            const actionArea = document.getElementById('actionArea');
+            const totalCounter = document.getElementById('totalCounter');
+
+            if (input.files.length === 0) {
+                alert("Por favor, selecione pelo menos um arquivo.");
+                return;
+            }
+
+            // Limpa dados anteriores
+            todosClientes = [];
+            tbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center"><i class="fas fa-spinner fa-spin text-2xl text-blue-500"></i><br>Lendo arquivos...</td></tr>';
+
+            // Processa cada arquivo
+            for (let i = 0; i < input.files.length; i++) {
+                const arquivo = input.files[i];
+                try {
+                    const texto = await lerArquivo(arquivo);
+                    const clientesDoArquivo = extrairDadosDoTexto(texto);
+                    todosClientes = [...todosClientes, ...clientesDoArquivo];
+                } catch (erro) {
+                    console.error(`Erro ao ler arquivo ${arquivo.name}:`, erro);
+                }
+            }
+
+            // Ordenar alfabeticamente por Nome
+            todosClientes.sort((a, b) => {
+                const nomeA = (a.nome || "").toLowerCase();
+                const nomeB = (b.nome || "").toLowerCase();
+                if (nomeA < nomeB) return -1;
+                if (nomeA > nomeB) return 1;
+                return 0;
             });
+
+            // Atualizar UI
+            renderizarTabela();
+            actionArea.classList.remove('hidden');
+            totalCounter.textContent = `${todosClientes.length} Contatos encontrados`;
+        }
+
+        // Função auxiliar para ler arquivo como promessa
+        function lerArquivo(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsText(file);
+            });
+        }
+
+        // O Coração da Lógica: Extrai o array do arquivo JS
+        function extrairDadosDoTexto(conteudo) {
+            try {
+                // 1. Encontra onde começa o array '[' e onde termina ']'
+                const inicio = conteudo.indexOf('[');
+                const fim = conteudo.lastIndexOf(']');
+
+                if (inicio === -1 || fim === -1) return [];
+
+                // 2. Pega apenas o texto que representa o array
+                let jsonTexto = conteudo.substring(inicio, fim + 1);
+
+                // 3. Tenta converter para Objeto Javascript de forma segura
+                const pegarArray = new Function(`return ${jsonTexto};`);
+                return pegarArray();
+
+            } catch (e) {
+                console.error("Erro ao converter texto em dados:", e);
+                return [];
+            }
+        }
+
+        function renderizarTabela() {
+            const tbody = document.getElementById('listaClientes');
+            tbody.innerHTML = '';
+
+            if (todosClientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-red-500">Nenhum cliente válido encontrado nos arquivos.</td></tr>';
+                return;
+            }
+
+            todosClientes.forEach(cliente => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-200 hover:bg-gray-50";
+
+                // Tratamento de dados nulos e busca de campos alternativos (fallback)
+                const nome = cliente.nome || "Sem Nome";
+                const cidade = cliente.cidade || "-";
+                // Procura bairro, se não tiver, procura complemento (comum nos arquivos tipo 4 e 5)
+                let bairro = cliente.bairro || cliente.complemento || "-";
+                
+                // Limpa quebras de linha que possam vir no complemento
+                bairro = bairro.replace(/(\r\n|\n|\r)/gm, " ");
+
+                tr.innerHTML = `
+                    <td class="py-3 px-6 text-left whitespace-nowrap font-medium">${nome}</td>
+                    <td class="py-3 px-6 text-left">${cidade}</td>
+                    <td class="py-3 px-6 text-left text-xs">${bairro}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function baixarListaTxt() {
+            if (todosClientes.length === 0) {
+                alert("Não há dados para baixar.");
+                return;
+            }
+
+            // Cabeçalho do arquivo TXT
+            let conteudoTxt = "=== LISTA DE CLIENTES ===\n";
+            conteudoTxt += "NOME | CIDADE | BAIRRO / DETALHES\n";
+            conteudoTxt += "------------------------------------------------------------\n";
+
+            todosClientes.forEach(cliente => {
+                const nome = cliente.nome || "Sem Nome";
+                
+                // Normalização: Se não tem cidade, deixa vazio. Se não tem bairro, tenta pegar o complemento.
+                let cidade = cliente.cidade ? cliente.cidade : " - ";
+                let bairro = cliente.bairro || cliente.complemento || " - ";
+
+                // Remove quebras de linha para manter o arquivo txt organizado (uma linha por cliente)
+                bairro = bairro.replace(/(\r\n|\n|\r)/gm, " ");
+                
+                conteudoTxt += `${nome} | ${cidade} | ${bairro}\n`;
+            });
+
+            // Cria o blob e o link de download
+            const blob = new Blob([conteudoTxt], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'lista_clientes_organizada.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
         }
     </script>
 </body>
