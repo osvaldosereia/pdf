@@ -134,6 +134,35 @@
             font-weight: 400;
         }
 
+        /* === BANNER ALERTA PAGAMENTO (NOVO) === */
+        .banner-alerta-pagamento {
+            background-color: #FFF3CD; /* Amarelo alerta suave */
+            color: #856404; /* Texto escuro para contraste */
+            border: 1px solid #FFEEBA;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0; /* Removido margem para colar no topo */
+            border-radius: 0; /* Quadrado para parecer barra */
+        }
+        
+        .banner-alerta-pagamento i {
+            color: #F57F17; /* Ícone laranja destaque */
+            font-size: 1.1rem;
+        }
+
+        @media (min-width: 481px) {
+            .banner-alerta-pagamento {
+                border-radius: 8px; /* Arredondado no desktop/tablet */
+                margin-bottom: 20px;
+            }
+        }
+
         /* === AVALIAÇÕES GOOGLE === */
         .google-reviews-badge {
             display: inline-flex;
@@ -424,6 +453,7 @@
             align-items: center;
         }
 
+        /* Botão Encomendar (WhatsApp) - Agora secundário na ordem visual */
         .btn-cta-small {
             background-color: var(--cor-whatsapp);
             color: white !important;
@@ -444,35 +474,25 @@
             box-shadow: 0 3px 6px rgba(0,0,0,0.1);
         }
         
+        /* Botão Ver Produtos - Agora DESTAQUE PRINCIPAL */
         .btn-ver-produtos {
-            background-color: #1565C0; /* ALTERADO: Cor sólida (Azul Royal) para maior visibilidade */
-            color: white !important; /* ALTERADO: Texto branco */
-            border: none; /* ALTERADO: Sem borda */
+            background-color: #1565C0; /* Azul Royal */
+            color: white !important; 
+            border: none; 
             border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            flex-grow: 1; 
+            padding: 12px; /* Aumentado para destaque */
+            font-size: 0.95rem; /* Fonte maior */
+            font-weight: 700; /* Negrito */
+            width: 100%; /* Largura total */
+            flex-basis: 100%; 
             cursor: pointer;
             text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-share-small {
-            background-color: #E8F5E9;
-            color: #2E7D32 !important;
-            border: 1px solid #C8E6C9;
-            border-radius: 8px;
-            padding: 10px;
-            width: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0; 
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(21, 101, 192, 0.25); /* Sombra mais forte */
+            margin-bottom: 2px; /* Pequeno espaçamento extra */
         }
 
         /* Selo "Mais Vendida" */
@@ -1033,8 +1053,13 @@
                 align-items: start; 
             }
             
+            /* BANNER NO GRID */
+            .banner-alerta-pagamento {
+                grid-column: 1 / -1; /* Ocupa toda largura no grid */
+            }
+            
             .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: white; border-radius: 12px; padding: 30px; }
-            #pag-cestas { grid-column: 2; grid-row: 1; background: transparent; }
+            #pag-cestas { grid-column: 2; grid-row: 2; background: transparent; } /* Ajustado row para 2 por causa do banner */
             
             /* CARDS: 1 Coluna (Lista Vertical) */
             .cesta-cards-grid { 
@@ -1089,7 +1114,7 @@
             /* AJUSTE DA SIDEBAR PARA ALINHAMENTO PROFISSIONAL */
             .secoes-extras-grid { 
                 grid-column: 1; 
-                grid-row: 1; 
+                grid-row: 2; /* Ajustado row para 2 por causa do banner */
                 display: flex !important; 
                 flex-direction: column; 
                 gap: 20px; 
@@ -1309,6 +1334,13 @@
     </header>
 
     <main class="main-content-wrapper">
+        
+        <!-- BANNER DE ALERTA DE PAGAMENTO -->
+        <div class="banner-alerta-pagamento">
+            <i class="fas fa-shield-alt"></i>
+            <span>Pague somente na entrega da cesta básica na sua casa. <strong>Não vendemos online.</strong></span>
+        </div>
+
         <div id="pag-cestas">
             <div class="seo-main-title">
                 <h1>Super Cestas Básicas Dona Antônia</h1>
@@ -1356,16 +1388,11 @@
                                 </div>
                             </div>
                             <div class="cesta-actions-row">
-                                <button class="btn-cta-small" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
-                                    <!-- ALTERADO -->
-                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
-                                </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('economica')">
-                                    <!-- ALTERADO -->
-                                    <i class="fas fa-list"></i> VER PRODUTOS
+                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
                                 </button>
-                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Econômica', '85,00')">
-                                    <i class="fas fa-share-alt"></i>
+                                <button class="btn-cta-small" onclick="encomendarDireto('Cesta Econômica', '85,00', false)">
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                             </div>
                         </div>
@@ -1396,16 +1423,11 @@
 
                             </div>
                             <div class="cesta-actions-row">
-                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
-                                    <!-- ALTERADO -->
-                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
-                                </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('mini')">
-                                    <!-- ALTERADO -->
-                                    <i class="fas fa-list"></i> VER PRODUTOS
+                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
                                 </button>
-                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Mini', '165,00')">
-                                    <i class="fas fa-share-alt"></i>
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Mini', '165,00', '170,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                             </div>
                         </div>
@@ -1436,16 +1458,11 @@
 
                             </div>
                             <div class="cesta-actions-row">
-                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
-                                    <!-- ALTERADO -->
-                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
-                                </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('pequena')">
-                                    <!-- ALTERADO -->
-                                    <i class="fas fa-list"></i> VER PRODUTOS
+                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
                                 </button>
-                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Pequena', '215,00')">
-                                    <i class="fas fa-share-alt"></i>
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Pequena', '215,00', '220,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                             </div>
                         </div>
@@ -1476,16 +1493,11 @@
 
                             </div>
                             <div class="cesta-actions-row">
-                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
-                                    <!-- ALTERADO -->
-                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
-                                </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('media')">
-                                    <!-- ALTERADO -->
-                                    <i class="fas fa-list"></i> VER PRODUTOS
+                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
                                 </button>
-                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Média', '320,00')">
-                                    <i class="fas fa-share-alt"></i>
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Média', '320,00', '325,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                             </div>
                         </div>
@@ -1516,16 +1528,11 @@
 
                             </div>
                             <div class="cesta-actions-row">
-                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
-                                    <!-- ALTERADO -->
-                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
-                                </button>
                                 <button class="btn-ver-produtos" onclick="abrirModalInfo('grande')">
-                                    <!-- ALTERADO -->
-                                    <i class="fas fa-list"></i> VER PRODUTOS
+                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
                                 </button>
-                                <button class="btn-share-small" onclick="compartilharCesta('Cesta Grande', '380,00')">
-                                    <i class="fas fa-share-alt"></i>
+                                <button class="btn-cta-small" onclick="abrirModalVariacao('Cesta Grande', '380,00', '390,00')">
+                                    <i class="fab fa-whatsapp"></i> Encomendar por WhatsApp
                                 </button>
                             </div>
                         </div>
@@ -2231,6 +2238,95 @@
                 const texto = `Olha essa oferta: ${nome} por R$ ${preco}! Entrega Grátis em Cuiabá e VG. ${window.location.href}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
             }
+        }
+
+        // === FUNÇÕES DE SORTEIO (ATUALIZADO) ===
+        function abrirModalSorteio() {
+            document.getElementById('modalSorteio').style.display = 'flex';
+        }
+        function fecharModalSorteio() {
+            document.getElementById('modalSorteio').style.display = 'none';
+        }
+        
+        // VARIÁVEIS GLOBAIS PARA ARMAZENAR DADOS DO FORMULÁRIO DO SORTEIO
+        let clienteEncontradoAtual = null;
+        let novoTelDigitado = '';
+
+        // FUNÇÃO DE BUSCA E VERIFICAÇÃO NA BASE DE DADOS
+        function buscarCadastro(sufixo) {
+            const telInput = document.getElementById(`busca-telefone${sufixo}`).value;
+            // Sanitização simples: remove tudo que não for dígito
+            const telLimpo = telInput.replace(/\D/g, '');
+            novoTelDigitado = telInput; // Guarda o valor original para usar depois
+
+            if(telLimpo.length < 8) {
+                alert('Por favor, digite um número de telefone válido com DDD.');
+                return;
+            }
+            
+            // Verifica se a base de dados foi carregada
+            if (typeof window.listaClientes === 'undefined') {
+                console.error("Base de dados de clientes não carregada.");
+                alert("Erro ao conectar com a base de dados. Tente novamente.");
+                return;
+            }
+
+            // Busca na lista global (carregada de data/clientes.js)
+            const cliente = window.listaClientes.find(c => {
+                const cTel = c.telefone.replace(/\D/g, '');
+                
+                // AJUSTE SOLICITADO: Comparar apenas os últimos 7 dígitos
+                const cTelLast7 = cTel.slice(-7);
+                const inputTelLast7 = telLimpo.slice(-7);
+                
+                return cTelLast7 === inputTelLast7;
+            });
+
+            if(cliente) {
+                // CLIENTE ENCONTRADO
+                clienteEncontradoAtual = cliente;
+                document.getElementById(`area-busca-telefone${sufixo}`).style.display = 'none';
+                document.getElementById(`cadastro-encontrado${sufixo}`).style.display = 'block';
+                document.getElementById(`nome-cliente-encontrado${sufixo}`).innerText = cliente.nome;
+                document.getElementById(`cidade-cliente-encontrado${sufixo}`).innerText = cliente.cidade + (cliente.bairro ? ' - ' + cliente.bairro : '');
+            } else {
+                // CLIENTE NÃO ENCONTRADO -> NOVO CADASTRO
+                document.getElementById(`area-busca-telefone${sufixo}`).style.display = 'none';
+                document.getElementById(`cadastro-novo${sufixo}`).style.display = 'block';
+            }
+        }
+        
+        // ENVIO DE CONFIRMAÇÃO (CLIENTE JÁ EXISTENTE)
+        function confirmarJaCadastrado(sufixo) {
+            if (!clienteEncontradoAtual) return;
+
+            const nome = clienteEncontradoAtual.nome;
+            const tel = clienteEncontradoAtual.telefone;
+            
+            const texto = `Olá! Sou ${nome}, telefone ${tel}. Já tenho cadastro e quero confirmar minha participação no sorteio.`;
+            const url = `https://wa.me/5565998150975?text=${encodeURIComponent(texto)}`;
+            
+            window.open(url, '_blank');
+            fecharModalSorteio();
+        }
+        
+        // ENVIO DE NOVO CADASTRO
+        function enviarNovoCadastro(sufixo) {
+             const nome = document.getElementById(`novo-nome${sufixo}`).value;
+             const bairro = document.getElementById(`novo-bairro${sufixo}`).value;
+             const cidade = document.getElementById(`novo-cidade${sufixo}`).value;
+             const tel = novoTelDigitado; // Usa o telefone que foi digitado na busca
+
+             if(!nome || !bairro) {
+                 alert("Por favor, preencha todos os campos.");
+                 return;
+             }
+
+             const texto = `Olá! Quero participar do sorteio.\n*Novo Cadastro:*\nNome: ${nome}\nTel: ${tel}\nBairro: ${bairro}\nCidade: ${cidade}`;
+             const url = `https://wa.me/5565998150975?text=${encodeURIComponent(texto)}`;
+             
+             window.open(url, '_blank');
+             fecharModalSorteio();
         }
 
         // === FUNÇÕES DE CONTATO ===
