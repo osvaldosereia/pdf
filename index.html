@@ -28,7 +28,7 @@
     
     <!-- META DESCRIPTION COM PALAVRAS-CHAVE LOCAIS E GATILHOS MENTAIS -->
     <meta name="description" content="Procurando Cesta Básica em Cuiabá? A Dona Antônia tem o melhor preço no Atacado e Varejo. Entregamos no CPA, Coxipó, Centro e Várzea Grande. Peça pelo WhatsApp!">
-    <meta name="keywords" content="cesta básica cuiabá, sacolão cuiabá, cesta doação, jardim nossa senhora aparecida, compra de alimentos, entrega grátis mercado, cesta de natal cuiabá, atacado de alimentos, cesta basica várzea grande">
+    <meta name="keywords" content="cesta básica cuiabá, sacolão cuiabá, cesta doação, jardim nossa senhora aparecida, compra de alimentos, entrega grátis mercado, cesta de natal cuiabá, atacado de alimentos, cesta basica várzea grande, cristo rei, pedra 90, tijucal">
     
     <!-- OPEN GRAPH (Para ficar bonito no WhatsApp e Facebook) -->
     <meta property="og:locale" content="pt_BR" />
@@ -69,7 +69,6 @@
             --cor-texto: #333; 
             --cor-fundo: #fafafa;
             --cor-pagamento: #0277BD; 
-            --cor-sorteio: #2E7D32; 
             --cor-entrega: #EF6C00; 
             --cor-header-fundo: #f5f5f5;
             --altura-header: 80px; 
@@ -511,6 +510,33 @@
             gap: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
+        /* ESTILO NOVO: LISTA DE BAIRROS SEO */
+        .lista-bairros-seo {
+            font-size: 0.85rem;
+            color: #555;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+            border: 1px solid #eee;
+        }
+        .lista-bairros-seo h4 {
+            color: var(--cor-primaria);
+            margin: 15px 0 5px 0;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 3px;
+        }
+        .lista-bairros-seo h4:first-child { margin-top: 0; }
+        .lista-bairros-seo p {
+            margin: 0;
+            line-height: 1.5;
+            color: #666;
+        }
 
         /* === MOBILE: TODOS OS CARDS IGUAIS AO PRIMEIRO === */
         @media (max-width: 480px) {
@@ -614,11 +640,6 @@
 
         /* Cores Sólidas Profissionais (Flat Design) */
         
-        /* Sorteio: Laranja Vibrante Sólido */
-        .btn-float-sorteio { 
-            background-color: #FF6F00; 
-        } 
-        
         /* WhatsApp: Verde Oficial */
         .btn-float-whatsapp { 
             background-color: #25D366; 
@@ -646,7 +667,7 @@
         }
 
         /* === MODAIS === */
-        .modal-variacao, #modalContatos, #modalInformacoes, #modalSorteio, #modalZoomImagem, #modalApresentacao, #modalBrindeApp {
+        .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao, #modalBrindeApp {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.65); justify-content: center; align-items: center; backdrop-filter: blur(5px);
             padding: 20px;
@@ -1219,6 +1240,43 @@
       }
     }
     </script>
+    
+    <!-- NOVO: SCHEMA DE FAQ PAGE (PERGUNTAS FREQUENTES PARA RICH SNIPPETS) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Vocês fazem entrega de cesta básica em Cuiabá e Várzea Grande?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim! Realizamos entrega grátis de cestas básicas em toda a área urbana de Cuiabá e Várzea Grande, incluindo bairros como CPA, Coxipó, Centro, Cristo Rei, Tijucal e Pedra 90."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Aceitam cartão de alimentação e vale refeição?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Aceitamos os principais cartões de alimentação como Alelo, Sodexo, Pluxee (antigo Sodexo), Ticket, além de pagamentos digitais via Pix e cartões de crédito e débito."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Quanto tempo demora a entrega da cesta básica?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para pedidos realizados até as 10h da manhã, a entrega é feita no mesmo dia em Cuiabá e VG. Temos a logística de entrega rápida e eficiente."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Qual o preço da cesta básica mais barata em Cuiabá?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nossa Cesta Econômica custa a partir de R$ 85,00. É ideal para doações, empresas e consumo rápido, contendo todos os itens essenciais de qualidade."
+        }
+      }]
+    }
+    </script>
 </head>
 <body>
     
@@ -1237,7 +1295,6 @@
 
             <nav class="desktop-nav desktop-only">
                 <a href="#pag-cestas">Início</a>
-                <a href="#" onclick="event.preventDefault(); abrirModalSorteio();">Sorteio</a>
                 <a href="#pag-pagamento">Pagamento</a>
                 <a href="#pag-entrega">Entrega</a>
             </nav>
@@ -1275,12 +1332,19 @@
                     
                     <!-- 
                        ITEM EM DESTAQUE: CESTA ECONÔMICA 
-                       Nota: O estilo mobile (foto grande e layout vertical) agora é padrão para TODOS os cards.
+                       OTIMIZAÇÃO: fetchpriority="high" e ALT geolocalizado
                     -->
                     <div class="card-cesta-horizontal" id="cestaeconomica">
                         <div class="selo-destaque"><i class="fas fa-star"></i> Mais Vendida</div>
                         <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" alt="Cesta Básica Econômica" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
+                            <img 
+                                src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" 
+                                width="400" 
+                                height="400" 
+                                fetchpriority="high"
+                                alt="Cesta Básica Econômica para Doação em Cuiabá e Várzea Grande - Entrega Grátis" 
+                                onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'"
+                            >
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1497,11 +1561,22 @@
                     <h2 style="text-align: center; color: var(--cor-entrega);">Entrega Grátis</h2>
                     <div style="text-align: center;">
                         <p style="font-size: 0.95rem; color: #555;">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
-                        <!-- CONTEÚDO HYPER-LOCAL NOVO -->
-                        <div style="margin-top: 15px; font-size: 0.85rem; color: #666; background: #f9f9f9; padding: 10px; border-radius: 8px;">
-                            <strong>Principais Bairros Atendidos:</strong><br>
-                            CPA (1, 2, 3 e 4), Coxipó, Centro, Jardim Imperial, Tijucal, Pedra 90, Cristo Rei, Centro-Sul e muito mais.
+                        
+                        <!-- CONTEÚDO HYPER-LOCAL NOVO E EXPANDIDO (MASSIVE SEO) -->
+                        <div class="lista-bairros-seo">
+                            <h4>📍 Cuiabá - Região Norte (CPA):</h4>
+                            <p>CPA I, CPA II, CPA III e CPA IV, Morada da Serra, Três Barras, Jardim Ubirajara, Nova Conquista, 1º de Março, Jardim Vitória, Novo Paraíso.</p>
+
+                            <h4>📍 Cuiabá - Região Sul (Coxipó):</h4>
+                            <p>Grande Coxipó, Tijucal, Pedra 90, Osmar Cabral, São Gonçalo, Parque Cuiabá, Jardim Passaredo, Real Parque, Santa Terezinha, Itapajé.</p>
+                            
+                            <h4>📍 Cuiabá - Leste e Oeste:</h4>
+                            <p>Jardim Imperial, Recanto dos Pássaros, Belvedere, Jardim Itália, Boa Esperança, Santa Rosa, Goiabeiras, Verdão, Cidade Alta, Porto, Centro Norte e Sul.</p>
+
+                            <h4>📍 Várzea Grande (Todas as Regiões):</h4>
+                            <p>Grande Cristo Rei, Centro, Jardim Glória, Mapim, Manga, São Matheus, Ipase, Jardim dos Estados, Nova Várzea Grande, Parque do Lago, Marajoara.</p>
                         </div>
+
                         <hr style="border:0; border-top:1px dashed #eee; margin: 15px 0;">
                         <p style="background-color: #FFF3E0; color: #E65100; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;">
                             <i class="fas fa-clock"></i> Pedindo até as 10h, recebe hoje!
@@ -1534,10 +1609,7 @@
 
     <!-- BOTÕES FLUTUANTES INFERIORES -->
     <div class="floating-buttons-container">
-        <!-- BOTÃO SORTEIO (SEMPRE VISÍVEL) -->
-        <button onclick="abrirModalSorteio()" class="btn-float-action btn-float-sorteio">
-            <i class="fas fa-ticket-alt"></i> SORTEIO
-        </button>
+        <!-- BOTÃO SORTEIO REMOVIDO DAQUI -->
         
         <!-- BOTÃO BRINDE (SOME APÓS INSTALAÇÃO) -->
         <button id="btn-brinde-float" onclick="abrirModalBrinde()" class="btn-float-action btn-float-whatsapp">
@@ -1625,58 +1697,6 @@
             </div>
         </div>
     </div>
-
-    <!-- MODAL SORTEIO -->
-    <div id="modalSorteio" class="modal-variacao" onclick="if(event.target === this) fecharModalSorteio()">
-        <div class="modal-variacao-content">
-            <button class="btn-fechar-modal-var" onclick="fecharModalSorteio()">Fechar</button>
-            <div style="padding: 25px 20px;">
-                <div style="text-align: center; margin-bottom: 15px;">
-                    <img src="img/cesta.png" width="60" height="60" loading="lazy" alt="Sorteio" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4CAF50/ffffff?text=S'">
-                    <h3 style="margin: 10px 0 5px; font-size: 1.4rem; color: var(--cor-primaria); font-weight: 700;">Sorteio 20 Cestas Econômicas</h3>
-                    <p style="font-size: 0.9rem; color: #666; margin: 0;">Dia 22 de Dezembro as 20h ao vivo no Instagram</p>
-                </div>
-                
-                <div id="area-busca-telefone-modal" style="background: #f9f9f9; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
-                    <label style="display:block; font-weight:700; font-size: 0.85rem; color: #444; margin-bottom: 8px;">Seu WhatsApp:</label>
-                    <input type="tel" id="busca-telefone-modal" placeholder="(65) 99999-9999" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 12px; font-size: 1rem;" required>
-                    <!-- BOTÃO COM CONTRASTE CORRIGIDO: TEXTO BRANCO -->
-                    <button onclick="buscarCadastro('-modal')" style="background-color: var(--cor-primaria); color: white !important; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">
-                        <i class="fas fa-search" style="margin-right: 8px;"></i> Participar
-                    </button>
-                </div>
-
-                <div id="cadastro-encontrado-modal" style="display: none; text-align: center; background-color: #E8F5E9; border: 1px solid #C8E6C9; padding: 15px; border-radius: 12px; margin-top: 15px;">
-                    <div style="color: #2E7D32; font-size: 2.5rem; margin-bottom: 5px;"><i class="fas fa-check-circle"></i></div>
-                    <h2 style="font-size: 1.1rem; color: #2E7D32; margin: 0 0 10px 0; font-weight: 700;">Cadastro Encontrado!</h2>
-                    <div style="text-align: left; background: rgba(255,255,255,0.7); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
-                        <p style="margin: 4px 0;"><strong>Nome:</strong> <span id="nome-cliente-encontrado-modal"></span></p>
-                        <p style="margin: 4px 0;"><strong>Cidade:</strong> <span id="cidade-cliente-encontrado-modal"></span></p>
-                    </div>
-                    <button id="btn-confirmar-cadastro-modal" onclick="confirmarJaCadastrado('-modal')" style="background-color: var(--cor-whatsapp); color: white !important; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-                        <i class="fab fa-whatsapp" style="margin-right: 8px;"></i> Confirmar
-                    </button>
-                </div>
-                
-                <div id="cadastro-novo-modal" style="display: none; margin-top: 15px; text-align: left;">
-                    <div style="background-color: #FFF3E0; border: 1px solid #FFE0B2; padding: 15px; border-radius: 12px;">
-                        <h3 style="font-size: 1rem; color: #E65100; margin: 0 0 10px 0; font-weight: 700;">Novo Cadastro</h3>
-                        <form onsubmit="event.preventDefault(); enviarNovoCadastro('-modal');">
-                            <input type="text" id="novo-nome-modal" placeholder="Nome Completo" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                            <input type="text" id="novo-bairro-modal" placeholder="Bairro" required style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                            <select id="novo-cidade-modal" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                                <option value="Cuiabá">Cuiabá</option>
-                                <option value="Várzea Grande">Várzea Grande</option>
-                            </select>
-                            <button type="submit" style="background-color: #E65100; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700;">
-                                Cadastrar para Sorteio
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- MODAL SLIDER ULTRA-CLEAN -->
     <div id="modalApresentacao" class="modal-variacao" onclick="if(event.target === this) fecharApresentacao()">
@@ -1725,7 +1745,7 @@
                 <!-- SLIDE FINAL (Com Botão) -->
                 <div class="slide-item">
                     <div class="slide-final-container">
-                        <div class="slide-text-large" style="color:#2E7D32;">Concorra a Sorteios.</div>
+                        <div class="slide-text-large" style="color:#2E7D32;">Peça Já a Sua!</div>
                         <button class="btn-eu-quero" onclick="fecharApresentacao()">
                             EU QUERO!
                         </button>
@@ -1770,9 +1790,6 @@
         </div>
         <div id="captionZoom" class="zoom-caption"></div>
     </div>
-
-    <!-- IMPORTAR BANCO DE DADOS (SIMULADO) -->
-    <script src="data/clientes.js"></script>
 
     <!-- SCRIPTS -->
     <script>
@@ -2214,95 +2231,6 @@
                 const texto = `Olha essa oferta: ${nome} por R$ ${preco}! Entrega Grátis em Cuiabá e VG. ${window.location.href}`;
                 window.open(`https://wa.me/?text=${encodeURIComponent(texto)}`, '_blank');
             }
-        }
-
-        // === FUNÇÕES DE SORTEIO (ATUALIZADO) ===
-        function abrirModalSorteio() {
-            document.getElementById('modalSorteio').style.display = 'flex';
-        }
-        function fecharModalSorteio() {
-            document.getElementById('modalSorteio').style.display = 'none';
-        }
-        
-        // VARIÁVEIS GLOBAIS PARA ARMAZENAR DADOS DO FORMULÁRIO DO SORTEIO
-        let clienteEncontradoAtual = null;
-        let novoTelDigitado = '';
-
-        // FUNÇÃO DE BUSCA E VERIFICAÇÃO NA BASE DE DADOS
-        function buscarCadastro(sufixo) {
-            const telInput = document.getElementById(`busca-telefone${sufixo}`).value;
-            // Sanitização simples: remove tudo que não for dígito
-            const telLimpo = telInput.replace(/\D/g, '');
-            novoTelDigitado = telInput; // Guarda o valor original para usar depois
-
-            if(telLimpo.length < 8) {
-                alert('Por favor, digite um número de telefone válido com DDD.');
-                return;
-            }
-            
-            // Verifica se a base de dados foi carregada
-            if (typeof window.listaClientes === 'undefined') {
-                console.error("Base de dados de clientes não carregada.");
-                alert("Erro ao conectar com a base de dados. Tente novamente.");
-                return;
-            }
-
-            // Busca na lista global (carregada de data/clientes.js)
-            const cliente = window.listaClientes.find(c => {
-                const cTel = c.telefone.replace(/\D/g, '');
-                
-                // AJUSTE SOLICITADO: Comparar apenas os últimos 7 dígitos
-                const cTelLast7 = cTel.slice(-7);
-                const inputTelLast7 = telLimpo.slice(-7);
-                
-                return cTelLast7 === inputTelLast7;
-            });
-
-            if(cliente) {
-                // CLIENTE ENCONTRADO
-                clienteEncontradoAtual = cliente;
-                document.getElementById(`area-busca-telefone${sufixo}`).style.display = 'none';
-                document.getElementById(`cadastro-encontrado${sufixo}`).style.display = 'block';
-                document.getElementById(`nome-cliente-encontrado${sufixo}`).innerText = cliente.nome;
-                document.getElementById(`cidade-cliente-encontrado${sufixo}`).innerText = cliente.cidade + (cliente.bairro ? ' - ' + cliente.bairro : '');
-            } else {
-                // CLIENTE NÃO ENCONTRADO -> NOVO CADASTRO
-                document.getElementById(`area-busca-telefone${sufixo}`).style.display = 'none';
-                document.getElementById(`cadastro-novo${sufixo}`).style.display = 'block';
-            }
-        }
-        
-        // ENVIO DE CONFIRMAÇÃO (CLIENTE JÁ EXISTENTE)
-        function confirmarJaCadastrado(sufixo) {
-            if (!clienteEncontradoAtual) return;
-
-            const nome = clienteEncontradoAtual.nome;
-            const tel = clienteEncontradoAtual.telefone;
-            
-            const texto = `Olá! Sou ${nome}, telefone ${tel}. Já tenho cadastro e quero confirmar minha participação no sorteio.`;
-            const url = `https://wa.me/5565998150975?text=${encodeURIComponent(texto)}`;
-            
-            window.open(url, '_blank');
-            fecharModalSorteio();
-        }
-        
-        // ENVIO DE NOVO CADASTRO
-        function enviarNovoCadastro(sufixo) {
-             const nome = document.getElementById(`novo-nome${sufixo}`).value;
-             const bairro = document.getElementById(`novo-bairro${sufixo}`).value;
-             const cidade = document.getElementById(`novo-cidade${sufixo}`).value;
-             const tel = novoTelDigitado; // Usa o telefone que foi digitado na busca
-
-             if(!nome || !bairro) {
-                 alert("Por favor, preencha todos os campos.");
-                 return;
-             }
-
-             const texto = `Olá! Quero participar do sorteio.\n*Novo Cadastro:*\nNome: ${nome}\nTel: ${tel}\nBairro: ${bairro}\nCidade: ${cidade}`;
-             const url = `https://wa.me/5565998150975?text=${encodeURIComponent(texto)}`;
-             
-             window.open(url, '_blank');
-             fecharModalSorteio();
         }
 
         // === FUNÇÕES DE CONTATO ===
