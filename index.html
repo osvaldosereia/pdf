@@ -2248,11 +2248,14 @@
             }
 
             // Busca na lista global (carregada de data/clientes.js)
-            // Normalizamos ambos para garantir comparação justa (apenas números)
             const cliente = window.listaClientes.find(c => {
                 const cTel = c.telefone.replace(/\D/g, '');
-                // Compara se o input está contido no telefone do cadastro ou vice-versa (para flexibilidade)
-                return cTel === telLimpo || cTel.endsWith(telLimpo) || telLimpo.endsWith(cTel);
+                
+                // AJUSTE SOLICITADO: Comparar apenas os últimos 7 dígitos
+                const cTelLast7 = cTel.slice(-7);
+                const inputTelLast7 = telLimpo.slice(-7);
+                
+                return cTelLast7 === inputTelLast7;
             });
 
             if(cliente) {
