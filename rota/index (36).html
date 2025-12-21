@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rota Dona Antonia | CRM & Entregas</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Arquivo de Clientes Externo (Mantido conforme original) -->
+    <script src="clientes.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f8fafc', 100: '#f1f5f9', 500: '#64748b', 600: '#475569', 700: '#334155', 900: '#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Otimizações Mobile */
+        body { -webkit-tap-highlight-color: transparent; background-color: #f1f5f9; }
+        
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Animações */
+        .fade-in { animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Toast Notification */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); border-left: 4px solid #3b82f6; display: flex; align-items: center; animation: slideIn 0.3s ease; max-width: 90vw; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Modal Transitions */
+        .modal-backdrop { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* Dropdown Customizado */
+        .custom-dropdown-list {
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        /* Estilos de Impressão (PDF) */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; -webkit-print-color-adjust: exact; }
+            #modal-historico .modal-content { 
+                position: static; 
+                width: 100%; 
+                max-width: 100%; 
+                height: auto; 
+                max-height: none;
+                box-shadow: none;
+                border: none;
+            }
+            #modal-historico { position: static; background: white; }
+            .overflow-y-auto { overflow: visible !important; height: auto !important; }
+            #crm-summary-bar { background: #f1f5f9 !important; color: black !important; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased pb-24">
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="no-print"></div>
+
+    <!-- Header Fixo -->
+    <header class="bg-white shadow-sm sticky top-0 z-30 border-b border-slate-200 no-print">
+        <div class="container mx-auto max-w-5xl px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-slate-800 text-white p-2 rounded-lg shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 7m0 13V7" /></svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight">Rota Dona Antonia</h1>
+                    <p class="text-xs text-slate-500" id="header-date">Carregando...</p>
+                </div>
+            </div>
+            
+            <div class="flex gap-2">
+                <button onclick="App.ui.toggleMenu()" class="p-2 text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Dropdown -->
+        <div id="main-menu" class="hidden absolute right-4 top-16 bg-white rounded-xl shadow-xl border border-slate-100 w-64 overflow-hidden z-50 ring-1 ring-black ring-opacity-5">
+            <button onclick="App.controllers.novaRota()" class="w-full text-left px-4 py-3 text-sm hover:bg-slate-50 flex items-center gap-3 text-red-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                Nova Rota (Reset)
+            </button>
+            <div class="border-t border-slate-100"></div>
+            <button onclick="App.ui.modalHistorico.open()" class="w-full text-left px-4 py-3 text-sm hover:bg-slate-50 flex items-center gap-3 text-blue-600 font-bold transition-colors bg-blue-50">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Histórico & CRM
+            </button>
+            <button onclick="App.ui.modalRelatorio.open()" class="w-full text-left px-4 py-3 text-sm hover:bg-slate-50 flex items-center gap-3 text-green-600 font-medium transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                Relatório Cestas (Zap)
+            </button>
+            <div class="border-t border-slate-100"></div>
+            <button onclick="App.ui.modalExport.open()" class="w-full text-left px-4 py-3 text-sm hover:bg-slate-50 flex items-center gap-3 text-slate-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Exportar Backup
+            </button>
+            <button onclick="document.getElementById('input-carregar-arquivo').click()" class="w-full text-left px-4 py-3 text-sm hover:bg-slate-50 flex items-center gap-3 text-slate-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                Carregar Backup
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-2xl px-4 py-6 no-print">
+        
+        <!-- KPIs / Placar -->
+        <div class="w-full mb-6" id="kpi-container"></div>
+
+        <!-- Filtros de Região -->
+        <div class="flex gap-2 overflow-x-auto pb-2 mb-4 no-scrollbar" id="filtros-regiao"></div>
+
+        <!-- Botão Flutuante (FAB) para Lançamento -->
+        <button onclick="App.controllers.iniciarNovoLancamento()" class="fixed bottom-6 right-6 bg-slate-800 text-white rounded-full p-4 shadow-xl hover:bg-slate-900 transition-transform hover:scale-105 z-40 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+        </button>
+
+        <!-- Lista de Entregas -->
+        <div id="lista-entregas" class="space-y-4 min-h-[200px]"></div>
+        
+        <div id="lista-vazia" class="hidden flex-col items-center justify-center py-12 text-slate-400">
+            <svg class="w-16 h-16 mb-4 opacity-20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 001-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" /></svg>
+            <p>Nenhuma entrega nesta região.</p>
+        </div>
+
+    </main>
+
+    <!-- ================= MODAIS ================= -->
+
+    <!-- Modal Lançamento -->
+    <div id="modal-lancamento" class="fixed inset-0 z-50 hidden no-print">
+        <div class="absolute inset-0 bg-black/60 modal-backdrop transition-opacity" onclick="App.ui.modalLancamento.close()"></div>
+        <div class="absolute bottom-0 w-full h-[90vh] flex flex-col bg-white rounded-t-2xl shadow-2xl md:fixed md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-xl modal-content">
+            
+            <div class="flex-none flex justify-between items-center p-4 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800" id="modal-lancamento-title">Nova Entrega</h3>
+                <button onclick="App.ui.modalLancamento.close()" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+
+            <div class="overflow-y-auto p-4 flex-1 space-y-5">
+                <!-- Seletor de Cliente Customizado -->
+                <div class="relative group">
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Cliente</label>
+                    <input type="text" id="input-cliente" class="w-full rounded-lg border-slate-300 border p-3 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all bg-slate-50" placeholder="Digite o nome para buscar..." autocomplete="off">
+                    
+                    <!-- Dropdown de Sugestões -->
+                    <div id="dropdown-clientes" class="hidden absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl custom-dropdown-list">
+                        <!-- Lista preenchida via JS -->
+                    </div>
+
+                    <div id="info-cliente-preview" class="hidden mt-2 text-sm bg-blue-50 text-blue-800 p-3 rounded-lg border border-blue-100">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+
+                <!-- Região -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Região <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-4 gap-2 text-sm" id="container-radio-regiao">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+
+                <!-- Adicionar Cestas -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <label class="block text-sm font-bold text-slate-700 mb-3">Montar Pedido</label>
+                    
+                    <div class="flex gap-2 mb-3">
+                        <!-- Seletor Customizado de Cesta -->
+                        <div class="relative flex-1" id="container-custom-select-cesta">
+                            <button type="button" id="btn-custom-select-cesta" class="w-full text-left rounded-lg border-slate-300 border p-2 text-sm bg-white flex justify-between items-center focus:ring-2 focus:ring-slate-500">
+                                <span id="label-select-cesta">Selecione a Cesta...</span>
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <!-- Dropdown Cestas -->
+                            <div id="dropdown-cestas" class="hidden absolute z-40 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl custom-dropdown-list">
+                                <!-- Opções via JS -->
+                            </div>
+                            <!-- Inputs Ocultos para valor -->
+                            <input type="hidden" id="hidden-cesta-nome" value="">
+                            <input type="hidden" id="hidden-cesta-valor" value="0">
+                        </div>
+
+                        <input type="number" id="qtd-cesta" value="1" min="1" class="w-16 text-center rounded-lg border-slate-300 border p-2 bg-white">
+                    </div>
+
+                    <!-- Opções Avançadas (Toggle) -->
+                    <div class="mb-3">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="check-alterada" class="sr-only peer">
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                            <span class="ms-3 text-sm font-medium text-slate-700">Cesta Alterada?</span>
+                        </label>
+                    </div>
+
+                    <!-- CAMPOS TIRAR / PÔR -->
+                    <div id="box-detalhes-alterada" class="hidden space-y-2 mb-3 bg-amber-50 p-3 rounded border border-amber-200">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="text-xs font-bold text-red-600 block mb-1">TIRAR:</label>
+                                <input type="text" id="input-tirar" placeholder="Ex: Arroz" class="w-full text-sm p-2 rounded border border-amber-200 focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none bg-white">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-green-600 block mb-1">PÔR:</label>
+                                <input type="text" id="input-por" placeholder="Ex: Café" class="w-full text-sm p-2 rounded border border-amber-200 focus:border-green-400 focus:ring-1 focus:ring-green-400 outline-none bg-white">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="text-xs font-semibold text-slate-500 uppercase">Brindes:</span>
+                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Ovo" name="brindes">Ovo</label>
+                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Amaciante" name="brindes">Amaciante</label>
+                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Cafe 250g" name="brindes">Café</label>
+                    </div>
+
+                    <button onclick="App.controllers.adicionarItemAoCarrinho()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-sm font-medium hover:bg-slate-900 flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+
+                <!-- Carrinho Visual -->
+                <div id="carrinho-visual" class="space-y-2">
+                    <!-- Itens adicionados aparecem aqui -->
+                </div>
+                
+                <div>
+                     <label class="block text-sm font-medium text-slate-700">Obs Geral</label>
+                     <input type="text" id="input-obs-geral" class="w-full mt-1 border-slate-300 rounded-lg p-2 border bg-slate-50" placeholder="Casa portão azul...">
+                </div>
+
+                <div class="flex justify-between items-center pt-2 border-t border-slate-100">
+                    <span class="text-slate-600">Total Previsto:</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-slate-400">R$</span>
+                        <input type="number" id="input-valor-final" step="0.01" class="text-xl font-bold text-slate-900 w-28 text-right bg-transparent border-none focus:ring-0 p-0" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-none p-4 border-t border-slate-100 bg-white md:rounded-b-xl flex gap-3">
+                <button onclick="App.ui.modalLancamento.close()" class="flex-1 py-3 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors border border-slate-200">Cancelar</button>
+                <button onclick="App.controllers.salvarEntrega()" class="flex-[2] py-3 bg-slate-800 text-white font-bold rounded-lg shadow-lg hover:bg-slate-900 transition-colors" id="btn-submit-lancamento">Confirmar Lançamento</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pagamento -->
+    <div id="modal-pagamento" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 no-print">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="bg-green-600 p-4 text-white text-center">
+                <h3 class="text-lg font-bold">Concluir Entrega</h3>
+                <p class="text-green-100 text-sm" id="pag-cliente-nome">Cliente</p>
+                <p class="text-2xl font-bold mt-1" id="pag-valor-total">R$ 0,00</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-gray-600 font-medium">Forma de Pagamento:</p>
+                <div class="space-y-2">
+                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="pagamento" value="DINHEIRO" class="w-5 h-5 text-green-600 rounded"> <span class="ml-3 font-medium">Dinheiro</span></label>
+                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="pagamento" value="PIX" class="w-5 h-5 text-green-600 rounded"> <span class="ml-3 font-medium">PIX</span></label>
+                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="pagamento" value="CARTÃO" class="w-5 h-5 text-green-600 rounded"> <span class="ml-3 font-medium">Cartão</span></label>
+                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"><input type="checkbox" name="pagamento" value="SÓ ENTREGAR" class="w-5 h-5 text-green-600 rounded"> <span class="ml-3 font-medium">Só Entregar</span></label>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="document.getElementById('modal-pagamento').classList.add('hidden')" class="flex-1 py-2 text-gray-600 border rounded-lg">Voltar</button>
+                    <button onclick="App.controllers.confirmarPagamento()" class="flex-1 py-2 bg-green-600 text-white font-bold rounded-lg shadow hover:bg-green-700">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Pós Venda -->
+    <div id="modal-pos-venda" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 no-print">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm">
+            <div class="p-4 border-b flex justify-between items-center bg-purple-50 rounded-t-xl">
+                <h3 class="font-bold text-purple-800 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                    Pós Venda
+                </h3>
+                <button onclick="document.getElementById('modal-pos-venda').classList.add('hidden')" class="text-gray-400">X</button>
+            </div>
+            <div class="p-4 space-y-3">
+                <p class="text-sm text-gray-600 mb-2">Selecione a mensagem para <strong id="pos-venda-cliente-nome">Cliente</strong>:</p>
+                <button onclick="App.controllers.enviarPosVenda(1)" class="w-full text-left p-3 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-100 border border-purple-100 transition-all font-medium flex items-center gap-3"><span class="text-xl">🙏</span> Agradecimento</button>
+                <button onclick="App.controllers.enviarPosVenda(2)" class="w-full text-left p-3 rounded-lg bg-green-50 text-green-700 hover:bg-green-100 border border-green-100 transition-all font-medium flex items-center gap-3"><span class="text-xl">🎫</span> Cupom R$ 10,00</button>
+                <button id="btn-pos-google" onclick="App.controllers.enviarPosVenda(3)" class="w-full text-left p-3 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-100 transition-all font-medium flex items-center gap-3"><span class="text-xl">⭐</span> Avaliar no Google</button>
+                <button id="btn-pos-insta" onclick="App.controllers.enviarPosVenda(4)" class="w-full text-left p-3 rounded-lg bg-pink-50 text-pink-700 hover:bg-pink-100 border border-pink-100 transition-all font-medium flex items-center gap-3"><span class="text-xl">📸</span> Seguir no Instagram</button>
+                <button onclick="App.controllers.enviarPosVenda(5)" class="w-full text-left p-3 rounded-lg bg-slate-50 text-slate-700 hover:bg-slate-100 border border-slate-100 transition-all font-medium flex items-center gap-3"><span class="text-xl">📱</span> Baixar APP</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal WhatsApp -->
+    <div id="modal-whatsapp" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 no-print">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm">
+            <div class="p-4 border-b flex justify-between items-center bg-green-50 rounded-t-xl">
+                <h3 class="font-bold text-green-800 flex items-center gap-2">WhatsApp</h3>
+                <button onclick="document.getElementById('modal-whatsapp').classList.add('hidden')" class="text-gray-400">X</button>
+            </div>
+            <div class="p-2 space-y-2">
+                <button onclick="App.controllers.enviarMsgZap(1)" class="w-full text-left p-3 rounded hover:bg-green-50 text-sm font-medium text-gray-700 border border-transparent hover:border-green-200 transition-all">🚗 Aviso: Chegando em 10 min</button>
+                <button onclick="App.controllers.enviarMsgZap(2)" class="w-full text-left p-3 rounded hover:bg-green-50 text-sm font-medium text-gray-700 border border-transparent hover:border-green-200 transition-all">🚪 Aviso: Cheguei no local</button>
+                <button onclick="App.controllers.enviarMsgZap(3)" class="w-full text-left p-3 rounded hover:bg-green-50 text-sm font-medium text-gray-700 border border-transparent hover:border-green-200 transition-all">💰 Dados do PIX</button>
+                <button onclick="App.controllers.enviarMsgZap(4)" class="w-full text-left p-3 rounded hover:bg-red-50 text-sm font-medium text-red-700 border border-red-100 transition-all">🚨 Pedido p/ Montador</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Exportar -->
+    <div id="modal-exportar" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 no-print">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
+            <h3 class="text-xl font-bold text-slate-800 mb-4">Exportar Backup</h3>
+            
+            <button onclick="App.controllers.baixarBackup('completo')" class="w-full bg-slate-800 text-white py-4 rounded-lg font-bold hover:bg-slate-900 shadow-lg transition-transform hover:scale-105 flex items-center justify-center gap-2 mb-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                Backup Completo (Tudo)
+            </button>
+
+            <div class="border-t border-slate-100 pt-4">
+                <p class="text-sm text-slate-500 mb-2 font-medium">Ou exportar apenas rota de hoje:</p>
+                <div class="grid grid-cols-2 gap-2 mb-3" id="export-regioes-list"></div>
+                <button onclick="App.controllers.baixarBackup('parcial')" class="w-full bg-blue-50 text-blue-700 py-2 rounded-lg font-bold hover:bg-blue-100 transition-colors text-sm">Baixar Apenas Rota Selecionada</button>
+            </div>
+
+            <button onclick="App.ui.modalExport.close()" class="w-full mt-4 text-slate-500 py-2 hover:bg-slate-50 rounded-lg transition-colors">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal Relatório Cestas -->
+    <div id="modal-relatorio" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 no-print">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-sm p-6">
+            <h3 class="text-xl font-bold text-green-800 mb-2 flex items-center gap-2">Relatório de Cestas</h3>
+            <p class="text-sm text-slate-500 mb-4">Selecione as regiões:</p>
+            <div class="space-y-2 mb-6">
+                <div class="grid grid-cols-2 gap-2" id="relatorio-regioes-list"></div>
+            </div>
+            <button onclick="App.controllers.gerarRelatorioCestas()" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 flex items-center justify-center gap-2 shadow-md transition-colors">Enviar para WhatsApp</button>
+            <button onclick="App.ui.modalRelatorio.close()" class="w-full mt-2 text-slate-500 py-2 hover:bg-slate-100 rounded-lg transition-colors">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Modal HISTÓRICO E CRM (FULL SCREEN) -->
+    <div id="modal-historico" class="fixed inset-0 z-50 hidden overflow-hidden bg-white">
+        <div class="h-full flex flex-col modal-content">
+            <!-- Header Histórico -->
+            <div class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center no-print">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Histórico & CRM
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-sm font-medium">Exportar PDF</button>
+                    <button onclick="App.ui.modalHistorico.close()" class="bg-slate-700 hover:bg-red-600 px-4 py-2 rounded text-sm font-medium">Fechar</button>
+                </div>
+            </div>
+
+            <!-- Toolbar CRM -->
+            <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap gap-3 items-center no-print">
+                <div class="flex items-center gap-2 bg-white px-3 py-2 rounded border">
+                    <span class="text-xs text-slate-500 font-bold uppercase">Filtros Rápidos:</span>
+                    <button onclick="App.controllers.crmFilter('recent')" class="px-3 py-1 text-xs font-bold rounded bg-green-100 text-green-800 hover:bg-green-200">📅 Últimos 3 dias</button>
+                    <button onclick="App.controllers.crmFilter('vencendo')" class="px-3 py-1 text-xs font-bold rounded bg-yellow-100 text-yellow-800 hover:bg-yellow-200">🎫 Cupom Vencendo</button>
+                    <button onclick="App.controllers.crmFilter('inativo40')" class="px-3 py-1 text-xs font-bold rounded bg-orange-100 text-orange-800 hover:bg-orange-200">💤 Inativo (40d)</button>
+                    <button onclick="App.controllers.crmFilter('todos')" class="px-3 py-1 text-xs font-bold rounded bg-blue-100 text-blue-800 hover:bg-blue-200">📂 Carregar Histórico Completo</button>
+                </div>
+                <div class="flex-1"></div>
+                <input type="text" id="crm-search" placeholder="Buscar cliente..." class="px-3 py-2 border rounded text-sm w-48" onkeyup="App.controllers.crmSearch()">
+            </div>
+            
+            <!-- Resumo Discreto de Vendas (NOVO) -->
+            <div id="crm-summary-bar" class="bg-slate-800 text-white px-4 py-2 text-xs flex flex-wrap items-center gap-4 border-b border-slate-700 shadow-inner">
+                <div class="font-bold flex items-center gap-2"><span class="text-slate-400 uppercase">Total Vendas:</span> <span id="summary-count" class="text-white text-sm">0</span></div>
+                <div class="font-bold flex items-center gap-2 border-l border-slate-600 pl-4"><span class="text-slate-400 uppercase">Valor Total:</span> <span id="summary-value" class="text-green-400 text-sm">R$ 0,00</span></div>
+                <div class="flex-1 border-l border-slate-600 pl-4 overflow-hidden"><span class="text-slate-400 uppercase mr-2">Cestas:</span> <span id="summary-baskets" class="text-slate-300 italic">Carregando...</span></div>
+            </div>
+
+            <!-- Tabela de Dados -->
+            <div class="flex-1 overflow-auto bg-slate-100 p-4">
+                <div class="bg-white rounded shadow">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-800 text-white text-sm sticky top-0 z-10">
+                            <tr>
+                                <th class="p-3">Cliente</th>
+                                <th class="p-3">Últimas 3 Compras</th>
+                                <th class="p-3">Últimas 3 Cestas</th>
+                                <th class="p-3">Últimos Pagamentos</th>
+                                <th class="p-3">Rota Frequente</th>
+                                <th class="p-3 text-right">Total Gasto</th>
+                                <th class="p-3 text-center no-print w-32">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="crm-table-body" class="text-sm text-slate-700 divide-y divide-slate-100">
+                            <!-- JS preenche aqui -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="input-carregar-arquivo" class="hidden" accept=".json,application/json" onchange="App.controllers.importarBackup(this)">
+
+    <!-- JAVASCRIPT APP -->
+    <script>
+        const CONSTANTS = {
+            PIX_NOME: "Osvaldo Sereia Junior",
+            PIX_CELULAR: "65984491018",
+            NUMERO_GERENTE: "5565996884599",
+            NUMERO_RELATORIO: "5565998150975",
+            NUMERO_CONFIRMACAO_ENTREGA: "5565998150975",
+            LINK_APP: "https://play.google.com/store/apps", // Link genérico placeholder
+            REGIOES: ["VG", "CUIABA", "COXIPO", "CPA"],
+            STORAGE_KEY: "rotaflow_v2_db",
+            HISTORY_KEY: "rotaflow_historico_db",
+            METADATA_KEY: "rotaflow_clientes_meta_db", // Guarda datas de ações (cupom, avaliacao)
+            CESTAS_OPTIONS: [
+                { value: "ECONOMICA", label: "ECONOMICA", price: 85.00 },
+                { value: "Mini Bonini", label: "Mini Bonini", price: 165.00 },
+                { value: "Mini Koblenz", label: "Mini Koblenz", price: 170.00 },
+                { value: "Pequena Bonini", label: "Pequena Bonini", price: 215.00 },
+                { value: "Pequena Koblenz", label: "Pequena Koblenz", price: 220.00 },
+                { value: "Média Bonini", label: "Média Bonini", price: 320.00 },
+                { value: "Média Koblenz", label: "Média Koblenz", price: 325.00 },
+                { value: "Grande Bonini", label: "Grande Bonini", price: 380.00 },
+                { value: "Grande Koblenz", label: "Grande Koblenz", price: 390.00 }
+            ]
+        };
+
+        const Store = {
+            data: { rotaAtiva: null, regiaoFiltro: 'VG', carrinhoTemp: [], entregaEmAcaoId: null, editingId: null, history: [], meta: {} },
+            init() {
+                // Carrega Rota Atual
+                const saved = localStorage.getItem(CONSTANTS.STORAGE_KEY);
+                if (saved) {
+                    this.data.rotaAtiva = JSON.parse(saved);
+                    if(!Array.isArray(this.data.rotaAtiva.entregas)) this.data.rotaAtiva.entregas = [];
+                } else { this.novaRota(); }
+
+                // Carrega Histórico
+                const savedHistory = localStorage.getItem(CONSTANTS.HISTORY_KEY);
+                this.data.history = savedHistory ? JSON.parse(savedHistory) : [];
+
+                // Carrega Metadados (Ações de marketing)
+                const savedMeta = localStorage.getItem(CONSTANTS.METADATA_KEY);
+                this.data.meta = savedMeta ? JSON.parse(savedMeta) : {};
+            },
+            novaRota() {
+                this.data.rotaAtiva = { id: Date.now(), dataCriacao: new Date().toISOString(), entregas: [] };
+                this.save();
+            },
+            save() {
+                localStorage.setItem(CONSTANTS.STORAGE_KEY, JSON.stringify(this.data.rotaAtiva));
+                App.ui.render();
+            },
+            saveHistory() {
+                localStorage.setItem(CONSTANTS.HISTORY_KEY, JSON.stringify(this.data.history));
+            },
+            saveMeta() {
+                localStorage.setItem(CONSTANTS.METADATA_KEY, JSON.stringify(this.data.meta));
+            },
+            // Adiciona uma entrega finalizada ao histórico
+            addToHistory(entrega) {
+                // Remove duplicatas se houver
+                this.data.history = this.data.history.filter(h => h.id !== entrega.id);
+                this.data.history.push(entrega);
+                // Limpa histórico muito antigo (> 12 meses)
+                const oneYearAgo = new Date();
+                oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+                this.data.history = this.data.history.filter(h => new Date(h.updatedAt) > oneYearAgo);
+                this.saveHistory();
+            },
+            // NOVO: Remove histórico de um cliente
+            removeFromHistory(clienteNome) {
+                if(!clienteNome) return;
+                const initialCount = this.data.history.length;
+                this.data.history = this.data.history.filter(h => h.cliente.nome !== clienteNome);
+                if(this.data.history.length < initialCount) {
+                    this.saveHistory();
+                    return true;
+                }
+                return false;
+            },
+            updateMeta(clienteNome, field, value) {
+                if(!this.data.meta[clienteNome]) this.data.meta[clienteNome] = {};
+                this.data.meta[clienteNome][field] = value;
+                this.saveMeta();
+            },
+            getEntregasFiltradas() {
+                if (!this.data.rotaAtiva) return [];
+                let lista = this.data.rotaAtiva.entregas.filter(e => e.regiao === this.data.regiaoFiltro);
+                return lista.sort((a, b) => {
+                    if (a.status === 'Pendente' && b.status !== 'Pendente') return -1;
+                    if (a.status !== 'Pendente' && b.status === 'Pendente') return 1;
+                    return 0; 
+                });
+            },
+            addEntrega(entrega) { this.data.rotaAtiva.entregas.push(entrega); this.save(); },
+            updateEntrega(id, updates) {
+                const index = this.data.rotaAtiva.entregas.findIndex(e => e.id == id);
+                if (index !== -1) {
+                    this.data.rotaAtiva.entregas[index] = { ...this.data.rotaAtiva.entregas[index], ...updates, updatedAt: new Date().toISOString() };
+                    this.save();
+                }
+            },
+            moverEntrega(id, direcao) {
+                const entregas = this.data.rotaAtiva.entregas;
+                const indicesRegiao = entregas.map((e, i) => ({ ...e, originalIndex: i })).filter(e => e.regiao === this.data.regiaoFiltro && e.status === 'Pendente');
+                const itemRegiaoIndex = indicesRegiao.findIndex(e => e.id == id);
+                if (itemRegiaoIndex === -1) return;
+                const targetRegiaoIndex = direcao === 'cima' ? itemRegiaoIndex - 1 : itemRegiaoIndex + 1;
+                if (targetRegiaoIndex >= 0 && targetRegiaoIndex < indicesRegiao.length) {
+                    const idxA = indicesRegiao[itemRegiaoIndex].originalIndex;
+                    const idxB = indicesRegiao[targetRegiaoIndex].originalIndex;
+                    [entregas[idxA], entregas[idxB]] = [entregas[idxB], entregas[idxA]];
+                    this.save();
+                }
+            }
+        };
+
+        const Utils = {
+            formatMoeda: (valor) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0),
+            formatData: (iso) => new Date(iso).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }),
+            formatDataCurta: (iso) => new Date(iso).toLocaleDateString('pt-BR'),
+            diffDias: (dataAntiga) => {
+                const diffTime = Math.abs(new Date() - new Date(dataAntiga));
+                return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            },
+            toast: (msg, type = 'info') => {
+                const container = document.getElementById('toast-container');
+                const el = document.createElement('div');
+                el.className = `toast text-sm font-medium ${type === 'error' ? 'border-red-500 text-red-800' : 'text-slate-800'}`;
+                el.innerHTML = msg;
+                container.appendChild(el);
+                setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(100%)'; setTimeout(() => el.remove(), 300); }, 3000);
+            }
+        };
+
+        const App = {
+            ui: {
+                modalLancamento: {
+                    open: () => {
+                        document.getElementById('modal-lancamento').classList.remove('hidden');
+                    },
+                    close: () => document.getElementById('modal-lancamento').classList.add('hidden')
+                },
+                modalExport: {
+                    open: () => {
+                        const container = document.getElementById('export-regioes-list');
+                        container.innerHTML = CONSTANTS.REGIOES.map(r => `<label class="flex items-center space-x-2 border p-2 rounded cursor-pointer"><input type="checkbox" checked value="${r}" class="text-blue-600 rounded focus:ring-blue-500"><span class="text-sm text-slate-700">${r}</span></label>`).join('');
+                        document.getElementById('modal-exportar').classList.remove('hidden');
+                    },
+                    close: () => document.getElementById('modal-exportar').classList.add('hidden')
+                },
+                modalRelatorio: {
+                    open: () => {
+                        document.getElementById('main-menu').classList.add('hidden');
+                        const container = document.getElementById('relatorio-regioes-list');
+                        container.innerHTML = CONSTANTS.REGIOES.map(r => `<label class="flex items-center space-x-2 border p-2 rounded cursor-pointer bg-slate-50 hover:bg-slate-100"><input type="checkbox" checked value="${r}" class="text-green-600 rounded focus:ring-green-500"><span class="text-sm text-slate-700 font-medium">${r}</span></label>`).join('');
+                        document.getElementById('modal-relatorio').classList.remove('hidden');
+                    },
+                    close: () => document.getElementById('modal-relatorio').classList.add('hidden')
+                },
+                modalHistorico: {
+                    open: () => {
+                        document.getElementById('main-menu').classList.add('hidden');
+                        document.getElementById('modal-historico').classList.remove('hidden');
+                        App.controllers.crmFilter('recent'); // Carrega padrão (3 dias)
+                    },
+                    close: () => document.getElementById('modal-historico').classList.add('hidden')
+                },
+                toggleMenu: () => { document.getElementById('main-menu').classList.toggle('hidden'); },
+                renderCarrinho: () => {
+                    const container = document.getElementById('carrinho-visual');
+                    const totalInput = document.getElementById('input-valor-final');
+                    if(Store.data.carrinhoTemp.length === 0) { container.innerHTML = '<div class="text-center text-slate-400 text-sm py-2">Nenhum item adicionado</div>'; totalInput.value = ''; return; }
+                    let totalCalculado = 0;
+                    container.innerHTML = Store.data.carrinhoTemp.map((item, idx) => {
+                        totalCalculado += (item.valor * item.qtd);
+                        return `<div class="flex justify-between items-start bg-white p-2 rounded border border-slate-100 shadow-sm animate-in fade-in"><div><p class="text-sm font-bold text-slate-800">${item.qtd}x ${item.nome}</p>${item.tipo === 'Alterada' ? `<div class="text-xs mt-1">${item.tirar ? `<span class="text-red-500 font-semibold block">Tirar: ${item.tirar}</span>` : ''}${item.por ? `<span class="text-green-600 font-semibold block">Pôr: ${item.por}</span>` : ''}</div>` : ''}${item.brindes && item.brindes.length ? `<p class="text-xs text-pink-500">+ ${item.brindes.join(', ')}</p>` : ''}</div><div class="flex items-center gap-2"><span class="text-sm font-semibold text-blue-600">${Utils.formatMoeda(item.valor * item.qtd)}</span><button onclick="App.controllers.removerItemCarrinho(${idx})" class="text-red-400 hover:text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
+                    }).join('');
+                    if (!totalInput.value || parseFloat(totalInput.value) === 0) totalInput.value = totalCalculado.toFixed(2);
+                },
+                render: () => {
+                    const entregas = Store.getEntregasFiltradas();
+                    const container = document.getElementById('lista-entregas');
+                    const emptyState = document.getElementById('lista-vazia');
+                    document.getElementById('header-date').innerText = Utils.formatData(Store.data.rotaAtiva.dataCriacao);
+                    const totalGeral = Store.data.rotaAtiva.entregas.length;
+                    const entreguesGeral = Store.data.rotaAtiva.entregas.filter(e => e.status === 'Entregue').length;
+                    let percentual = totalGeral > 0 ? (entreguesGeral / totalGeral) * 100 : 0;
+                    
+                    document.getElementById('kpi-container').innerHTML = `<div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between"><div class="flex-1"><p class="text-slate-500 text-sm font-bold uppercase mb-1">Status Rota</p><div class="flex items-baseline gap-2"><span class="text-4xl font-black text-slate-800">${entreguesGeral}</span><span class="text-lg text-slate-400 font-medium">de ${totalGeral}</span></div><div class="w-full bg-slate-100 rounded-full h-2.5 mt-2"><div class="bg-slate-800 h-2.5 rounded-full transition-all duration-500" style="width: ${percentual}%"></div></div></div></div>`;
+                    
+                    const regioesHtml = CONSTANTS.REGIOES.map(r => {
+                        const count = Store.data.rotaAtiva.entregas.filter(e => e.regiao === r && e.status === 'Pendente').length;
+                        const active = Store.data.regiaoFiltro === r;
+                        return `<button onclick="App.controllers.mudarFiltro('${r}')" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors border ${active ? 'bg-slate-800 text-white border-slate-800 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}">${r} <span class="${active ? 'bg-slate-600 text-white' : 'bg-slate-200 text-slate-600'} text-xs py-0.5 px-1.5 rounded-full ml-1">${count}</span></button>`;
+                    }).join('');
+                    document.getElementById('filtros-regiao').innerHTML = regioesHtml;
+                    if (entregas.length === 0) { container.innerHTML = ''; emptyState.classList.remove('hidden'); emptyState.classList.add('flex'); return; }
+                    emptyState.classList.add('hidden'); emptyState.classList.remove('flex');
+                    container.innerHTML = entregas.map((entrega, index) => {
+                        const isPendente = entrega.status === 'Pendente';
+                        const itensHtml = entrega.cestas.map(c => `
+                            <div class="py-2">
+                                <div class="flex justify-between items-center text-slate-900">
+                                    <div class="text-base font-bold flex-1 truncate pr-2">${c.qtd}x ${c.nome}</div>
+                                    <div class="text-base font-semibold text-slate-600 whitespace-nowrap">${Utils.formatMoeda(c.valor * c.qtd)}</div>
+                                </div>
+                                ${c.tipo === 'Alterada' ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600">${c.tirar ? `<div class="flex gap-1"><span class="font-bold text-red-600">Tirar:</span> <span>${c.tirar}</span></div>` : ''}${c.por ? `<div class="flex gap-1"><span class="font-bold text-green-600">Pôr:</span> <span>${c.por}</span></div>` : ''}</div>` : ''}
+                                ${c.brindes && c.brindes.length ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600 font-medium"><span class="text-slate-400 font-normal mr-1">Brinde:</span> ${c.brindes.join(', ')}</div>` : ''}
+                            </div>
+                        `).join('<div class="border-b border-slate-100 my-1"></div>');
+                        return `
+                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative transition-transform transform ${isPendente ? 'hover:shadow-md' : 'opacity-70 bg-slate-50'}">
+                            ${!isPendente ? `<div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div class="bg-white/90 border-2 ${entrega.status === 'Entregue' ? 'border-green-500 text-green-600' : 'border-red-500 text-red-600'} px-4 py-1 rounded-lg text-xl font-black uppercase rotate-[-12deg] shadow-lg">${entrega.status}</div></div>` : ''}
+                            <div class="p-4">
+                                <div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><h4 class="text-lg font-bold text-slate-900 leading-tight truncate max-w-[200px]" title="${entrega.cliente.nome}">${entrega.cliente.nome}</h4></div></div>
+                                ${entrega.cliente.complemento ? `<div class="mb-4"><p class="text-base font-medium text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 inline-block leading-snug w-full">${entrega.cliente.complemento}</p></div>` : ''}
+                                <div class="mb-4 border-t border-b border-slate-100 py-1">${itensHtml}</div>
+                                ${entrega.observacao ? `<div class="mb-4 pt-2 border-t border-slate-100"><p class="text-sm text-red-600 font-bold flex items-start gap-1">⚠️ ${entrega.observacao}</p></div>` : ''}
+                                <div class="space-y-3"><div class="grid grid-cols-3 gap-3"><button onclick="App.controllers.abrirZap(${entrega.id})" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide">WhatsApp</button><button onclick="App.controllers.abrirMapa('${entrega.cliente.endereco}')" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide">Mapa</button>${isPendente ? `<button onclick="App.controllers.editarEntrega(${entrega.id})" class="py-2.5 bg-white border border-amber-200 text-amber-600 text-xs font-bold rounded-lg hover:bg-amber-50 transition-colors uppercase tracking-wide">Editar</button>` : ''}</div><div class="grid grid-cols-3 gap-3"><a href="${entrega.cliente.celular ? 'tel:'+entrega.cliente.celular : '#'}" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center uppercase tracking-wide">Ligar</a>${isPendente ? `<button onclick="App.controllers.iniciarPagamento(${entrega.id})" class="col-span-1 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Entregue</button><button onclick="App.controllers.cancelarEntrega(${entrega.id})" class="col-span-1 py-2.5 bg-white border border-red-100 text-red-500 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors uppercase tracking-wide">Cancelar</button>` : (entrega.status === 'Entregue' ? `<button onclick="App.controllers.abrirPosVenda(${entrega.id})" class="col-span-2 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Pós Venda</button>` : '')}</div>${isPendente ? `<div class="flex justify-center gap-6 mt-2 pt-2 border-t border-slate-50"><button onclick="App.controllers.moverEntrega(${entrega.id}, 'cima')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button><button onclick="App.controllers.moverEntrega(${entrega.id}, 'baixo')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button></div>` : ''}</div></div></div>`;
+                    }).join('');
+                }
+            },
+            controllers: {
+                novaRota: () => { if(confirm('Isso apagará a rota atual e criará uma nova. Confirmar?')) { Store.novaRota(); window.location.reload(); } },
+                mudarFiltro: (regiao) => { Store.data.regiaoFiltro = regiao; App.ui.render(); },
+                toggleCheckAlterada: () => { const check = document.getElementById('check-alterada'); const box = document.getElementById('box-detalhes-alterada'); if(check.checked) box.classList.remove('hidden'); else box.classList.add('hidden'); },
+                
+                // Dropdowns
+                abrirDropdownCliente: () => { document.getElementById('dropdown-clientes').classList.remove('hidden'); },
+                fecharDropdownCliente: () => { setTimeout(() => document.getElementById('dropdown-clientes').classList.add('hidden'), 200); },
+                selecionarCliente: (nome) => {
+                    document.getElementById('input-cliente').value = nome;
+                    const event = new Event('input'); document.getElementById('input-cliente').dispatchEvent(event);
+                    App.controllers.fecharDropdownCliente();
+                },
+                toggleDropdownCesta: () => { document.getElementById('dropdown-cestas').classList.toggle('hidden'); },
+                fecharDropdownCesta: () => { document.getElementById('dropdown-cestas').classList.add('hidden'); },
+                selecionarCesta: (valor, label, preco) => {
+                    document.getElementById('label-select-cesta').innerText = label;
+                    document.getElementById('hidden-cesta-nome').value = valor;
+                    document.getElementById('hidden-cesta-valor').value = preco;
+                    document.getElementById('label-select-cesta').classList.add('text-slate-900', 'font-medium');
+                    App.controllers.fecharDropdownCesta();
+                },
+
+                adicionarItemAoCarrinho: () => {
+                    const nomeCesta = document.getElementById('hidden-cesta-nome').value;
+                    const valorCesta = parseFloat(document.getElementById('hidden-cesta-valor').value);
+                    const qtd = parseInt(document.getElementById('qtd-cesta').value);
+                    const isAlterada = document.getElementById('check-alterada').checked;
+                    
+                    if(!nomeCesta) return Utils.toast('Selecione uma cesta', 'error');
+                    if(qtd < 1) return Utils.toast('Quantidade inválida', 'error');
+
+                    const item = {
+                        nome: nomeCesta,
+                        valor: valorCesta,
+                        qtd: qtd,
+                        tipo: isAlterada ? 'Alterada' : 'Normal',
+                        tirar: isAlterada ? document.getElementById('input-tirar').value : '',
+                        por: isAlterada ? document.getElementById('input-por').value : '',
+                        brindes: Array.from(document.querySelectorAll('input[name="brindes"]:checked')).map(el => el.value)
+                    };
+
+                    Store.data.carrinhoTemp.push(item);
+                    App.ui.renderCarrinho();
+                    
+                    document.getElementById('check-alterada').checked = false;
+                    App.controllers.toggleCheckAlterada();
+                    document.getElementById('qtd-cesta').value = 1;
+                    document.getElementById('input-tirar').value = '';
+                    document.getElementById('input-por').value = '';
+                    document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+                    document.getElementById('label-select-cesta').innerText = 'Selecione a Cesta...';
+                    document.getElementById('hidden-cesta-nome').value = '';
+                },
+
+                removerItemCarrinho: (index) => { Store.data.carrinhoTemp.splice(index, 1); App.ui.renderCarrinho(); },
+                
+                // NOVO: Prepara o modal para um novo lançamento (Reset)
+                iniciarNovoLancamento: () => {
+                    Store.data.editingId = null;
+                    Store.data.carrinhoTemp = [];
+                    
+                    // Reset UI
+                    document.getElementById('modal-lancamento-title').innerText = "Nova Entrega";
+                    document.getElementById('btn-submit-lancamento').innerText = "Confirmar Lançamento";
+                    document.getElementById('btn-submit-lancamento').classList.remove('bg-amber-600', 'hover:bg-amber-700');
+                    document.getElementById('btn-submit-lancamento').classList.add('bg-slate-800', 'hover:bg-slate-900');
+                    
+                    document.getElementById('input-cliente').value = '';
+                    document.getElementById('info-cliente-preview').classList.add('hidden');
+                    document.getElementById('input-valor-final').value = '';
+                    document.getElementById('input-obs-geral').value = '';
+                    const regiaoPadrao = document.querySelector(`input[name="regiao"][value="VG"]`);
+                    if(regiaoPadrao) regiaoPadrao.checked = true;
+
+                    App.ui.renderCarrinho();
+                    App.controllers.fecharDropdownCliente();
+                    App.controllers.fecharDropdownCesta();
+                    App.ui.modalLancamento.open();
+                },
+
+                // NOVO: Prepara o modal para EDIÇÃO
+                editarEntrega: (id) => {
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == id);
+                    if (!entrega) return Utils.toast('Entrega não encontrada', 'error');
+
+                    Store.data.editingId = id;
+                    Store.data.carrinhoTemp = JSON.parse(JSON.stringify(entrega.cestas)); // Cópia profunda
+
+                    // UI Setup
+                    document.getElementById('modal-lancamento-title').innerText = "Editar Entrega";
+                    document.getElementById('btn-submit-lancamento').innerText = "Salvar Alterações";
+                    document.getElementById('btn-submit-lancamento').classList.remove('bg-slate-800', 'hover:bg-slate-900');
+                    document.getElementById('btn-submit-lancamento').classList.add('bg-amber-600', 'hover:bg-amber-700');
+
+                    // Preencher Campos
+                    document.getElementById('input-cliente').value = entrega.cliente.nome;
+                    const event = new Event('input'); document.getElementById('input-cliente').dispatchEvent(event); // Trigger preview
+                    
+                    const radio = document.querySelector(`input[name="regiao"][value="${entrega.regiao}"]`);
+                    if(radio) radio.checked = true;
+
+                    document.getElementById('input-obs-geral').value = entrega.observacao || '';
+                    document.getElementById('input-valor-final').value = entrega.valorTotalAjustado || '';
+
+                    App.ui.renderCarrinho();
+                    App.ui.modalLancamento.open();
+                },
+
+                salvarEntrega: () => {
+                    const nome = document.getElementById('input-cliente').value.trim();
+                    const regiaoInput = document.querySelector('input[name="regiao"]:checked');
+                    
+                    if(!nome) return Utils.toast('Informe o nome do cliente', 'error');
+                    if(!regiaoInput) return Utils.toast('Selecione a região', 'error');
+                    if(Store.data.carrinhoTemp.length === 0) return Utils.toast('Adicione cestas ao pedido', 'error');
+                    
+                    let clienteData = { nome: nome, endereco: '', celular: '' };
+                    if (typeof CLIENTES_DB !== 'undefined') {
+                        const found = CLIENTES_DB.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+                        if (found) clienteData = found;
+                    }
+                    
+                    const valorFinalManual = parseFloat(document.getElementById('input-valor-final').value) || 0;
+                    
+                    if (Store.data.editingId) {
+                        // MODO EDIÇÃO: Atualiza existente
+                        const updates = {
+                            cliente: clienteData,
+                            regiao: regiaoInput.value,
+                            cestas: [...Store.data.carrinhoTemp],
+                            valorTotalAjustado: valorFinalManual,
+                            observacao: document.getElementById('input-obs-geral').value,
+                            updatedAt: new Date().toISOString()
+                        };
+                        Store.updateEntrega(Store.data.editingId, updates);
+                        Utils.toast('Entrega atualizada com sucesso!');
+                    } else {
+                        // MODO CRIAÇÃO: Novo ID
+                        const novaEntrega = { 
+                            id: Date.now(), 
+                            cliente: clienteData, 
+                            regiao: regiaoInput.value, 
+                            cestas: [...Store.data.carrinhoTemp], 
+                            valorTotalAjustado: valorFinalManual, 
+                            observacao: document.getElementById('input-obs-geral').value, 
+                            status: 'Pendente', 
+                            updatedAt: new Date().toISOString(), 
+                            formaPagamento: [] 
+                        };
+                        Store.addEntrega(novaEntrega);
+                        Utils.toast('Entrega lançada com sucesso!');
+                    }
+
+                    App.ui.modalLancamento.close();
+                    Store.data.regiaoFiltro = regiaoInput.value;
+                    App.ui.render();
+                },
+                moverEntrega: (id, dir) => Store.moverEntrega(id, dir),
+                cancelarEntrega: (id) => { if(confirm('Cancelar esta entrega?')) { Store.updateEntrega(id, { status: 'Cancelada' }); App.ui.render(); } },
+                abrirMapa: (endereco) => { if(!endereco || endereco.length < 3) return Utils.toast('Endereço não cadastrado', 'error'); window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(endereco)}`, '_blank'); },
+                iniciarPagamento: (id) => {
+                    Store.data.entregaEmAcaoId = id;
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == id);
+                    document.getElementById('pag-cliente-nome').innerText = entrega.cliente.nome;
+                    document.getElementById('pag-valor-total').innerText = Utils.formatMoeda(entrega.valorTotalAjustado);
+                    document.querySelectorAll('input[name="pagamento"]').forEach(el => el.checked = false);
+                    document.getElementById('modal-pagamento').classList.remove('hidden');
+                },
+                confirmarPagamento: () => {
+                    const pags = Array.from(document.querySelectorAll('input[name="pagamento"]:checked')).map(el => el.value);
+                    if(pags.length === 0) return Utils.toast('Selecione uma forma de pagamento', 'error');
+                    Store.updateEntrega(Store.data.entregaEmAcaoId, { status: 'Entregue', formaPagamento: pags });
+                    document.getElementById('modal-pagamento').classList.add('hidden');
+                    
+                    // Salvar no Histórico Permanente
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == Store.data.entregaEmAcaoId);
+                    Store.addToHistory(entrega);
+
+                    App.controllers.enviarRelatorioFinalZap(entrega);
+                    App.ui.render();
+                    Utils.toast('Entrega concluída e salva no histórico! 🎉');
+                },
+                abrirZap: (id) => { Store.data.entregaEmAcaoId = id; document.getElementById('modal-whatsapp').classList.remove('hidden'); },
+                abrirPosVenda: (id) => { 
+                    Store.data.entregaEmAcaoId = id; 
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == id); 
+                    if (!entrega) return Utils.toast('Erro', 'error'); 
+                    document.getElementById('pos-venda-cliente-nome').innerText = entrega.cliente.nome; 
+                    
+                    // Verificar bloqueios (60 dias)
+                    const meta = Store.data.meta[entrega.cliente.nome] || {};
+                    const diasGoogle = meta.lastGoogleReview ? Utils.diffDias(meta.lastGoogleReview) : 999;
+                    const diasInsta = meta.lastInstaFollow ? Utils.diffDias(meta.lastInstaFollow) : 999;
+
+                    const btnGoogle = document.getElementById('btn-pos-google');
+                    const btnInsta = document.getElementById('btn-pos-insta');
+
+                    if(diasGoogle < 60) { btnGoogle.classList.add('opacity-50', 'pointer-events-none'); btnGoogle.innerText = `⭐ Avaliado há ${diasGoogle} dias`; }
+                    else { btnGoogle.classList.remove('opacity-50', 'pointer-events-none'); btnGoogle.innerHTML = `<span class="text-xl">⭐</span> Avaliar no Google`; }
+
+                    if(diasInsta < 60) { btnInsta.classList.add('opacity-50', 'pointer-events-none'); btnInsta.innerText = `📸 Seguido há ${diasInsta} dias`; }
+                    else { btnInsta.classList.remove('opacity-50', 'pointer-events-none'); btnInsta.innerHTML = `<span class="text-xl">📸</span> Seguir no Instagram`; }
+
+                    document.getElementById('modal-pos-venda').classList.remove('hidden'); 
+                },
+                enviarPosVenda: (tipo) => {
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == Store.data.entregaEmAcaoId);
+                    let num = entrega.cliente.celular.replace(/\D/g, '');
+                    if(!num) return Utils.toast('Sem celular', 'error');
+                    if(!num.startsWith('55')) num = '55' + num;
+                    
+                    let msg = '';
+                    // Mensagens sem personalização de nome (genéricas)
+                    if(tipo===1) msg = `Olá! Tudo bem? Aqui é da Rota Dona Antonia. Muito obrigado pela sua compra! Deus abençoe você e sua família. 🙏`;
+                    else if(tipo===2) { 
+                        const h = new Date(); h.setDate(h.getDate()+30); 
+                        msg = `Olá! Como agradecimento, você ganhou um *DESCONTO DE R$ 10,00* na sua próxima compra! 🎁 Válido até *${h.toLocaleDateString('pt-BR')}*.`; 
+                        Store.updateMeta(entrega.cliente.nome, 'lastCouponDate', new Date().toISOString());
+                    }
+                    else if(tipo===3) { 
+                        msg = `Olá, poderia nos ajudar? 🙏 Clique no link e avalie com 5 estrelas ⭐: https://g.page/r/CaIREJtO1L6WEBM/review Deus abençoe!`;
+                        Store.updateMeta(entrega.cliente.nome, 'lastGoogleReview', new Date().toISOString());
+                    }
+                    else if(tipo===4) { 
+                        msg = `Olá! Segue a gente no Instagram! 📸 https://www.instagram.com/super.cestas.dona.antonia/`;
+                        Store.updateMeta(entrega.cliente.nome, 'lastInstaFollow', new Date().toISOString());
+                    }
+                    else if(tipo===5) msg = `Olá! Para facilitar seus pedidos, baixe nosso App clicando aqui: ${CONSTANTS.LINK_APP}`;
+
+                    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+                    document.getElementById('modal-pos-venda').classList.add('hidden');
+                },
+                enviarMsgZap: (tipo) => {
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == Store.data.entregaEmAcaoId);
+                    let num = entrega.cliente.celular.replace(/\D/g, '');
+                    if(!num) { if(tipo!==4) return Utils.toast('Sem celular', 'error'); else num = CONSTANTS.NUMERO_GERENTE; } else if(!num.startsWith('55')) num = '55' + num;
+                    let msg = '';
+                    switch(tipo) {
+                        case 1: msg = `Olá! Aqui é da Cesta Básica. Chegando em 10 minutos! 🚚`; break;
+                        case 2: msg = `Olá! O entregador chegou no seu endereço.`; break;
+                        case 3: msg = `Dados PIX:\nCelular: ${CONSTANTS.PIX_CELULAR}\nNome: ${CONSTANTS.PIX_NOME}\nValor: ${Utils.formatMoeda(entrega.valorTotalAjustado)}`; break;
+                        // MENSAGEM DO MONTADOR - FORMATO SOLICITADO
+                        case 4: 
+                            num = CONSTANTS.NUMERO_GERENTE; 
+                            msg = `*PEDIDO MONTADOR*`; 
+                            entrega.cestas.forEach(c => {
+                                msg += `\n-----------------`;
+                                msg += `\n- REGIÃO: ${entrega.regiao}`;
+                                msg += `\n- Quantidade: ${c.qtd}`;
+                                msg += `\n- CESTA: ${c.nome}`;
+                                if(c.tipo === 'Alterada') {
+                                    if(c.tirar) msg += `\n- TIRAR: ${c.tirar}`;
+                                    if(c.por) msg += `\n- POR: ${c.por}`;
+                                }
+                                if(c.brindes && c.brindes.length > 0) msg += `\n- BRINDE: ${c.brindes.join(', ')}`;
+                                
+                                // Verifica Final (se o numero tiver pelo menos 2 digitos)
+                                const cell = entrega.cliente.celular ? entrega.cliente.celular.replace(/\D/g,'') : '';
+                                if(c.tipo === 'Alterada' && cell.length >= 2) {
+                                    msg += `\n- FINAL: ${cell.slice(-2)}`;
+                                }
+                            }); 
+                            break;
+                    }
+                    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+                    document.getElementById('modal-whatsapp').classList.add('hidden');
+                },
+                enviarRelatorioFinalZap: (entrega) => {
+                     const num = CONSTANTS.NUMERO_CONFIRMACAO_ENTREGA; 
+                     let msg = `*✅ ENTREGA REALIZADA*\nCliente: ${entrega.cliente.nome}\nValor: ${Utils.formatMoeda(entrega.valorTotalAjustado)}\nPagamento: ${entrega.formaPagamento.join(', ')}\n\n`;
+                     entrega.cestas.forEach(c => { msg += `${c.qtd}x ${c.nome}\n`; });
+                     setTimeout(() => { if(confirm('Abrir WhatsApp para enviar comprovante?')) { window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank'); } }, 500);
+                },
+                gerarRelatorioCestas: () => {
+                    const regioes = Array.from(document.querySelectorAll('#relatorio-regioes-list input:checked')).map(el => el.value);
+                    if(regioes.length === 0) return Utils.toast('Selecione região', 'error');
+                    const entregas = Store.data.rotaAtiva.entregas.filter(e => regioes.includes(e.regiao));
+                    if(entregas.length === 0) return Utils.toast('Sem entregas', 'error');
+                    let msg = `*📋 RELATÓRIO DE CESTAS*\nData: ${Utils.formatData(Store.data.rotaAtiva.dataCriacao)}\n`;
+                    regioes.forEach(r => {
+                        const itens = entregas.filter(e => e.regiao === r);
+                        if(itens.length > 0) {
+                            msg += `\n*📍 REGIÃO: ${r}*\n`;
+                            itens.forEach(e => { e.cestas.forEach(c => { let linha = `👤 ${e.cliente.nome}\n📦 ${c.qtd}x ${c.nome}`; if(c.tipo === 'Alterada') linha += `\n⚠️ ALT: Tirar ${c.tirar} / Pôr ${c.por}`; msg += `${linha}\n------------------\n`; }); });
+                        }
+                    });
+                    window.open(`https://api.whatsapp.com/send?phone=${CONSTANTS.NUMERO_RELATORIO}&text=${encodeURIComponent(msg)}`, '_blank');
+                    App.ui.modalRelatorio.close();
+                },
+                baixarBackup: (tipo) => {
+                    let backup;
+                    let filename;
+
+                    if (tipo === 'completo') {
+                        // EXPORTA TUDO (Rota + Histórico + Meta)
+                        backup = { 
+                            fullDump: true,
+                            timestamp: new Date().toISOString(),
+                            rotaAtiva: Store.data.rotaAtiva,
+                            history: Store.data.history,
+                            meta: Store.data.meta,
+                            version: '2.0'
+                        };
+                        filename = `Backup_COMPLETO_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
+                    } else {
+                        // Exporta apenas Rota (Lógica Original)
+                        const regioes = Array.from(document.querySelectorAll('#export-regioes-list input:checked')).map(el => el.value);
+                        if(regioes.length === 0) return Utils.toast('Selecione região', 'error');
+                        backup = { ...Store.data.rotaAtiva, entregas: Store.data.rotaAtiva.entregas.filter(e => regioes.includes(e.regiao)) };
+                        filename = `Rota_Parcial_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
+                    }
+
+                    const link = document.createElement("a");
+                    link.setAttribute("href", "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backup)));
+                    link.setAttribute("download", filename);
+                    document.body.appendChild(link); link.click(); link.remove();
+                    App.ui.modalExport.close();
+                },
+                importarBackup: (input) => {
+                    const file = input.files[0];
+                    if(!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        try {
+                            const json = JSON.parse(e.target.result);
+                            
+                            // Verifica se é um Backup Completo
+                            if(json.fullDump) {
+                                if(confirm('⚠️ ATENÇÃO: Isso irá substituir TODO o histórico, rotas e dados de clientes pelos do arquivo. Continuar?')) {
+                                    Store.data.rotaAtiva = json.rotaAtiva || Store.novaRota();
+                                    Store.data.history = json.history || [];
+                                    Store.data.meta = json.meta || {};
+                                    Store.save();
+                                    Store.saveHistory();
+                                    Store.saveMeta();
+                                    alert('Backup Completo restaurado com sucesso!');
+                                    window.location.reload();
+                                }
+                            }
+                            // Verifica se é Backup de Rota Antigo
+                            else if(json.entregas) { 
+                                Store.data.rotaAtiva = json; 
+                                Store.save(); 
+                                Utils.toast('Rota importada com sucesso!');
+                                window.location.reload(); 
+                            }
+                            else { throw new Error('Formato inválido'); }
+                        } catch(err) { Utils.toast('Erro ao ler arquivo', 'error'); }
+                    };
+                    reader.readAsText(file);
+                },
+
+                // === CRM CONTROLLERS ===
+                crmClientsCache: [],
+                crmSearch: () => {
+                    const term = document.getElementById('crm-search').value.toLowerCase();
+                    App.controllers.renderCRMTable(App.controllers.crmClientsCache.filter(c => c.nome.toLowerCase().includes(term)));
+                },
+                toggleCrmActions: (id) => {
+                   const el = document.getElementById(id);
+                   if (el.classList.contains('hidden')) el.classList.remove('hidden'); else el.classList.add('hidden');
+                },
+                crmFilter: (type) => {
+                    // Processar dados brutos do histórico para criar perfil de cliente
+                    const map = {};
+                    Store.data.history.forEach(order => {
+                        const nome = order.cliente.nome;
+                        if(!map[nome]) map[nome] = { 
+                            nome: nome, 
+                            celular: order.cliente.celular,
+                            orders: [], 
+                            totalValue: 0,
+                            lastRota: order.regiao 
+                        };
+                        map[nome].orders.push(order);
+                        map[nome].totalValue += (order.valorTotalAjustado || 0);
+                    });
+
+                    let clients = Object.values(map).map(c => {
+                        // Ordenar ordens por data desc
+                        c.orders.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                        c.lastPurchase = c.orders[0].updatedAt;
+                        c.daysSince = Utils.diffDias(c.lastPurchase);
+                        
+                        // Verificar cupom vencendo (se a ultima compra for entre 27 e 30 dias atrás)
+                        c.couponExpiring = c.daysSince >= 27 && c.daysSince <= 30;
+                        return c;
+                    });
+
+                    // Aplica filtros
+                    if(type === 'recent') clients = clients.filter(c => c.daysSince <= 3);
+                    if(type === 'vencendo') clients = clients.filter(c => c.couponExpiring);
+                    if(type === 'inativo40') clients = clients.filter(c => c.daysSince > 40);
+                    if(type === 'inativo60') clients = clients.filter(c => c.daysSince > 60);
+
+                    // Ordena por data (mais recente primeiro)
+                    clients.sort((a,b) => new Date(b.lastPurchase) - new Date(a.lastPurchase));
+
+                    App.controllers.crmClientsCache = clients;
+                    App.controllers.renderCRMTable(clients);
+                },
+                renderCRMTable: (clients) => {
+                    const tbody = document.getElementById('crm-table-body');
+                    
+                    // Atualizar Resumo
+                    let totalVal = 0;
+                    let totalCount = 0;
+                    let basketsCount = {};
+
+                    clients.forEach(c => {
+                        // Como estamos vendo clientes, podemos somar todas as ordens deles que estão no histórico ou apenas as recentes
+                        // A lógica aqui depende se queremos somar TUDO do cliente ou só o que está filtrado
+                        // Para simplicidade e consistência, somaremos o totalValue já calculado no crmFilter (que é o histórico total do cliente)
+                        // PORÉM, se o filtro for 'recent' (3 dias), talvez queiramos ver apenas vendas desses 3 dias? 
+                        // O crmFilter filtra CLIENTES que tiveram atividade.
+                        totalVal += c.totalValue; // Total gasto pelo cliente no histórico todo
+                        totalCount += c.orders.length; // Quantidade de pedidos no histórico
+
+                        c.orders.forEach(o => {
+                            o.cestas.forEach(b => {
+                                if(!basketsCount[b.nome]) basketsCount[b.nome] = 0;
+                                basketsCount[b.nome] += b.qtd;
+                            });
+                        });
+                    });
+
+                    document.getElementById('summary-count').innerText = totalCount;
+                    document.getElementById('summary-value').innerText = Utils.formatMoeda(totalVal);
+                    
+                    const basketStr = Object.entries(basketsCount)
+                        .map(([name, count]) => `<span class="whitespace-nowrap font-bold text-slate-200">${count}x ${name}</span>`)
+                        .join('<span class="mx-2 text-slate-600">|</span>');
+                    document.getElementById('summary-baskets').innerHTML = basketStr || 'Nenhuma venda';
+
+                    if(clients.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Nenhum cliente encontrado com este filtro.</td></tr>'; return; }
+                    
+                    tbody.innerHTML = clients.map((c, idx) => {
+                        // Pegar ultimos 3
+                        const last3 = c.orders.slice(0, 3);
+                        const dates = last3.map(o => Utils.formatDataCurta(o.updatedAt)).join('<br>');
+                        const cestas = last3.map(o => o.cestas.map(x => x.nome).join(', ')).join('<br>');
+                        const pays = last3.map(o => o.formaPagamento.join(', ')).join('<br>');
+                        
+                        // Cálculo de dias para vencimento (Assumindo ciclo de 30 dias)
+                        const diasRestantes = 30 - c.daysSince;
+                        const labelVencimento = diasRestantes > 0 ? `${diasRestantes} dias` : 'Hoje';
+
+                        return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3">
+                                <div class="font-bold text-slate-800">${c.nome}</div>
+                                <div class="text-xs text-slate-500">${c.daysSince} dias sem comprar</div>
+                                ${c.couponExpiring ? '<span class="inline-block bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded font-bold mt-1">CUPOM VENCENDO</span>' : ''}
+                            </td>
+                            <td class="p-3 text-xs text-slate-600">${dates}</td>
+                            <td class="p-3 text-xs text-slate-600">${cestas}</td>
+                            <td class="p-3 text-xs text-slate-600">${pays}</td>
+                            <td class="p-3 text-xs font-semibold">${c.lastRota}</td>
+                            <td class="p-3 text-right font-bold text-slate-700">${Utils.formatMoeda(c.totalValue)}</td>
+                            <td class="p-3 text-center no-print align-top relative">
+                                <button onclick="App.controllers.toggleCrmActions('crm-actions-${idx}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1 px-3 rounded text-xs border border-slate-300">
+                                    ⚡ Opções
+                                </button>
+                                <div id="crm-actions-${idx}" class="hidden absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-xl z-20 text-left overflow-hidden">
+                                    <button onclick="App.controllers.avisarZap('${c.celular}', 'vencimento_custom', ${diasRestantes})" class="w-full text-left px-4 py-3 hover:bg-yellow-50 text-xs font-bold text-yellow-700 border-b border-slate-100">
+                                        🎫 Cupom (Vence ${labelVencimento})
+                                    </button>
+                                    <button onclick="App.controllers.avisarZap('${c.celular}', 'oferta')" class="w-full text-left px-4 py-3 hover:bg-blue-50 text-xs font-bold text-blue-700 border-b border-slate-100">
+                                        🔥 Avisar Oferta
+                                    </button>
+                                    <button onclick="App.controllers.avisarZap('${c.celular}', 'sorteio')" class="w-full text-left px-4 py-3 hover:bg-green-50 text-xs font-bold text-green-700 border-b border-slate-100">
+                                        🍀 Avisar Sorteio
+                                    </button>
+                                    <button onclick="if(confirm('Tem certeza? Isso apagará TODO o histórico deste cliente.')) { Store.removeFromHistory('${c.nome}'); App.controllers.crmFilter('todos'); }" class="w-full text-left px-4 py-3 hover:bg-red-50 text-xs font-bold text-red-700">
+                                        🗑️ Excluir Histórico
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join('');
+                },
+                avisarZap: (celular, tipo, diasRestantes = 0) => {
+                    if(!celular) return Utils.toast('Cliente sem celular', 'error');
+                    let num = celular.replace(/\D/g, '');
+                    if(!num.startsWith('55')) num = '55' + num;
+                    let msg = "";
+                    
+                    if(tipo === 'vencendo') msg = "Olá! Seu cupom de desconto especial está quase vencendo (faltam 3 dias)! Aproveite para fazer seu pedido hoje.";
+                    
+                    else if(tipo === 'vencimento_custom') {
+                        if(diasRestantes > 0) msg = `Olá! Passando para avisar que seu cupom de desconto vence em apenas *${diasRestantes} dias*! 🏃‍♂️ Aproveite para garantir sua cesta hoje.`;
+                        else msg = `Olá! Seu cupom de desconto vence *HOJE*! 🚨 Não perca essa oportunidade.`;
+                    }
+                    
+                    else if(tipo === 'oferta') msg = "Olá! 🌟 Temos uma *OFERTA RELÂMPAGO* especial para você hoje! Gostaria de conferir os itens em promoção?";
+                    
+                    else if(tipo === 'sorteio') msg = "Olá! 🍀 Estamos realizando um *SORTEIO* exclusivo para clientes fiéis! Responda essa mensagem para participar!";
+                    
+                    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Store.init();
+            App.ui.render();
+            document.getElementById('check-alterada').addEventListener('change', App.controllers.toggleCheckAlterada);
+            const radioContainer = document.getElementById('container-radio-regiao');
+            radioContainer.innerHTML = CONSTANTS.REGIOES.map(r => `<label class="cursor-pointer"><input type="radio" name="regiao" value="${r}" class="peer sr-only" ${r === 'VG' ? 'checked' : ''}><div class="rounded-md border border-gray-200 bg-white p-2 text-center text-slate-600 peer-checked:border-slate-800 peer-checked:bg-slate-800 peer-checked:text-white transition-all font-semibold shadow-sm">${r}</div></label>`).join('');
+            
+            // Lógica Dropdown Clientes
+            const inputCliente = document.getElementById('input-cliente');
+            const dropdownClientes = document.getElementById('dropdown-clientes');
+            inputCliente.addEventListener('input', (e) => {
+                const val = e.target.value.toLowerCase();
+                const preview = document.getElementById('info-cliente-preview');
+                if(typeof CLIENTES_DB !== 'undefined' && val.length > 0) {
+                    const filtrados = CLIENTES_DB.filter(c => c.nome.toLowerCase().includes(val)).slice(0, 50);
+                    if(filtrados.length > 0) {
+                        dropdownClientes.innerHTML = filtrados.map(c => `<div class="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors" onclick="App.controllers.selecionarCliente('${c.nome}')"><p class="font-bold text-sm text-slate-800">${c.nome}</p><p class="text-xs text-slate-500">${c.endereco || ''}</p></div>`).join('');
+                        App.controllers.abrirDropdownCliente();
+                    } else { dropdownClientes.innerHTML = '<div class="p-3 text-sm text-slate-400">Nenhum cliente encontrado</div>'; App.controllers.abrirDropdownCliente(); }
+                    const found = CLIENTES_DB.find(c => c.nome.toLowerCase() === val);
+                    if(found) { preview.innerHTML = `<strong>Nome:</strong> ${found.nome}<br><strong>Tel:</strong> ${found.celular || '-'}<br><strong>End:</strong> ${found.endereco || '-'}<br><strong>Comp:</strong> ${found.complemento || '-'}`; preview.classList.remove('hidden'); } else { preview.classList.add('hidden'); }
+                } else { App.controllers.fecharDropdownCliente(); preview.classList.add('hidden'); }
+            });
+
+            document.addEventListener('click', (e) => {
+                if(!e.target.closest('.group')) App.controllers.fecharDropdownCliente();
+                if(!e.target.closest('#container-custom-select-cesta')) App.controllers.fecharDropdownCesta();
+                // Fecha CRM Actions se clicar fora
+                if(!e.target.closest('td.relative')) {
+                    document.querySelectorAll('[id^="crm-actions-"]').forEach(el => el.classList.add('hidden'));
+                }
+            });
+
+            const btnCesta = document.getElementById('btn-custom-select-cesta');
+            const dropdownCesta = document.getElementById('dropdown-cestas');
+            dropdownCesta.innerHTML = CONSTANTS.CESTAS_OPTIONS.map(opt => `<div class="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors" onclick="App.controllers.selecionarCesta('${opt.value}', '${opt.label}', ${opt.price})"><div class="flex justify-between items-center"><span class="font-medium text-sm text-slate-700">${opt.label}</span><span class="text-xs font-bold text-blue-600">${opt.price > 0 ? Utils.formatMoeda(opt.price) : '-'}</span></div></div>`).join('');
+            btnCesta.addEventListener('click', App.controllers.toggleDropdownCesta);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const pedidoId = urlParams.get('pedidoId');
+            if(pedidoId) {
+                setTimeout(() => {
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == pedidoId);
+                    if(entrega) {
+                        if(Store.data.regiaoFiltro !== entrega.regiao) App.controllers.mudarFiltro(entrega.regiao);
+                        App.controllers.abrirPosVenda(pedidoId);
+                        Utils.toast('Pedido carregado via link!', 'info');
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else { Utils.toast('Pedido do link não encontrado.', 'error'); }
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
