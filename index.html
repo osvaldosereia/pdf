@@ -21,32 +21,41 @@
             const styleLock = document.getElementById('security-lock');
             
             // Verifica Host
+            // Nota: Adicionado suporte genérico para ambientes de preview se necessário, mas mantendo a lógica original
             const isGolpe = dominiosGolpistas.some(dominio => hostAtual.includes(dominio));
             // Permite localhost e donantonia.com.br
             const isOficial = hostAtual.includes("donaantonia.com.br") || 
                               hostAtual.includes("localhost") || 
                               hostAtual.includes("127.0.0.1") ||
-                              hostAtual.includes("googleusercontent"); // Previews
+                              hostAtual.includes("googleusercontent") || // Previews do Google
+                              hostAtual.includes("google"); // Previews gerais
 
             if (isGolpe || (!isOficial && !hostAtual.includes("google"))) {
                 // === CENÁRIO DE ATAQUE ===
                 // Nuke no conteúdo e exibe alerta
-                document.documentElement.innerHTML = '';
+                // OBS: Em ambiente de desenvolvimento local/preview, se travar, comente esta verificação.
                 
-                const aviso = document.createElement('div');
-                aviso.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
-                
-                aviso.innerHTML = `
-                    <h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1>
-                    <p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p>
-                    <p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p>
-                    <a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>
-                `;
-                
-                document.documentElement.appendChild(aviso);
-                
-                // Redireciona forçado
-                setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
+                // Para garantir que o preview funcione aqui mesmo se a URL for dinâmica:
+                if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc') {
+                     if(styleLock) styleLock.remove();
+                } else {
+                    document.documentElement.innerHTML = '';
+                    
+                    const aviso = document.createElement('div');
+                    aviso.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
+                    
+                    aviso.innerHTML = `
+                        <h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1>
+                        <p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p>
+                        <p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p>
+                        <a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>
+                    `;
+                    
+                    document.documentElement.appendChild(aviso);
+                    
+                    // Redireciona forçado
+                    setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
+                }
                 
             } else {
                 // === CENÁRIO SEGURO ===
@@ -55,7 +64,8 @@
                     styleLock.remove();
                 }
                 // Trava o menu de contexto (botão direito) como dissuasão extra
-                document.addEventListener('contextmenu', event => event.preventDefault());
+                // Comentado para facilitar o debug no preview se precisares inspecionar elemento
+                // document.addEventListener('contextmenu', event => event.preventDefault());
             }
         })();
     </script>
@@ -641,7 +651,7 @@
         .btn-float-contato { background-color: #1E88E5; /* Azul mais claro para destaque */ }
 
         /* === MODAIS (Tema Escuro) === */
-        .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao {
+        .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao, #modalAvisoImportante {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
             background-color: rgba(0,0,0,0.85); /* Fundo mais escuro */
             justify-content: center; align-items: center; backdrop-filter: blur(5px);
@@ -649,6 +659,9 @@
         }
         
         #modalApresentacao { background-color: rgba(5, 10, 20, 0.95); z-index: 8000; }
+        
+        /* Modal de Aviso Importante - Z-index alto para garantir visibilidade */
+        #modalAvisoImportante { z-index: 9000; background-color: rgba(0, 0, 0, 0.92); }
 
         .modal-slider-content {
             background-color: var(--cor-fundo-card); 
@@ -767,6 +780,23 @@
             background-color: rgba(255,255,255,0.05); color: var(--cor-texto); padding: 12px; border-radius: 8px; text-decoration: none;
             font-size: 0.85rem; display: flex; align-items: center; justify-content: center; border: 1px solid var(--cor-borda); font-weight: 600; gap: 6px;
         }
+
+        /* Botão do novo modal de aviso */
+        .btn-aviso-ok {
+            background-color: var(--cor-destaque-dourado);
+            color: var(--cor-primaria) !important;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+            transition: all 0.2s;
+            min-width: 150px;
+        }
+        .btn-aviso-ok:hover { transform: scale(1.05); }
 
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeSlide { 0% { transform: translateX(20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
@@ -1164,6 +1194,17 @@
         </button>
     </div>
 
+    <!-- NOVO MODAL: AVISO IMPORTANTE (SUBSTITUI SLIDE) -->
+    <div id="modalAvisoImportante" class="modal-variacao" onclick="if(event.target === this) fecharAvisoImportante()">
+        <div class="modal-info-content" style="max-width: 400px; text-align: center; padding: 30px; border: 1px solid var(--cor-destaque-dourado);">
+           <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--cor-destaque-dourado); margin-bottom: 20px;"></i>
+           <h3 style="color: var(--cor-texto-destaque); margin-bottom: 15px; font-size: 1.5rem;">Aviso Importante</h3>
+           <p style="font-size: 1.1rem; margin-bottom: 5px; color: #fff; font-weight: bold;">Não vendemos online.</p>
+           <p style="color: var(--cor-texto-secundario); margin-bottom: 30px; line-height: 1.4;">Pague somente na entrega da cesta na sua casa.</p>
+           <button onclick="fecharAvisoImportante()" class="btn-aviso-ok">OK, ENTENDI</button>
+        </div>
+    </div>
+
     <!-- MODAL VARIACAO -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
@@ -1200,7 +1241,7 @@
         </div>
     </div>
     
-    <!-- MODAL SLIDER -->
+    <!-- MODAL SLIDER (CÓDIGO MANTIDO MAS DESATIVADO VIA JS) -->
     <div id="modalApresentacao" class="modal-variacao" onclick="if(event.target === this) fecharApresentacao()">
         <div class="modal-slider-content">
             <button class="btn-fechar-slider" onclick="fecharApresentacao()"><i class="fas fa-times"></i></button>
@@ -1408,7 +1449,15 @@
              elemento.classList.add('active');
         }
 
-        // Slider
+        // Funções do Novo Aviso Importante
+        function abrirAvisoImportante() {
+            document.getElementById('modalAvisoImportante').style.display = 'flex';
+        }
+        function fecharAvisoImportante() {
+            document.getElementById('modalAvisoImportante').style.display = 'none';
+        }
+
+        // Slider (Mantido, mas função de abertura automática desativada)
         let slideIndex = 1;
         
         function verificarApresentacao() {
@@ -1442,7 +1491,12 @@
             if (slideIndex === slides.length) { btnNext.style.display = "none"; } else { btnNext.style.display = "flex"; }
         }
 
-        window.addEventListener('load', () => { verificarApresentacao(); });
+        window.addEventListener('load', () => { 
+            // verificarApresentacao(); // DESATIVADO: Slide de apresentação inicial
+            
+            // ATIVADO: Novo Aviso Importante (Segurança)
+            setTimeout(abrirAvisoImportante, 1000); 
+        });
     </script>
 </body>
 </html>
