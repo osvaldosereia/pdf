@@ -203,7 +203,7 @@
         .banner-alerta-pagamento {
             position: sticky; /* FIXA QUANDO ROLA */
             top: 0;
-            z-index: 4000; /* Z-index alto para ficar sobre outros elementos */
+            z-index: 3000; /* Z-index alto para ficar sobre outros elementos */
             
             background-color: #D32F2F; /* VERMELHO DESTAQUE */
             color: white; /* TEXTO BRANCO */
@@ -336,7 +336,7 @@
             position: absolute; /* Mudado de Fixed para Absolute */
             top: 5px; 
             left: 15px; 
-            z-index: 5000; /* AUMENTADO PARA 5000 (Maior que Banner 4000) */
+            z-index: 9999; /* AUMENTADO PARA 9999 para garantir que fique por cima do banner */
             background-color: white;
             padding: 0; 
         }
@@ -1337,43 +1337,6 @@
           }
         ]
       }
-    }
-    </script>
-    
-    <!-- NOVO: SCHEMA DE FAQ PAGE (PERGUNTAS FREQUENTES PARA RICH SNIPPETS) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "Vocês fazem entrega de cesta básica em Cuiabá e Várzea Grande?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sim! Realizamos entrega grátis de cestas básicas em toda a área urbana de Cuiabá e Várzea Grande, incluindo bairros como CPA, Coxipó, Centro, Cristo Rei, Tijucal e Pedra 90."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Aceitam cartão de alimentação e vale refeição?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Aceitamos os principais cartões de alimentação como Alelo, Sodexo, Pluxee (antigo Sodexo), Ticket, além de pagamentos digitais via Pix e cartões de crédito e débito."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Quanto tempo demora a entrega da cesta básica?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Para pedidos realizados até as 10h da manhã, a entrega é feita no mesmo dia em Cuiabá e VG. Temos a logística de entrega rápida e eficiente."
-        }
-      }, {
-        "@type": "Question",
-        "name": "Qual o preço da cesta básica mais barata em Cuiabá?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Nossa Cesta Econômica custa a partir de R$ 85,00. É ideal para doações, empresas e consumo rápido, contendo todos os itens essenciais de qualidade."
-        }
-      }]
     }
     </script>
 </head>
