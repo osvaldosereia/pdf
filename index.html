@@ -64,7 +64,7 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://maps.google.com">
     
-    <!-- PWA Removido conforme solicitado, mantendo apenas meta tags básicas -->
+    <!-- Meta Tags para Mobile -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dona Antônia">
@@ -74,6 +74,7 @@
     <!-- TÍTULO HÍBRIDO OTIMIZADO (Marca + Local + Benefício) -->
     <title>Super Cestas Básicas Dona Antônia | Cuiabá e VG | Entrega Grátis</title>
     
+    <!-- META DESCRIPTION COM PALAVRAS-CHAVE LOCAIS E GATILHOS MENTAIS -->
     <meta name="description" content="Procurando Cesta Básica em Cuiabá? A Dona Antônia tem o melhor preço no Atacado e Varejo. Entregamos no CPA, Coxipó, Centro e Várzea Grande. Peça pelo WhatsApp!">
     <meta name="keywords" content="cesta básica cuiabá, sacolão cuiabá, cesta doação, jardim nossa senhora aparecida, compra de alimentos, entrega grátis mercado, cesta de natal cuiabá, atacado de alimentos, cesta basica várzea grande, cristo rei, pedra 90, tijucal">
     
@@ -86,6 +87,7 @@
     <meta property="og:image" content="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" />
     <meta property="og:site_name" content="Dona Antônia Alimentos" />
 
+    <!-- GEO TAGS -->
     <meta name="geo.region" content="BR-MT" />
     <meta name="geo.placename" content="Cuiabá" />
     <meta name="geo.position" content="-15.6025;-56.0968" />
@@ -130,7 +132,7 @@
             --cor-entrega: #EF6C00; 
             --cor-header-fundo: #f5f5f5;
             --altura-header: 80px; 
-            /* LOGO DIMINUÍDA CONFORME SOLICITADO */
+            /* LOGO DIMINUÍDA PARA 80px */
             --largura-logo: 80px; 
             --altura-floating-bar: 70px;
         }
@@ -192,31 +194,6 @@
             margin: 6px 0 0 0;
             font-weight: 400;
         }
-
-        /* === AVALIAÇÕES GOOGLE === */
-        .google-reviews-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #555;
-            background: #f9f9f9;
-            padding: 8px 12px;
-            border-radius: 20px;
-            margin: 10px auto 0;
-            border: 1px solid #eee;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .google-reviews-badge:hover {
-            background-color: #E3F2FD;
-            border-color: #BBDEFB;
-            color: #1565C0;
-        }
-        .stars { color: #FFC107; letter-spacing: -2px;}
 
         /* === MENU DE ANCORAS === */
         .menu-ancoras-cestas { display: none !important; }
@@ -811,13 +788,28 @@
         .footer-links-seo a:hover { text-decoration: underline; color: var(--cor-primaria); }
     </style>
 
+    <!-- OTIMIZAÇÃO SEO LOCAL "NUCLEAR": Dados Estruturados (Schema.org) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "GroceryStore",
       "name": "Super Cestas Básicas Dona Antônia",
       "image": "https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif",
-      "description": "Distribuidora de Cestas Básicas e Sacolão com entrega grátis em Cuiabá e Várzea Grande.",
+      "description": "Distribuidora de Cestas Básicas e Sacolão com entrega grátis em Cuiabá e Várzea Grande. O melhor preço em atacado e varejo de alimentos no Jardim Nossa Sra. Aparecida.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "R. Trinta, 105 - Jardim Nossa Sra. Aparecida",
+        "addressLocality": "Cuiabá",
+        "addressRegion": "MT",
+        "postalCode": "78090-660",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -15.6025,
+        "longitude": -56.0968
+      },
+      "url": "https://donaantonia.com.br/",
       "telephone": "+5565998150975",
       "priceRange": "$$",
       "openingHoursSpecification": [
@@ -828,7 +820,14 @@
           "closes": "18:00"
         }
       ],
-      "areaServed": ["Cuiabá", "Várzea Grande"]
+      "areaServed": [
+        "Cuiabá", 
+        "Várzea Grande", 
+        "Jardim Nossa Sra. Aparecida", 
+        "Coxipó", 
+        "CPA", 
+        "Cristo Rei"
+      ]
     }
     </script>
 </head>
@@ -879,11 +878,11 @@
 
                 <div class="cesta-cards-grid">
                     
-                    <!-- CESTA ECONÔMICA -->
+                    <!-- CESTA ECONÔMICA COM ALT TEXT COMPLETO (SEO) -->
                     <div class="card-cesta-horizontal" id="cestaeconomica">
                         <div class="selo-destaque"><i class="fas fa-star"></i> Mais Vendida</div>
                         <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" fetchpriority="high" alt="Cesta Básica Econômica" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
+                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" fetchpriority="high" alt="Cesta Básica Econômica para Doação em Cuiabá e Várzea Grande - Entrega Grátis" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1067,6 +1066,7 @@
                     <div style="text-align: center;">
                         <p style="font-size: 0.95rem; color: #555;">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
                         
+                        <!-- CONTEÚDO SEO COMPLETO: BAIRROS -->
                         <div class="lista-bairros-seo">
                             <h4>📍 Cuiabá - Região Norte (CPA):</h4>
                             <p>CPA I, CPA II, CPA III e CPA IV, Morada da Serra, Três Barras, Jardim Ubirajara, Nova Conquista, 1º de Março, Jardim Vitória, Novo Paraíso.</p>
