@@ -271,7 +271,7 @@
         .toolbar { display: flex; gap: 5px; }
         
         .btn-tool {
-            background-color: #333; color: #ccc; border: 1px solid #444; padding: 10px; flex: 1; cursor: pointer; border-radius: 4px; text-align: center; font-size: 0.85rem;
+            background-color: #333; color: #ccc; border: 1px solid #444; padding: 10px 5px; flex: 1; cursor: pointer; border-radius: 4px; text-align: center; font-size: 0.85rem;
         }
         .btn-upload { background-color: #004085; border-color: #003065; color: white; }
 
@@ -365,6 +365,7 @@
                 <button class="btn-tool" onclick="limparLista()">🗑️ Limpar</button>
                 <button class="btn-tool" onclick="removerDuplicados()">✨ Únicos</button>
                 <button class="btn-tool" onclick="embaralharLista()">🔀 Misturar</button>
+                <button class="btn-tool" onclick="toggleFullScreen()" title="Alternar Tela Cheia">⛶ Tela Cheia</button>
             </div>
             <textarea id="lista-nomes" oninput="atualizarContador()" placeholder="Cole a lista...">João Silva
 Maria Santos
@@ -434,6 +435,19 @@ Beatriz Silva</textarea>
                 [lista[i], lista[j]] = [lista[j], lista[i]];
             }
             setListaNomes(lista);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Erro ao tentar ativar tela cheia: ${err.message}`);
+                    alert("Seu navegador pode não suportar o modo de tela cheia automaticamente.");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
         }
 
         function iniciarSorteio() {
