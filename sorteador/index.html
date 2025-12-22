@@ -20,19 +20,18 @@
             overflow: hidden; 
         }
 
-        /* --- CABEÇALHO (NOVO LAYOUT) --- */
+        /* --- CABEÇALHO --- */
         header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* Separa Esquerda e Direita */
-            padding-bottom: 8px;
+            justify-content: space-between;
+            padding-bottom: 5px;
             border-bottom: 1px solid #333;
             flex: 0 0 auto; 
             height: auto;
             min-height: 80px;
         }
 
-        /* Lado Esquerdo: Logo + Títulos */
         .header-left {
             display: flex;
             align-items: center;
@@ -55,23 +54,9 @@
             text-align: left;
         }
 
-        h1 {
-            color: #FFD700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
-            font-size: 1.1rem;
-            line-height: 1.2;
-        }
+        h1 { color: #FFD700; text-transform: uppercase; margin: 0; font-size: 1.1rem; line-height: 1.2; }
+        h2 { color: #ccc; font-size: 0.9rem; margin: 2px 0 0 0; font-weight: normal; }
 
-        h2 {
-            color: #ccc;
-            font-size: 0.9rem;
-            margin: 2px 0 0 0;
-            font-weight: normal;
-        }
-
-        /* Lado Direito: Infos + Contador */
         .header-right {
             display: flex;
             flex-direction: column;
@@ -85,7 +70,6 @@
 
         .info-site { color: #fff; font-weight: bold; }
         .info-whatsapp { color: #2ecc71; font-weight: 600; }
-        
         .participant-badge {
             margin-top: 3px;
             background-color: #333;
@@ -103,7 +87,7 @@
             gap: 8px;
             width: 100%;
             flex: 1; 
-            padding-top: 8px;
+            padding-top: 5px;
             min-height: 0; 
         }
 
@@ -151,7 +135,7 @@
             box-sizing: border-box;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
             text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-            transition: all 0.3s;
+            transition: all 0.5s;
         }
 
         button.action-btn {
@@ -171,20 +155,35 @@
         button.action-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #1e8449; }
         button.action-btn:disabled { background: #555; box-shadow: none; cursor: not-allowed; }
 
-        /* --- BLOCO 2: LISTA DE GANHADORES (2 COLUNAS) --- */
+        /* Mensagem de Finalização */
+        .final-message {
+            display: none; /* Escondido inicialmente */
+            text-align: center;
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #FFD700;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .final-message h2 { color: #FFD700; font-size: 1.8rem; margin: 0; text-shadow: 2px 2px 0 #000; }
+        .final-message p { color: white; font-size: 1.1rem; margin: 5px 0 0 0; font-weight: bold; }
+
+        @keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* --- BLOCO 2: LISTA DE GANHADORES (2 COLUNAS REAIS) --- */
         .winners-section {
             background: rgba(255, 215, 0, 0.05);
             border: 1px solid #444;
             border-radius: 8px;
             padding: 5px;
             
-            /* Altura controlada para dar espaço à lista de participantes */
-            height: 25vh; /* Ocupa apenas 25% da tela vertical aprox */
-            flex: 0 0 auto;
+            /* Altura fixa para caber 10 nomes de cada lado sem scroll se possível, ou com scroll se necessário */
+            flex: 1;
+            min-height: 200px;
             
-            overflow-y: auto; 
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .winners-title {
@@ -195,37 +194,46 @@
             text-transform: uppercase;
             border-bottom: 1px solid #555;
             padding-bottom: 2px;
+            flex: 0 0 auto;
         }
 
-        #lista-ganhadores {
+        /* Container das duas colunas */
+        .winners-grid-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 10px;
+            overflow-y: auto; /* Scroll apenas se nomes forem muitos */
+        }
+
+        .winners-column {
+            flex: 1; /* Cada coluna ocupa 50% */
             list-style: none;
             padding: 0;
             margin: 0;
-            /* MÁGICA DAS 2 COLUNAS: */
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            column-gap: 10px;
-            row-gap: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
+        
+        /* Linha vertical separando as colunas */
+        #coluna-1 { border-right: 1px dashed #444; padding-right: 5px; }
+        #coluna-2 { padding-left: 5px; }
 
         .winner-item {
             display: flex;
             justify-content: space-between;
-            padding: 4px;
+            padding: 6px 8px;
             border-bottom: 1px solid #333;
-            font-size: 0.8rem;
+            /* FONTE AUMENTADA */
+            font-size: 1rem; 
             animation: slideIn 0.3s ease-out;
             align-items: center;
             background: rgba(0,0,0,0.2);
             border-radius: 4px;
         }
         
-        .winner-number { 
-            font-weight: bold; 
-            color: #FFD700; 
-            margin-right: 5px;
-            font-size: 0.75rem;
-        }
+        .winner-number { font-weight: bold; color: #FFD700; margin-right: 8px; font-size: 0.9rem; }
         .winner-name { 
             font-weight: bold; 
             color: #fff; 
@@ -234,66 +242,40 @@
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
+            /* Letra maior no nome */
+            font-size: 1.1rem; 
         }
 
-        /* --- BLOCO 3: CONFIGURAÇÕES (LISTA PARTICIPANTES GIGANTE) --- */
+        /* --- BLOCO 3: CONFIGURAÇÕES --- */
         .settings-panel {
             background: #222;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #333;
-            
-            /* Ocupa o resto da tela */
-            flex: 1; 
-            
+            flex: 0 0 auto;
+            /* Altura fixa para garantir visibilidade da lista acima */
+            height: 180px; 
             display: flex;
             flex-direction: column;
             gap: 5px;
-            min-height: 0; /* Permite scroll interno se necessário */
         }
 
-        .settings-header {
-            color: #888;
-            font-weight: bold;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
+        .settings-header { color: #888; font-weight: bold; font-size: 0.85rem; display: flex; justify-content: space-between; }
         .toolbar { display: flex; gap: 5px; }
         
         .btn-tool {
-            background-color: #333;
-            color: #ccc;
-            border: 1px solid #444;
-            padding: 8px;
-            flex: 1;
-            cursor: pointer;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 0.8rem;
+            background-color: #333; color: #ccc; border: 1px solid #444; padding: 8px; flex: 1; cursor: pointer; border-radius: 4px; text-align: center; font-size: 0.8rem;
         }
         .btn-upload { background-color: #004085; border-color: #003065; color: white; }
 
         textarea {
             width: 100%;
-            /* OCUPA TODO ESPAÇO RESTANTE */
             flex: 1; 
-            background-color: #111;
-            color: #ddd;
-            border: 1px solid #444;
-            border-radius: 4px;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 0.95rem; /* Fonte confortável */
-            resize: none;
-            box-sizing: border-box;
-            line-height: 1.5;
+            background-color: #111; color: #ddd; border: 1px solid #444; border-radius: 4px; padding: 10px;
+            font-family: monospace; font-size: 0.95rem; resize: none; box-sizing: border-box; line-height: 1.5;
         }
 
-        /* --- EFEITOS ESPECIAIS (EXPLOSÃO) --- */
-        
-        /* Classe ativada no ganhador */
+        /* EFEITOS */
         .vencedor {
             border-color: #FFD700 !important;
             color: #FFF !important;
@@ -302,37 +284,18 @@
         }
 
         @keyframes superGlow {
-            0% { 
-                text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700; 
-                transform: scale(1);
-                border-color: #FFD700;
-            }
-            100% { 
-                text-shadow: 0 0 30px #FFD700, 0 0 60px #FF0000, 0 0 80px #FFF; 
-                transform: scale(1.05);
-                border-color: #FFF;
-            }
+            0% { text-shadow: 0 0 10px #FFD700; transform: scale(1); border-color: #FFD700; }
+            100% { text-shadow: 0 0 30px #FFD700, 0 0 50px #FFF; transform: scale(1.02); border-color: #FFF; }
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
-        .confetti {
-            position: fixed;
-            z-index: 9999;
-            animation: cair 4s linear forwards;
-        }
+        .confetti { position: fixed; z-index: 9999; animation: cair 4s linear forwards; }
         @keyframes cair { 
             0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } 
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -345,7 +308,6 @@
                 <h2>Especial de Natal</h2>
             </div>
         </div>
-
         <div class="header-right">
             <div class="info-site">www.donaantonia.com.br</div>
             <div class="info-whatsapp">99681-3588 | 99815-0975</div>
@@ -366,32 +328,38 @@
             <div id="display-sorteio">?</div>
 
             <button id="btn-sortear" class="action-btn" onclick="iniciarSorteio()">🚀 SORTEAR AGORA</button>
+            
+            <div id="final-msg-box" class="final-message">
+                <h2>🎅 FELIZ NATAL! 🎄</h2>
+                <p>Obrigado a todos e boas festas!</p>
+            </div>
         </div>
 
         <div class="winners-section">
             <h3 class="winners-title">🏆 Ganhadores</h3>
-            <ul id="lista-ganhadores">
-                <li style="grid-column: span 2; text-align:center; color:#666; font-style:italic; padding:10px" id="sem-ganhadores">
-                    Nenhum ganhador ainda...
-                </li>
-            </ul>
+            <div class="winners-grid-container">
+                <ul id="coluna-1" class="winners-column">
+                    <li style="text-align:center; color:#666; font-style:italic; padding:10px; font-size:0.8rem" id="sem-ganhadores">
+                        Aguardando...
+                    </li>
+                </ul>
+                <ul id="coluna-2" class="winners-column">
+                    </ul>
+            </div>
         </div>
 
         <div class="settings-panel">
             <div class="settings-header">
                 <span>📋 Lista de Participantes (Editável)</span>
             </div>
-            
             <div class="toolbar">
                 <label for="input-file" class="btn-tool btn-upload">📂 Abrir</label>
                 <input type="file" id="input-file" accept=".txt" style="display: none;" onchange="carregarArquivoTxt(this)">
-                
                 <button class="btn-tool" onclick="limparLista()">🗑️ Limpar</button>
                 <button class="btn-tool" onclick="removerDuplicados()">✨ Únicos</button>
                 <button class="btn-tool" onclick="embaralharLista()">🔀 Misturar</button>
             </div>
-            
-            <textarea id="lista-nomes" oninput="atualizarContador()" placeholder="Cole a lista de nomes aqui...">João Silva
+            <textarea id="lista-nomes" oninput="atualizarContador()" placeholder="Cole a lista...">João Silva
 Maria Santos
 Pedro Oliveira
 Ana Costa
@@ -401,10 +369,9 @@ Roberto Almeida
 Juliana Costa
 Lucas Pereira
 Beatriz Silva</textarea>
-            
             <label style="display:flex; align-items:center; gap:5px; cursor:pointer; font-size:0.85rem; color:#aaa; margin-top:2px;">
                 <input type="checkbox" id="check-remover" checked> 
-                Remover ganhador da lista automaticamente
+                Remover ganhador da lista?
             </label>
         </div>
 
@@ -417,7 +384,6 @@ Beatriz Silva</textarea>
         function carregarArquivoTxt(input) {
             const file = input.files[0];
             if (!file) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('lista-nomes').value = e.target.result;
@@ -438,9 +404,7 @@ Beatriz Silva</textarea>
         }
 
         function atualizarContador() {
-            const lista = getListaNomes();
-            // ATUALIZADO: Agora busca o contador lá no cabeçalho
-            document.getElementById('contador-header').innerText = lista.length;
+            document.getElementById('contador-header').innerText = getListaNomes().length;
         }
 
         function limparLista() {
@@ -466,14 +430,11 @@ Beatriz Silva</textarea>
         }
 
         function iniciarSorteio() {
-            if (numeroSorteio > maxSorteios) {
-                alert("Sorteio finalizado!");
-                return;
-            }
+            if (numeroSorteio > maxSorteios) return;
 
             const nomes = getListaNomes();
             if (nomes.length < 2) {
-                alert("Precisa de pelo menos 2 nomes para sortear.");
+                alert("Precisa de pelo menos 2 nomes.");
                 return;
             }
 
@@ -482,7 +443,7 @@ Beatriz Silva</textarea>
             
             let tempo = 0;
             const duracao = 4000; 
-            const velocidade = 60; // Mais rápido para dar emoção
+            const velocidade = 60;
             
             btn.disabled = true;
             btn.innerText = "SORTEANDO...";
@@ -507,7 +468,7 @@ Beatriz Silva</textarea>
             
             const display = document.getElementById('display-sorteio');
             display.innerText = vencedor;
-            display.classList.add('vencedor'); // Ativa o brilho NEON
+            display.classList.add('vencedor');
             celebrar();
 
             registrarGanhador(numeroSorteio, vencedor);
@@ -526,17 +487,33 @@ Beatriz Silva</textarea>
                     btn.innerText = `PRÓXIMO: CESTA #${numeroSorteio} >>`;
                     btn.onclick = prepararProximoVisual;
                     btn.style.background = "linear-gradient(45deg, #f39c12, #f1c40f)";
-                }, 3000); // Espera um pouco mais para apreciarem a festa
+                }, 3000);
             } else {
-                btn.innerText = "SORTEIO CONCLUÍDO!";
-                btn.style.background = "#333";
+                // FIM DO SORTEIO - MOSTRAR AGRADECIMENTO
+                setTimeout(() => {
+                    btn.style.display = 'none'; // Some o botão
+                    display.innerText = "FIM"; // Limpa o display
+                    display.style.opacity = "0.5";
+                    
+                    const finalMsg = document.getElementById('final-msg-box');
+                    finalMsg.style.display = 'block'; // Mostra msg
+                    celebrar(); // Mais confetes!
+                }, 3000);
             }
         }
 
         function registrarGanhador(numero, nome) {
-            const ul = document.getElementById('lista-ganhadores');
+            // Remove mensagem de "aguardando" se existir
             const msgVazio = document.getElementById('sem-ganhadores');
             if(msgVazio) msgVazio.remove();
+
+            // Decide a coluna
+            let colunaId = 'coluna-1';
+            if (numero > 10) {
+                colunaId = 'coluna-2';
+            }
+            
+            const ul = document.getElementById(colunaId);
 
             const li = document.createElement('li');
             li.className = 'winner-item';
@@ -544,8 +521,12 @@ Beatriz Silva</textarea>
                 <span class="winner-number">#${numero}</span>
                 <span class="winner-name">${nome}</span>
             `;
-            // Adiciona sempre no início
-            ul.insertBefore(li, ul.firstChild);
+            
+            // ALTERAÇÃO IMPORTANTE: appendChild para entrar no FINAL (em baixo)
+            ul.appendChild(li);
+            
+            // Auto scroll para baixo
+            ul.scrollTop = ul.scrollHeight;
         }
 
         function prepararProximoVisual() {
@@ -562,36 +543,21 @@ Beatriz Silva</textarea>
 
         function celebrar() {
             const cores = ['#FFD700', '#FF0000', '#00FF00', '#00FFFF', '#FF00FF', '#FFFFFF'];
-            // AUMENTADO PARA 400 CONFETES
             for(let i=0; i<400; i++) {
                 const confete = document.createElement('div');
                 confete.classList.add('confetti');
-                
-                // Posição aleatória na tela
                 confete.style.left = Math.random() * 100 + 'vw';
-                
-                // Cores aleatórias
                 confete.style.backgroundColor = cores[Math.floor(Math.random() * cores.length)];
-                
-                // Começa um pouco acima da tela
                 confete.style.top = (Math.random() * -20) + 'px';
-                
-                // Tamanhos variados para profundidade
                 const size = Math.random() * 10 + 5 + 'px';
                 confete.style.width = size;
                 confete.style.height = size;
-                
-                // Velocidades diferentes
                 confete.style.animationDuration = (Math.random() * 2 + 2) + 's'; 
-                
                 document.body.appendChild(confete);
-                
-                // Remove do DOM após cair
                 setTimeout(() => confete.remove(), 5000);
             }
         }
         
-        // Inicializa o contador ao carregar
         atualizarContador();
     </script>
 </body>
