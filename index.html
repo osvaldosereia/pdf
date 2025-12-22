@@ -95,7 +95,7 @@
 
     <meta name="robots" content="index, follow">
     <meta name="author" content="Super Cestas Básicas Dona Antônia">
-    <meta name="theme-color" content="#0F2546"> 
+    <meta name="theme-color" content="#081221"> 
     
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
@@ -118,27 +118,43 @@
             user-select: text;
         }
 
+        /* === PALETA DE CORES: TEMA ESCURO (AZUL NOTURNO) === */
         :root {
-            --cor-primaria: #0F2546; 
-            --cor-destaque-vermelho: #D32F2F; 
-            --cor-destaque-dourado: #FFC107; 
-            --cor-whatsapp: #128C7E; 
+            /* Branding e Bases */
+            --cor-primaria: #0F2546; /* Azul Escuro da Marca */
+            --cor-fundo-site: #081221; /* Azul Quase Preto (Fundo da Página) */
+            --cor-fundo-card: #0F2546; /* Azul da Logo (Fundo dos Cards) */
+            --cor-fundo-header: #0b182d; /* Header Ligeiramente Destacado */
+            
+            /* Textos */
+            --cor-texto: #e0e0e0; /* Cinza Claro para Texto Corrido */
+            --cor-texto-destaque: #ffffff; /* Branco Puro para Títulos */
+            --cor-texto-secundario: #b0bec5; /* Cinza Azulado para detalhes */
+            
+            /* Detalhes e Bordas */
+            --cor-borda: #1c355e; /* Azul Médio para Bordas Sutis */
+            
+            /* Cores de Ação e Destaque */
+            --cor-destaque-vermelho: #ff5252; /* Vermelho Mais Vivo para Fundo Escuro */
+            --cor-destaque-dourado: #ffb300; /* Dourado/Âmbar */
+            
+            /* Redes Sociais e Serviços */
+            --cor-whatsapp: #25D366; 
             --cor-telegram: #0088cc;
             --cor-facebook: #1877F2; 
-            --cor-info: #1565C0; 
-            --cor-texto: #333; 
-            --cor-fundo: #fafafa;
-            --cor-pagamento: #0277BD; 
-            --cor-entrega: #EF6C00; 
-            --cor-header-fundo: #f5f5f5;
+            
+            /* Funcionais */
+            --cor-info: #64b5f6; /* Azul Claro */
+            --cor-entrega: #ff9800; /* Laranja */
+            
+            /* Dimensões */
             --altura-header: 80px; 
-            /* LOGO DIMINUÍDA PARA 80px */
             --largura-logo: 80px; 
             --altura-floating-bar: 70px;
         }
 
         html { 
-            background-color: #e0e0e0; 
+            background-color: var(--cor-fundo-site);
             scroll-behavior: smooth;
             scroll-padding-top: calc(var(--altura-header) + 40px); 
             font-size: 15px;
@@ -148,11 +164,11 @@
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            background-color: #e0e0e0; 
+            background-color: var(--cor-fundo-site);
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            padding-top: 0;
+            padding-top: var(--altura-header); /* REINSERIDO: Espaço para Header Fixo */
             padding-bottom: 90px; 
             min-height: 10vh;
             position: relative; 
@@ -161,7 +177,7 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            color: var(--cor-primaria);
+            color: var(--cor-texto-destaque);
             margin-top: 0;
             line-height: 1.2;
         }
@@ -169,75 +185,79 @@
         .main-content-wrapper {
             max-width: 480px; 
             margin: 0 auto; 
-            background-color: var(--cor-fundo); 
-            box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            background-color: var(--cor-fundo-site); 
+            box-shadow: none; /* Removido sombra no escuro */
             transition: max-width 0.3s ease; 
         }
         
         .desktop-only { display: none !important; }
 
-        /* === TITULO H1 SEO === */
+        /* === TITULO H1 SEO (Tema Escuro) === */
         .seo-main-title {
             text-align: center;
             padding: 20px 15px 10px 15px;
-            background: #fff;
+            background: var(--cor-fundo-card); /* Fundo Azul */
+            border-radius: 0 0 12px 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--cor-borda);
         }
         .seo-main-title h1 {
             font-size: 1.25rem; 
             font-weight: 700; 
             margin: 0;
             letter-spacing: -0.5px;
+            color: var(--cor-texto-destaque);
         }
         .seo-main-title p {
             font-size: 0.95rem;
-            color: #666;
+            color: var(--cor-texto-secundario);
             margin: 6px 0 0 0;
             font-weight: 400;
         }
 
-        /* === MENU DE ANCORAS === */
+        /* === MENU DE ANCORAS (Tema Escuro) === */
         .menu-ancoras-cestas { display: none !important; }
 
         .chip-ancora {
-            background: #fff;
-            border: 1px solid #ddd;
+            background: var(--cor-fundo-card);
+            border: 1px solid var(--cor-borda);
             padding: 6px 14px;
             border-radius: 20px; 
             font-size: 0.85rem;
             text-decoration: none;
-            color: var(--cor-primaria);
+            color: var(--cor-texto-destaque);
             font-weight: 600;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: all 0.2s ease;
             text-align: center;
         }
         .chip-ancora.active {
-            background-color: var(--cor-primaria);
-            color: white;
-            border-color: var(--cor-primaria);
+            background-color: var(--cor-destaque-dourado);
+            color: var(--cor-primaria); /* Texto escuro no fundo dourado */
+            border-color: var(--cor-destaque-dourado);
         }
 
-        /* --- CABEÇALHO --- */
+        /* --- CABEÇALHO (FIXO E ESCURO) --- */
         header {
-            background-color: white;
+            background-color: var(--cor-fundo-header);
             height: var(--altura-header);
             padding: 0;
             display: flex;
             flex-direction: row; 
-            box-shadow: none;
-            position: relative;
-            top: auto;
-            left: auto;
-            transform: none;
+            
+            /* VOLTOU A SER FIXO */
+            position: fixed;
+            top: 0;
+            left: 0;
+            
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); /* Sombra mais forte */
             width: 100%;
-            max-width: 480px; 
-            margin: 0 auto; 
             z-index: 1000;
-            transition: max-width 0.3s ease;
             contain: layout size; 
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--cor-borda);
         }
-
+        
+        /* Container interno do header centralizado */
         .header-top {
             display: flex;
             justify-content: flex-end; 
@@ -247,6 +267,8 @@
             padding: 5px 15px;
             position: relative;
             z-index: 1002;
+            max-width: 480px; /* Limite mobile padrão */
+            margin: 0 auto;
         }
 
         /* Logo Pequena (Absolute) */
@@ -255,35 +277,37 @@
             width: var(--largura-logo); 
             object-fit: cover; 
             border-radius: 50%; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
             
             position: absolute;
             top: 5px; 
             left: 15px; 
             z-index: 9999;
-            background-color: white;
+            background-color: white; /* Mantém fundo branco para a logo aparecer */
             padding: 0; 
+            border: 2px solid var(--cor-borda);
         }
 
-        /* NOVO ALERTA NO HEADER (Substituindo botão antigo) */
+        /* ALERTA NO HEADER (Tema Escuro) */
         .header-alert-box {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             text-align: right;
-            color: var(--cor-destaque-vermelho);
+            color: #ff8a80; /* Vermelho claro/pastel */
             font-size: 0.8rem;
             line-height: 1.2;
-            margin-left: auto; /* Empurra para direita */
-            max-width: 65%; /* Não invade o espaço da logo */
+            margin-left: auto; 
+            max-width: 65%; 
             gap: 8px;
-            padding: 5px;
-            background: #FFEBEE;
+            padding: 6px 12px;
+            background: rgba(255, 82, 82, 0.15); /* Fundo vermelho translúcido */
             border-radius: 8px;
-            border: 1px solid #FFCDD2;
+            border: 1px solid rgba(255, 82, 82, 0.3);
         }
         .header-alert-box i {
             font-size: 1.2rem;
+            color: var(--cor-destaque-vermelho);
         }
 
         @media (max-width: 380px) {
@@ -292,20 +316,20 @@
             .header-alert-box { font-size: 0.75rem; }
         }
 
-        /* --- CARDS E CONTEÚDO --- */
+        /* --- CARDS E CONTEÚDO (Tema Escuro) --- */
         .secao-conteudo { padding: 15px; }
         
         .card { 
-            background: white; 
+            background: var(--cor-fundo-card); 
             border-radius: 12px;
             padding: 15px; 
             margin-bottom: 15px; 
-            border: 1px solid #f0f0f0; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); 
+            border: 1px solid var(--cor-borda); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
             height: 100%; 
             display: flex;
             flex-direction: column;
-            contain: content; 
+            color: var(--cor-texto);
         }
         
         .card h2 { 
@@ -313,19 +337,18 @@
             font-weight: 600;
             letter-spacing: -0.3px;
             margin-bottom: 10px;
+            color: var(--cor-texto-destaque);
         }
 
-        /* =========================================
-           PADRONIZAÇÃO DOS CARDS
-           ========================================= */
+        /* CARD DE CESTA (Tema Escuro) */
         .card-cesta-horizontal {
             display: flex;
             flex-direction: row; 
-            background: white;
+            background: var(--cor-fundo-card);
             border-radius: 12px;
             margin-bottom: 25px; 
-            border: 1px solid #f0f0f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--cor-borda);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             position: relative;
             overflow: visible !important; 
             min-height: 130px;
@@ -335,7 +358,7 @@
 
         #cestaeconomica {
             border: 2px solid var(--cor-destaque-dourado);
-            box-shadow: 0 6px 15px rgba(255, 193, 7, 0.15);
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.2); /* Glow dourado */
             z-index: 5;
         }
 
@@ -343,7 +366,7 @@
             width: 160px;
             min-width: 160px;
             position: relative;
-            background-color: #fff;
+            background-color: #fff; /* Mantém fundo branco para a foto do produto */
             flex-shrink: 0;
             cursor: pointer;
             border-top-left-radius: 12px;
@@ -385,18 +408,19 @@
         .cesta-title-row h2 {
             font-size: 1.25rem; 
             margin: 0;
-            color: var(--cor-primaria);
+            color: var(--cor-texto-destaque);
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: 5px;
         }
 
+        /* Lista de Preços (Tema Escuro) */
         .lista-precos-card {
-            background-color: #f9f9f9;
+            background-color: rgba(0,0,0,0.2); /* Fundo escuro translúcido */
             border-radius: 8px;
             padding: 10px;
             margin-bottom: 12px;
-            border: 1px solid #eee;
+            border: 1px solid var(--cor-borda);
         }
         .item-preco-card {
             display: flex;
@@ -408,7 +432,7 @@
         .item-preco-card:last-child { margin-bottom: 0; }
         .marca-arroz {
             font-weight: 600;
-            color: var(--cor-texto);
+            color: var(--cor-texto-destaque);
             font-size: 0.85rem;
         }
         .valor-arroz {
@@ -419,7 +443,7 @@
 
         .cesta-price-tag {
             font-size: 0.95rem;
-            color: #666;
+            color: var(--cor-texto-secundario);
             margin-bottom: 12px;
             display: flex;
             align-items: baseline;
@@ -456,11 +480,11 @@
             width: 100%; 
             flex-basis: 100%; 
             letter-spacing: 0.5px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         
         .btn-ver-produtos {
-            background-color: #1565C0; 
+            background-color: #1E88E5; /* Azul um pouco mais claro para contraste */
             color: white !important; 
             border: none; 
             border-radius: 8px;
@@ -475,7 +499,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 8px rgba(21, 101, 192, 0.25);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             margin-bottom: 2px;
         }
 
@@ -485,41 +509,41 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
-            color: var(--cor-primaria);
+            color: var(--cor-primaria); /* Texto escuro */
             padding: 6px 20px;
             border-radius: 20px;
             font-weight: 800;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             z-index: 20; 
             white-space: nowrap;
-            border: 2px solid white;
+            border: 2px solid var(--cor-fundo-site); /* Borda da cor do fundo */
         }
 
-        /* SEO Bairros */
+        /* SEO Bairros (Tema Escuro) */
         .lista-bairros-seo {
             font-size: 0.85rem;
-            color: #555;
-            background: #f9f9f9;
+            color: var(--cor-texto-secundario);
+            background: rgba(0,0,0,0.2); /* Fundo escuro */
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
             text-align: left;
-            border: 1px solid #eee;
+            border: 1px solid var(--cor-borda);
         }
         .lista-bairros-seo h4 {
-            color: var(--cor-primaria);
+            color: var(--cor-destaque-dourado); /* Dourado para destacar */
             margin: 15px 0 5px 0;
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
-            border-bottom: 1px dashed #ddd;
+            border-bottom: 1px dashed var(--cor-borda);
             padding-bottom: 3px;
         }
         .lista-bairros-seo h4:first-child { margin-top: 0; }
-        .lista-bairros-seo p { margin: 0; line-height: 1.5; color: #666; }
+        .lista-bairros-seo p { margin: 0; line-height: 1.5; color: var(--cor-texto); }
 
         /* === MOBILE === */
         @media (max-width: 480px) {
@@ -529,7 +553,7 @@
                 height: 230px !important;
                 border-top-right-radius: 12px;
                 border-bottom-left-radius: 0;
-                border-bottom: 1px solid #f0f0f0;
+                border-bottom: 1px solid var(--cor-borda);
             }
             .cesta-info-container { padding: 20px 15px; text-align: center; }
             .cesta-title-row h2 { font-size: 1.4rem; margin-bottom: 5px; }
@@ -539,7 +563,7 @@
             .btn-cta-small { padding: 14px; font-size: 1rem; }
         }
         
-        /* === BOTÕES FLUTUANTES SIMPLIFICADOS === */
+        /* === BOTÕES FLUTUANTES SIMPLIFICADOS (Tema Escuro) === */
         .floating-buttons-container {
             position: fixed;
             bottom: 20px;
@@ -551,10 +575,10 @@
             justify-content: center; 
             gap: 12px;
             padding: 8px 16px; 
-            background: #ffffff;
+            background: var(--cor-fundo-card); /* Fundo Azul */
             border-radius: 50px;
-            border: 1px solid #eee;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border: 1px solid var(--cor-borda);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
             pointer-events: auto; 
         }
 
@@ -564,7 +588,8 @@
             left: 0;
             width: 100%;
             height: 120px;
-            background: linear-gradient(to top, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 0) 100%);
+            /* Gradiente escuro */
+            background: linear-gradient(to top, var(--cor-fundo-site) 20%, rgba(8, 18, 33, 0) 100%);
             z-index: 900;
             pointer-events: none;
         }
@@ -597,20 +622,20 @@
         .btn-float-action:active { transform: scale(0.98) translateY(0); }
 
         .btn-float-instagram { background-color: #C13584; }
-        /* Botão Contato usando cor primária */
-        .btn-float-contato { background-color: var(--cor-primaria); }
+        .btn-float-contato { background-color: #1E88E5; /* Azul mais claro para destaque */ }
 
-        /* === MODAIS === */
+        /* === MODAIS (Tema Escuro) === */
         .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.65); justify-content: center; align-items: center; backdrop-filter: blur(5px);
+            background-color: rgba(0,0,0,0.85); /* Fundo mais escuro */
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
             padding: 20px;
         }
         
-        #modalApresentacao { background-color: rgba(15, 37, 70, 0.9); z-index: 8000; }
+        #modalApresentacao { background-color: rgba(5, 10, 20, 0.95); z-index: 8000; }
 
         .modal-slider-content {
-            background-color: white; 
+            background-color: var(--cor-fundo-card); 
             width: 90%; 
             max-width: 320px; 
             aspect-ratio: 1/1; 
@@ -618,28 +643,31 @@
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7); 
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             min-height: 300px;
+            border: 1px solid var(--cor-borda);
         }
         
         .btn-fechar-slider {
-            position: absolute; top: 15px; left: 15px; z-index: 20; background: transparent; color: #999;
+            position: absolute; top: 15px; left: 15px; z-index: 20; background: transparent; color: #aaa;
             border: none; font-size: 1.2rem; cursor: pointer; padding: 5px;
         }
-        .btn-fechar-slider:hover { color: #333; }
+        .btn-fechar-slider:hover { color: white; }
 
         .slider-wrapper { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         .slide-item { display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeSlide 0.3s ease-out; width: 100%; height: 100%; }
         .slide-item.active { display: flex; }
-        .slide-text-large { font-size: 1.6rem; color: var(--cor-primaria); font-weight: 800; line-height: 1.2; padding: 0 10px; }
+        .slide-text-large { font-size: 1.6rem; color: var(--cor-texto-destaque); font-weight: 800; line-height: 1.2; padding: 0 10px; }
 
         .slider-next-btn {
             position: absolute; bottom: 25px; right: 25px; top: auto; transform: none;
-            background: #f5f5f5; border: none; font-size: 1.2rem; color: var(--cor-primaria); cursor: pointer;
+            background: #23344d; /* Azul escuro */
+            border: 1px solid var(--cor-borda);
+            font-size: 1.2rem; color: white; cursor: pointer;
             width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: all 0.2s; z-index: 10;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.2s; z-index: 10;
         }
         .slider-next-btn:active { transform: scale(0.9); }
 
@@ -652,33 +680,35 @@
         .btn-eu-quero:active { transform: scale(0.95); }
 
         .modal-info-content, .modal-variacao-content {
-            background-color: white; width: 100%; max-width: 400px; border-radius: 16px; overflow: hidden;
+            background-color: var(--cor-fundo-card); width: 100%; max-width: 400px; border-radius: 16px; overflow: hidden;
             display: flex; flex-direction: column; max-height: calc(100vh - 140px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); animation: zoomIn 0.2s; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); animation: zoomIn 0.2s; position: relative;
+            color: var(--cor-texto);
+            border: 1px solid var(--cor-borda);
         }
         
         .modal-info-header {
-            background-color: var(--cor-fundo); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; flex-shrink: 0;
+            background-color: rgba(0,0,0,0.2); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); flex-shrink: 0;
         }
-        .modal-info-header h3 { margin: 0; color: var(--cor-primaria); font-size: 1.1rem; font-weight: 700;}
+        .modal-info-header h3 { margin: 0; color: var(--cor-texto-destaque); font-size: 1.1rem; font-weight: 700;}
         
         .btn-fechar-modal-info, .btn-fechar-modal-var { 
-            background-color: #f5f5f5; border: 1px solid #ddd; color: #555; font-size: 0.85rem; font-weight: 700;
+            background-color: rgba(255,255,255,0.1); border: 1px solid var(--cor-borda); color: #ddd; font-size: 0.85rem; font-weight: 700;
             padding: 6px 14px; border-radius: 20px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; line-height: 1.2; width: auto;
         }
-        .btn-fechar-modal-info:hover, .btn-fechar-modal-var:hover { background-color: #e0e0e0; color: #333; }
+        .btn-fechar-modal-info:hover, .btn-fechar-modal-var:hover { background-color: rgba(255,255,255,0.2); color: white; }
         
-        .btn-fechar-modal-var { position: absolute; top: 15px; right: 15px; z-index: 10; background: rgba(255,255,255,0.9); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-fechar-modal-var { position: absolute; top: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.5); box-shadow: none; }
 
         .modal-body-scroll { padding: 20px; overflow-y: auto; flex: 1; }
         
-        .lista-produtos-modal li { padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; color: #444; display: flex; align-items: flex-start;}
+        .lista-produtos-modal li { padding: 10px 0; border-bottom: 1px dashed var(--cor-borda); font-size: 0.95rem; color: var(--cor-texto); display: flex; align-items: flex-start;}
         
         .zoom-img-container { max-width: 100%; max-height: 100%; position: relative; display: flex; justify-content: center; align-items: center;}
         .img-zoom-full { max-width: 95%; max-height: 80vh; object-fit: contain; }
         
         .btn-fechar-zoom { 
-            position: absolute; top: 20px; right: 20px; background-color: rgba(255,255,255,0.2); color: white; 
+            position: absolute; top: 20px; right: 20px; background-color: rgba(0,0,0,0.5); color: white; 
             font-size: 0.9rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px;
             border-radius: 20px; cursor: pointer; z-index: 9001; text-transform: uppercase;
         }
@@ -687,26 +717,27 @@
 
         .section-icon-header { text-align: center; margin-bottom: 15px; }
         .section-icon-header img {
-            width: 50px; height: 50px; object-fit: contain; background-color: var(--cor-primaria);
-            border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 50px; height: 50px; object-fit: contain; background-color: white; /* Fundo branco para o ícone */
+            border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem; display: flex; align-items: center; color: #555; }
+        .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid var(--cor-borda); font-size: 0.95rem; display: flex; align-items: center; color: var(--cor-texto); }
 
-        .titulo-modal-var { margin-top: 15px; font-size: 1.3rem; font-weight: 700; color: var(--cor-primaria); }
-        .subtitulo-modal-var { color: #666; margin-bottom: 20px; font-size: 0.95rem; }
+        .titulo-modal-var { margin-top: 15px; font-size: 1.3rem; font-weight: 700; color: var(--cor-texto-destaque); }
+        .subtitulo-modal-var { color: var(--cor-texto-secundario); margin-bottom: 20px; font-size: 0.95rem; }
         
         .opcao-select {
-            display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid #eee; 
+            display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid var(--cor-borda); 
             border-radius: 10px; margin-bottom: 10px; cursor: pointer; text-align: left; transition: all 0.2s;
+            background: rgba(0,0,0,0.2);
         }
-        .opcao-select.selected { border-color: var(--cor-primaria); background-color: #E3F2FD; }
-        .opcao-nome { font-weight: 600; color: #333; font-size: 1rem; }
+        .opcao-select.selected { border-color: var(--cor-info); background-color: rgba(100, 181, 246, 0.1); }
+        .opcao-nome { font-weight: 600; color: var(--cor-texto-destaque); font-size: 1rem; }
         .opcao-preco { color: var(--cor-destaque-vermelho); font-weight: 700; font-size: 1rem; }
         .btn-confirmar-pedido { 
             width: 100%; padding: 14px; background-color: var(--cor-whatsapp); color: white !important; border: none; 
             border-radius: 10px; font-weight: 700; font-size: 1rem; margin-top: 15px; cursor: pointer; text-transform: uppercase;
         }
-        .btn-confirmar-pedido:disabled { background-color: #ccc; cursor: not-allowed; }
+        .btn-confirmar-pedido:disabled { background-color: #555; cursor: not-allowed; }
 
         .btn-whatsapp-hero {
             background-color: var(--cor-whatsapp); color: white; font-size: 1rem; font-weight: bold; padding: 12px;
@@ -717,15 +748,15 @@
         .grid-botoes-modal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
 
         .btn-secundario-modal {
-            background-color: #f9f9f9; color: #555; padding: 12px; border-radius: 8px; text-decoration: none;
-            font-size: 0.85rem; display: flex; align-items: center; justify-content: center; border: 1px solid #eee; font-weight: 600; gap: 6px;
+            background-color: rgba(255,255,255,0.05); color: var(--cor-texto); padding: 12px; border-radius: 8px; text-decoration: none;
+            font-size: 0.85rem; display: flex; align-items: center; justify-content: center; border: 1px solid var(--cor-borda); font-weight: 600; gap: 6px;
         }
 
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeSlide { 0% { transform: translateX(20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
         
         @media (min-width: 481px) {
-            .main-content-wrapper, header { max-width: 1100px; } 
+            .main-content-wrapper, header, .header-top { max-width: 1100px; } 
             .secao-conteudo { padding: 25px 40px; }
             html { font-size: 16px; } 
             
@@ -747,11 +778,11 @@
             
             .desktop-only { display: flex !important; }
             .desktop-logo-wrapper { position: relative; width: 60px; }
-            .big-logo-desktop { width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.15); border: 4px solid white; position: absolute; top: -25px; left: 0; z-index: 3000; transition: transform 0.3s ease; }
+            .big-logo-desktop { width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 4px solid var(--cor-fundo-card); position: absolute; top: -25px; left: 0; z-index: 3000; transition: transform 0.3s ease; background-color: white; }
             .big-logo-desktop:hover { transform: scale(1.05); }
             
             .desktop-nav { display: flex; gap: 30px; align-items: center; height: 100%; margin-left: 120px; }
-            .desktop-nav a { text-decoration: none; color: var(--cor-primaria); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 5px 0; position: relative; transition: color 0.3s; }
+            .desktop-nav a { text-decoration: none; color: var(--cor-texto-destaque); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 5px 0; position: relative; transition: color 0.3s; }
             .desktop-nav a:hover { color: var(--cor-destaque-vermelho); }
             
             .main-content-wrapper { 
@@ -759,7 +790,7 @@
                 background-color: transparent; box-shadow: none; align-items: start; 
             }
             
-            .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: white; border-radius: 12px; padding: 30px; }
+            .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: var(--cor-fundo-card); border-radius: 12px; padding: 30px; border: 1px solid var(--cor-borda); }
             #pag-cestas { grid-column: 2; grid-row: 1; background: transparent; } 
             
             .cesta-cards-grid { display: flex; flex-direction: column; gap: 30px; max-width: 100%; margin: 0 auto; }
@@ -771,7 +802,7 @@
             .cesta-info-container { justify-content: center; padding: 30px; flex: 1; }
             .cesta-title-row h2 { font-size: 1.8rem; margin-bottom: 15px; }
 
-            #cestaeconomica { background: linear-gradient(to right, #FFFDE7, #FFF); }
+            #cestaeconomica { background: linear-gradient(to right, var(--cor-fundo-card), #1a325a); }
             
             .menu-ancoras-cestas { display: none !important; }
             
@@ -782,10 +813,10 @@
             .secoes-extras-grid .card { padding: 25px 20px; align-items: center; }
         }
         
-        .footer-map-container { width: 100%; height: 250px; border-radius: 12px; overflow: hidden; margin-top: 15px; border: 1px solid #eee; }
+        .footer-map-container { width: 100%; height: 250px; border-radius: 12px; overflow: hidden; margin-top: 15px; border: 1px solid var(--cor-borda); }
         .footer-links-seo { margin-top: 15px; font-size: 0.85rem; }
-        .footer-links-seo a { color: #666; text-decoration: none; margin: 0 5px; }
-        .footer-links-seo a:hover { text-decoration: underline; color: var(--cor-primaria); }
+        .footer-links-seo a { color: var(--cor-texto-secundario); text-decoration: none; margin: 0 5px; }
+        .footer-links-seo a:hover { text-decoration: underline; color: white; }
     </style>
 
     <!-- OTIMIZAÇÃO SEO LOCAL "NUCLEAR": Dados Estruturados (Schema.org) -->
@@ -889,7 +920,7 @@
                             <div>
                                 <div class="cesta-title-row"><h2>Cesta Econômica</h2></div>
                                 <div class="cesta-price-tag">A partir de <span class="cesta-price-highlight">R$ 85,00</span></div>
-                                <div style="font-size: 0.85rem; color: #2E7D32; font-weight: 600; margin-bottom: 10px;">
+                                <div style="font-size: 0.85rem; color: #64dd17; font-weight: 600; margin-bottom: 10px;">
                                     <i class="fas fa-check-circle"></i> Perfeita para doação e empresas
                                 </div>
                             </div>
@@ -1053,7 +1084,7 @@
                         <li><span class="emoji-icon">🥗</span> Alimentação: Alelo, Sodexo, Pluxee</li>
                         <li><span class="emoji-icon">📱</span> Digitais: Ifood, Caju, Flash</li>
                     </ul>
-                    <p style="color: #D32F2F; font-size: 0.9rem; text-align: center; margin-top: 15px; font-weight: 600;">⚠️ Não vendemos a prazo.</p>
+                    <p style="color: var(--cor-destaque-vermelho); font-size: 0.9rem; text-align: center; margin-top: 15px; font-weight: 600;">⚠️ Não vendemos a prazo.</p>
                 </div>
             </div>
 
@@ -1064,7 +1095,7 @@
                     </div>
                     <h2 style="text-align: center; color: var(--cor-entrega);">Entrega Grátis</h2>
                     <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: #555;">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
+                        <p style="font-size: 0.95rem; color: var(--cor-texto);">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
                         
                         <!-- CONTEÚDO SEO COMPLETO: BAIRROS -->
                         <div class="lista-bairros-seo">
@@ -1081,8 +1112,8 @@
                             <p>Grande Cristo Rei, Centro, Jardim Glória, Mapim, Manga, São Matheus, Ipase, Jardim dos Estados, Nova Várzea Grande, Parque do Lago, Marajoara.</p>
                         </div>
 
-                        <hr style="border:0; border-top:1px dashed #eee; margin: 15px 0;">
-                        <p style="background-color: #FFF3E0; color: #E65100; padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;">
+                        <hr style="border:0; border-top:1px dashed var(--cor-borda); margin: 15px 0;">
+                        <p style="background-color: rgba(255, 152, 0, 0.1); color: var(--cor-entrega); padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;">
                             <i class="fas fa-clock"></i> Pedindo até as 10h, recebe hoje!
                         </p>
                     </div>
@@ -1090,7 +1121,7 @@
             </div>
         </div>
 
-        <footer class="seo-text-block" style="text-align: center; font-size: 0.85rem; color: #888; padding: 20px;">
+        <footer class="seo-text-block" style="text-align: center; font-size: 0.85rem; color: var(--cor-texto-secundario); padding: 20px;">
             <p><strong>Super Cestas Básicas Dona Antônia</strong></p>
             <p style="margin-top: 5px;">R. Trinta, 105 - Jardim Nossa Sra. Aparecida, Cuiabá - MT, 78090-660</p>
             <p style="margin-top: 5px;">Cuiabá - MT &bull; Várzea Grande - MT</p>
@@ -1189,7 +1220,7 @@
                     <i class="fab fa-whatsapp" style="font-size: 24px; margin-bottom: 5px;"></i>
                     Chamar no WhatsApp
                 </a>
-                <p style="text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 15px;">Dúvidas? Entre em contato agora mesmo!</p>
+                <p style="text-align: center; color: var(--cor-texto-secundario); font-size: 0.9rem; margin-bottom: 15px;">Dúvidas? Entre em contato agora mesmo!</p>
                 <div class="grid-botoes-modal">
                     <a id="btn-tel-seguro" class="btn-secundario-modal" onclick="abrirTelSeguro()">
                         <i class="fas fa-phone"></i> Ligar
@@ -1270,9 +1301,10 @@
                     li.innerHTML = item; 
                     li.style.borderBottom = "none";
                     li.style.marginTop = "10px";
-                    li.style.backgroundColor = "#f0f0f0";
+                    li.style.backgroundColor = "rgba(255,255,255,0.05)";
                     li.style.padding = "5px 10px";
                     li.style.borderRadius = "4px";
+                    li.style.color = "var(--cor-texto-destaque)";
                 } else {
                     li.innerHTML = `<i class="fas fa-check" style="color: #4CAF50; margin-right: 10px; margin-top: 4px;"></i> ${item}`;
                 }
@@ -1314,8 +1346,8 @@
             });
             const selectedRadio = document.querySelector(`#opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'} .radio-custom`);
             if(selectedRadio) {
-                selectedRadio.style.backgroundColor = 'var(--cor-primaria)';
-                selectedRadio.style.borderColor = 'var(--cor-primaria)';
+                selectedRadio.style.backgroundColor = 'var(--cor-info)';
+                selectedRadio.style.borderColor = 'var(--cor-info)';
             }
             document.getElementById('btnConfirmarPedido').disabled = false;
         }
