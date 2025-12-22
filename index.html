@@ -4,76 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- === CAMADA 1: Ocultar tudo por padrão (Se o script for removido, o site fica branco) === -->
+    <!-- === CAMADA 1: Ocultar tudo por padrão === -->
     <style id="security-lock">html{display:none !important;}</style>
 
-    <!-- === CAMADA 2: Script de Validação e Liberação === -->
+    <!-- === CAMADA 2: Script de Segurança Ofuscado (Proteção Anti-Clone) === -->
     <script>
         (function() {
-            // Lista de domínios PROIBIDOS (Golpistas conhecidos)
-            const dominiosGolpistas = [
-                "cestabasicasoferta.com",
-                "pay.cestabasicadonaantonia.online",
-                "cestabasicadonaantonia.online"
-            ];
+            const _0x1a = ["cestabasicasoferta.com", "pay.cestabasicadonaantonia.online", "cestabasicadonaantonia.online"];
+            const _0x2b = window.location.hostname;
+            const _0x3c = document.getElementById('security-lock');
+            const _0x4d = _0x1a.some(_0x5e => _0x2b.includes(_0x5e));
+            const _0x6f = _0x2b.includes("donaantonia.com.br") || _0x2b.includes("localhost") || _0x2b.includes("127.0.0.1") || _0x2b.includes("googleusercontent") || _0x2b.includes("google");
             
-            const hostAtual = window.location.hostname;
-            const styleLock = document.getElementById('security-lock');
-            
-            // Verifica Host
-            // Nota: Adicionado suporte genérico para ambientes de preview se necessário, mas mantendo a lógica original
-            const isGolpe = dominiosGolpistas.some(dominio => hostAtual.includes(dominio));
-            // Permite localhost e donantonia.com.br
-            const isOficial = hostAtual.includes("donaantonia.com.br") || 
-                              hostAtual.includes("localhost") || 
-                              hostAtual.includes("127.0.0.1") ||
-                              hostAtual.includes("googleusercontent") || // Previews do Google
-                              hostAtual.includes("google"); // Previews gerais
-
-            if (isGolpe || (!isOficial && !hostAtual.includes("google"))) {
-                // === CENÁRIO DE ATAQUE ===
-                // Nuke no conteúdo e exibe alerta
-                // OBS: Em ambiente de desenvolvimento local/preview, se travar, comente esta verificação.
-                
-                // Para garantir que o preview funcione aqui mesmo se a URL for dinâmica:
+            if (_0x4d || (!_0x6f)) {
                 if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc') {
-                     if(styleLock) styleLock.remove();
+                     if(_0x3c) _0x3c.remove();
                 } else {
                     document.documentElement.innerHTML = '';
-                    
-                    const aviso = document.createElement('div');
-                    aviso.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
-                    
-                    aviso.innerHTML = `
-                        <h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1>
-                        <p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p>
-                        <p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p>
-                        <a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>
-                    `;
-                    
-                    document.documentElement.appendChild(aviso);
-                    
-                    // Redireciona forçado
+                    const _0x7g = document.createElement('div');
+                    _0x7g.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
+                    _0x7g.innerHTML = '<h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1><p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p><p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p><a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>';
+                    document.documentElement.appendChild(_0x7g);
                     setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
                 }
-                
             } else {
-                // === CENÁRIO SEGURO ===
-                // Remove o bloqueio CSS e libera a visualização
-                if(styleLock) {
-                    styleLock.remove();
-                }
-                // Trava o menu de contexto (botão direito) como dissuasão extra
-                // Comentado para facilitar o debug no preview se precisares inspecionar elemento
-                // document.addEventListener('contextmenu', event => event.preventDefault());
+                if(_0x3c) { _0x3c.remove(); }
             }
         })();
     </script>
 
-    <!-- SEO: Canonical Tag (Evita conteúdo duplicado) -->
+    <!-- SEO: Canonical Tag -->
     <link rel="canonical" href="https://donaantonia.com.br/" />
 
-    <!-- OTIMIZAÇÃO: Preconnect e DNS-Prefetch para performance -->
+    <!-- OTIMIZAÇÃO: Preconnect e DNS-Prefetch -->
     <link rel="preconnect" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -84,13 +47,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dona Antônia">
-    <link rel="apple-touch-icon" href="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
-    <link rel="shortcut icon" href="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
+    <!-- IMAGENS COM CAMINHO ABSOLUTO -->
+    <link rel="apple-touch-icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
+    <link rel="shortcut icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
 
-    <!-- TÍTULO HÍBRIDO OTIMIZADO (Marca + Local + Benefício) -->
+    <!-- TÍTULO HÍBRIDO OTIMIZADO -->
     <title>Cestas Básicas em Cuiabá e VG | Dona Antônia | Entrega Grátis</title>
     
-    <!-- META DESCRIPTION COM PALAVRAS-CHAVE LOCAIS E GATILHOS MENTAIS -->
+    <!-- META DESCRIPTION -->
     <meta name="description" content="Menor preço em Cesta Básica em Cuiabá e Várzea Grande? É na Dona Antônia! Atacado e Varejo com entrega grátis no CPA, Coxipó e região. Peça no WhatsApp.">
     <meta name="keywords" content="cesta básica cuiabá, cesta básica várzea grande, comprar alimentos online cuiabá, sacolão cuiabá, doação de cesta básica mt, entrega grátis mercado, atacado de alimentos cuiabá, cesta de natal, pedra 90, cpa, coxipó">
     
@@ -910,12 +874,12 @@
     
     <div id="toast-container"></div> 
 
-    <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" width="80" height="80" fetchpriority="high" id="logo-principal" onerror="this.src='https://placehold.co/80x80?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
+    <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" width="80" height="80" fetchpriority="high" id="logo-principal" onerror="this.src='https://placehold.co/80x80?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
 
     <header>
         <div class="header-top">
             <div class="desktop-only desktop-logo-wrapper">
-                <img src="img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="big-logo-desktop" width="120" height="120" alt="Logo Dona Antônia Grande" onerror="this.src='https://placehold.co/120x120?text=LOGO'">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="big-logo-desktop" width="120" height="120" alt="Logo Dona Antônia Grande" onerror="this.src='https://placehold.co/120x120?text=LOGO'">
             </div>
 
             <nav class="desktop-nav desktop-only">
@@ -956,8 +920,8 @@
                     <!-- CESTA ECONÔMICA COM ALT TEXT COMPLETO (SEO) -->
                     <div class="card-cesta-horizontal" id="cestaeconomica">
                         <div class="selo-destaque"><i class="fas fa-star"></i> Mais Vendida</div>
-                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" fetchpriority="high" alt="Cesta Básica Econômica para Doação em Cuiabá e Várzea Grande - Entrega Grátis" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
+                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" fetchpriority="high" alt="Cesta Básica Econômica para Doação em Cuiabá e Várzea Grande - Entrega Grátis" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -981,8 +945,8 @@
 
                     <!-- CESTA MINI (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestamini">
-                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-mini.avif', 'Cesta Mini')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Mini com Entrega Grátis em Cuiabá e VG" onerror="this.src='https://placehold.co/400x400?text=MINI'">
+                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif', 'Cesta Mini')">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Mini com Entrega Grátis em Cuiabá e VG" onerror="this.src='https://placehold.co/400x400?text=MINI'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1014,8 +978,8 @@
 
                     <!-- CESTA PEQUENA (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestapequena">
-                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-pequena.avif', 'Cesta Pequena')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Pequena em Cuiabá e Várzea Grande" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
+                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif', 'Cesta Pequena')">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Pequena em Cuiabá e Várzea Grande" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1047,8 +1011,8 @@
 
                     <!-- CESTA MEDIA (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestamedia">
-                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-media.avif', 'Cesta Média')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Média Atacado e Varejo Cuiabá" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
+                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif', 'Cesta Média')">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Média Atacado e Varejo Cuiabá" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1080,8 +1044,8 @@
 
                     <!-- CESTA GRANDE (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestagrande">
-                        <div class="cesta-img-container" onclick="abrirZoom('img/cesta-basica-cuiaba-varzea-grande-grande.avif', 'Cesta Grande')">
-                            <img src="img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Grande para Família em Cuiabá" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
+                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif', 'Cesta Grande')">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Grande para Família em Cuiabá" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
                             <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
                         </div>
                         <div class="cesta-info-container">
@@ -1118,7 +1082,7 @@
             <div id="pag-pagamento" class="secao-conteudo">
                 <div class="card">
                     <div class="section-icon-header">
-                        <img src="img/pagamento.png" width="60" height="60" alt="Pagamento" onerror="this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
+                        <img src="https://donaantonia.com.br/img/pagamento.png" width="60" height="60" alt="Pagamento" onerror="this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
                     </div>
                     <h2 style="text-align: center;">Formas de Pagamento</h2>
                     <ul class="lista-pagamento">
@@ -1135,7 +1099,7 @@
             <div id="pag-entrega" class="secao-conteudo">
                 <div class="card">
                     <div class="section-icon-header">
-                        <img src="img/entrega.png" width="60" height="60" alt="Entrega" onerror="this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
+                        <img src="https://donaantonia.com.br/img/entrega.png" width="60" height="60" alt="Entrega" onerror="this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
                     </div>
                     <h2 style="text-align: center; color: var(--cor-entrega);">Entrega Grátis</h2>
                     <div style="text-align: center;">
