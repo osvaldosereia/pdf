@@ -11,34 +11,42 @@
             background-color: #1a1a1a;
             color: white;
             margin: 0;
-            padding: 10px;
+            padding: 15px; /* Um pouco mais de margem para tablet */
             box-sizing: border-box;
-            height: 100vh; /* Altura fixa da tela */
+            height: 100vh; 
             width: 100vw;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* App feel: sem scroll na página inteira */
+            overflow: hidden; 
         }
 
-        /* --- CABEÇALHO COMPACTO --- */
+        /* --- CABEÇALHO --- */
         header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding-bottom: 5px;
+            justify-content: flex-start; /* Alinha tudo à esquerda */
+            gap: 15px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #333;
-            flex: 0 0 auto; /* Altura fixa baseada no conteúdo */
-            height: 80px; /* Força uma altura para cálculo do resto */
+            flex: 0 0 auto; 
+            height: auto;
+            min-height: 80px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-img {
-            height: 60px;       
-            width: 60px;        
+            height: 70px;       
+            width: 70px;        
             object-fit: cover;   
-            border-radius: 50%;  
-            border: 2px solid #FFD700; 
+            border-radius: 50%;  /* Deixa redonda */
+            border: 3px solid #FFD700; 
             flex-shrink: 0;
+            background-color: #333; /* Fundo caso a imagem demore */
         }
 
         .header-text {
@@ -53,34 +61,34 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin: 0;
-            font-size: 1.1rem;
-            line-height: 1.1;
+            font-size: 1.3rem; /* Fonte um pouco maior para tablet */
+            line-height: 1.2;
         }
 
         h2 {
             color: #ccc;
-            font-size: 0.9rem;
-            margin: 2px 0 0 0;
+            font-size: 1rem;
+            margin: 4px 0 0 0;
             font-weight: normal;
         }
 
-        /* --- LAYOUT PRINCIPAL (GRID/FLEX) --- */
+        /* --- LAYOUT PRINCIPAL (FLEX COLUNA) --- */
         .main-container {
             display: flex;
-            flex-direction: column; /* Padrão Mobile: Coluna única */
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
             width: 100%;
-            flex: 1; /* Ocupa o resto da altura da tela */
-            padding-top: 10px;
-            min-height: 0; /* Essencial para scroll interno funcionar */
+            flex: 1; 
+            padding-top: 15px;
+            min-height: 0; 
         }
 
-        /* --- BLOCO 1: O PALCO (Display + Botão) --- */
+        /* --- BLOCO 1: O PALCO --- */
         .stage-panel {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            flex: 0 0 auto; /* Não estica, usa tamanho necessário */
+            gap: 10px;
+            flex: 0 0 auto; 
         }
 
         .current-draw-info {
@@ -93,74 +101,85 @@
         .sorteio-badge {
             background-color: #FFD700;
             color: #000;
-            padding: 2px 10px;
-            border-radius: 10px;
+            padding: 4px 15px;
+            border-radius: 15px;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .premio-atual {
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             color: #fff;
         }
 
         #display-sorteio {
             width: 100%;
-            height: 12vh; /* Altura Reduzida Mobile */
-            min-height: 80px;
+            height: 15vh; /* Altura confortável no tablet vertical */
+            min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #000;
-            border: 2px solid #444;
-            border-radius: 10px;
-            font-size: 1.8rem;
+            border: 3px solid #444;
+            border-radius: 12px;
+            font-size: 2.5rem; /* Letra grande */
             font-weight: 800;
             color: #fff;
             text-align: center;
-            padding: 5px;
+            padding: 10px;
             box-sizing: border-box;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         button.action-btn {
             background: linear-gradient(45deg, #27ae60, #2ecc71);
             color: white;
             border: none;
-            padding: 10px 0; /* Mais fino */
+            padding: 15px 0; /* Botão grande para toque */
             width: 100%;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             text-transform: uppercase;
+            box-shadow: 0 4px 0 #1e8449;
         }
         
+        button.action-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1e8449;
+        }
+
         button.action-btn:disabled {
             background: #555;
+            box-shadow: none;
             cursor: not-allowed;
         }
 
-        /* --- BLOCO 2: LISTA DE GANHADORES --- */
+        /* --- BLOCO 2: LISTA DE GANHADORES (CRESCIMENTO) --- */
         .winners-section {
             background: rgba(255, 215, 0, 0.05);
             border: 1px solid #444;
-            border-radius: 8px;
-            padding: 8px;
-            flex: 1; /* Este bloco cresce para ocupar espaço vazio */
-            overflow-y: auto; /* Scroll apenas aqui */
+            border-radius: 12px;
+            padding: 10px;
+            
+            /* O SEGREDO DO CRESCIMENTO: */
+            flex: 1; /* Ocupa todo o espaço vertical restante */
+            overflow-y: auto; /* Permite scroll se encher muito */
+            
             display: flex;
             flex-direction: column;
-            min-height: 100px; /* Garante que não suma */
+            margin-bottom: 5px;
         }
 
         .winners-title {
             color: #FFD700;
             text-align: center;
-            margin: 0 0 5px 0;
-            font-size: 0.9rem;
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
             text-transform: uppercase;
             border-bottom: 1px solid #555;
-            padding-bottom: 2px;
+            padding-bottom: 5px;
         }
 
         #lista-ganhadores {
@@ -172,63 +191,72 @@
         .winner-item {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
+            padding: 8px 10px; /* Mais espaçado */
             border-bottom: 1px solid #333;
-            font-size: 0.85rem;
+            font-size: 1.1rem; /* Fonte legível no tablet */
             animation: slideIn 0.3s ease-out;
+            align-items: center;
         }
         
-        .winner-number { font-weight: bold; color: #aaa; margin-right: 5px; }
+        .winner-number { 
+            font-weight: bold; 
+            color: #aaa; 
+            margin-right: 10px;
+            background: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
         .winner-name { font-weight: bold; color: #fff; text-align: right; flex: 1; }
 
-        /* --- BLOCO 3: CONFIGURAÇÕES (Sempre visível, compacto) --- */
+        /* --- BLOCO 3: CONFIGURAÇÕES (Fixado no fundo) --- */
         .settings-panel {
             background: #222;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 12px;
             border: 1px solid #333;
-            flex: 0 0 auto; /* Altura fixa compacta */
+            flex: 0 0 auto; 
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .settings-header {
             color: #888;
             font-weight: bold;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
         }
 
         .toolbar {
             display: flex;
-            gap: 5px;
+            gap: 8px;
         }
         
         .btn-tool {
             background-color: #333;
             color: #ccc;
             border: 1px solid #444;
-            padding: 5px;
+            padding: 8px;
             flex: 1;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
         }
         .btn-upload { background-color: #004085; border-color: #003065; color: white; }
 
         textarea {
             width: 100%;
-            height: 60px; /* Bem pequeno no mobile */
+            height: 50px; /* Pequeno para não atrapalhar, expande se o usuário puxar */
             background-color: #111;
             color: #ddd;
             border: 1px solid #444;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 5px;
             font-family: monospace;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             resize: none;
             box-sizing: border-box;
         }
@@ -253,74 +281,26 @@
 
         .confetti {
             position: fixed;
-            width: 10px; height: 10px;
+            width: 12px; height: 12px;
             z-index: 9999;
             animation: cair 3s linear forwards;
         }
         @keyframes cair { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 
-        /* --- MODO DESKTOP (Horizontal) --- */
-        @media (min-width: 1024px) {
-            body { padding: 20px; }
-            header { height: 100px; margin-bottom: 10px; }
-            h1 { font-size: 2rem; }
-            .logo-img { width: 90px; height: 90px; }
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FFD700; }
 
-            .main-container {
-                flex-direction: row; /* Lado a lado */
-                gap: 20px;
-            }
-
-            /* Coluna 1: Configurações (Esquerda) */
-            .settings-panel {
-                width: 300px; /* Largura fixa */
-                height: 100%; /* Ocupa altura toda */
-                flex: 0 0 auto;
-                order: 1;
-            }
-            textarea { height: 100%; flex: 1; } /* Textarea cresce no desktop */
-
-            /* Coluna 2: Palco + Ganhadores (Direita) */
-            .stage-panel {
-                flex: 1; /* Ocupa o resto da largura */
-                height: 100%;
-                order: 2;
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-                /* Resetando estilos do mobile */
-                border: none;
-                background: none;
-            }
-
-            /* Ajuste do Visor no Desktop */
-            #display-sorteio {
-                height: 150px; /* Altura fixa controlada (não muito grande) */
-                font-size: 3rem;
-                border-width: 4px;
-            }
-
-            /* Ajuste da Lista de Ganhadores no Desktop */
-            .winners-section {
-                flex: 1; /* Ocupa todo o espaço vertical restante abaixo do visor */
-                border: 2px solid #FFD700; /* Destaque maior no desktop */
-                background: rgba(255, 215, 0, 0.08);
-            }
-            
-            .winner-item { font-size: 1.1rem; padding: 10px; }
-            .winners-title { font-size: 1.2rem; margin-bottom: 15px; }
-
-            button.action-btn {
-                padding: 15px;
-                font-size: 1.4rem;
-            }
-        }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="img/logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+        <div class="logo-container">
+            <img src="https://via.placeholder.com/150/FFD700/000000?text=Logo" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/150/png'">
+        </div>
         <div class="header-text">
             <h1>Sorteio Dia 22/12/2025</h1>
             <h2>20 Cestas Básicas Econômicas</h2>
@@ -329,9 +309,7 @@
 
     <div class="main-container">
         
-        <!-- PALCO (Topo no Mobile / Direita-Topo no Desktop) -->
         <div class="stage-panel">
-            
             <div class="current-draw-info">
                 <div class="sorteio-badge" id="badge-numero">Sorteio 1 / 20</div>
                 <div class="premio-atual" id="label-premio">Cesta #1</div>
@@ -340,19 +318,17 @@
             <div id="display-sorteio">?</div>
 
             <button id="btn-sortear" class="action-btn" onclick="iniciarSorteio()">🚀 Sortear</button>
-
-            <!-- Ganhadores (Meio no Mobile / Direita-Baixo no Desktop) -->
-            <div class="winners-section">
-                <h3 class="winners-title">🏆 Ganhadores</h3>
-                <ul id="lista-ganhadores">
-                    <li style="text-align:center; color:#666; font-style:italic; font-size:0.8rem" id="sem-ganhadores">
-                        Nenhum ganhador ainda.
-                    </li>
-                </ul>
-            </div>
         </div>
 
-        <!-- CONFIGURAÇÕES (Baixo no Mobile / Esquerda no Desktop) -->
+        <div class="winners-section">
+            <h3 class="winners-title">🏆 Ganhadores</h3>
+            <ul id="lista-ganhadores">
+                <li style="text-align:center; color:#666; font-style:italic; font-size:1rem; padding:10px" id="sem-ganhadores">
+                    Aguardando início...
+                </li>
+            </ul>
+        </div>
+
         <div class="settings-panel">
             <div class="settings-header">
                 <span>📋 Participantes</span>
@@ -371,9 +347,11 @@
             <textarea id="lista-nomes" oninput="atualizarContador()" placeholder="Cole a lista...">João Silva
 Maria Santos
 Pedro Oliveira
-Ana Costa</textarea>
+Ana Costa
+Carlos Souza
+Fernanda Lima</textarea>
             
-            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; font-size:0.75rem; color:#aaa; margin-top:2px;">
+            <label style="display:flex; align-items:center; gap:5px; cursor:pointer; font-size:0.9rem; color:#aaa; margin-top:2px;">
                 <input type="checkbox" id="check-remover" checked> 
                 Remover ganhador da lista?
             </label>
@@ -451,7 +429,7 @@ Ana Costa</textarea>
             const btn = document.getElementById('btn-sortear');
             
             let tempo = 0;
-            const duracao = 5000; 
+            const duracao = 4000; // 4 segundos de suspense
             const velocidade = 80;
             
             btn.disabled = true;
@@ -497,7 +475,7 @@ Ana Costa</textarea>
                     btn.style.background = "linear-gradient(45deg, #f39c12, #f1c40f)";
                 }, 2000);
             } else {
-                btn.innerText = "FIM!";
+                btn.innerText = "FIM DO SORTEIO!";
                 btn.style.background = "#555";
             }
         }
@@ -509,6 +487,7 @@ Ana Costa</textarea>
 
             const li = document.createElement('li');
             li.className = 'winner-item';
+            // Adiciona no topo da lista
             li.innerHTML = `
                 <span class="winner-number">#${numero}</span>
                 <span class="winner-name">${nome}</span>
@@ -529,8 +508,8 @@ Ana Costa</textarea>
         }
 
         function celebrar() {
-            const cores = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#ffffff'];
-            for(let i=0; i<80; i++) {
+            const cores = ['#FFD700', '#FF0000', '#00FF00', '#0000FF', '#ffffff', '#ff00ff'];
+            for(let i=0; i<100; i++) {
                 const confete = document.createElement('div');
                 confete.classList.add('confetti');
                 confete.style.left = Math.random() * 100 + 'vw';
