@@ -1050,10 +1050,41 @@
                     document.getElementById('modal-whatsapp').classList.add('hidden');
                 },
                 enviarRelatorioFinalZap: (entrega) => {
-                     const num = CONSTANTS.NUMERO_CONFIRMACAO_ENTREGA; 
+                     const numAdmin = CONSTANTS.NUMERO_CONFIRMACAO_ENTREGA; 
                      let msg = `*✅ ENTREGA REALIZADA*\nCliente: ${entrega.cliente.nome}\nValor: ${Utils.formatMoeda(entrega.valorTotalAjustado)}\nPagamento: ${entrega.formaPagamento.join(', ')}\n\n`;
                      entrega.cestas.forEach(c => { msg += `${c.qtd}x ${c.nome}\n`; });
-                     setTimeout(() => { if(confirm('Abrir WhatsApp para enviar comprovante?')) { window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank'); } }, 500);
+                     
+                     // --- ADICIONADO: Links Pós Venda ---
+                     let clientPhone = entrega.cliente.celular ? entrega.cliente.celular.replace(/\D/g, '') : '';
+                     if(clientPhone && clientPhone.length >= 10) {
+                         if(!clientPhone.startsWith('55')) clientPhone = '55' + clientPhone;
+                         
+                         // Helper para gerar link do WhatsApp (wa.me)
+                         const genLink = (texto) => `https://wa.me/${clientPhone}?text=${encodeURIComponent(texto)}`;
+                         
+                         // 1. Agradecimento
+                         const msgAgrad = `Olá! Tudo bem? Aqui é da Rota Dona Antonia. Muito obrigado pela sua compra! Deus abençoe você e sua família. 🙏`;
+                         
+                         // 2. Cupom
+                         const h = new Date(); h.setDate(h.getDate()+30); 
+                         const msgCupom = `Olá! Como agradecimento, você ganhou um *DESCONTO DE R$ 10,00* na sua próxima compra! 🎁 Válido até *${h.toLocaleDateString('pt-BR')}*.`;
+
+                         // 3. Google
+                         const msgGoogle = `Olá, poderia nos ajudar? 🙏 Clique no link e avalie com 5 estrelas ⭐: https://g.page/r/CaIREJtO1L6WEBM/review Deus abençoe!`;
+
+                         // 4. Instagram
+                         const msgInsta = `Olá! Segue a gente no Instagram! 📸 https://www.instagram.com/super.cestas.dona.antonia/`;
+
+                         msg += `\n-------- PÓS VENDA --------\n`;
+                         msg += `🙏 Agradecer: ${genLink(msgAgrad)}\n\n`;
+                         msg += `⭐ Google: ${genLink(msgGoogle)}\n\n`;
+                         msg += `🎫 Cupom: ${genLink(msgCupom)}\n\n`;
+                         msg += `📸 Insta: ${genLink(msgInsta)}`;
+                     } else {
+                         msg += `\n(Cliente sem celular para Pós-Venda)`;
+                     }
+
+                     setTimeout(() => { if(confirm('Abrir WhatsApp para enviar comprovante?')) { window.open(`https://api.whatsapp.com/send?phone=${numAdmin}&text=${encodeURIComponent(msg)}`, '_blank'); } }, 500);
                 },
                 gerarRelatorioCestas: () => {
                     const regioes = Array.from(document.querySelectorAll('#relatorio-regioes-list input:checked')).map(el => el.value);
