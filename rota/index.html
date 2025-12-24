@@ -89,11 +89,9 @@
             .print-10x15 .big-total { font-size: 18px; font-weight: 900; text-align: right; margin-top: 5px; }
             
             /* Lista de Produtos na Impressão */
-            .print-prod-list { margin-top: 2px; }
-            .print-prod-item { display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dotted #ccc; padding: 1px 0; }
-            .print-prod-item span:first-child { flex: 1; }
-            .print-prod-item span:last-child { font-weight: bold; margin-left: 5px; }
-            .print-prod-header { font-size: 10px; font-weight: bold; margin-top: 4px; border-bottom: 1px solid #000; }
+            .print-prod-list { margin-top: 2px; border-top: 1px dashed #ccc; padding-top: 2px; }
+            .print-prod-item { display: flex; justify-content: space-between; font-size: 10px; }
+            .print-prod-item.modified { font-weight: bold; }
 
             /* Estilo ÍMÃ (Cupom) - Estilo Cupom Estreito */
             .print-ima {
@@ -269,6 +267,10 @@
                     <label class="block text-sm font-medium text-slate-700">Endereço Completo</label>
                     <input type="text" id="edit-client-end" class="w-full border rounded p-2 mt-1">
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Complemento / Ponto de Referência</label>
+                    <input type="text" id="edit-client-comp" class="w-full border rounded p-2 mt-1" placeholder="Apto, Casa de fundos...">
+                </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Bairro</label>
@@ -288,41 +290,41 @@
         </div>
     </div>
 
-    <!-- Modal Lançamento -->
+    <!-- Modal Lançamento (COMPACTO) -->
     <div id="modal-lancamento" class="fixed inset-0 z-50 hidden no-print">
         <div class="absolute inset-0 bg-black/60 modal-backdrop transition-opacity" onclick="App.ui.modalLancamento.close()"></div>
         <div class="absolute bottom-0 w-full h-[90vh] flex flex-col bg-white rounded-t-2xl shadow-2xl md:fixed md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:h-auto md:max-h-[90vh] md:rounded-xl modal-content">
             
-            <div class="flex-none flex justify-between items-center p-4 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-slate-800" id="modal-lancamento-title">Nova Entrega</h3>
-                <button onclick="App.ui.modalLancamento.close()" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            <div class="flex-none flex justify-between items-center p-3 border-b border-slate-100">
+                <h3 class="text-base font-bold text-slate-800" id="modal-lancamento-title">Nova Entrega</h3>
+                <button onclick="App.ui.modalLancamento.close()" class="text-slate-400 hover:text-slate-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
             </div>
 
-            <div class="overflow-y-auto p-4 flex-1 space-y-5">
+            <div class="overflow-y-auto p-3 flex-1 space-y-3">
                 <!-- Seletor de Cliente Customizado -->
                 <div class="relative group">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Cliente</label>
-                    <input type="text" id="input-cliente" class="w-full rounded-lg border-slate-300 border p-3 focus:ring-2 focus:ring-slate-500 focus:border-slate-500 transition-all bg-slate-50" placeholder="Digite nome, apelido ou telefone..." autocomplete="off">
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Cliente</label>
+                    <input type="text" id="input-cliente" class="w-full rounded border-slate-300 border p-2 text-sm focus:ring-1 focus:ring-slate-500 focus:border-slate-500 transition-all bg-slate-50 h-9" placeholder="Nome, apelido ou telefone..." autocomplete="off">
                     
                     <!-- Dropdown de Sugestões -->
-                    <div id="dropdown-clientes" class="hidden absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl custom-dropdown-list">
+                    <div id="dropdown-clientes" class="hidden absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded shadow-xl custom-dropdown-list">
                         <!-- Lista preenchida via JS -->
                     </div>
 
-                    <div id="info-cliente-preview" class="hidden mt-2 text-sm bg-blue-50 text-blue-800 p-3 rounded-lg border border-blue-100">
+                    <div id="info-cliente-preview" class="hidden mt-1 text-xs bg-blue-50 text-blue-800 p-2 rounded border border-blue-100">
                         <!-- Preenchido via JS -->
                     </div>
                 </div>
 
                 <!-- Bairro e Cidade -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700">Bairro</label>
-                        <input type="text" id="input-bairro" class="w-full rounded-lg border-slate-300 border p-2 bg-slate-50" placeholder="Bairro">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Bairro</label>
+                        <input type="text" id="input-bairro" class="w-full rounded border-slate-300 border p-2 text-sm h-9 bg-slate-50" placeholder="Bairro">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-700">Cidade</label>
-                        <select id="input-cidade" class="w-full rounded-lg border-slate-300 border p-2 bg-slate-50">
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Cidade</label>
+                        <select id="input-cidade" class="w-full rounded border-slate-300 border p-2 text-sm h-9 bg-slate-50">
                             <option value="">Selecione...</option>
                             <option value="Cuiabá">Cuiabá</option>
                             <option value="Várzea Grande">Várzea Grande</option>
@@ -332,25 +334,25 @@
 
                 <!-- Região -->
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Região <span class="text-red-500">*</span></label>
-                    <div class="grid grid-cols-4 gap-2 text-sm" id="container-radio-regiao">
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Região <span class="text-red-500">*</span></label>
+                    <div class="grid grid-cols-4 gap-1 text-xs" id="container-radio-regiao">
                         <!-- Gerado via JS -->
                     </div>
                 </div>
 
                 <!-- Adicionar Cestas -->
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <label class="block text-sm font-bold text-slate-700 mb-3">Montar Pedido</label>
+                <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                    <label class="block text-xs font-bold text-slate-700 mb-2">Montar Pedido</label>
                     
-                    <div class="flex gap-2 mb-3">
+                    <div class="flex gap-2 mb-2">
                         <!-- Seletor Customizado de Cesta -->
                         <div class="relative flex-1" id="container-custom-select-cesta">
-                            <button type="button" id="btn-custom-select-cesta" class="w-full text-left rounded-lg border-slate-300 border p-2 text-sm bg-white flex justify-between items-center focus:ring-2 focus:ring-slate-500">
-                                <span id="label-select-cesta">Selecione a Cesta...</span>
-                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            <button type="button" id="btn-custom-select-cesta" class="w-full text-left rounded border-slate-300 border p-2 text-sm h-9 bg-white flex justify-between items-center focus:ring-1 focus:ring-slate-500">
+                                <span id="label-select-cesta" class="truncate">Selecione a Cesta...</span>
+                                <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </button>
                             <!-- Dropdown Cestas -->
-                            <div id="dropdown-cestas" class="hidden absolute z-40 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-xl custom-dropdown-list">
+                            <div id="dropdown-cestas" class="hidden absolute z-40 w-full mt-1 bg-white border border-slate-200 rounded shadow-xl custom-dropdown-list">
                                 <!-- Opções via JS -->
                             </div>
                             <!-- Inputs Ocultos para valor -->
@@ -358,61 +360,61 @@
                             <input type="hidden" id="hidden-cesta-valor" value="0">
                         </div>
 
-                        <input type="number" id="qtd-cesta" value="1" min="1" class="w-16 text-center rounded-lg border-slate-300 border p-2 bg-white">
+                        <input type="number" id="qtd-cesta" value="1" min="1" class="w-14 text-center rounded border-slate-300 border p-2 text-sm h-9 bg-white">
                     </div>
 
                     <!-- Opções Avançadas (Toggle) -->
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="check-alterada" class="sr-only peer">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
-                            <span class="ms-3 text-sm font-medium text-slate-700">Cesta Alterada?</span>
+                            <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                            <span class="ms-2 text-xs font-medium text-slate-700">Cesta Alterada?</span>
                         </label>
                     </div>
 
-                    <!-- LISTA DE PRODUTOS PARA EDIÇÃO (NOVO) -->
-                    <div id="box-detalhes-alterada" class="hidden space-y-2 mb-3 bg-amber-50 p-3 rounded border border-amber-200">
-                        <p class="text-xs font-bold text-amber-800 uppercase mb-2">Composição da Cesta:</p>
+                    <!-- LISTA DE PRODUTOS PARA EDIÇÃO -->
+                    <div id="box-detalhes-alterada" class="hidden space-y-1 mb-2 bg-amber-50 p-2 rounded border border-amber-200">
+                        <p class="text-[10px] font-bold text-amber-800 uppercase mb-1">Composição:</p>
                         <div id="lista-produtos-edicao" class="space-y-1">
                             <!-- Injetado via JS -->
                         </div>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2 mb-3">
-                        <span class="text-xs font-semibold text-slate-500 uppercase">Brindes:</span>
-                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Ovo" name="brindes">Ovo</label>
-                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Amaciante" name="brindes">Amaciante</label>
-                        <label class="flex items-center text-xs bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Cafe 250g" name="brindes">Café</label>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="text-[10px] font-semibold text-slate-500 uppercase self-center">Brindes:</span>
+                        <label class="flex items-center text-[10px] bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Ovo" name="brindes">Ovo</label>
+                        <label class="flex items-center text-[10px] bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Amaciante" name="brindes">Amaciante</label>
+                        <label class="flex items-center text-[10px] bg-white px-2 py-1 rounded border border-slate-200"><input type="checkbox" class="mr-1" value="Cafe 250g" name="brindes">Café</label>
                     </div>
 
-                    <button onclick="App.controllers.adicionarItemAoCarrinho()" class="w-full bg-slate-800 text-white py-2 rounded-lg text-sm font-medium hover:bg-slate-900 flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                        Adicionar ao Carrinho
+                    <button onclick="App.controllers.adicionarItemAoCarrinho()" class="w-full bg-slate-800 text-white py-2 rounded text-xs font-bold hover:bg-slate-900 flex items-center justify-center gap-2">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                        Adicionar
                     </button>
                 </div>
 
                 <!-- Carrinho Visual -->
-                <div id="carrinho-visual" class="space-y-2">
+                <div id="carrinho-visual" class="space-y-1">
                     <!-- Itens adicionados aparecem aqui -->
                 </div>
                 
                 <div>
-                     <label class="block text-sm font-medium text-slate-700">Obs Geral</label>
-                     <input type="text" id="input-obs-geral" class="w-full mt-1 border-slate-300 rounded-lg p-2 border bg-slate-50" placeholder="Casa portão azul...">
+                     <label class="block text-xs font-medium text-slate-600 mb-1">Obs Geral</label>
+                     <input type="text" id="input-obs-geral" class="w-full border-slate-300 rounded border p-2 text-sm h-9 bg-slate-50" placeholder="Casa portão azul...">
                 </div>
 
                 <div class="flex justify-between items-center pt-2 border-t border-slate-100">
-                    <span class="text-slate-600">Total Previsto:</span>
-                    <div class="flex items-center gap-2">
+                    <span class="text-slate-600 text-sm font-medium">Total:</span>
+                    <div class="flex items-center gap-1">
                         <span class="text-xs text-slate-400">R$</span>
-                        <input type="number" id="input-valor-final" step="0.01" class="text-xl font-bold text-slate-900 w-28 text-right bg-transparent border-none focus:ring-0 p-0" placeholder="0.00">
+                        <input type="number" id="input-valor-final" step="0.01" class="text-lg font-bold text-slate-900 w-24 text-right bg-transparent border-none focus:ring-0 p-0" placeholder="0.00">
                     </div>
                 </div>
             </div>
 
-            <div class="flex-none p-4 border-t border-slate-100 bg-white md:rounded-b-xl flex gap-3">
-                <button onclick="App.ui.modalLancamento.close()" class="flex-1 py-3 text-slate-600 font-medium hover:bg-slate-50 rounded-lg transition-colors border border-slate-200">Cancelar</button>
-                <button onclick="App.controllers.salvarEntrega()" class="flex-[2] py-3 bg-slate-800 text-white font-bold rounded-lg shadow-lg hover:bg-slate-900 transition-colors" id="btn-submit-lancamento">Confirmar Lançamento</button>
+            <div class="flex-none p-3 border-t border-slate-100 bg-white md:rounded-b-xl flex gap-2">
+                <button onclick="App.ui.modalLancamento.close()" class="flex-1 py-2.5 text-slate-600 text-sm font-medium hover:bg-slate-50 rounded border border-slate-200">Cancelar</button>
+                <button onclick="App.controllers.salvarEntrega()" class="flex-[2] py-2.5 bg-slate-800 text-white text-sm font-bold rounded shadow hover:bg-slate-900 transition-colors" id="btn-submit-lancamento">Confirmar</button>
             </div>
         </div>
     </div>
@@ -549,6 +551,7 @@
                         <table class="w-full text-left border-collapse">
                             <thead class="bg-slate-800 text-white text-sm sticky top-0 z-10">
                                 <tr>
+                                    <th class="p-3">ID</th>
                                     <th class="p-3">Data/Hora</th>
                                     <th class="p-3">Cliente</th>
                                     <th class="p-3">Compra</th>
@@ -1029,11 +1032,20 @@
                                 ${c.brindes && c.brindes.length ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600 font-medium"><span class="text-slate-400 font-normal mr-1">Brinde:</span> ${c.brindes.join(', ')}</div>` : ''}
                             </div>
                         `).join('<div class="border-b border-slate-100 my-1"></div>');
+                        
+                        // ID de Exibição
+                        const displayId = entrega.displayId || (index + 1).toString().padStart(2, '0');
+
                         return `
                         <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative transition-transform transform ${isPendente ? 'hover:shadow-md' : 'opacity-70 bg-slate-50'}">
                             ${!isPendente ? `<div class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><div class="bg-white/90 border-2 ${entrega.status === 'Entregue' ? 'border-green-500 text-green-600' : 'border-red-500 text-red-600'} px-4 py-1 rounded-lg text-xl font-black uppercase rotate-[-12deg] shadow-lg">${entrega.status}</div></div>` : ''}
                             <div class="p-4">
-                                <div class="flex justify-between items-start mb-3"><div class="flex items-center gap-2"><h4 class="text-lg font-bold text-slate-900 leading-tight truncate max-w-[200px]" title="${entrega.cliente.nome}">${entrega.cliente.nome}</h4></div></div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-slate-800 text-white text-xs font-bold px-2 py-1 rounded mr-1">#${displayId}</span>
+                                        <h4 class="text-lg font-bold text-slate-900 leading-tight truncate max-w-[180px]" title="${entrega.cliente.nome}">${entrega.cliente.nome}</h4>
+                                    </div>
+                                </div>
                                 ${entrega.cliente.complemento ? `<div class="mb-4"><p class="text-base font-medium text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 inline-block leading-snug w-full">${entrega.cliente.complemento}</p></div>` : ''}
                                 <div class="mb-4 border-t border-b border-slate-100 py-1">${itensHtml}</div>
                                 ${entrega.observacao ? `<div class="mb-4 pt-2 border-t border-slate-100"><p class="text-sm text-red-600 font-bold flex items-start gap-1">⚠️ ${entrega.observacao}</p></div>` : ''}
@@ -1241,6 +1253,7 @@
                     document.getElementById('edit-client-niver').value = client.aniversario || ''; // YYYY-MM-DD
                     document.getElementById('edit-client-tel').value = client.celular || '';
                     document.getElementById('edit-client-end').value = client.endereco || '';
+                    document.getElementById('edit-client-comp').value = client.complemento || '';
                     document.getElementById('edit-client-bairro').value = client.bairro || '';
                     document.getElementById('edit-client-cidade').value = client.cidade || '';
 
@@ -1258,6 +1271,7 @@
                         aniversario: document.getElementById('edit-client-niver').value,
                         celular: document.getElementById('edit-client-tel').value.trim(),
                         endereco: document.getElementById('edit-client-end').value.trim(),
+                        complemento: document.getElementById('edit-client-comp').value.trim(),
                         bairro: document.getElementById('edit-client-bairro').value.trim(),
                         cidade: document.getElementById('edit-client-cidade').value.trim()
                     };
@@ -1473,6 +1487,19 @@
                     const container = document.getElementById('ticket-print-area');
                     const dataHora = new Date(entrega.updatedAt || entrega.dataCriacao).toLocaleString('pt-BR');
                     
+                    // ID de Exibição
+                    // Tentar encontrar na lista do dia se não tiver salvo (legado)
+                    let displayId = entrega.displayId;
+                    if (!displayId) {
+                         const todayStr = new Date(entrega.updatedAt || entrega.dataCriacao).toLocaleDateString('pt-BR');
+                         const ordersOfDay = Store.data.history.filter(e => new Date(e.updatedAt || e.dataCriacao).toLocaleDateString('pt-BR') === todayStr);
+                         // Ordenar por data
+                         ordersOfDay.sort((a,b) => new Date(a.updatedAt) - new Date(b.updatedAt));
+                         const idx = ordersOfDay.findIndex(e => e.id === entrega.id);
+                         if(idx !== -1) displayId = String(idx + 1).padStart(2, '0');
+                         else displayId = '??';
+                    }
+
                     // Renderiza os itens principais (Cestas)
                     let itensHtml = entrega.cestas.map(c => {
                         let html = `
@@ -1508,7 +1535,7 @@
                     container.innerHTML = `
                         <div class="print-10x15">
                             <h1>ROTA DONA ANTONIA</h1>
-                            <div style="font-size:12px; margin-bottom:10px;">${dataHora} | PEDIDO #${id.toString().slice(-4)}</div>
+                            <div style="font-size:12px; margin-bottom:10px;">${dataHora} | PEDIDO #${displayId}</div>
                             
                             <div class="box">
                                 <div class="label">CLIENTE</div>
@@ -1886,13 +1913,6 @@
                     if(!nomeCesta) return Utils.toast('Selecione uma cesta', 'error');
                     if(qtd < 1) return Utils.toast('Quantidade inválida', 'error');
 
-                    // Se for alterada, usa os produtos do estado temporário
-                    // Se não for, não salva lista de produtos (ou salva padrão se quiser, mas para economizar espaço deixamos null)
-                    let produtosModificados = null;
-                    if(isAlterada && Store.data.tempBasketItems.length > 0) {
-                        produtosModificados = JSON.parse(JSON.stringify(Store.data.tempBasketItems));
-                    }
-
                     const item = {
                         nome: nomeCesta,
                         valor: valorCesta,
@@ -1900,7 +1920,7 @@
                         tipo: isAlterada ? 'Alterada' : 'Normal',
                         // Remover campos antigos de texto se não usar mais, ou manter para compatibilidade
                         // tirar: ..., por: ... (não usados na nova lógica de lista)
-                        produtos: produtosModificados, 
+                        produtos: isAlterada ? JSON.parse(JSON.stringify(Store.data.tempBasketItems)) : null, 
                         brindes: Array.from(document.querySelectorAll('input[name="brindes"]:checked')).map(el => el.value)
                     };
 
@@ -2025,6 +2045,25 @@
                     }
                     
                     const valorFinalManual = parseFloat(document.getElementById('input-valor-final').value) || 0;
+
+                    // == LÓGICA DE ID SEQUENCIAL DIÁRIO ==
+                    let displayId = null;
+                    if (!Store.data.editingId) {
+                        const todayStr = new Date().toLocaleDateString('pt-BR');
+                        // Conta quantos pedidos já foram criados HOJE no histórico total
+                        // Nota: Store.data.history guarda os finalizados. Store.data.rotaAtiva guarda os atuais.
+                        // Para um ID único sequencial que reinicia a cada dia, precisamos olhar para TODAS as fontes de pedidos do dia.
+                        
+                        // Vamos contar os pedidos na rota ativa que são de hoje + os do histórico que são de hoje.
+                        // Mas cuidado com duplicatas se movermos da rota para o histórico.
+                        // Simplificação: Se o usuário usa "Nova Rota" todo dia, rotaAtiva.entregas.length + 1 é suficiente.
+                        // Se ele não usa, precisamos filtrar. Vamos assumir o fluxo de reset diário ou filtrar pela rota ativa.
+                        
+                        // Contar quantos na rota ativa são de hoje:
+                        const existingToday = Store.data.rotaAtiva.entregas.filter(e => new Date(e.dataCriacao).toLocaleDateString('pt-BR') === todayStr);
+                        const nextId = existingToday.length + 1;
+                        displayId = String(nextId).padStart(2, '0');
+                    }
                     
                     if (Store.data.editingId) {
                         // MODO EDIÇÃO: Atualiza existente
@@ -2042,17 +2081,19 @@
                         // MODO CRIAÇÃO: Novo ID
                         const novaEntrega = { 
                             id: Date.now(), 
+                            displayId: displayId, // Salva o ID visual
                             cliente: clienteData, 
                             regiao: regiaoInput.value, 
                             cestas: [...Store.data.carrinhoTemp], 
                             valorTotalAjustado: valorFinalManual, 
                             observacao: document.getElementById('input-obs-geral').value, 
                             status: 'Pendente', 
+                            dataCriacao: new Date().toISOString(), // Garante a data correta
                             updatedAt: new Date().toISOString(), 
                             formaPagamento: [] 
                         };
                         Store.addEntrega(novaEntrega);
-                        Utils.toast('Entrega lançada com sucesso!');
+                        Utils.toast(`Entrega #${displayId} lançada com sucesso!`);
                     }
 
                     App.ui.modalLancamento.close();
