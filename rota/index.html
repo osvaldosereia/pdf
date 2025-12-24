@@ -2149,4 +2149,103 @@
                                     <button onclick="App.controllers.avisarZap('${c.celular}', 'oferta')" class="w-full text-left px-4 py-3 hover:bg-blue-50 text-xs font-bold text-blue-700 border-b border-slate-100">
                                         🔥 Avisar Oferta
                                     </button>
-                                    <button onclick="App.controllers.avisarZap('${c.celular}', 'sorteio')" class="w-full text-left px-4 py-3 hover:bg-green-50 text-xs font-bold text
+                                    <button onclick="App.controllers.avisarZap('${c.celular}', 'sorteio')" class="w-full text-left px-4 py-3 hover:bg-green-50 text-xs font-bold text-green-700 border-b border-slate-100">
+                                        🍀 Avisar Sorteio
+                                    </button>
+                                    <button onclick="if(confirm('Tem certeza? Isso apagará TODO o histórico deste cliente.')) { Store.removeFromHistory('${c.nome}'); App.controllers.crmFilter('todos'); }" class="w-full text-left px-4 py-3 hover:bg-red-50 text-xs font-bold text-red-700">
+                                        🗑️ Excluir Histórico
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join('');
+                },
+                avisarZap: (celular, tipo, diasRestantes = 0) => {
+                    if(!celular) return Utils.toast('Cliente sem celular', 'error');
+                    let num = celular.replace(/\D/g, '');
+                    if(!num.startsWith('55')) num = '55' + num;
+                    let msg = "";
+                    
+                    if(tipo === 'vencendo') msg = "Olá! Seu cupom de desconto especial está quase vencendo (faltam 3 dias)! Aproveite para fazer seu pedido hoje.";
+                    
+                    else if(tipo === 'vencimento_custom') {
+                        if(diasRestantes > 0) msg = `Olá! Passando para avisar que seu cupom de desconto vence em apenas *${diasRestantes} dias*! 🏃‍♂️ Aproveite para garantir sua cesta hoje.`;
+                        else msg = `Olá! Seu cupom de desconto vence *HOJE*! 🚨 Não perca essa oportunidade.`;
+                    }
+                    
+                    else if(tipo === 'oferta') msg = "Olá! 🌟 Temos uma *OFERTA RELÂMPAGO* especial para você hoje! Gostaria de conferir os itens em promoção?";
+                    
+                    else if(tipo === 'sorteio') msg = "Olá! 🍀 Estamos realizando um *SORTEIO* exclusivo para clientes fiéis! Responda essa mensagem para participar!";
+                    
+                    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
+                }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Store.init();
+            App.ui.render();
+            document.getElementById('check-alterada').addEventListener('change', App.controllers.toggleCheckAlterada);
+            const radioContainer = document.getElementById('container-radio-regiao');
+            radioContainer.innerHTML = CONSTANTS.REGIOES.map(r => `<label class="cursor-pointer"><input type="radio" name="regiao" value="${r}" class="peer sr-only" ${r === 'VG' ? 'checked' : ''}><div class="rounded-md border border-gray-200 bg-white p-2 text-center text-slate-600 peer-checked:border-slate-800 peer-checked:bg-slate-800 peer-checked:text-white transition-all font-semibold shadow-sm">${r}</div></label>`).join('');
+            
+            // Lógica Dropdown Clientes
+            const inputCliente = document.getElementById('input-cliente');
+            const dropdownClientes = document.getElementById('dropdown-clientes');
+            inputCliente.addEventListener('input', (e) => {
+                const val = e.target.value.toLowerCase();
+                const preview = document.getElementById('info-cliente-preview');
+                if(typeof CLIENTES_DB !== 'undefined' && val.length > 0) {
+                    const filtrados = CLIENTES_DB.filter(c => {
+                        const nome = c.nome.toLowerCase();
+                        const apelido = c.apelido ? c.apelido.toLowerCase() : '';
+                        const cel = c.celular ? c.celular.replace(/\D/g, '') : '';
+                        return nome.includes(val) || apelido.includes(val) || cel.includes(val);
+                    }).slice(0, 50);
+
+                    if(filtrados.length > 0) {
+                        dropdownClientes.innerHTML = filtrados.map(c => `
+                            <div class="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors" onclick="App.controllers.selecionarCliente('${c.nome}')">
+                                <p class="font-bold text-sm text-slate-800">${c.nome} ${c.apelido ? `<span class="text-slate-500 font-normal">(${c.apelido})</span>` : ''}</p>
+                                <p class="text-xs text-slate-500">${c.endereco || ''}</p>
+                            </div>
+                        `).join('');
+                        App.controllers.abrirDropdownCliente();
+                    } else { dropdownClientes.innerHTML = '<div class="p-3 text-sm text-slate-400">Nenhum cliente encontrado</div>'; App.controllers.abrirDropdownCliente(); }
+                    
+                    const found = CLIENTES_DB.find(c => c.nome.toLowerCase() === val);
+                    if(found) { preview.innerHTML = `<strong>Nome:</strong> ${found.nome}<br><strong>Tel:</strong> ${found.celular || '-'}<br><strong>End:</strong> ${found.endereco || '-'}<br><strong>Comp:</strong> ${found.complemento || '-'}`; preview.classList.remove('hidden'); } else { preview.classList.add('hidden'); }
+                } else { App.controllers.fecharDropdownCliente(); preview.classList.add('hidden'); }
+            });
+
+            document.addEventListener('click', (e) => {
+                if(!e.target.closest('.group')) App.controllers.fecharDropdownCliente();
+                if(!e.target.closest('#container-custom-select-cesta')) App.controllers.fecharDropdownCesta();
+                // Fecha CRM Actions se clicar fora
+                if(!e.target.closest('td.relative')) {
+                    document.querySelectorAll('[id^="crm-actions-"]').forEach(el => el.classList.add('hidden'));
+                }
+            });
+
+            const btnCesta = document.getElementById('btn-custom-select-cesta');
+            const dropdownCesta = document.getElementById('dropdown-cestas');
+            dropdownCesta.innerHTML = CONSTANTS.CESTAS_OPTIONS.map(opt => `<div class="p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors" onclick="App.controllers.selecionarCesta('${opt.value}', '${opt.label}', ${opt.price})"><div class="flex justify-between items-center"><span class="font-medium text-sm text-slate-700">${opt.label}</span><span class="text-xs font-bold text-blue-600">${opt.price > 0 ? Utils.formatMoeda(opt.price) : '-'}</span></div></div>`).join('');
+            btnCesta.addEventListener('click', App.controllers.toggleDropdownCesta);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const pedidoId = urlParams.get('pedidoId');
+            if(pedidoId) {
+                setTimeout(() => {
+                    const entrega = Store.data.rotaAtiva.entregas.find(e => e.id == pedidoId);
+                    if(entrega) {
+                        if(Store.data.regiaoFiltro !== entrega.regiao) App.controllers.mudarFiltro(entrega.regiao);
+                        App.controllers.abrirPosVenda(pedidoId);
+                        Utils.toast('Pedido carregado via link!', 'info');
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else { Utils.toast('Pedido do link não encontrado.', 'error'); }
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
