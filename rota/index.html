@@ -63,40 +63,47 @@
             /* Reset geral */
             body { background: white; -webkit-print-color-adjust: exact; margin: 0; padding: 0; }
 
-            /* MODO TICKET TÉRMICO (Quando body tem a classe .mode-ticket) */
-            body.mode-ticket > *:not(#ticket-print-area) { display: none !important; }
+            /* MODO TICKET TÉRMICO / 10x15 / ÍMÃ */
+            body.mode-print-view > *:not(#ticket-print-area) { display: none !important; }
             
-            body.mode-ticket #ticket-print-area {
+            body.mode-print-view #ticket-print-area {
                 display: block !important;
                 position: absolute;
                 top: 0;
                 left: 0;
-                /* Largura total 58mm */
-                width: 58mm;
-                max-width: 58mm; 
-                /* 5mm de respiro lateral (padding) */
-                padding-left: 5mm;
-                padding-right: 5mm;
                 box-sizing: border-box;
-                
-                font-family: 'Courier New', Courier, monospace; /* Fonte Monospaced fica melhor em tickets */
-                font-size: 11px;
-                line-height: 1.2;
                 color: black;
             }
 
-            /* Estilização Interna do Ticket */
-            .ticket-line { border-bottom: 1px dashed #000; margin: 5px 0; width: 100%; }
-            .ticket-header { text-align: center; margin-bottom: 10px; }
-            .ticket-bold { font-weight: bold; }
-            .ticket-big { font-size: 14px; font-weight: bold; }
-            .ticket-item { display: flex; justify-content: space-between; margin-bottom: 3px; }
-            .ticket-sub { font-size: 10px; padding-left: 10px; margin-bottom: 2px; display: block; }
-            .ticket-total { font-size: 14px; font-weight: bold; text-align: right; margin-top: 5px; }
-            .ticket-footer { text-align: center; margin-top: 15px; font-size: 10px; }
+            /* Estilo 10x15 (A6) */
+            .print-10x15 {
+                width: 100mm; /* Aprox 10cm */
+                height: 148mm; /* Aprox 15cm */
+                padding: 5mm;
+                font-family: 'Inter', sans-serif;
+                font-size: 12px;
+                line-height: 1.3;
+            }
+            .print-10x15 h1 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+            .print-10x15 .box { border: 2px solid #000; padding: 5px; margin-bottom: 5px; border-radius: 5px; }
+            .print-10x15 .label { font-weight: bold; font-size: 10px; text-transform: uppercase; color: #333; }
+            .print-10x15 .value { font-weight: bold; font-size: 14px; }
+            .print-10x15 .big-total { font-size: 20px; font-weight: 900; text-align: right; }
+
+            /* Estilo ÍMÃ (Cupom) - Estilo Cupom Estreito */
+            .print-ima {
+                width: 58mm;
+                padding: 2mm;
+                font-family: 'Courier New', Courier, monospace;
+                text-align: center;
+                border: 2px dashed #000;
+            }
+            .ima-title { font-size: 14px; font-weight: 900; margin-bottom: 5px; }
+            .ima-gift { font-size: 16px; font-weight: 800; border: 2px solid #000; padding: 5px; margin: 5px 0; border-radius: 5px; }
+            .ima-validity { font-size: 10px; font-weight: bold; margin-top: 5px; }
             
             /* Ajustes Histórico (Modo Normal - A4) */
-            body:not(.mode-ticket) #modal-historico .modal-content { 
+            body:not(.mode-print-view) #modal-historico .modal-content { 
                 position: static; 
                 width: 100%; 
                 max-width: 100%; 
@@ -105,9 +112,9 @@
                 box-shadow: none;
                 border: none;
             }
-            body:not(.mode-ticket) #modal-historico { position: static; background: white; }
-            body:not(.mode-ticket) .overflow-y-auto { overflow: visible !important; height: auto !important; }
-            body:not(.mode-ticket) #crm-summary-bar { background: #f1f5f9 !important; color: black !important; border: 1px solid #ccc; }
+            body:not(.mode-print-view) #modal-historico { position: static; background: white; }
+            body:not(.mode-print-view) .overflow-y-auto { overflow: visible !important; height: auto !important; }
+            body:not(.mode-print-view) #crm-summary-bar { background: #f1f5f9 !important; color: black !important; border: 1px solid #ccc; }
         }
     </style>
 </head>
@@ -116,7 +123,7 @@
     <!-- Toast Container -->
     <div id="toast-container" class="no-print"></div>
 
-    <!-- Container Escondido para Impressão de Ticket -->
+    <!-- Container Escondido para Impressão -->
     <div id="ticket-print-area" class="hidden"></div>
 
     <!-- Header Fixo -->
@@ -432,6 +439,7 @@
             <div class="bg-white border-b border-slate-200 px-4 flex gap-6 overflow-x-auto no-print">
                 <button onclick="App.controllers.switchCRMTab('diario')" id="tab-diario" class="py-3 text-sm font-bold text-blue-600 border-b-2 border-blue-600 hover:text-blue-800 transition-colors whitespace-nowrap">📅 Vendas por Dia</button>
                 <button onclick="App.controllers.switchCRMTab('busca')" id="tab-busca" class="py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-colors whitespace-nowrap">🔍 Buscar Cliente</button>
+                <button onclick="App.controllers.switchCRMTab('cupons')" id="tab-cupons" class="py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-colors whitespace-nowrap">🎫 Cupons a Vencer</button>
                 <button onclick="App.controllers.switchCRMTab('relatorios')" id="tab-relatorios" class="py-3 text-sm font-bold text-slate-500 border-b-2 border-transparent hover:text-slate-800 transition-colors whitespace-nowrap">📊 Relatórios Gerenciais</button>
             </div>
 
@@ -455,7 +463,7 @@
                                     <th class="p-3">Pagamento</th>
                                     <th class="p-3">Região</th>
                                     <th class="p-3 text-right">Valor</th>
-                                    <th class="p-3 text-center w-32">Links Admin</th>
+                                    <th class="p-3 text-center w-40">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="crm-daily-body" class="text-sm text-slate-700 divide-y divide-slate-100">
@@ -478,6 +486,31 @@
                 <div class="flex-1 overflow-auto p-4">
                     <div id="crm-search-results" class="space-y-4">
                         <p class="text-center text-slate-400 mt-10">Use a busca acima para encontrar todas as compras de um cliente.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEUDO: Cupons a Vencer (NOVO) -->
+            <div id="crm-view-cupons" class="hidden flex-1 flex flex-col overflow-hidden bg-slate-100">
+                <div class="flex-1 overflow-auto p-4">
+                    <div class="bg-white rounded shadow">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="bg-slate-800 text-white text-sm sticky top-0 z-10">
+                                <tr>
+                                    <th class="p-3">Cliente</th>
+                                    <th class="p-3">Compra Original</th>
+                                    <th class="p-3">Brinde (Previsto)</th>
+                                    <th class="p-3 text-center">Vencimento</th>
+                                    <th class="p-3 text-center">Avisar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="crm-cupons-body" class="text-sm text-slate-700 divide-y divide-slate-100">
+                                <!-- JS -->
+                            </tbody>
+                        </table>
+                        <div class="p-4 text-center border-t border-slate-100">
+                            <button id="btn-load-more-cupons" onclick="App.controllers.loadMoreCoupons()" class="text-blue-600 font-bold hover:text-blue-800 text-sm">Carregar Mais...</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -817,7 +850,7 @@
                                 ${entrega.cliente.complemento ? `<div class="mb-4"><p class="text-base font-medium text-slate-700 bg-slate-50 px-3 py-2 rounded-lg border border-slate-100 inline-block leading-snug w-full">${entrega.cliente.complemento}</p></div>` : ''}
                                 <div class="mb-4 border-t border-b border-slate-100 py-1">${itensHtml}</div>
                                 ${entrega.observacao ? `<div class="mb-4 pt-2 border-t border-slate-100"><p class="text-sm text-red-600 font-bold flex items-start gap-1">⚠️ ${entrega.observacao}</p></div>` : ''}
-                                <div class="space-y-3"><div class="grid grid-cols-4 gap-3"><button onclick="App.controllers.abrirZap(${entrega.id})" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Zap</button><button onclick="App.controllers.abrirMapa('${entrega.cliente.endereco}')" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Mapa</button><button onclick="App.controllers.imprimirTicket(${entrega.id})" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>Print</button>${isPendente ? `<button onclick="App.controllers.editarEntrega(${entrega.id})" class="py-2.5 bg-white border border-amber-200 text-amber-600 text-xs font-bold rounded-lg hover:bg-amber-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Editar</button>` : ''}</div><div class="grid grid-cols-3 gap-3"><a href="${entrega.cliente.celular ? 'tel:'+entrega.cliente.celular : '#'}" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center uppercase tracking-wide">Ligar</a>${isPendente ? `<button onclick="App.controllers.iniciarPagamento(${entrega.id})" class="col-span-1 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Entregue</button><button onclick="App.controllers.cancelarEntrega(${entrega.id})" class="col-span-1 py-2.5 bg-white border border-red-100 text-red-500 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors uppercase tracking-wide">Cancelar</button>` : (entrega.status === 'Entregue' ? `<button onclick="App.controllers.abrirPosVenda(${entrega.id})" class="col-span-2 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Pós Venda</button>` : '')}</div>${isPendente ? `<div class="flex justify-center gap-6 mt-2 pt-2 border-t border-slate-50"><button onclick="App.controllers.moverEntrega(${entrega.id}, 'cima')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button><button onclick="App.controllers.moverEntrega(${entrega.id}, 'baixo')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button></div>` : ''}</div></div></div>`;
+                                <div class="space-y-3"><div class="grid grid-cols-4 gap-3"><button onclick="App.controllers.abrirZap(${entrega.id})" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>Zap</button><button onclick="App.controllers.abrirMapa('${entrega.cliente.endereco}')" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Mapa</button>${isPendente ? `<button onclick="App.controllers.editarEntrega(${entrega.id})" class="py-2.5 bg-white border border-amber-200 text-amber-600 text-xs font-bold rounded-lg hover:bg-amber-50 transition-colors uppercase tracking-wide flex flex-col items-center justify-center col-span-2"><svg class="w-5 h-5 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>Editar</button>` : ''}</div><div class="grid grid-cols-3 gap-3"><a href="${entrega.cliente.celular ? 'tel:'+entrega.cliente.celular : '#'}" class="py-2.5 bg-white border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors flex items-center justify-center uppercase tracking-wide">Ligar</a>${isPendente ? `<button onclick="App.controllers.iniciarPagamento(${entrega.id})" class="col-span-1 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Entregue</button><button onclick="App.controllers.cancelarEntrega(${entrega.id})" class="col-span-1 py-2.5 bg-white border border-red-100 text-red-500 text-xs font-bold rounded-lg hover:bg-red-50 transition-colors uppercase tracking-wide">Cancelar</button>` : (entrega.status === 'Entregue' ? `<button onclick="App.controllers.abrirPosVenda(${entrega.id})" class="col-span-2 py-2.5 bg-slate-800 text-white text-xs font-bold rounded-lg hover:bg-slate-900 shadow-sm transition-colors uppercase tracking-wide">Pós Venda</button>` : '')}</div>${isPendente ? `<div class="flex justify-center gap-6 mt-2 pt-2 border-t border-slate-50"><button onclick="App.controllers.moverEntrega(${entrega.id}, 'cima')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg></button><button onclick="App.controllers.moverEntrega(${entrega.id}, 'baixo')" class="text-slate-300 hover:text-slate-600 p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button></div>` : ''}</div></div></div>`;
                     }).join('');
                 }
             },
@@ -841,48 +874,46 @@
 
                 // TAB SWITCHER
                 switchCRMTab: (tabName) => {
-                    const tabD = document.getElementById('tab-diario');
-                    const tabB = document.getElementById('tab-busca');
-                    const tabR = document.getElementById('tab-relatorios');
-                    const viewD = document.getElementById('crm-view-daily');
-                    const viewB = document.getElementById('crm-view-search');
-                    const viewR = document.getElementById('crm-view-reports');
+                    const tabs = {
+                        'diario': document.getElementById('tab-diario'),
+                        'busca': document.getElementById('tab-busca'),
+                        'cupons': document.getElementById('tab-cupons'),
+                        'relatorios': document.getElementById('tab-relatorios')
+                    };
+                    const views = {
+                        'diario': document.getElementById('crm-view-daily'),
+                        'busca': document.getElementById('crm-view-search'),
+                        'cupons': document.getElementById('crm-view-cupons'),
+                        'relatorios': document.getElementById('crm-view-reports')
+                    };
 
-                    // Reset Style
-                    [tabD, tabB, tabR].forEach(t => {
+                    // Reset
+                    Object.values(tabs).forEach(t => {
                         t.classList.remove('border-blue-600', 'text-blue-600');
                         t.classList.add('border-transparent', 'text-slate-500');
                     });
-                    [viewD, viewB, viewR].forEach(v => v.classList.add('hidden'));
+                    Object.values(views).forEach(v => v.classList.add('hidden'));
 
-                    // Active Style
-                    if(tabName === 'diario') {
-                        tabD.classList.remove('border-transparent', 'text-slate-500');
-                        tabD.classList.add('border-blue-600', 'text-blue-600');
-                        viewD.classList.remove('hidden');
-                        App.controllers.crmDailyFilter(0); // Carrega HOJE por padrao
-                    } else if(tabName === 'busca') {
-                        tabB.classList.remove('border-transparent', 'text-slate-500');
-                        tabB.classList.add('border-blue-600', 'text-blue-600');
-                        viewB.classList.remove('hidden');
-                    } else {
-                        tabR.classList.remove('border-transparent', 'text-slate-500');
-                        tabR.classList.add('border-blue-600', 'text-blue-600');
-                        viewR.classList.remove('hidden');
+                    // Active
+                    if(tabs[tabName]) {
+                        tabs[tabName].classList.remove('border-transparent', 'text-slate-500');
+                        tabs[tabName].classList.add('border-blue-600', 'text-blue-600');
                     }
+                    if(views[tabName]) views[tabName].classList.remove('hidden');
+
+                    if(tabName === 'diario') App.controllers.crmDailyFilter(0);
+                    if(tabName === 'cupons') { App.controllers.couponPagination = 20; App.controllers.crmCouponsFilter(); }
                 },
 
                 // === CRM: VENDAS POR DIA ===
                 crmDailyFilter: (daysAgo) => {
-                    // Renderiza botões
                     const btnContainer = document.getElementById('daily-filters');
-                    btnContainer.innerHTML = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(d => {
+                    btnContainer.innerHTML = [0, 1, 2, 3, 4, 5].map(d => {
                         const label = d === 0 ? 'Hoje' : (d === 1 ? 'Ontem' : `Há ${d} dias`);
                         const isActive = d === daysAgo;
                         return `<button onclick="App.controllers.crmDailyFilter(${d})" class="whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-colors border ${isActive ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}">${label}</button>`;
                     }).join('');
 
-                    // Filtra dados
                     const targetDate = new Date();
                     targetDate.setDate(targetDate.getDate() - daysAgo);
                     const targetDateStr = targetDate.toLocaleDateString('pt-BR');
@@ -892,7 +923,6 @@
                         return itemDate === targetDateStr;
                     });
 
-                    // Renderiza Tabela
                     const tbody = document.getElementById('crm-daily-body');
                     if (filtered.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">Nenhuma venda encontrada nesta data.</td></tr>';
@@ -913,9 +943,11 @@
                             <td class="p-3 text-xs font-bold text-slate-700">${item.regiao}</td>
                             <td class="p-3 text-right font-bold text-green-600 text-sm">${Utils.formatMoeda(item.valorTotalAjustado)}</td>
                             <td class="p-3 text-center">
-                                <button onclick='App.controllers.triggerAdminLinks(${item.id})' class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition-colors flex items-center justify-center mx-auto" title="Enviar Links ao Admin">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                                </button>
+                                <div class="flex justify-center gap-2">
+                                    <button onclick='App.controllers.imprimirPedido10x15(${item.id})' class="bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 rounded transition-colors text-xs font-bold border border-slate-300" title="Imprimir Pedido">🖨️ Pedido</button>
+                                    <button onclick='App.controllers.imprimirIma(${item.id})' class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 p-1.5 rounded transition-colors text-xs font-bold border border-yellow-300" title="Imprimir Ímã">🎫 Ímã</button>
+                                    <button onclick='App.controllers.triggerAdminLinks(${item.id})' class="bg-green-100 hover:bg-green-200 text-green-700 p-1.5 rounded transition-colors text-xs font-bold border border-green-300" title="Enviar Links ao Admin">📱 Zap</button>
+                                </div>
                             </td>
                         </tr>`;
                     }).join('');
@@ -924,6 +956,179 @@
                 triggerAdminLinks: (id) => {
                     const item = Store.data.history.find(h => h.id == id);
                     if(item) App.controllers.enviarRelatorioFinalZap(item);
+                },
+
+                // === IMPRESSÃO 10x15 PEDIDO ===
+                imprimirPedido10x15: (id) => {
+                    const entrega = Store.data.history.find(e => e.id == id) || Store.data.rotaAtiva.entregas.find(e => e.id == id);
+                    if(!entrega) return;
+
+                    const container = document.getElementById('ticket-print-area');
+                    const dataHora = new Date(entrega.updatedAt || entrega.dataCriacao).toLocaleString('pt-BR');
+                    
+                    let itensHtml = entrega.cestas.map(c => `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px; border-bottom:1px dashed #ccc; padding-bottom:2px;">
+                            <span>${c.qtd}x ${c.nome}</span>
+                            <span>${Utils.formatMoeda(c.valor * c.qtd)}</span>
+                        </div>
+                        ${c.tipo === 'Alterada' ? `<div style="font-size:10px; margin-bottom:4px;"><b>TIRAR:</b> ${c.tirar || '-'} <br> <b>PÔR:</b> ${c.por || '-'}</div>` : ''}
+                        ${c.brindes && c.brindes.length ? `<div style="font-size:10px; margin-bottom:4px;"><b>+ BRINDE:</b> ${c.brindes.join(', ')}</div>` : ''}
+                    `).join('');
+
+                    container.innerHTML = `
+                        <div class="print-10x15">
+                            <h1>ROTA DONA ANTONIA</h1>
+                            <div style="font-size:12px; margin-bottom:10px;">${dataHora} | PEDIDO #${id.toString().slice(-4)}</div>
+                            
+                            <div class="box">
+                                <div class="label">CLIENTE</div>
+                                <div class="value" style="font-size:16px;">${entrega.cliente.nome}</div>
+                                <div>${entrega.cliente.celular || ''}</div>
+                                <div style="margin-top:2px;">${entrega.cliente.endereco || 'Retirar'}</div>
+                                ${entrega.cliente.complemento ? `<div>(${entrega.cliente.complemento})</div>` : ''}
+                                <div class="label" style="margin-top:5px;">REGIÃO: ${entrega.regiao}</div>
+                            </div>
+
+                            <div class="box">
+                                <div class="label">ITENS DO PEDIDO</div>
+                                ${itensHtml}
+                            </div>
+
+                            ${entrega.observacao ? `<div class="box"><div class="label">OBSERVAÇÃO</div>${entrega.observacao}</div>` : ''}
+
+                            <div class="big-total">
+                                TOTAL: ${Utils.formatMoeda(entrega.valorTotalAjustado)}
+                            </div>
+                            <div style="text-align:right; font-size:12px;">
+                                Pagamento: ${entrega.formaPagamento ? entrega.formaPagamento.join(', ') : '-'}
+                            </div>
+                        </div>
+                    `;
+
+                    document.body.classList.add('mode-print-view');
+                    setTimeout(() => { window.print(); setTimeout(() => document.body.classList.remove('mode-print-view'), 500); }, 100);
+                },
+
+                // === IMPRESSÃO ÍMÃ (CUPOM) ===
+                imprimirIma: (id) => {
+                    const entrega = Store.data.history.find(e => e.id == id) || Store.data.rotaAtiva.entregas.find(e => e.id == id);
+                    if(!entrega) return;
+
+                    // Lógica de Brinde
+                    let gift = "Brinde Surpresa";
+                    const hasBasket = (str) => entrega.cestas.some(c => c.nome.toLowerCase().includes(str));
+                    
+                    if(hasBasket('grande') || hasBasket('média') || hasBasket('media')) gift = "1 Café 250g";
+                    else if(hasBasket('pequena') || hasBasket('mini')) gift = "1 Amaciante";
+                    else if(hasBasket('economica') || hasBasket('econômica')) gift = "1 Detergente";
+
+                    // Validade
+                    const date = new Date(entrega.updatedAt || entrega.dataCriacao);
+                    date.setDate(date.getDate() + 40);
+                    const validade = date.toLocaleDateString('pt-BR');
+
+                    const container = document.getElementById('ticket-print-area');
+                    container.innerHTML = `
+                        <div class="print-ima">
+                            <div class="ima-title">VALE BRINDE</div>
+                            <div style="font-size:10px;">Para sua próxima compra!</div>
+                            <div class="ima-gift">${gift}</div>
+                            <div>Válido até:</div>
+                            <div class="ima-validity">${validade}</div>
+                            <div style="font-size:9px; margin-top:5px;">Rota Dona Antonia</div>
+                        </div>
+                    `;
+
+                    document.body.classList.add('mode-print-view');
+                    setTimeout(() => { window.print(); setTimeout(() => document.body.classList.remove('mode-print-view'), 500); }, 100);
+                },
+
+                // === CRM: CUPONS ===
+                couponPagination: 20,
+                crmCouponsFilter: () => {
+                    const now = new Date();
+                    // Filtra vendas com menos de 40 dias (que ainda podem ter cupom válido ou recém vencido)
+                    // Mas vamos pegar um range maior para garantir histórico
+                    let allWithCoupons = Store.data.history.map(h => {
+                        const purchaseDate = new Date(h.updatedAt || h.dataCriacao);
+                        const expDate = new Date(purchaseDate);
+                        expDate.setDate(purchaseDate.getDate() + 40);
+                        
+                        // Determinar brinde novamente
+                        let gift = "Brinde Surpresa";
+                        const hasBasket = (str) => h.cestas.some(c => c.nome.toLowerCase().includes(str));
+                        if(hasBasket('grande') || hasBasket('média') || hasBasket('media')) gift = "1 Café 250g";
+                        else if(hasBasket('pequena') || hasBasket('mini')) gift = "1 Amaciante";
+                        else if(hasBasket('economica') || hasBasket('econômica')) gift = "1 Detergente";
+
+                        return {
+                            ...h,
+                            expDate: expDate,
+                            gift: gift,
+                            daysLeft: Math.ceil((expDate - now) / (1000 * 60 * 60 * 24))
+                        };
+                    });
+
+                    // Filtra apenas os que vencem no futuro ou venceram recentemente (ex: -5 dias) para não mostrar histórico de 1 ano atrás
+                    allWithCoupons = allWithCoupons.filter(i => i.daysLeft > -5);
+
+                    // Ordena: Menor daysLeft primeiro (mais urgente)
+                    allWithCoupons.sort((a,b) => a.daysLeft - b.daysLeft);
+
+                    const visible = allWithCoupons.slice(0, App.controllers.couponPagination);
+                    const tbody = document.getElementById('crm-cupons-body');
+                    
+                    if(visible.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400">Nenhum cupom próximo do vencimento.</td></tr>';
+                        document.getElementById('btn-load-more-cupons').classList.add('hidden');
+                        return;
+                    }
+
+                    tbody.innerHTML = visible.map(item => {
+                        const styleClass = item.daysLeft < 0 ? 'text-red-600 bg-red-50' : (item.daysLeft <= 5 ? 'text-amber-600 bg-amber-50' : 'text-green-600 bg-green-50');
+                        const status = item.daysLeft < 0 ? `Venceu há ${Math.abs(item.daysLeft)} dias` : (item.daysLeft === 0 ? 'VENCE HOJE' : `Vence em ${item.daysLeft} dias`);
+                        
+                        return `
+                        <tr class="hover:bg-slate-50 border-b border-slate-100">
+                            <td class="p-3">
+                                <div class="font-bold text-slate-800">${item.cliente.nome}</div>
+                                <div class="text-xs text-slate-400">${item.cliente.celular || '-'}</div>
+                            </td>
+                            <td class="p-3 text-xs text-slate-600">${new Date(item.updatedAt).toLocaleDateString('pt-BR')}</td>
+                            <td class="p-3 text-sm font-bold text-slate-700">${item.gift}</td>
+                            <td class="p-3 text-center">
+                                <span class="px-2 py-1 rounded text-xs font-bold ${styleClass}">${status}</span>
+                                <div class="text-xs text-slate-400 mt-1">${item.expDate.toLocaleDateString('pt-BR')}</div>
+                            </td>
+                            <td class="p-3 text-center">
+                                <button onclick="App.controllers.avisarVencimentoCupom('${item.cliente.celular}', '${item.cliente.nome}', '${item.expDate.toLocaleDateString('pt-BR')}', '${item.gift}')" class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-full transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+
+                    if (allWithCoupons.length > App.controllers.couponPagination) {
+                        document.getElementById('btn-load-more-cupons').classList.remove('hidden');
+                    } else {
+                        document.getElementById('btn-load-more-cupons').classList.add('hidden');
+                    }
+                },
+
+                loadMoreCoupons: () => {
+                    App.controllers.couponPagination += 20;
+                    App.controllers.crmCouponsFilter();
+                },
+
+                avisarVencimentoCupom: (celular, nome, data, brinde) => {
+                    if(!celular) return Utils.toast('Cliente sem celular cadastrado', 'error');
+                    let num = celular.replace(/\D/g, '');
+                    if(!num.startsWith('55')) num = '55' + num;
+                    
+                    const msg = `Olá ${nome}! Aqui é da Rota Dona Antonia. 🌟\n\nPassando para lembrar que você tem um vale-brinde de *${brinde}* que vence dia *${data}*! 🗓️\n\nAproveite para fazer seu pedido e garantir seu brinde! 🚚📦`;
+                    
+                    window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`, '_blank');
                 },
 
                 // === CRM: BUSCA CLIENTE ===
