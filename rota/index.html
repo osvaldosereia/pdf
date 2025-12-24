@@ -73,20 +73,27 @@
                 color: black;
             }
 
-            /* Estilo 10x15 (A6) */
+            /* Estilo 10x15 (A6) - Otimizado para Lista de Produtos */
             .print-10x15 {
                 width: 100mm; /* Aprox 10cm */
                 height: 148mm; /* Aprox 15cm */
-                padding: 5mm;
+                padding: 4mm;
                 font-family: 'Inter', sans-serif;
-                font-size: 12px;
-                line-height: 1.3;
+                font-size: 11px;
+                line-height: 1.2;
             }
-            .print-10x15 h1 { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-            .print-10x15 .box { border: 2px solid #000; padding: 5px; margin-bottom: 5px; border-radius: 5px; }
-            .print-10x15 .label { font-weight: bold; font-size: 10px; text-transform: uppercase; color: #333; }
-            .print-10x15 .value { font-weight: bold; font-size: 14px; }
-            .print-10x15 .big-total { font-size: 20px; font-weight: 900; text-align: right; }
+            .print-10x15 h1 { font-size: 16px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; }
+            .print-10x15 .box { border: 1px solid #000; padding: 4px; margin-bottom: 4px; border-radius: 4px; }
+            .print-10x15 .label { font-weight: bold; font-size: 9px; text-transform: uppercase; color: #333; }
+            .print-10x15 .value { font-weight: bold; font-size: 13px; }
+            .print-10x15 .big-total { font-size: 18px; font-weight: 900; text-align: right; margin-top: 5px; }
+            
+            /* Lista de Produtos na Impressão */
+            .print-prod-list { margin-top: 2px; }
+            .print-prod-item { display: flex; justify-content: space-between; font-size: 10px; border-bottom: 1px dotted #ccc; padding: 1px 0; }
+            .print-prod-item span:first-child { flex: 1; }
+            .print-prod-item span:last-child { font-weight: bold; margin-left: 5px; }
+            .print-prod-header { font-size: 10px; font-weight: bold; margin-top: 4px; border-bottom: 1px solid #000; }
 
             /* Estilo ÍMÃ (Cupom) - Estilo Cupom Estreito */
             .print-ima {
@@ -269,7 +276,10 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Cidade</label>
-                        <input type="text" id="edit-client-cidade" class="w-full border rounded p-2 mt-1">
+                        <select id="edit-client-cidade" class="w-full border rounded p-2 mt-1 bg-white">
+                            <option value="Cuiabá">Cuiabá</option>
+                            <option value="Várzea Grande">Várzea Grande</option>
+                        </select>
                     </div>
                 </div>
                 
@@ -312,7 +322,11 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Cidade</label>
-                        <input type="text" id="input-cidade" class="w-full rounded-lg border-slate-300 border p-2 bg-slate-50" placeholder="Cidade">
+                        <select id="input-cidade" class="w-full rounded-lg border-slate-300 border p-2 bg-slate-50">
+                            <option value="">Selecione...</option>
+                            <option value="Cuiabá">Cuiabá</option>
+                            <option value="Várzea Grande">Várzea Grande</option>
+                        </select>
                     </div>
                 </div>
 
@@ -356,17 +370,11 @@
                         </label>
                     </div>
 
-                    <!-- CAMPOS TIRAR / PÔR -->
+                    <!-- LISTA DE PRODUTOS PARA EDIÇÃO (NOVO) -->
                     <div id="box-detalhes-alterada" class="hidden space-y-2 mb-3 bg-amber-50 p-3 rounded border border-amber-200">
-                        <div class="grid grid-cols-2 gap-2">
-                            <div>
-                                <label class="text-xs font-bold text-red-600 block mb-1">TIRAR:</label>
-                                <input type="text" id="input-tirar" placeholder="Ex: Arroz" class="w-full text-sm p-2 rounded border border-amber-200 focus:border-red-400 focus:ring-1 focus:ring-red-400 outline-none bg-white">
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-green-600 block mb-1">PÔR:</label>
-                                <input type="text" id="input-por" placeholder="Ex: Café" class="w-full text-sm p-2 rounded border border-amber-200 focus:border-green-400 focus:ring-1 focus:ring-green-400 outline-none bg-white">
-                            </div>
+                        <p class="text-xs font-bold text-amber-800 uppercase mb-2">Composição da Cesta:</p>
+                        <div id="lista-produtos-edicao" class="space-y-1">
+                            <!-- Injetado via JS -->
                         </div>
                     </div>
                     
@@ -768,11 +776,47 @@
                 { value: "Média Koblenz", label: "Média Koblenz", price: 325.00 },
                 { value: "Grande Bonini", label: "Grande Bonini", price: 380.00 },
                 { value: "Grande Koblenz", label: "Grande Koblenz", price: 390.00 }
-            ]
+            ],
+            ITENS_PADRAO: {
+                "ECONOMICA": {
+                    titulo: 'Cesta Econômica',
+                    itens: [
+                        { nome: 'Arroz 5kg', qtd: 1 }, { nome: 'Açúcar Cristal 2kg', qtd: 1 }, { nome: 'Óleo de Soja 900ml', qtd: 1 }, { nome: 'Feijão Dona Dê 1kg', qtd: 1 }, { nome: 'Café 250g', qtd: 1 }, { nome: 'Espaguete 400g', qtd: 1 }, { nome: 'Trigo 1kg', qtd: 1 }, { nome: 'Farinha de Mandioca 1kg', qtd: 1 }, { nome: 'Sal 1kg', qtd: 1 }, { nome: 'Molho Tomate 300g', qtd: 1 }, { nome: 'Milho Lata/Sachê 250g', qtd: 1 }, { nome: 'Bolacha Recheada', qtd: 1 }, { nome: 'Miojo Apti', qtd: 1 }, { nome: 'Suco Pó', qtd: 1 }
+                    ]
+                },
+                "mini": {
+                    titulo: 'Cesta Mini',
+                    itens: [
+                         { nome: 'Arroz 5kg', qtd: 1 }, { nome: 'Açúcar Cristal 2kg', qtd: 1 }, { nome: 'Óleo de Soja 900ml', qtd: 2 }, { nome: 'Feijão Da Casa 1kg', qtd: 2 }, { nome: 'Café Caboclo 250g', qtd: 1 }, { nome: 'Espaguete 500g', qtd: 1 }, { nome: 'Sal 1kg', qtd: 1 }, { nome: 'Molho Tomate FUGINI', qtd: 1 }, { nome: 'Milho Lata 250g', qtd: 1 }, { nome: 'Bolacha Recheada My Bit', qtd: 1 }, { nome: 'Miojo Apti', qtd: 1 }, { nome: 'Suco Pó', qtd: 2 },
+                         { nome: 'Sabão Barra YPE c/ 5', qtd: 1 }, { nome: 'Creme Dental Sorriso 70g', qtd: 1 }, { nome: 'Papel Higiênico c/ 4un', qtd: 1 }, { nome: 'Amaciante Ype 2L', qtd: 1 }, { nome: 'Desinfetante Remmus 2L', qtd: 1 }, { nome: 'Sabão Pó OMO 800g', qtd: 1 }, { nome: 'Detergente Ype 500ml', qtd: 1 }, { nome: 'Qboa 1L', qtd: 1 }, { nome: 'Sabonete Palmolive 90g', qtd: 2 }, { nome: 'Esponja Aço Assolan', qtd: 1 }, { nome: 'Esponja Lavar Louça', qtd: 1 }
+                    ]
+                },
+                "pequena": {
+                    titulo: 'Cesta Pequena',
+                    itens: [
+                        { nome: 'Arroz 5kg', qtd: 2 }, { nome: 'Açúcar Cristal 2kg', qtd: 1 }, { nome: 'Óleo de Soja 900ml', qtd: 2 }, { nome: 'Feijão Da Casa 1kg', qtd: 2 }, { nome: 'Café Caboclo 250g', qtd: 1 }, { nome: 'Ovos (Dúzia)', qtd: 1 }, { nome: 'Mistura para Bolo 400g', qtd: 1 }, { nome: 'Espaguete 500g', qtd: 1 }, { nome: 'Trigo 1kg', qtd: 1 }, { nome: 'Sal 1kg', qtd: 1 }, { nome: 'Molho Tomate Fugini', qtd: 1 }, { nome: 'Milho Lata 250g', qtd: 1 }, { nome: 'Tempero Pronto 300g', qtd: 1 }, { nome: 'Bolacha Recheada My Bit', qtd: 2 }, { nome: 'Miojo Yolle', qtd: 2 }, { nome: 'Suco Pó', qtd: 2 },
+                        { nome: 'Sabão Barra YPE c/ 5', qtd: 1 }, { nome: 'Creme Dental Sorriso 70g', qtd: 1 }, { nome: 'Papel Higiênico c/ 4un', qtd: 1 }, { nome: 'Amaciante Ype 2L', qtd: 1 }, { nome: 'Desinfetante Remmus 2L', qtd: 1 }, { nome: 'Sabão Pó OMO 800g', qtd: 1 }, { nome: 'Detergente Ype 500ml', qtd: 2 }, { nome: 'Qboa 1L', qtd: 1 }, { nome: 'Sabonete Palmolive 90g', qtd: 2 }, { nome: 'Esponja Aço Assolan', qtd: 1 }, { nome: 'Bucha lavar louça', qtd: 1 }
+                    ]
+                },
+                "media": {
+                    titulo: 'Cesta Média',
+                    itens: [
+                        { nome: 'Arroz 5kg', qtd: 3 }, { nome: 'Açúcar Cristal 2kg', qtd: 2 }, { nome: 'Óleo de Soja 900ml', qtd: 3 }, { nome: 'Feijão Da Casa 1kg', qtd: 3 }, { nome: 'Café Caboclo 500g', qtd: 1 }, { nome: 'Ovos (Dúzia)', qtd: 1 }, { nome: 'Mistura para Bolo 400g', qtd: 1 }, { nome: 'Espaguete 500g', qtd: 2 }, { nome: 'Trigo 1kg', qtd: 1 }, { nome: 'Sal 1kg', qtd: 1 }, { nome: 'Molho Tomate FUGINI 340g', qtd: 2 }, { nome: 'Milho Lata/Sachê 250g', qtd: 1 }, { nome: 'Tempero Pronto 300g', qtd: 1 }, { nome: 'Bolacha Recheada My Bit', qtd: 2 }, { nome: 'Miojo Apti', qtd: 2 }, { nome: 'Suco Pó', qtd: 3 },
+                        { nome: 'Sabão Barra YPE c/ 5', qtd: 1 }, { nome: 'Creme Dental Sorriso 70g', qtd: 2 }, { nome: 'Papel Higiênico c/ 4un', qtd: 2 }, { nome: 'Amaciante Ype 2L', qtd: 1 }, { nome: 'Desinfetante Remmus 2L', qtd: 1 }, { nome: 'Sabão Pó OMO 800g', qtd: 1 }, { nome: 'Detergente Ype 500ml', qtd: 2 }, { nome: 'Qboa 1L', qtd: 1 }, { nome: 'Sabonete Palmolive 90g', qtd: 3 }, { nome: 'Esponja Aço Assolan', qtd: 1 }, { nome: 'Esponja Lavar Louça', qtd: 1 }
+                    ]
+                },
+                "grande": {
+                    titulo: 'Cesta Grande',
+                    itens: [
+                        { nome: 'Arroz 5kg', qtd: 4 }, { nome: 'Açúcar Cristal 2kg', qtd: 3 }, { nome: 'Óleo de Soja 900ml', qtd: 4 }, { nome: 'Feijão Da Casa 1kg', qtd: 4 }, { nome: 'Café Caboclo 500g', qtd: 1 }, { nome: 'Espaguete 500g', qtd: 3 }, { nome: 'Ovos (Dúzia)', qtd: 1 }, { nome: 'Mistura para Bolo 400g', qtd: 1 }, { nome: 'Trigo 1kg', qtd: 1 }, { nome: 'Sal 1kg', qtd: 1 }, { nome: 'Molho Tomate FUGINI 340g', qtd: 2 }, { nome: 'Milho Lata/Sachê 250g', qtd: 1 }, { nome: 'Tempero Pronto 300g', qtd: 1 }, { nome: 'Bolacha Recheada My Bit', qtd: 2 }, { nome: 'Miojo Apti', qtd: 2 }, { nome: 'Suco Pó', qtd: 4 },
+                        { nome: 'Sabão Barra YPE c/ 5', qtd: 1 }, { nome: 'Creme Dental Sorriso 70g', qtd: 2 }, { nome: 'Papel Higiênico c/ 4un', qtd: 2 }, { nome: 'Amaciante Ype 2L', qtd: 1 }, { nome: 'Desinfetante Remmus 2L', qtd: 1 }, { nome: 'Sabão Pó OMO 800g', qtd: 1 }, { nome: 'Detergente Ype 500ml', qtd: 2 }, { nome: 'Qboa 1L', qtd: 1 }, { nome: 'Sabonete Palmolive 90g', qtd: 4 }, { nome: 'Esponja Aço Assolan', qtd: 1 }, { nome: 'Esponja Lavar Louça', qtd: 1 }
+                    ]
+                }
+            }
         };
 
         const Store = {
-            data: { rotaAtiva: null, regiaoFiltro: 'VG', carrinhoTemp: [], entregaEmAcaoId: null, editingId: null, history: [], meta: {} },
+            data: { rotaAtiva: null, regiaoFiltro: 'VG', carrinhoTemp: [], entregaEmAcaoId: null, editingId: null, history: [], meta: {}, tempBasketItems: [] },
             init() {
                 // Carrega Rota Atual
                 const saved = localStorage.getItem(CONSTANTS.STORAGE_KEY);
@@ -950,7 +994,7 @@
                     let totalCalculado = 0;
                     container.innerHTML = Store.data.carrinhoTemp.map((item, idx) => {
                         totalCalculado += (item.valor * item.qtd);
-                        return `<div class="flex justify-between items-start bg-white p-2 rounded border border-slate-100 shadow-sm animate-in fade-in"><div><p class="text-sm font-bold text-slate-800">${item.qtd}x ${item.nome}</p>${item.tipo === 'Alterada' ? `<div class="text-xs mt-1">${item.tirar ? `<span class="text-red-500 font-semibold block">Tirar: ${item.tirar}</span>` : ''}${item.por ? `<span class="text-green-600 font-semibold block">Pôr: ${item.por}</span>` : ''}</div>` : ''}${item.brindes && item.brindes.length ? `<p class="text-xs text-pink-500">+ ${item.brindes.join(', ')}</p>` : ''}</div><div class="flex items-center gap-2"><span class="text-sm font-semibold text-blue-600">${Utils.formatMoeda(item.valor * item.qtd)}</span><button onclick="App.controllers.removerItemCarrinho(${idx})" class="text-red-400 hover:text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
+                        return `<div class="flex justify-between items-start bg-white p-2 rounded border border-slate-100 shadow-sm animate-in fade-in"><div><p class="text-sm font-bold text-slate-800">${item.qtd}x ${item.nome}</p>${item.tipo === 'Alterada' ? `<div class="text-xs mt-1 text-amber-600 font-semibold">⚠️ Cesta Personalizada (Ver detalhes na impressão)</div>` : ''}${item.brindes && item.brindes.length ? `<p class="text-xs text-pink-500">+ ${item.brindes.join(', ')}</p>` : ''}</div><div class="flex items-center gap-2"><span class="text-sm font-semibold text-blue-600">${Utils.formatMoeda(item.valor * item.qtd)}</span><button onclick="App.controllers.removerItemCarrinho(${idx})" class="text-red-400 hover:text-red-600"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button></div></div>`;
                     }).join('');
                     if (!totalInput.value || parseFloat(totalInput.value) === 0) totalInput.value = totalCalculado.toFixed(2);
                 },
@@ -981,7 +1025,7 @@
                                     <div class="text-base font-bold flex-1 truncate pr-2">${c.qtd}x ${c.nome}</div>
                                     <div class="text-base font-semibold text-slate-600 whitespace-nowrap">${Utils.formatMoeda(c.valor * c.qtd)}</div>
                                 </div>
-                                ${c.tipo === 'Alterada' ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600">${c.tirar ? `<div class="flex gap-1"><span class="font-bold text-red-600">Tirar:</span> <span>${c.tirar}</span></div>` : ''}${c.por ? `<div class="flex gap-1"><span class="font-bold text-green-600">Pôr:</span> <span>${c.por}</span></div>` : ''}</div>` : ''}
+                                ${c.tipo === 'Alterada' ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600 font-medium text-amber-700">⚠️ Cesta Personalizada</div>` : ''}
                                 ${c.brindes && c.brindes.length ? `<div class="mt-2 pt-2 border-t border-slate-100 text-sm text-slate-600 font-medium"><span class="text-slate-400 font-normal mr-1">Brinde:</span> ${c.brindes.join(', ')}</div>` : ''}
                             </div>
                         `).join('<div class="border-b border-slate-100 my-1"></div>');
@@ -1000,7 +1044,83 @@
             controllers: {
                 novaRota: () => { if(confirm('Isso apagará a rota atual e criará uma nova. Confirmar?')) { Store.novaRota(); window.location.reload(); } },
                 mudarFiltro: (regiao) => { Store.data.regiaoFiltro = regiao; App.ui.render(); },
-                toggleCheckAlterada: () => { const check = document.getElementById('check-alterada'); const box = document.getElementById('box-detalhes-alterada'); if(check.checked) box.classList.remove('hidden'); else box.classList.add('hidden'); },
+                toggleCheckAlterada: () => { 
+                    const check = document.getElementById('check-alterada'); 
+                    const box = document.getElementById('box-detalhes-alterada'); 
+                    const cestaNome = document.getElementById('hidden-cesta-nome').value;
+
+                    if(check.checked) {
+                        if(cestaNome) {
+                            App.controllers.renderListaProdutosEdicao(cestaNome);
+                            box.classList.remove('hidden'); 
+                        } else {
+                            Utils.toast('Selecione uma cesta primeiro!', 'error');
+                            check.checked = false;
+                        }
+                    } else { 
+                        box.classList.add('hidden'); 
+                    } 
+                },
+                
+                // NOVO: Renderiza lista de produtos para editar quantidade
+                renderListaProdutosEdicao: (cestaNome) => {
+                    let key = 'default';
+                    // Mapeia o nome da cesta para a chave correta em ITENS_PADRAO
+                    const nameLower = cestaNome.toLowerCase();
+                    if(nameLower.includes('economica')) key = 'ECONOMICA';
+                    else if(nameLower.includes('mini')) key = 'mini';
+                    else if(nameLower.includes('pequena')) key = 'pequena';
+                    else if(nameLower.includes('média') || nameLower.includes('media')) key = 'media';
+                    else if(nameLower.includes('grande')) key = 'grande';
+
+                    const itensBase = CONSTANTS.ITENS_PADRAO[key] ? CONSTANTS.ITENS_PADRAO[key].itens : [];
+                    
+                    // Se já tivermos editado essa cesta antes (no mesmo fluxo), recupera. Se não, inicia do padrão.
+                    if(Store.data.tempBasketItems.length === 0 || Store.data.currentBasketType !== key) {
+                        Store.data.tempBasketItems = JSON.parse(JSON.stringify(itensBase));
+                        Store.data.currentBasketType = key;
+                    }
+
+                    const container = document.getElementById('lista-produtos-edicao');
+                    container.innerHTML = Store.data.tempBasketItems.map((item, idx) => `
+                        <div class="flex justify-between items-center bg-white p-2 rounded border border-amber-100 text-sm">
+                            <span class="flex-1 truncate pr-2 font-medium text-slate-700">${item.nome}</span>
+                            <div class="flex items-center gap-3">
+                                <button onclick="App.controllers.updateItemQtd(${idx}, -1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">-</button>
+                                <span class="w-4 text-center font-bold text-slate-800">${item.qtd}</span>
+                                <button onclick="App.controllers.updateItemQtd(${idx}, 1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">+</button>
+                            </div>
+                        </div>
+                    `).join('');
+                },
+
+                updateItemQtd: (idx, delta) => {
+                    if(Store.data.tempBasketItems[idx]) {
+                        const newVal = Store.data.tempBasketItems[idx].qtd + delta;
+                        if(newVal >= 0) {
+                            Store.data.tempBasketItems[idx].qtd = newVal;
+                            // Re-renderiza apenas a lista visualmente se necessário, ou podemos atualizar o DOM direto para performance.
+                            // Para simplicidade, re-renderizamos a lista
+                            const basketKey = Store.data.currentBasketType; // Já armazenamos o tipo atual
+                            // Truque: chamar render passando o nome não importa muito pois já temos os itens em Store.data.tempBasketItems
+                            // Mas a função renderListaProdutosEdicao reseta se mudarmos o tipo. 
+                            // Vamos criar uma função só de render update visual
+                            const container = document.getElementById('lista-produtos-edicao');
+                            // Simplesmente atualiza o HTML deste item específico ou tudo
+                            // Vamos re-renderizar tudo com o estado atual
+                             container.innerHTML = Store.data.tempBasketItems.map((item, i) => `
+                                <div class="flex justify-between items-center bg-white p-2 rounded border border-amber-100 text-sm">
+                                    <span class="flex-1 truncate pr-2 font-medium text-slate-700 ${item.qtd === 0 ? 'text-slate-400 line-through' : ''}">${item.nome}</span>
+                                    <div class="flex items-center gap-3">
+                                        <button onclick="App.controllers.updateItemQtd(${i}, -1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">-</button>
+                                        <span class="w-4 text-center font-bold text-slate-800">${item.qtd}</span>
+                                        <button onclick="App.controllers.updateItemQtd(${i}, 1)" class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center font-bold">+</button>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                },
                 
                 resetarCRM: () => {
                     if(confirm('⚠️ PERIGO: Você está prestes a apagar TODO o histórico de vendas e clientes (CRM).\n\nEssa ação NÃO pode ser desfeita.\n\nDeseja continuar?')) {
@@ -1353,14 +1473,37 @@
                     const container = document.getElementById('ticket-print-area');
                     const dataHora = new Date(entrega.updatedAt || entrega.dataCriacao).toLocaleString('pt-BR');
                     
-                    let itensHtml = entrega.cestas.map(c => `
-                        <div style="display:flex; justify-content:space-between; margin-bottom:4px; border-bottom:1px dashed #ccc; padding-bottom:2px;">
-                            <span>${c.qtd}x ${c.nome}</span>
+                    // Renderiza os itens principais (Cestas)
+                    let itensHtml = entrega.cestas.map(c => {
+                        let html = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px; border-bottom:1px solid #eee; padding-bottom:2px;">
+                            <span><b>${c.qtd}x</b> ${c.nome}</span>
                             <span>${Utils.formatMoeda(c.valor * c.qtd)}</span>
-                        </div>
-                        ${c.tipo === 'Alterada' ? `<div style="font-size:10px; margin-bottom:4px;"><b>TIRAR:</b> ${c.tirar || '-'} <br> <b>PÔR:</b> ${c.por || '-'}</div>` : ''}
-                        ${c.brindes && c.brindes.length ? `<div style="font-size:10px; margin-bottom:4px;"><b>+ BRINDE:</b> ${c.brindes.join(', ')}</div>` : ''}
-                    `).join('');
+                        </div>`;
+                        
+                        // SE TIVER LISTA DE PRODUTOS MODIFICADA (Cesta Alterada)
+                        if(c.tipo === 'Alterada' && c.produtos && c.produtos.length > 0) {
+                            html += `<div class="print-prod-list">
+                                <div class="print-prod-header">ITENS DA CESTA:</div>`;
+                            c.produtos.forEach(p => {
+                                if(p.qtd > 0) {
+                                    html += `<div class="print-prod-item">
+                                        <span>${p.nome}</span>
+                                        <span>${p.qtd}x</span>
+                                    </div>`;
+                                }
+                            });
+                            html += `</div>`;
+                        } else if(c.tipo === 'Alterada') {
+                             // Fallback antigo (Tirar/Pôr) se não tiver a nova lista
+                             html += `<div style="font-size:10px; margin-bottom:4px;"><b>TIRAR:</b> ${c.tirar || '-'} <br> <b>PÔR:</b> ${c.por || '-'}</div>`;
+                        }
+                        
+                        if(c.brindes && c.brindes.length) {
+                             html += `<div style="font-size:10px; margin-bottom:4px;"><b>+ BRINDE:</b> ${c.brindes.join(', ')}</div>`;
+                        }
+                        return html;
+                    }).join('');
 
                     container.innerHTML = `
                         <div class="print-10x15">
@@ -1551,7 +1694,7 @@
                             <div class="text-sm">
                                 <span class="font-bold">${c.qtd}x ${c.nome}</span> 
                                 <span class="text-slate-500 text-xs">(${Utils.formatMoeda(c.valor * c.qtd)})</span>
-                                ${c.tipo === 'Alterada' ? `<div class="text-xs pl-2 text-amber-600">Tirar: ${c.tirar} / Pôr: ${c.por}</div>` : ''}
+                                ${c.tipo === 'Alterada' ? `<div class="text-xs pl-2 text-amber-600">Cesta Alterada</div>` : ''}
                             </div>
                         `).join('');
 
@@ -1722,6 +1865,16 @@
                     document.getElementById('hidden-cesta-valor').value = preco;
                     document.getElementById('label-select-cesta').classList.add('text-slate-900', 'font-medium');
                     App.controllers.fecharDropdownCesta();
+                    
+                    // Se estiver em modo edição, re-renderiza lista de produtos
+                    const check = document.getElementById('check-alterada');
+                    if(check.checked) {
+                        App.controllers.renderListaProdutosEdicao(valor);
+                    } else {
+                        // Limpa estado temporário se mudar cesta sem estar checked
+                        Store.data.tempBasketItems = [];
+                        Store.data.currentBasketType = null;
+                    }
                 },
 
                 adicionarItemAoCarrinho: () => {
@@ -1733,24 +1886,34 @@
                     if(!nomeCesta) return Utils.toast('Selecione uma cesta', 'error');
                     if(qtd < 1) return Utils.toast('Quantidade inválida', 'error');
 
+                    // Se for alterada, usa os produtos do estado temporário
+                    // Se não for, não salva lista de produtos (ou salva padrão se quiser, mas para economizar espaço deixamos null)
+                    let produtosModificados = null;
+                    if(isAlterada && Store.data.tempBasketItems.length > 0) {
+                        produtosModificados = JSON.parse(JSON.stringify(Store.data.tempBasketItems));
+                    }
+
                     const item = {
                         nome: nomeCesta,
                         valor: valorCesta,
                         qtd: qtd,
                         tipo: isAlterada ? 'Alterada' : 'Normal',
-                        tirar: isAlterada ? document.getElementById('input-tirar').value : '',
-                        por: isAlterada ? document.getElementById('input-por').value : '',
+                        // Remover campos antigos de texto se não usar mais, ou manter para compatibilidade
+                        // tirar: ..., por: ... (não usados na nova lógica de lista)
+                        produtos: produtosModificados, 
                         brindes: Array.from(document.querySelectorAll('input[name="brindes"]:checked')).map(el => el.value)
                     };
 
                     Store.data.carrinhoTemp.push(item);
                     App.ui.renderCarrinho();
                     
+                    // Reset UI
                     document.getElementById('check-alterada').checked = false;
-                    App.controllers.toggleCheckAlterada();
+                    App.controllers.toggleCheckAlterada(); // Esconde box
+                    Store.data.tempBasketItems = []; // Limpa temp
+                    Store.data.currentBasketType = null;
+
                     document.getElementById('qtd-cesta').value = 1;
-                    document.getElementById('input-tirar').value = '';
-                    document.getElementById('input-por').value = '';
                     document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
                     document.getElementById('label-select-cesta').innerText = 'Selecione a Cesta...';
                     document.getElementById('hidden-cesta-nome').value = '';
@@ -1762,6 +1925,7 @@
                 iniciarNovoLancamento: () => {
                     Store.data.editingId = null;
                     Store.data.carrinhoTemp = [];
+                    Store.data.tempBasketItems = [];
                     
                     // Reset UI
                     document.getElementById('modal-lancamento-title').innerText = "Nova Entrega";
@@ -1776,7 +1940,7 @@
                     
                     // Reset Bairro e Cidade
                     document.getElementById('input-bairro').value = '';
-                    document.getElementById('input-cidade').value = '';
+                    document.getElementById('input-cidade').value = 'Cuiabá'; // Default
 
                     const regiaoPadrao = document.querySelector(`input[name="regiao"][value="VG"]`);
                     if(regiaoPadrao) regiaoPadrao.checked = true;
@@ -1784,6 +1948,11 @@
                     App.ui.renderCarrinho();
                     App.controllers.fecharDropdownCliente();
                     App.controllers.fecharDropdownCesta();
+                    
+                    // Reset Cesta Alterada Box
+                    document.getElementById('check-alterada').checked = false;
+                    document.getElementById('box-detalhes-alterada').classList.add('hidden');
+                    
                     App.ui.modalLancamento.open();
                 },
 
@@ -1807,7 +1976,7 @@
                     
                     // Fill Bairro/Cidade if available in saved order
                     document.getElementById('input-bairro').value = entrega.cliente.bairro || '';
-                    document.getElementById('input-cidade').value = entrega.cliente.cidade || '';
+                    document.getElementById('input-cidade').value = entrega.cliente.cidade || 'Cuiabá';
 
                     const radio = document.querySelector(`input[name="regiao"][value="${entrega.regiao}"]`);
                     if(radio) radio.checked = true;
