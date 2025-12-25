@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V1 - Gestão de Vendas</title>
+    <title>Sistema V1 - Gestão de Vendas (Rota Organizada)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -57,7 +57,7 @@
                 <div class="bg-indigo-600 text-white p-2 rounded">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </div>
-                <h1 class="font-bold text-lg text-gray-700">Módulo 2: Vendas & Pedidos</h1>
+                <h1 class="font-bold text-lg text-gray-700">Módulo 2: Vendas & Rota</h1>
             </div>
             
             <!-- Links -->
@@ -78,7 +78,7 @@
                     <span class="text-xs font-bold text-gray-500">FILTRAR DATA:</span>
                     <input type="date" id="filtroData" class="bg-transparent text-sm border-none focus:ring-0 py-1" onchange="renderizarListaPedidos()">
                 </div>
-                <button onclick="exportarPedidosJson()" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 shadow-sm" title="Exportar filtrados">
+                <button onclick="exportarPedidosJson()" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 shadow-sm" title="Exportar na Ordem da Tela">
                     <i class="fa-solid fa-file-export mr-1"></i> JSON
                 </button>
             </div>
@@ -246,7 +246,7 @@
             <div class="w-7/12 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
                 <div class="p-3 border-b border-gray-100 bg-gray-50 rounded-t-lg">
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class="font-bold text-gray-700 text-sm uppercase"><i class="fa-solid fa-list-check mr-2"></i>Pedidos do Dia</h2>
+                        <h2 class="font-bold text-gray-700 text-sm uppercase"><i class="fa-solid fa-list-check mr-2"></i>Organização de Rota</h2>
                         <div id="resumoRotas" class="text-xs flex gap-2"></div>
                     </div>
                     
@@ -260,8 +260,11 @@
                             <button onclick="filtrarRota('CPA')" id="btnRotaCPA" class="btn-rota text-gray-500 hover:bg-white text-xs px-2 py-1 rounded">CPA</button>
                         </div>
                         <button onclick="enviarListaRotaWhatsapp()" class="ml-auto bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 font-bold shadow-sm">
-                            <i class="fa-brands fa-whatsapp"></i> Enviar Lista Rota
+                            <i class="fa-brands fa-whatsapp"></i> Rota no Zap
                         </button>
+                    </div>
+                    <div class="text-[10px] text-gray-400 mt-1 italic flex items-center">
+                        <i class="fa-solid fa-info-circle mr-1"></i> Use as setas (⬆⬇) para organizar a sequência de entrega.
                     </div>
                 </div>
 
@@ -394,7 +397,7 @@
             } else {
                 area.classList.add('hidden');
                 divCodigo.classList.add('hidden');
-                inputCodigo.value = ''; // Limpa se voltar pra normal
+                inputCodigo.value = ''; 
             }
         }
 
@@ -539,25 +542,19 @@
             if (!selCliente.value) return alert('Selecione um cliente!');
             if (carrinho.length === 0) return alert('Adicione pelo menos uma cesta!');
 
+            // Pega o JSON completo do cliente cadastrado
             const clienteDados = JSON.parse(selCliente.options[selCliente.selectedIndex].dataset.json);
             
             const subtotalText = document.getElementById('lblSubtotal').innerText.replace(',', '.');
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
             
+            // Garantindo que todos os dados do cliente vão junto com o pedido
+            // Isso resolve a questão de "Exportar cadastro completo"
             const novoPedido = {
                 id: Date.now().toString(),
                 data: new Date().toISOString(),
-                cliente: {
-                    id: clienteDados.id,
-                    nome: clienteDados.nome,
-                    apelido: clienteDados.apelido || '',
-                    telefone: clienteDados.telefone,
-                    cidade: clienteDados.cidade || '',
-                    bairro: clienteDados.bairro || '',
-                    endereco: clienteDados.endereco || '',
-                    desc_casa: clienteDados.desc_casa || clienteDados.referencia || '',
-                    maps: clienteDados.maps
-                },
+                ordem: Date.now(), // Campo para controle de posição na rota
+                cliente: clienteDados, // Salva o objeto completo do cliente
                 rota: document.getElementById('rota').value,
                 pagamento: {
                     metodo: document.getElementById('pagMetodo').value,
@@ -643,6 +640,40 @@
             }
         }
 
+        // Função para reordenar pedidos (Mover para Cima ou Baixo)
+        function moverPedido(id, direcao) {
+            // Pegamos a lista exata que está sendo exibida agora (filtrada)
+            const filtroData = document.getElementById('filtroData').value;
+            let pedidosVisiveis = pedidos.filter(p => p.data.startsWith(filtroData));
+            
+            if (filtroRotaAtual !== 'todos') {
+                pedidosVisiveis = pedidosVisiveis.filter(p => p.rota === filtroRotaAtual);
+            }
+            
+            // Ordenar a lista visível pela ordem atual antes de procurar índices
+            pedidosVisiveis.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+
+            const indexVisivel = pedidosVisiveis.findIndex(p => p.id === id);
+            
+            if (indexVisivel === -1) return;
+
+            const novoIndex = indexVisivel + direcao;
+
+            // Verifica limites
+            if (novoIndex >= 0 && novoIndex < pedidosVisiveis.length) {
+                // Troca os valores de "ordem" entre os dois itens
+                const itemA = pedidosVisiveis[indexVisivel];
+                const itemB = pedidosVisiveis[novoIndex];
+
+                const tempOrdem = itemA.ordem || 0;
+                itemA.ordem = itemB.ordem || 0;
+                itemB.ordem = tempOrdem;
+
+                salvarPedidosLocais();
+                renderizarListaPedidos();
+            }
+        }
+
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
             const filtroData = document.getElementById('filtroData').value;
@@ -655,9 +686,11 @@
                 pedidosFiltrados = pedidosFiltrados.filter(p => p.rota === filtroRotaAtual);
             }
 
+            // Ordenação: Prioridade para o campo "ordem", depois por Data
             pedidosFiltrados.sort((a, b) => {
-                if (a.rota === b.rota) return a.cliente.nome.localeCompare(b.cliente.nome);
-                return a.rota.localeCompare(b.rota);
+                const ordemA = a.ordem || 0;
+                const ordemB = b.ordem || 0;
+                return ordemA - ordemB; 
             });
 
             // Resumo Rotas
@@ -673,7 +706,7 @@
                 return;
             }
 
-            pedidosFiltrados.forEach(p => {
+            pedidosFiltrados.forEach((p, index) => {
                 const card = document.createElement('div');
                 const isPago = p.pagamento.status === 'pago';
                 const borderClass = isPago ? 'border-green-500' : 'border-yellow-400';
@@ -699,74 +732,95 @@
                 }).join('');
 
                 const localizacao = `${p.cliente.endereco || ''}, ${p.cliente.bairro || ''}`;
+                
+                // Botões de subir/descer (visíveis apenas se houver mais de 1 item)
+                const botoesOrdem = pedidosFiltrados.length > 1 ? `
+                    <div class="flex flex-col gap-1 mr-2 justify-center">
+                        <button onclick="moverPedido('${p.id}', -1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Subir na Rota">
+                            <i class="fa-solid fa-caret-up"></i>
+                        </button>
+                        <button onclick="moverPedido('${p.id}', 1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === pedidosFiltrados.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Descer na Rota">
+                            <i class="fa-solid fa-caret-down"></i>
+                        </button>
+                    </div>
+                ` : '';
 
                 card.innerHTML = `
-                <div class="bg-white border-l-4 ${borderClass} shadow-sm rounded-r mb-2 transition-all-300">
-                    <!-- CABEÇALHO (Visível sempre) -->
-                    <div class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-50 transition" onclick="toggleDetalhes('${p.id}')">
-                        
-                        <!-- Col 1: Rota Badge -->
-                        <div class="min-w-[50px] text-center">
-                            <span class="text-[9px] font-black uppercase bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded border border-gray-200 block">${p.rota.substring(0,3).toUpperCase()}</span>
-                        </div>
-
-                        <!-- Col 2: Cliente & Endereço (Expandível) -->
-                        <div class="flex-1 min-w-0 flex flex-col justify-center">
-                            <div class="font-bold text-gray-800 text-sm truncate leading-tight">${p.cliente.nome}</div>
-                            <div class="text-[10px] text-gray-500 truncate flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot text-[9px] text-gray-400"></i> ${localizacao}
-                            </div>
-                        </div>
-
-                        <!-- Col 3: Resumo Itens (Desktop) -->
-                        <div class="hidden sm:block w-1/3 px-2">
-                             <div class="text-[10px] text-gray-600 truncate bg-gray-50 border border-gray-100 rounded px-1 py-0.5">
-                                <i class="fa-solid fa-basket-shopping text-gray-400 mr-1"></i> ${itemsSummary}
-                             </div>
-                        </div>
-
-                        <!-- Col 4: Preço e Expandir -->
-                        <div class="text-right flex flex-col items-end min-w-[70px]">
-                            <span class="font-bold text-indigo-700 text-sm">R$ ${p.financeiro.total.toFixed(0)}</span>
-                            <i id="icon_expand_${p.id}" class="fa-solid fa-chevron-down text-gray-400 text-xs transition-all-300"></i>
-                        </div>
+                <div class="bg-white border-l-4 ${borderClass} shadow-sm rounded-r mb-2 transition-all-300 flex">
+                    
+                    <!-- Área de Ordenação (Esquerda) -->
+                    <div class="pl-1 py-1 flex items-center">
+                        ${botoesOrdem}
                     </div>
 
-                    <!-- CORPO (Detalhes colapsados) -->
-                    <div id="detalhes_${p.id}" class="hidden bg-gray-50 border-t border-gray-100 text-xs text-gray-700">
-                        <div class="p-2 grid grid-cols-1 gap-2">
-                            <!-- Detalhes Itens -->
-                            <div class="bg-white p-2 rounded border border-gray-200 shadow-sm">
-                                <div class="font-bold text-gray-400 text-[9px] uppercase mb-1">Itens do Pedido</div>
-                                ${detalhesItens}
-                                ${p.brinde !== 'Nenhum' ? `<div class="mt-1 text-green-700 font-bold"><i class="fa-solid fa-gift"></i> ${p.brinde}</div>` : ''}
-                            </div>
+                    <div class="flex-1">
+                        <!-- CABEÇALHO (Visível sempre) -->
+                        <div class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-50 transition" onclick="toggleDetalhes('${p.id}')">
                             
-                            <!-- Obs e Pagamento -->
-                            <div class="flex gap-2">
-                                <div class="flex-1 bg-white p-2 rounded border border-gray-200">
-                                    <div class="font-bold text-gray-400 text-[9px] uppercase">Obs</div>
-                                    <div class="italic text-gray-600">${p.obs || '-'}</div>
-                                </div>
-                                <div class="w-1/3 bg-white p-2 rounded border border-gray-200 text-center">
-                                    <div class="font-bold text-gray-400 text-[9px] uppercase">Pagamento</div>
-                                    <div class="font-bold uppercase">${p.pagamento.metodo}</div>
+                            <!-- Col 1: Sequencia e Rota -->
+                            <div class="min-w-[50px] text-center flex flex-col gap-1">
+                                <span class="bg-indigo-600 text-white text-[10px] font-bold px-1 rounded shadow-sm">${index + 1}º</span>
+                                <span class="text-[9px] font-black uppercase bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded border border-gray-200 block">${p.rota.substring(0,3).toUpperCase()}</span>
+                            </div>
+
+                            <!-- Col 2: Cliente & Endereço (Expandível) -->
+                            <div class="flex-1 min-w-0 flex flex-col justify-center">
+                                <div class="font-bold text-gray-800 text-sm truncate leading-tight">${p.cliente.nome}</div>
+                                <div class="text-[10px] text-gray-500 truncate flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-[9px] text-gray-400"></i> ${localizacao}
                                 </div>
                             </div>
 
-                            <!-- Barra de Ações -->
-                            <div class="mt-1 flex justify-between items-center bg-white p-1 rounded border border-gray-200">
-                                <div class="flex items-center gap-1">
-                                    <select id="selEntregador_${p.id}" class="text-[10px] border border-gray-200 rounded py-1 pl-1 pr-4 bg-transparent focus:ring-0">
-                                        ${opcoesEntregadores}
-                                    </select>
-                                    <button onclick="enviarPedidoZap('${p.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded border border-green-200 font-bold flex items-center gap-1">
-                                        <i class="fa-brands fa-whatsapp"></i> Enviar
-                                    </button>
+                            <!-- Col 3: Resumo Itens (Desktop) -->
+                            <div class="hidden sm:block w-1/3 px-2">
+                                 <div class="text-[10px] text-gray-600 truncate bg-gray-50 border border-gray-100 rounded px-1 py-0.5">
+                                    <i class="fa-solid fa-basket-shopping text-gray-400 mr-1"></i> ${itemsSummary}
+                                 </div>
+                            </div>
+
+                            <!-- Col 4: Preço e Expandir -->
+                            <div class="text-right flex flex-col items-end min-w-[70px]">
+                                <span class="font-bold text-indigo-700 text-sm">R$ ${p.financeiro.total.toFixed(0)}</span>
+                                <i id="icon_expand_${p.id}" class="fa-solid fa-chevron-down text-gray-400 text-xs transition-all-300"></i>
+                            </div>
+                        </div>
+
+                        <!-- CORPO (Detalhes colapsados) -->
+                        <div id="detalhes_${p.id}" class="hidden bg-gray-50 border-t border-gray-100 text-xs text-gray-700">
+                            <div class="p-2 grid grid-cols-1 gap-2">
+                                <!-- Detalhes Itens -->
+                                <div class="bg-white p-2 rounded border border-gray-200 shadow-sm">
+                                    <div class="font-bold text-gray-400 text-[9px] uppercase mb-1">Itens do Pedido</div>
+                                    ${detalhesItens}
+                                    ${p.brinde !== 'Nenhum' ? `<div class="mt-1 text-green-700 font-bold"><i class="fa-solid fa-gift"></i> ${p.brinde}</div>` : ''}
                                 </div>
-                                <div class="flex gap-1">
-                                    <button onclick="imprimirPedido('${p.id}')" class="text-gray-500 hover:text-black p-1.5 border border-gray-200 rounded hover:bg-gray-100" title="Imprimir"><i class="fa-solid fa-print"></i></button>
-                                    <button onclick="excluirPedido('${p.id}')" class="text-red-400 hover:text-red-600 p-1.5 border border-red-100 rounded hover:bg-red-50" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                
+                                <!-- Obs e Pagamento -->
+                                <div class="flex gap-2">
+                                    <div class="flex-1 bg-white p-2 rounded border border-gray-200">
+                                        <div class="font-bold text-gray-400 text-[9px] uppercase">Obs</div>
+                                        <div class="italic text-gray-600">${p.obs || '-'}</div>
+                                    </div>
+                                    <div class="w-1/3 bg-white p-2 rounded border border-gray-200 text-center">
+                                        <div class="font-bold text-gray-400 text-[9px] uppercase">Pagamento</div>
+                                        <div class="font-bold uppercase">${p.pagamento.metodo}</div>
+                                    </div>
+                                </div>
+
+                                <!-- Barra de Ações -->
+                                <div class="mt-1 flex justify-between items-center bg-white p-1 rounded border border-gray-200">
+                                    <div class="flex items-center gap-1">
+                                        <select id="selEntregador_${p.id}" class="text-[10px] border border-gray-200 rounded py-1 pl-1 pr-4 bg-transparent focus:ring-0">
+                                            ${opcoesEntregadores}
+                                        </select>
+                                        <button onclick="enviarPedidoZap('${p.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded border border-green-200 font-bold flex items-center gap-1">
+                                            <i class="fa-brands fa-whatsapp"></i> Enviar
+                                        </button>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        <button onclick="imprimirPedido('${p.id}')" class="text-gray-500 hover:text-black p-1.5 border border-gray-200 rounded hover:bg-gray-100" title="Imprimir"><i class="fa-solid fa-print"></i></button>
+                                        <button onclick="excluirPedido('${p.id}')" class="text-red-400 hover:text-red-600 p-1.5 border border-red-100 rounded hover:bg-red-50" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -825,18 +879,22 @@
                 lista = lista.filter(p => p.rota === filtroRotaAtual);
             }
 
+            // Ordena pela rota visual (ordem)
+            lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+
             if (lista.length === 0) return alert('Nenhum pedido listado para enviar.');
 
             let msg = `*RELATÓRIO DE ROTA - ${filtroRotaAtual.toUpperCase()}*\n`;
             msg += `Data: ${filtroData.split('-').reverse().join('/')}\n\n`;
 
             lista.forEach((p, index) => {
-                msg += `*${index+1}. ${p.cliente.nome}*\n`;
+                msg += `*${index+1}ª ENTREGA: ${p.cliente.nome}*\n`;
+                msg += `📍 ${p.cliente.endereco}, ${p.cliente.bairro}\n`;
                 p.itens.forEach(i => {
                    if(i.modo === 'alterada') {
-                       msg += `   [⚠️ ALTERADA - CÓD ${i.identificacao}] - ${i.tipo}\n`;
+                       msg += `   [⚠️ CÓD ${i.identificacao}] - ${i.tipo}\n`;
                    } else {
-                       msg += `   [Normal] - ${i.tipo}\n`;
+                       msg += `   - ${i.tipo}\n`;
                    }
                 });
                 msg += `----------------\n`;
@@ -848,16 +906,24 @@
 
         function exportarPedidosJson() {
             const filtroData = document.getElementById('filtroData').value;
-            const lista = pedidos.filter(p => p.data.startsWith(filtroData));
+            let lista = pedidos.filter(p => p.data.startsWith(filtroData));
             
             if (lista.length === 0) return alert('Nada para exportar na data selecionada.');
+
+            // Filtrar rota se necessário, para exportar exatamente o que está vendo
+            if (filtroRotaAtual !== 'todos') {
+                lista = lista.filter(p => p.rota === filtroRotaAtual);
+            }
+
+            // Importante: Ordena pela ordem visual definida pelo usuário
+            lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
 
             const dataStr = JSON.stringify(lista, null, 2);
             const blob = new Blob([dataStr], {type: "application/json"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `pedidos_${filtroData}.json`;
+            a.download = `rota_pedidos_${filtroData}.json`;
             a.click();
         }
 
