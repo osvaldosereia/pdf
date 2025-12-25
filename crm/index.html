@@ -20,7 +20,10 @@
         ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
 
         .btn-zap { transition: all 0.2s; }
-        .btn-zap:hover { transform: scale(1.05); }
+        .btn-zap:hover { transform: scale(1.1); }
+        
+        /* Tabela compacta para relatórios */
+        .table-report td, .table-report th { padding: 2px 4px; font-size: 0.75rem; border-bottom: 1px solid #f3f4f6; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -33,113 +36,144 @@
                 <div class="bg-purple-600 text-white p-2 rounded">
                     <i class="fa-solid fa-handshake"></i>
                 </div>
-                <h1 class="font-bold text-lg text-gray-700">Módulo 3: CRM & Inteligência</h1>
+                <div>
+                    <h1 class="font-bold text-lg text-gray-700 leading-tight">Módulo 3: CRM</h1>
+                    <p class="text-[10px] text-gray-500">Inteligência de Vendas e Relacionamento</p>
+                </div>
             </div>
             
             <nav class="flex gap-2">
-                <button onclick="window.location.href='cadastro.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
+                <button onclick="window.location.href='cadastro.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-xs font-medium transition">
                     1. Cadastro
                 </button>
-                <button onclick="window.location.href='vendas.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
+                <button onclick="window.location.href='vendas.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-xs font-medium transition">
                     2. Vendas
                 </button>
-                <button class="bg-purple-600 text-white px-4 py-1 rounded text-sm font-medium shadow-sm">
+                <button class="bg-purple-600 text-white px-3 py-1 rounded text-xs font-medium shadow-sm">
                     3. CRM
                 </button>
             </nav>
 
             <div class="flex gap-2">
                 <input type="file" id="importInput" accept=".json" class="hidden" onchange="importarDadosExternos(this)" multiple>
-                <button onclick="document.getElementById('importInput').click()" class="border border-gray-300 text-gray-600 px-3 py-1 rounded text-sm hover:bg-gray-50" title="Importar JSON de Vendas ou Clientes">
-                    <i class="fa-solid fa-upload mr-1"></i> Importar Dados
+                <button onclick="document.getElementById('importInput').click()" class="border border-gray-300 text-gray-600 px-3 py-1 rounded text-xs hover:bg-gray-50" title="Importar JSON">
+                    <i class="fa-solid fa-upload mr-1"></i> Importar
                 </button>
-                <button onclick="atualizarDados()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 shadow-sm">
+                <button onclick="atualizarDados()" class="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 shadow-sm">
                     <i class="fa-solid fa-sync mr-1"></i> Atualizar
                 </button>
             </div>
         </header>
 
-        <!-- KPI Cards (Resumo) -->
-        <div class="grid grid-cols-4 gap-4 mb-4">
-            <div class="bg-white p-3 rounded-lg border-l-4 border-blue-500 shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold">Total Clientes</p>
-                    <h3 class="text-xl font-bold text-gray-800" id="kpiClientes">0</h3>
-                </div>
-                <i class="fa-solid fa-users text-blue-200 text-3xl"></i>
+        <!-- Barra de Filtros de Período -->
+        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200 mb-3 flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-filter text-gray-400"></i>
+                <span class="text-xs font-bold text-gray-700 uppercase">Análise de Período:</span>
             </div>
-            <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold">Vendas Realizadas</p>
-                    <h3 class="text-xl font-bold text-gray-800" id="kpiVendas">0</h3>
-                </div>
-                <i class="fa-solid fa-check-circle text-green-200 text-3xl"></i>
+            <div class="flex items-center gap-2">
+                <label class="text-xs text-gray-500">De:</label>
+                <input type="date" id="dataInicio" class="border border-gray-300 rounded px-2 py-1 text-xs" onchange="aplicarFiltros()">
             </div>
-            <div class="bg-white p-3 rounded-lg border-l-4 border-purple-500 shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold">Ticket Médio</p>
-                    <h3 class="text-xl font-bold text-gray-800">R$ <span id="kpiTicket">0,00</span></h3>
-                </div>
-                <i class="fa-solid fa-chart-line text-purple-200 text-3xl"></i>
+            <div class="flex items-center gap-2">
+                <label class="text-xs text-gray-500">Até:</label>
+                <input type="date" id="dataFim" class="border border-gray-300 rounded px-2 py-1 text-xs" onchange="aplicarFiltros()">
             </div>
-            <div class="bg-white p-3 rounded-lg border-l-4 border-orange-500 shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-gray-500 uppercase font-bold">Clientes Inativos</p>
-                    <h3 class="text-xl font-bold text-gray-800" id="kpiInativos">0</h3>
+            <button onclick="definirMesAtual()" class="text-xs text-blue-600 hover:underline">Este Mês</button>
+            
+            <div class="ml-auto flex gap-4 text-xs">
+                <div>Total Filtrado: <span id="resumoTotal" class="font-bold text-gray-800">R$ 0,00</span></div>
+                <div>Vendas: <span id="resumoQtd" class="font-bold text-gray-800">0</span></div>
+            </div>
+        </div>
+
+        <!-- Painel de Relatórios Detalhados (Expandido) -->
+        <div class="grid grid-cols-3 gap-4 mb-4 h-48">
+            <!-- Relatório 1: Produtos -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+                <div class="bg-indigo-50 px-3 py-2 border-b border-indigo-100 flex justify-between">
+                    <h3 class="text-xs font-bold text-indigo-800 uppercase">Cestas Vendidas</h3>
+                    <i class="fa-solid fa-basket-shopping text-indigo-300"></i>
                 </div>
-                <i class="fa-solid fa-user-clock text-orange-200 text-3xl"></i>
+                <div class="flex-1 overflow-y-auto p-2 custom-scroll">
+                    <table class="w-full text-left table-report">
+                        <thead><tr><th>Produto</th><th class="text-right">Qtd</th></tr></thead>
+                        <tbody id="relatorioProdutos"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Relatório 2: Financeiro -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+                <div class="bg-green-50 px-3 py-2 border-b border-green-100 flex justify-between">
+                    <h3 class="text-xs font-bold text-green-800 uppercase">Pagamentos</h3>
+                    <i class="fa-solid fa-money-bill-wave text-green-300"></i>
+                </div>
+                <div class="flex-1 overflow-y-auto p-2 custom-scroll">
+                    <table class="w-full text-left table-report">
+                        <thead><tr><th>Método</th><th class="text-right">Total (R$)</th></tr></thead>
+                        <tbody id="relatorioPagamentos"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Relatório 3: Região -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+                <div class="bg-orange-50 px-3 py-2 border-b border-orange-100 flex justify-between">
+                    <h3 class="text-xs font-bold text-orange-800 uppercase">Cidades / Bairros</h3>
+                    <i class="fa-solid fa-map-location-dot text-orange-300"></i>
+                </div>
+                <div class="flex-1 overflow-y-auto p-2 custom-scroll">
+                    <table class="w-full text-left table-report">
+                        <thead><tr><th>Local</th><th class="text-right">Vendas</th></tr></thead>
+                        <tbody id="relatorioLocais"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Área Principal Dividida -->
         <div class="flex flex-1 gap-4 overflow-hidden">
             
-            <!-- ESQUERDA: Radar de Resgate (Ciclo de Compra) -->
-            <div class="w-1/2 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
-                <div class="p-3 border-b border-gray-100 bg-orange-50 rounded-t-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h2 class="font-bold text-orange-800 text-sm uppercase"><i class="fa-solid fa-radar mr-2"></i>Radar de Resgate</h2>
-                        <span class="text-[10px] bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full font-bold">Recuperação</span>
+            <!-- ESQUERDA: Radar de Resgate (Logica Independente do filtro de data da venda) -->
+            <div class="w-5/12 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+                <div class="p-2 border-b border-gray-100 bg-red-50 rounded-t-lg">
+                    <div class="flex justify-between items-center mb-1">
+                        <h2 class="font-bold text-red-800 text-xs uppercase"><i class="fa-solid fa-heart-crack mr-2"></i>Radar Inativos</h2>
+                        <input type="number" id="diasInativo" value="30" class="w-12 text-center text-xs border border-red-200 rounded text-red-700 font-bold" onchange="renderizarRadar()">
                     </div>
-                    
-                    <!-- Filtro de Ciclo -->
-                    <div class="flex items-center gap-2 bg-white p-2 rounded border border-orange-200">
-                        <label class="text-xs font-bold text-gray-600">Mostrar quem não compra há:</label>
-                        <input type="number" id="diasInativo" value="30" class="w-16 border border-gray-300 rounded text-center text-sm p-1 font-bold text-orange-600" onchange="renderizarRadar()">
-                        <span class="text-xs font-bold text-gray-600">dias</span>
-                    </div>
+                    <p class="text-[10px] text-gray-500">Clientes sem comprar há X dias (Baseado em hoje)</p>
                 </div>
 
-                <div class="flex-1 overflow-auto p-0 bg-gray-50">
+                <div class="flex-1 overflow-auto p-0 bg-white custom-scroll">
                     <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-100 text-gray-500 text-xs sticky top-0 shadow-sm">
+                        <thead class="bg-gray-50 text-gray-500 text-[10px] sticky top-0 shadow-sm">
                             <tr>
                                 <th class="p-2">Cliente</th>
-                                <th class="p-2">Última Compra</th>
-                                <th class="p-2 text-center">Ação</th>
+                                <th class="p-2 text-center">Dias Off</th>
+                                <th class="p-2 text-center">Zap</th>
                             </tr>
                         </thead>
-                        <tbody id="listaRadar" class="text-sm divide-y divide-gray-200 bg-white">
+                        <tbody id="listaRadar" class="text-xs divide-y divide-gray-100">
                             <!-- Inserido via JS -->
                         </tbody>
                     </table>
                     <div id="emptyRadar" class="hidden text-center text-gray-400 p-8">
-                        <i class="fa-solid fa-check-double text-3xl mb-2"></i>
-                        <p class="text-xs">Todos os clientes compraram recentemente!</p>
+                        <p class="text-xs">Todos clientes ativos!</p>
                     </div>
                 </div>
             </div>
 
-            <!-- DIREITA: Pós-Venda (Últimas Vendas) -->
-            <div class="w-1/2 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
-                <div class="p-3 border-b border-gray-100 bg-blue-50 rounded-t-lg flex justify-between items-center">
-                    <h2 class="font-bold text-blue-800 text-sm uppercase"><i class="fa-solid fa-comments mr-2"></i>Pós-Venda Recente</h2>
-                    <span class="text-[10px] bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full font-bold">Relacionamento</span>
+            <!-- DIREITA: Pós-Venda (Lista Filtrada pelo Período) -->
+            <div class="w-7/12 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+                <div class="p-2 border-b border-gray-100 bg-blue-50 rounded-t-lg flex justify-between items-center">
+                    <h2 class="font-bold text-blue-800 text-xs uppercase"><i class="fa-solid fa-list-ul mr-2"></i>Vendas do Período</h2>
+                    <span class="text-[10px] text-blue-600 bg-blue-100 px-2 rounded-full" id="countPosVenda">0 listados</span>
                 </div>
 
                 <div class="flex-1 overflow-auto p-2 bg-gray-50 custom-scroll">
-                    <div id="listaPosVenda" class="space-y-3">
-                        <!-- Cards de Pós Venda -->
+                    <div id="listaPosVenda" class="grid grid-cols-1 gap-2">
+                        <!-- Cards Compactos de Pós Venda -->
                     </div>
                 </div>
             </div>
@@ -154,8 +188,8 @@
         
         let clientes = [];
         let vendas = [];
+        let vendasFiltradas = [];
 
-        // Templates de Mensagem (Whatsapp)
         const TEMPLATES = {
             agradecimento: "Olá {nome}! Tudo bem? Passando para agradecer pela preferência na sua compra do dia {data}. Espero que tenha gostado dos produtos! Qualquer coisa estou à disposição. 🛒",
             insta: "Oie {nome}! 😃 Gostaria de te convidar para seguir nosso Instagram. Postamos promoções relâmpago por lá! Segue o link: [SEU_INSTA_AQUI]",
@@ -166,25 +200,36 @@
 
         window.onload = () => {
             atualizarDados();
+            definirMesAtual(); // Define filtro inicial
         };
 
-        // --- 2. IMPORTAÇÃO E PROCESSAMENTO DE DADOS ---
+        function definirMesAtual() {
+            const date = new Date();
+            const primeiroDia = new Date(date.getFullYear(), date.getMonth(), 1);
+            const ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            
+            document.getElementById('dataInicio').valueAsDate = primeiroDia;
+            document.getElementById('dataFim').valueAsDate = ultimoDia;
+            aplicarFiltros();
+        }
+
+        // --- 2. IMPORTAÇÃO E DADOS ---
         
         function atualizarDados() {
-            // Tenta carregar do LocalStorage
             const cLocal = localStorage.getItem(KEY_CLIENTES);
             const vLocal = localStorage.getItem(KEY_PEDIDOS);
 
             if (cLocal) clientes = JSON.parse(cLocal);
             if (vLocal) vendas = JSON.parse(vLocal);
 
-            calcularKPIs();
-            renderizarRadar();
-            renderizarPosVenda();
+            // Ordena vendas por data (mais recente primeiro)
+            vendas.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            aplicarFiltros();
+            renderizarRadar(); // Radar é independente do filtro de período
         }
 
         function importarDadosExternos(input) {
-            // Permite carregar arquivos backup caso o localStorage esteja vazio
             const files = input.files;
             if (files.length === 0) return;
 
@@ -195,8 +240,6 @@
                 reader.onload = function(e) {
                     try {
                         const json = JSON.parse(e.target.result);
-                        
-                        // Detecção simples da estrutura para saber se é Cliente ou Venda
                         if (json.length > 0) {
                             if (json[0].hasOwnProperty('financeiro')) {
                                 vendas = json;
@@ -209,28 +252,158 @@
                         carregados++;
                         if(carregados === files.length) {
                             atualizarDados();
-                            alert('Dados importados e processados!');
+                            alert('Dados atualizados!');
                         }
-                    } catch (error) {
-                        console.error("Erro no arquivo", error);
-                    }
+                    } catch (error) { console.error(error); }
                 };
                 reader.readAsText(file);
             });
         }
 
-        function calcularKPIs() {
-            document.getElementById('kpiClientes').innerText = clientes.length;
-            document.getElementById('kpiVendas').innerText = vendas.length;
+        // --- 3. LÓGICA DE FILTROS E RELATÓRIOS ---
+
+        function aplicarFiltros() {
+            const inicio = document.getElementById('dataInicio').value;
+            const fim = document.getElementById('dataFim').value;
             
-            if (vendas.length > 0) {
-                const totalFaturamento = vendas.reduce((acc, v) => acc + v.financeiro.total, 0);
-                const ticket = totalFaturamento / vendas.length;
-                document.getElementById('kpiTicket').innerText = ticket.toFixed(2).replace('.', ',');
+            // Filtra o array principal de vendas
+            if (inicio && fim) {
+                // Ajuste de fuso horário simples comparando strings YYYY-MM-DD
+                vendasFiltradas = vendas.filter(v => {
+                    const dataVenda = v.data.split('T')[0];
+                    return dataVenda >= inicio && dataVenda <= fim;
+                });
+            } else {
+                vendasFiltradas = [...vendas];
+            }
+
+            atualizarKPIsDashboard();
+            gerarRelatoriosDetalhados();
+            renderizarPosVendaCompacto();
+        }
+
+        function atualizarKPIsDashboard() {
+            const total = vendasFiltradas.reduce((acc, v) => acc + v.financeiro.total, 0);
+            document.getElementById('resumoTotal').innerText = total.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+            document.getElementById('resumoQtd').innerText = vendasFiltradas.length;
+            document.getElementById('countPosVenda').innerText = vendasFiltradas.length + ' vendas';
+        }
+
+        function gerarRelatoriosDetalhados() {
+            // 1. Contagem de Produtos (Cestas)
+            const statsCestas = {};
+            vendasFiltradas.forEach(v => {
+                v.itens.forEach(item => {
+                    const chave = item.tipo + (item.marca !== 'Padrão' ? ` (${item.marca})` : '');
+                    statsCestas[chave] = (statsCestas[chave] || 0) + 1;
+                });
+            });
+            renderizarTabelaRelatorio('relatorioProdutos', statsCestas, false);
+
+            // 2. Financeiro por Pagamento
+            const statsPagto = {};
+            vendasFiltradas.forEach(v => {
+                const metodo = v.pagamento.metodo.toUpperCase();
+                statsPagto[metodo] = (statsPagto[metodo] || 0) + v.financeiro.total;
+            });
+            renderizarTabelaRelatorio('relatorioPagamentos', statsPagto, true);
+
+            // 3. Locais (Cidade - Bairro)
+            const statsLocal = {};
+            vendasFiltradas.forEach(v => {
+                const cidade = v.cliente.cidade || 'Indefinido';
+                const bairro = v.cliente.bairro || '?';
+                const chave = `${cidade} - ${bairro}`;
+                statsLocal[chave] = (statsLocal[chave] || 0) + 1;
+            });
+            renderizarTabelaRelatorio('relatorioLocais', statsLocal, false);
+        }
+
+        function renderizarTabelaRelatorio(elementId, dados, isMoeda) {
+            const tbody = document.getElementById(elementId);
+            tbody.innerHTML = '';
+            
+            // Converte objeto em array e ordena por valor decrescente
+            const lista = Object.entries(dados).sort((a, b) => b[1] - a[1]);
+
+            lista.forEach(([chave, valor]) => {
+                const valFormatado = isMoeda ? valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}) : valor;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="truncate max-w-[120px]" title="${chave}">${chave}</td>
+                    <td class="text-right font-bold text-gray-700">${valFormatado}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="text-center text-gray-400 italic py-2">Sem dados</td></tr>';
             }
         }
 
-        // --- 3. LÓGICA DO RADAR (Ciclo de Compra) ---
+        // --- 4. RENDERIZAÇÃO PÓS-VENDA (COMPACTO) ---
+
+        function renderizarPosVendaCompacto() {
+            const container = document.getElementById('listaPosVenda');
+            container.innerHTML = '';
+
+            // Limita a 100 itens para não travar se o período for longo
+            const listaExibicao = vendasFiltradas.slice(0, 100);
+
+            listaExibicao.forEach(v => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-2 rounded border border-gray-200 shadow-sm flex flex-col gap-1 hover:border-blue-300 transition";
+                
+                const dataObj = new Date(v.data);
+                const dataStr = dataObj.toLocaleDateString('pt-BR');
+                const primeiroNome = v.cliente.nome.split(' ')[0]; // Só o primeiro nome pra economizar espaço
+                
+                // Resumo itens
+                const qtdItens = v.itens.length;
+                const descItens = v.itens.map(i => i.tipo).join(', ');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-1">
+                        <span class="font-bold text-xs text-gray-800 truncate w-2/3" title="${v.cliente.nome}">${v.cliente.nome}</span>
+                        <span class="text-[10px] text-gray-400">${dataStr}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] text-gray-600 truncate w-2/3" title="${descItens}">
+                            ${qtdItens}x ${descItens}
+                        </span>
+                        <span class="font-bold text-xs text-blue-600">R$ ${v.financeiro.total.toFixed(0)}</span>
+                    </div>
+
+                    <!-- Botões de Ação Compactos (Ícones Apenas) -->
+                    <div class="flex justify-end gap-2 mt-1 pt-1 border-t border-gray-50">
+                        <button onclick="enviarZap('${v.cliente.telefone}', 'agradecimento', '${primeiroNome}', '${dataStr}')" 
+                            class="text-green-500 hover:text-green-700 text-xs" title="Agradecer">
+                            <i class="fa-brands fa-whatsapp"></i> Obrigado
+                        </button>
+                        <button onclick="enviarZap('${v.cliente.telefone}', 'feedback', '${primeiroNome}', '${dataStr}')" 
+                            class="text-blue-500 hover:text-blue-700 text-xs" title="Pedir Feedback">
+                            <i class="fa-regular fa-comment-dots"></i> Feedback
+                        </button>
+                        <button onclick="enviarZap('${v.cliente.telefone}', 'avaliacao', '${primeiroNome}')" 
+                            class="text-yellow-500 hover:text-yellow-700 text-xs" title="Pedir Avaliação">
+                            <i class="fa-solid fa-star"></i> Avaliar
+                        </button>
+                        <button onclick="enviarZap('${v.cliente.telefone}', 'insta', '${primeiroNome}')" 
+                            class="text-pink-500 hover:text-pink-700 text-xs" title="Pedir pra Seguir">
+                            <i class="fa-brands fa-instagram"></i> Seguir
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (listaExibicao.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 text-xs py-4">Nenhuma venda neste período.</div>';
+            }
+        }
+
+        // --- 5. RENDERIZAÇÃO RADAR (INALTERADO PELA DATA DO FILTRO) ---
 
         function renderizarRadar() {
             const diasCorte = parseInt(document.getElementById('diasInativo').value) || 30;
@@ -238,7 +411,7 @@
             const empty = document.getElementById('emptyRadar');
             tbody.innerHTML = '';
             
-            // 1. Mapa da última compra por cliente
+            // Mapa da última compra por cliente (Global, de todo o histórico)
             const mapaUltimaCompra = {};
             vendas.forEach(v => {
                 const dataVenda = new Date(v.data);
@@ -247,28 +420,17 @@
                 }
             });
 
-            // 2. Filtrar clientes inativos
             const hoje = new Date();
-            let inativosCount = 0;
-
             const listaInativos = clientes.filter(c => {
                 const ultimaData = mapaUltimaCompra[c.id];
-                
-                // Se nunca comprou, consideramos a data de cadastro ou uma data antiga
-                if (!ultimaData) return false; // Opcional: mostrar quem nunca comprou? Por enquanto foca em retenção.
-
+                if (!ultimaData) return false; 
                 const diffTime = Math.abs(hoje - ultimaData);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-                
                 c.diasSemComprar = diffDays;
-                c.ultimaData = ultimaData;
                 return diffDays >= diasCorte;
             });
 
-            // Ordenar: quem está a mais tempo sem comprar primeiro
             listaInativos.sort((a, b) => b.diasSemComprar - a.diasSemComprar);
-
-            document.getElementById('kpiInativos').innerText = listaInativos.length;
 
             if (listaInativos.length === 0) {
                 empty.classList.remove('hidden');
@@ -276,22 +438,18 @@
                 empty.classList.add('hidden');
                 listaInativos.forEach(c => {
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-orange-50 transition border-b border-gray-100";
-                    
-                    const dataFormatada = c.ultimaData.toLocaleDateString('pt-BR');
-                    
+                    tr.className = "hover:bg-red-50 transition border-b border-gray-100 group";
                     tr.innerHTML = `
-                        <td class="p-2">
-                            <div class="font-bold text-gray-800">${c.nome}</div>
-                            <div class="text-[10px] text-gray-500">${c.telefone}</div>
+                        <td class="p-1 pl-2">
+                            <div class="font-bold text-gray-800 text-xs truncate max-w-[100px]">${c.nome}</div>
+                            <div class="text-[9px] text-gray-400">${c.telefone}</div>
                         </td>
-                        <td class="p-2">
-                            <span class="bg-red-100 text-red-700 text-xs font-bold px-1.5 py-0.5 rounded">${c.diasSemComprar} dias</span>
-                            <div class="text-[10px] text-gray-400 mt-1">Desde ${dataFormatada}</div>
+                        <td class="p-1 text-center">
+                            <span class="bg-red-100 text-red-700 text-[10px] font-bold px-1 rounded">${c.diasSemComprar}d</span>
                         </td>
-                        <td class="p-2 text-center">
+                        <td class="p-1 text-center">
                             <button onclick="enviarZap('${c.telefone}', 'resgate', '${c.nome}', null, '${c.diasSemComprar}')" 
-                                class="btn-zap bg-green-500 text-white w-8 h-8 rounded-full shadow hover:bg-green-600 flex items-center justify-center mx-auto" title="Enviar Oferta de Retorno">
+                                class="btn-zap text-green-500 hover:text-green-600 text-sm" title="Enviar Oferta">
                                 <i class="fa-brands fa-whatsapp"></i>
                             </button>
                         </td>
@@ -301,96 +459,19 @@
             }
         }
 
-        // --- 4. LÓGICA DO PÓS-VENDA (Lista Cronológica) ---
-
-        function renderizarPosVenda() {
-            const container = document.getElementById('listaPosVenda');
-            container.innerHTML = '';
-
-            // Copia e inverte para pegar mais recentes
-            const ultimasVendas = [...vendas].sort((a, b) => new Date(b.data) - new Date(a.data)).slice(0, 50);
-
-            ultimasVendas.forEach(v => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-3 rounded border border-blue-100 shadow-sm hover:shadow-md transition";
-                
-                const dataObj = new Date(v.data);
-                const dataStr = dataObj.toLocaleDateString('pt-BR');
-                const diffDays = Math.floor((new Date() - dataObj) / (1000 * 60 * 60 * 24));
-                
-                let badgeTempo = diffDays === 0 ? "Hoje" : (diffDays === 1 ? "Ontem" : `${diffDays} dias atrás`);
-                let corBadge = diffDays <= 2 ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600";
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-[10px] font-bold ${corBadge} px-2 rounded-full">${badgeTempo}</span>
-                            <h3 class="font-bold text-gray-800 text-sm mt-1">${v.cliente.nome}</h3>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs text-gray-500">Pedido #${v.id.toString().slice(-4)}</div>
-                            <div class="text-xs font-bold text-blue-600">R$ ${v.financeiro.total.toFixed(2)}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 p-2 rounded mb-3">
-                        <p class="text-[11px] text-gray-600 truncate"><i class="fa-solid fa-basket-shopping mr-1"></i>${v.itens.map(i => i.tipo).join(', ')}</p>
-                    </div>
-
-                    <div class="grid grid-cols-4 gap-2">
-                        <button onclick="enviarZap('${v.cliente.telefone}', 'agradecimento', '${v.cliente.nome}', '${dataStr}')" 
-                            class="btn-zap flex flex-col items-center justify-center p-1 bg-white border border-gray-200 rounded hover:bg-green-50 hover:border-green-300">
-                            <i class="fa-brands fa-whatsapp text-green-500 mb-1"></i>
-                            <span class="text-[9px] text-gray-600 font-bold">Obrigado</span>
-                        </button>
-                        
-                        <button onclick="enviarZap('${v.cliente.telefone}', 'feedback', '${v.cliente.nome}', '${dataStr}')" 
-                            class="btn-zap flex flex-col items-center justify-center p-1 bg-white border border-gray-200 rounded hover:bg-blue-50 hover:border-blue-300">
-                            <i class="fa-regular fa-comment-dots text-blue-500 mb-1"></i>
-                            <span class="text-[9px] text-gray-600 font-bold">Feedback</span>
-                        </button>
-
-                        <button onclick="enviarZap('${v.cliente.telefone}', 'avaliacao', '${v.cliente.nome}')" 
-                            class="btn-zap flex flex-col items-center justify-center p-1 bg-white border border-gray-200 rounded hover:bg-yellow-50 hover:border-yellow-300">
-                            <i class="fa-solid fa-star text-yellow-500 mb-1"></i>
-                            <span class="text-[9px] text-gray-600 font-bold">Avaliar</span>
-                        </button>
-
-                        <button onclick="enviarZap('${v.cliente.telefone}', 'insta', '${v.cliente.nome}')" 
-                            class="btn-zap flex flex-col items-center justify-center p-1 bg-white border border-gray-200 rounded hover:bg-pink-50 hover:border-pink-300">
-                            <i class="fa-brands fa-instagram text-pink-500 mb-1"></i>
-                            <span class="text-[9px] text-gray-600 font-bold">Seguir</span>
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // --- 5. FUNÇÃO DE ENVIO (ZAP) ---
-
+        // --- 6. UTILITÁRIOS ---
         function enviarZap(telefone, tipo, nome, dataVenda = '', dias = '') {
-            if (!telefone) return alert("Cliente sem telefone cadastrado.");
-
-            // Limpa o telefone para formato internacional (55 + DDD + Numero)
+            if (!telefone) return alert("Cliente sem telefone.");
             let phone = telefone.replace(/\D/g, '');
-            if (phone.length < 10) return alert("Número de telefone inválido");
+            if (phone.length < 10) return alert("Telefone inválido");
             if (!phone.startsWith('55')) phone = '55' + phone;
 
-            // Prepara a mensagem
             let msg = TEMPLATES[tipo];
-            
-            // Substitui variáveis
-            const primeiroNome = nome.split(' ')[0];
-            msg = msg.replace('{nome}', primeiroNome);
+            msg = msg.replace('{nome}', nome.split(' ')[0]);
             if (dataVenda) msg = msg.replace('{data}', dataVenda);
             if (dias) msg = msg.replace('{dias}', dias);
 
-            // Encode para URL
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-            
-            // Abre em nova aba
-            window.open(url, '_blank');
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
 </body>
