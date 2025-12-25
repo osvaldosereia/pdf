@@ -24,6 +24,15 @@
         .transition-all-300 { transition: all 0.3s ease-in-out; }
         .rotate-180 { transform: rotate(180deg); }
 
+        /* --- Drag and Drop Visual --- */
+        .draggable-card { cursor: grab; }
+        .draggable-card:active { cursor: grabbing; }
+        .dragging { 
+            opacity: 0.5; 
+            border: 2px dashed #4f46e5 !important; /* Indigo border */
+            background-color: #eef2ff !important;
+        }
+
         /* --- Estilo de Impressão (Termica 10x15) --- */
         @media print {
             @page { size: 100mm 150mm; margin: 0; }
@@ -263,13 +272,14 @@
                             <i class="fa-brands fa-whatsapp"></i> Rota no Zap
                         </button>
                     </div>
-                    <div class="text-[10px] text-gray-400 mt-1 italic flex items-center">
-                        <i class="fa-solid fa-info-circle mr-1"></i> Use as setas (⬆⬇) para organizar a sequência de entrega.
+                    <div class="text-[10px] text-gray-500 mt-2 italic flex items-center bg-yellow-50 p-1 rounded border border-yellow-200">
+                        <i class="fa-solid fa-hand-pointer mr-2 text-yellow-600"></i> Dica: <b>Arraste e solte</b> os pedidos para organizar a rota rapidamente.
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-auto bg-gray-100 p-2">
-                    <div id="listaPedidos" class="space-y-2">
+                <!-- LISTA DE PEDIDOS COM DRAG AND DROP -->
+                <div class="flex-1 overflow-auto bg-gray-100 p-2 custom-scroll">
+                    <div id="listaPedidos" class="space-y-2 pb-10">
                         <!-- Cards de Pedidos Compactos -->
                     </div>
                 </div>
@@ -323,6 +333,7 @@
         let carrinho = []; 
         let pedidos = []; 
         let filtroRotaAtual = 'todos'; 
+        let dragSrcEl = null; // Para Drag n Drop
         
         const KEY_CLIENTES = 'sistema_empresarial_clientes';
         const KEY_PEDIDOS = 'sistema_empresarial_vendas';
@@ -542,19 +553,17 @@
             if (!selCliente.value) return alert('Selecione um cliente!');
             if (carrinho.length === 0) return alert('Adicione pelo menos uma cesta!');
 
-            // Pega o JSON completo do cliente cadastrado
             const clienteDados = JSON.parse(selCliente.options[selCliente.selectedIndex].dataset.json);
             
             const subtotalText = document.getElementById('lblSubtotal').innerText.replace(',', '.');
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
             
             // Garantindo que todos os dados do cliente vão junto com o pedido
-            // Isso resolve a questão de "Exportar cadastro completo"
             const novoPedido = {
                 id: Date.now().toString(),
                 data: new Date().toISOString(),
-                ordem: Date.now(), // Campo para controle de posição na rota
-                cliente: clienteDados, // Salva o objeto completo do cliente
+                ordem: Date.now(), 
+                cliente: clienteDados, 
                 rota: document.getElementById('rota').value,
                 pagamento: {
                     metodo: document.getElementById('pagMetodo').value,
@@ -640,58 +649,120 @@
             }
         }
 
-        // Função para reordenar pedidos (Mover para Cima ou Baixo)
-        function moverPedido(id, direcao) {
-            // Pegamos a lista exata que está sendo exibida agora (filtrada)
+        // --- FUNÇÃO PARA PEGAR LISTA ATUAL DE PEDIDOS (Filtrados) ---
+        function getPedidosVisiveis() {
             const filtroData = document.getElementById('filtroData').value;
-            let pedidosVisiveis = pedidos.filter(p => p.data.startsWith(filtroData));
+            let lista = pedidos.filter(p => p.data.startsWith(filtroData));
             
             if (filtroRotaAtual !== 'todos') {
-                pedidosVisiveis = pedidosVisiveis.filter(p => p.rota === filtroRotaAtual);
+                lista = lista.filter(p => p.rota === filtroRotaAtual);
             }
+
+            // Ordena sempre pela propriedade "ordem"
+            lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+            return lista;
+        }
+
+        // --- MOVIMENTAÇÃO (Setas - Agora corrigidas e robustas) ---
+        function moverPedido(id, direcao) {
+            const listaAtual = getPedidosVisiveis();
             
-            // Ordenar a lista visível pela ordem atual antes de procurar índices
-            pedidosVisiveis.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
+            // 1. Normalizar a ordem da lista visível (10, 20, 30...)
+            // Isso garante que os indices estão limpos antes de qualquer troca
+            listaAtual.forEach((p, index) => {
+                p.ordem = index * 10;
+            });
 
-            const indexVisivel = pedidosVisiveis.findIndex(p => p.id === id);
-            
-            if (indexVisivel === -1) return;
+            const indexAtual = listaAtual.findIndex(p => p.id === id);
+            if (indexAtual === -1) return;
 
-            const novoIndex = indexVisivel + direcao;
+            const indexAlvo = indexAtual + direcao;
 
-            // Verifica limites
-            if (novoIndex >= 0 && novoIndex < pedidosVisiveis.length) {
-                // Troca os valores de "ordem" entre os dois itens
-                const itemA = pedidosVisiveis[indexVisivel];
-                const itemB = pedidosVisiveis[novoIndex];
-
-                const tempOrdem = itemA.ordem || 0;
-                itemA.ordem = itemB.ordem || 0;
-                itemB.ordem = tempOrdem;
+            // Verificar se o movimento é válido
+            if (indexAlvo >= 0 && indexAlvo < listaAtual.length) {
+                // Trocar as ordens
+                const ordemTemp = listaAtual[indexAtual].ordem;
+                listaAtual[indexAtual].ordem = listaAtual[indexAlvo].ordem;
+                listaAtual[indexAlvo].ordem = ordemTemp;
 
                 salvarPedidosLocais();
                 renderizarListaPedidos();
             }
         }
 
+        // --- DRAG AND DROP HANDLERS (Arrastar e Soltar) ---
+        function handleDragStart(e) {
+            this.classList.add('dragging');
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', this.dataset.id); // Guardar ID
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault(); // Necessário para permitir o drop
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('border-indigo-500', 'bg-indigo-50'); // Feedback visual
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('border-indigo-500', 'bg-indigo-50');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation(); 
+            }
+            
+            // Limpa estilos
+            document.querySelectorAll('.draggable-card').forEach(col => {
+                col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50');
+            });
+
+            const idOrigem = dragSrcEl.dataset.id;
+            const idDestino = this.dataset.id;
+
+            if (dragSrcEl !== this) {
+                // Lógica de Reordenação por Arrasto
+                const listaAtual = getPedidosVisiveis();
+                
+                // Normaliza
+                listaAtual.forEach((p, index) => { p.ordem = index * 10; });
+
+                const idxOrigem = listaAtual.findIndex(p => p.id === idOrigem);
+                const idxDestino = listaAtual.findIndex(p => p.id === idDestino);
+
+                if (idxOrigem > -1 && idxDestino > -1) {
+                    // Remove da posição antiga
+                    const [itemMovido] = listaAtual.splice(idxOrigem, 1);
+                    // Insere na nova posição
+                    listaAtual.splice(idxDestino, 0, itemMovido);
+
+                    // Renumera tudo novamente para salvar persistente
+                    listaAtual.forEach((p, index) => { p.ordem = index * 10; });
+
+                    salvarPedidosLocais();
+                    renderizarListaPedidos();
+                }
+            }
+            return false;
+        }
+
+        function handleDragEnd(e) {
+            document.querySelectorAll('.draggable-card').forEach(col => {
+                col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50');
+            });
+        }
+
+        // --- RENDERIZAÇÃO ---
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
-            const filtroData = document.getElementById('filtroData').value;
-            
-            container.innerHTML = '';
-
-            let pedidosFiltrados = pedidos.filter(p => p.data.startsWith(filtroData));
-            
-            if (filtroRotaAtual !== 'todos') {
-                pedidosFiltrados = pedidosFiltrados.filter(p => p.rota === filtroRotaAtual);
-            }
-
-            // Ordenação: Prioridade para o campo "ordem", depois por Data
-            pedidosFiltrados.sort((a, b) => {
-                const ordemA = a.ordem || 0;
-                const ordemB = b.ordem || 0;
-                return ordemA - ordemB; 
-            });
+            const pedidosFiltrados = getPedidosVisiveis(); // Usa a função centralizada de sort
 
             // Resumo Rotas
             const resumo = {};
@@ -700,6 +771,8 @@
             divResumo.innerHTML = Object.entries(resumo).map(([rota, qtd]) => 
                 `<span class="bg-blue-100 text-blue-800 px-1.5 rounded">${rota}: ${qtd}</span>`
             ).join('');
+            
+            container.innerHTML = '';
 
             if (pedidosFiltrados.length === 0) {
                 container.innerHTML = '<div class="text-center text-gray-400 mt-10">Nenhum pedido encontrado.</div>';
@@ -711,7 +784,19 @@
                 const isPago = p.pagamento.status === 'pago';
                 const borderClass = isPago ? 'border-green-500' : 'border-yellow-400';
                 
-                // Resumo para visualização rápida
+                // Configuração Drag and Drop
+                card.setAttribute('draggable', 'true');
+                card.dataset.id = p.id;
+                card.className = "draggable-card bg-white border-l-4 " + borderClass + " shadow-sm rounded-r mb-2 transition-all-300 flex";
+                
+                // Event Listeners Nativos
+                card.addEventListener('dragstart', handleDragStart);
+                card.addEventListener('dragenter', handleDragEnter);
+                card.addEventListener('dragover', handleDragOver);
+                card.addEventListener('dragleave', handleDragLeave);
+                card.addEventListener('drop', handleDrop);
+                card.addEventListener('dragend', handleDragEnd);
+
                 const itemsSummary = p.itens.map(i => {
                     const alertIcon = i.modo === 'alterada' ? '<span class="text-red-500 font-bold ml-1">!</span>' : '';
                     return `${i.tipo}${alertIcon}`;
@@ -733,25 +818,22 @@
 
                 const localizacao = `${p.cliente.endereco || ''}, ${p.cliente.bairro || ''}`;
                 
-                // Botões de subir/descer (visíveis apenas se houver mais de 1 item)
+                // Botões de subir/descer
                 const botoesOrdem = pedidosFiltrados.length > 1 ? `
-                    <div class="flex flex-col gap-1 mr-2 justify-center">
-                        <button onclick="moverPedido('${p.id}', -1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Subir na Rota">
+                    <div class="flex flex-col gap-1 mr-2 justify-center pl-1">
+                        <button onclick="moverPedido('${p.id}', -1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Subir">
                             <i class="fa-solid fa-caret-up"></i>
                         </button>
-                        <button onclick="moverPedido('${p.id}', 1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === pedidosFiltrados.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Descer na Rota">
+                        <div class="text-[8px] text-gray-400 text-center"><i class="fa-solid fa-grip-lines"></i></div>
+                        <button onclick="moverPedido('${p.id}', 1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === pedidosFiltrados.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Descer">
                             <i class="fa-solid fa-caret-down"></i>
                         </button>
                     </div>
-                ` : '';
+                ` : '<div class="pl-2"></div>';
 
                 card.innerHTML = `
-                <div class="bg-white border-l-4 ${borderClass} shadow-sm rounded-r mb-2 transition-all-300 flex">
-                    
                     <!-- Área de Ordenação (Esquerda) -->
-                    <div class="pl-1 py-1 flex items-center">
-                        ${botoesOrdem}
-                    </div>
+                    ${botoesOrdem}
 
                     <div class="flex-1">
                         <!-- CABEÇALHO (Visível sempre) -->
@@ -825,7 +907,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
                 `;
                 container.appendChild(card);
             });
