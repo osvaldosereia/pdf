@@ -12,7 +12,6 @@
         body { background-color: #f3f4f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .app-container { max-width: 1400px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; }
         .compact-input { padding: 0.3rem; font-size: 0.9rem; }
-        .btn-compact { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
         
         /* Scrollbar fina */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -30,18 +29,17 @@
                 left: 0;
                 top: 0;
                 width: 100mm;
-                /* height: 150mm;  Deixar altura fluida para rolos contínuos se necessário, ou fixar se for folha */
                 padding: 5mm;
                 background: white;
                 color: black;
-                font-family: 'Courier New', Courier, monospace; /* Fonte monoespaçada para cupom */
+                font-family: 'Courier New', Courier, monospace;
                 font-size: 12px;
                 line-height: 1.2;
                 display: block !important;
             }
             .no-print { display: none !important; }
         }
-        #areaImpressao { display: none; } /* Esconde na tela normal */
+        #areaImpressao { display: none; }
     </style>
 </head>
 <body class="text-gray-800">
@@ -57,14 +55,15 @@
                 <h1 class="font-bold text-lg text-gray-700">Módulo 2: Vendas & Pedidos</h1>
             </div>
             
+            <!-- Atualização: Links solicitados -->
             <nav class="flex gap-2">
-                <button onclick="window.location.href='cadastro.html'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
+                <button onclick="window.location.href='https://donaantonia.com.br/cadastro'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
                     1. Cadastro
                 </button>
-                <button class="bg-indigo-600 text-white px-4 py-1 rounded text-sm font-medium shadow-sm">
+                <button onclick="window.location.href='https://donaantonia.com.br/vendas'" class="bg-indigo-600 text-white px-4 py-1 rounded text-sm font-medium shadow-sm">
                     2. Vendas
                 </button>
-                <button onclick="alert('Etapa 3 em breve')" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
+                <button onclick="window.location.href='https://donaantonia.com.br/crm'" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1 rounded text-sm font-medium transition">
                     3. CRM
                 </button>
             </nav>
@@ -75,7 +74,7 @@
                     <input type="date" id="filtroData" class="bg-transparent text-sm border-none focus:ring-0 py-1" onchange="renderizarListaPedidos()">
                 </div>
                 <button onclick="exportarPedidosJson()" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 shadow-sm" title="Exportar filtrados">
-                    <i class="fa-solid fa-file-export mr-1"></i> Exportar
+                    <i class="fa-solid fa-file-export mr-1"></i> JSON
                 </button>
             </div>
         </header>
@@ -110,7 +109,6 @@
                         <label class="block text-xs font-bold text-gray-600 mb-2">2. Adicionar Produto ao Pedido</label>
                         
                         <div class="grid grid-cols-2 gap-2 mb-2">
-                            <!-- Tipo Cesta -->
                             <select id="selTipoCesta" onchange="atualizarOpcoesPreco()" class="col-span-1 border border-gray-300 rounded compact-input">
                                 <option value="economica">Cesta Econômica</option>
                                 <option value="mini">Cesta Mini</option>
@@ -118,21 +116,26 @@
                                 <option value="media">Cesta Média</option>
                                 <option value="grande">Cesta Grande</option>
                             </select>
-                            
-                            <!-- Marca/Preço (Dinamico) -->
                             <select id="selMarcaPreco" class="col-span-1 border border-gray-300 rounded compact-input">
                                 <!-- Preenchido via JS -->
                             </select>
                         </div>
 
                         <!-- Modo: Normal vs Alterada -->
-                        <div class="flex items-center gap-4 mb-2">
-                            <label class="flex items-center text-sm cursor-pointer">
-                                <input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal
-                            </label>
-                            <label class="flex items-center text-sm cursor-pointer">
-                                <input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alterada
-                            </label>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center text-sm cursor-pointer">
+                                    <input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal
+                                </label>
+                                <label class="flex items-center text-sm cursor-pointer">
+                                    <input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alterada
+                                </label>
+                            </div>
+                            
+                            <!-- Atualização: Input Código Identificação (aparece se Alterada) -->
+                            <div id="divCodigoCesta" class="hidden">
+                                <input type="number" id="inputCodigoCesta" placeholder="Cód. Identificação" class="border border-yellow-400 bg-yellow-50 rounded px-2 py-1 text-xs w-32 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+                            </div>
                         </div>
 
                         <!-- Área de Itens (Aparece se Alterada) -->
@@ -145,7 +148,7 @@
                         </button>
                     </div>
 
-                    <!-- 3. Carrinho (Lista de Itens adicionados) -->
+                    <!-- 3. Carrinho -->
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-600 mb-1">Itens no Pedido</label>
                         <div class="border border-gray-200 rounded bg-white min-h-[80px]">
@@ -157,9 +160,7 @@
                                         <th class="p-2 text-center">X</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabelaCarrinho">
-                                    <!-- Itens do carrinho -->
-                                </tbody>
+                                <tbody id="tabelaCarrinho"></tbody>
                             </table>
                             <div id="carrinhoVazio" class="text-center text-gray-400 py-4 text-xs italic">Nenhuma cesta adicionada.</div>
                         </div>
@@ -214,7 +215,7 @@
                             <select id="rota" class="w-full border border-gray-300 rounded compact-input font-bold">
                                 <option value="Coxipó">Coxipó</option>
                                 <option value="VG">Várzea Grande</option>
-                                <option value="Cuiabá">Cuiabá (Centro/Outros)</option>
+                                <option value="Cuiabá">Cuiabá</option>
                                 <option value="CPA">CPA</option>
                             </select>
                         </div>
@@ -236,12 +237,26 @@
                 </div>
             </div>
 
-            <!-- COLUNA DIREITA: Lista de Pedidos (Kanban de Rotas ou Lista) -->
+            <!-- COLUNA DIREITA: Lista de Pedidos -->
             <div class="w-7/12 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
-                <div class="p-3 border-b border-gray-100 bg-gray-50 rounded-t-lg flex justify-between items-center">
-                    <h2 class="font-bold text-gray-700 text-sm uppercase"><i class="fa-solid fa-list-check mr-2"></i>Pedidos do Dia</h2>
-                    <div id="resumoRotas" class="text-xs flex gap-2">
-                        <!-- Contadores preenchidos via JS -->
+                <div class="p-3 border-b border-gray-100 bg-gray-50 rounded-t-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="font-bold text-gray-700 text-sm uppercase"><i class="fa-solid fa-list-check mr-2"></i>Pedidos do Dia</h2>
+                        <div id="resumoRotas" class="text-xs flex gap-2"></div>
+                    </div>
+                    
+                    <!-- Atualização: Filtros de Rota -->
+                    <div class="flex gap-2 items-center">
+                        <div class="flex bg-gray-100 rounded p-1 gap-1">
+                            <button onclick="filtrarRota('todos')" id="btnRotaTodos" class="btn-rota bg-white shadow text-gray-800 text-xs px-2 py-1 rounded font-medium">Todos</button>
+                            <button onclick="filtrarRota('Coxipó')" id="btnRotaCoxipo" class="btn-rota text-gray-500 hover:bg-white text-xs px-2 py-1 rounded">Coxipó</button>
+                            <button onclick="filtrarRota('VG')" id="btnRotaVG" class="btn-rota text-gray-500 hover:bg-white text-xs px-2 py-1 rounded">VG</button>
+                            <button onclick="filtrarRota('Cuiabá')" id="btnRotaCuiaba" class="btn-rota text-gray-500 hover:bg-white text-xs px-2 py-1 rounded">Cuiabá</button>
+                            <button onclick="filtrarRota('CPA')" id="btnRotaCPA" class="btn-rota text-gray-500 hover:bg-white text-xs px-2 py-1 rounded">CPA</button>
+                        </div>
+                        <button onclick="enviarListaRotaWhatsapp()" class="ml-auto bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1.5 rounded flex items-center gap-1 font-bold shadow-sm">
+                            <i class="fa-brands fa-whatsapp"></i> Enviar Lista Rota
+                        </button>
                     </div>
                 </div>
 
@@ -254,13 +269,18 @@
         </div>
     </div>
 
-    <!-- ÁREA DE IMPRESSÃO (Invisível na tela) -->
-    <div id="areaImpressao">
-        <!-- Conteúdo injetado via JS na hora de imprimir -->
-    </div>
+    <!-- ÁREA DE IMPRESSÃO -->
+    <div id="areaImpressao"></div>
 
     <script>
-        // --- DADOS (CESTAS) ---
+        // --- DADOS E CONFIGURAÇÕES ---
+        // Configuração dos Entregadores (Números ocultos)
+        const ENTREGADORES = {
+            'osvaldo': { nome: 'Osvaldo', num: '5565999999999' }, // Substitua pelos números reais
+            'andre': { nome: 'André', num: '5565999999999' },
+            'claudio': { nome: 'Claudio', num: '5565999999999' }
+        };
+
         const DADOS_CESTAS = {
             'economica': {
                 titulo: 'Cesta Econômica',
@@ -293,8 +313,10 @@
         };
 
         // --- ESTADO GLOBAL ---
-        let carrinho = []; // Array de cestas adicionadas
-        let pedidos = []; // Todos os pedidos salvos
+        let carrinho = []; 
+        let pedidos = []; 
+        let filtroRotaAtual = 'todos'; // Controle de filtro de rota
+        
         const KEY_CLIENTES = 'sistema_empresarial_clientes';
         const KEY_PEDIDOS = 'sistema_empresarial_vendas';
 
@@ -304,12 +326,11 @@
             carregarPedidosLocais();
             atualizarOpcoesPreco();
             
-            // Define data de hoje no filtro
             document.getElementById('filtroData').valueAsDate = new Date();
             renderizarListaPedidos();
         };
 
-        // --- 1. CARREGAMENTO DE CLIENTES ---
+        // --- FUNÇÕES DE NAVEGAÇÃO / DADOS ---
         function carregarClientes() {
             const clientesRaw = localStorage.getItem(KEY_CLIENTES);
             const select = document.getElementById('selCliente');
@@ -317,25 +338,22 @@
 
             if (clientesRaw) {
                 const clientes = JSON.parse(clientesRaw);
-                // Ordena alfabeticamente
                 clientes.sort((a, b) => a.nome.localeCompare(b.nome));
                 
                 clientes.forEach(c => {
                     const option = document.createElement('option');
-                    option.value = c.id; // Guarda o ID, mas exibe o nome
-                    // Inclui Apelido e Bairro para facilitar
+                    option.value = c.id;
                     const label = `${c.nome} ${c.apelido ? '('+c.apelido+')' : ''} - ${c.bairro || 'S/ Bairro'}`;
                     option.innerText = label;
-                    // Armazena dados completos no elemento para uso rápido
                     option.dataset.json = JSON.stringify(c); 
                     select.appendChild(option);
                 });
             } else {
-                select.innerHTML = '<option value="">Nenhum cliente no Módulo 1</option>';
+                select.innerHTML = '<option value="">Nenhum cliente cadastrado</option>';
             }
         }
 
-        // --- 2. LÓGICA DE PRODUTOS/PREÇOS ---
+        // --- LÓGICA DE PRODUTOS/PREÇOS ---
         function atualizarOpcoesPreco() {
             const tipo = document.getElementById('selTipoCesta').value;
             const selectMarca = document.getElementById('selMarcaPreco');
@@ -348,7 +366,6 @@
                 selectMarca.add(opt);
             } else {
                 const opt1 = new Option(`Arroz Tio Alvino - R$ ${opcoes.alvino},00`, opcoes.alvino);
-                // Adiciona atributo para saber o nome da marca depois
                 opt1.setAttribute('data-marca', 'Tio Alvino');
                 selectMarca.add(opt1);
 
@@ -362,12 +379,18 @@
         function toggleModoCesta() {
             const modo = document.querySelector('input[name="modoCesta"]:checked').value;
             const area = document.getElementById('areaItensCesta');
+            const divCodigo = document.getElementById('divCodigoCesta');
+            const inputCodigo = document.getElementById('inputCodigoCesta');
             
             if (modo === 'alterada') {
                 gerarListaItensEditavel();
                 area.classList.remove('hidden');
+                divCodigo.classList.remove('hidden');
+                inputCodigo.focus();
             } else {
                 area.classList.add('hidden');
+                divCodigo.classList.add('hidden');
+                inputCodigo.value = ''; // Limpa se voltar pra normal
             }
         }
 
@@ -378,8 +401,7 @@
             
             area.innerHTML = '';
 
-            listaOriginal.forEach((itemStr, index) => {
-                // Se for título de seção (bold)
+            listaOriginal.forEach((itemStr) => {
                 if (itemStr.startsWith('<b>')) {
                     const titulo = document.createElement('div');
                     titulo.className = "font-bold text-gray-500 mt-2 mb-1 border-b border-gray-100";
@@ -388,7 +410,6 @@
                     return;
                 }
 
-                // Tenta extrair a quantidade inicial (ex: "2 Oleo" -> qtd: 2)
                 const match = itemStr.match(/^(\d+)\s+(.+)$/);
                 let qtd = 1;
                 let desc = itemStr;
@@ -408,7 +429,7 @@
             });
         }
 
-        // --- 3. CARRINHO (CONSTRUÇÃO DO PEDIDO) ---
+        // --- CARRINHO ---
         function adicionarItemAoCarrinho() {
             const tipoKey = document.getElementById('selTipoCesta').value;
             const precoVal = parseFloat(document.getElementById('selMarcaPreco').value);
@@ -417,12 +438,19 @@
             
             const modo = document.querySelector('input[name="modoCesta"]:checked').value;
             let itensFinais = [];
+            let identificacao = null; // Código da cesta alterada
 
-            // Define o conteúdo da cesta
             if (modo === 'normal') {
                 itensFinais = DADOS_CESTAS[tipoKey].itens;
             } else {
-                // Coleta dados dos inputs
+                // Captura código de identificação
+                const codInput = document.getElementById('inputCodigoCesta').value;
+                if(!codInput) {
+                    alert('Por favor, informe o CÓDIGO para a cesta alterada.');
+                    return;
+                }
+                identificacao = codInput;
+
                 const linhas = document.querySelectorAll('#areaItensCesta .flex');
                 linhas.forEach(row => {
                     const q = row.querySelector('.item-qtd').value;
@@ -439,6 +467,7 @@
                 marca: marcaNome,
                 preco: precoVal,
                 modo: modo,
+                identificacao: identificacao, // Salva o código
                 conteudo: itensFinais
             };
 
@@ -467,12 +496,16 @@
                     const tr = document.createElement('tr');
                     tr.className = "border-t border-gray-100";
                     
-                    const labelModo = item.modo === 'alterada' ? '<span class="text-[10px] bg-yellow-100 text-yellow-700 px-1 rounded">Alt</span>' : '';
+                    let labelModo = '';
+                    if(item.modo === 'alterada') {
+                        // Atualização: Mostra código no carrinho
+                        labelModo = `<span class="text-[10px] bg-yellow-100 text-yellow-700 px-1 rounded ml-1">COD: ${item.identificacao}</span>`;
+                    }
                     
                     tr.innerHTML = `
                         <td class="p-2">
-                            <div class="font-bold">${item.tipo}</div>
-                            <div class="text-[10px] text-gray-500">${item.marca} ${labelModo}</div>
+                            <div class="font-bold text-xs">${item.tipo} ${labelModo}</div>
+                            <div class="text-[10px] text-gray-500">${item.marca}</div>
                         </td>
                         <td class="p-2 text-right font-mono">R$ ${item.preco},00</td>
                         <td class="p-2 text-center">
@@ -488,20 +521,17 @@
         }
 
         function calcularTotalFinal(subtotalOverride) {
-            // Se não passar valor, pega do texto (gambiarra segura pra UI simples)
             let sub = subtotalOverride;
             if (sub === undefined) {
                  const txt = document.getElementById('lblSubtotal').innerText.replace(',', '.');
                  sub = parseFloat(txt);
             }
-
             const desc = parseFloat(document.getElementById('desconto').value) || 0;
             const final = Math.max(0, sub - desc);
-            
             document.getElementById('lblTotalFinal').innerText = final.toFixed(2).replace('.', ',');
         }
 
-        // --- 4. FINALIZAÇÃO E PERSISTÊNCIA ---
+        // --- FINALIZAÇÃO ---
         function finalizarPedido() {
             const selCliente = document.getElementById('selCliente');
             if (!selCliente.value) return alert('Selecione um cliente!');
@@ -509,7 +539,6 @@
 
             const clienteDados = JSON.parse(selCliente.options[selCliente.selectedIndex].dataset.json);
             
-            // Dados financeiros
             const subtotalText = document.getElementById('lblSubtotal').innerText.replace(',', '.');
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
             
@@ -545,7 +574,6 @@
             alert('Pedido salvo com sucesso!');
             limparPedidoAtual();
             
-            // Renderiza lista atualizada
             document.getElementById('filtroData').valueAsDate = new Date();
             renderizarListaPedidos();
         }
@@ -567,26 +595,57 @@
             document.getElementById('pagStatus').value = "pendente";
             document.getElementById('desconto').value = "0";
             document.getElementById('brinde').value = "Nenhum";
+            
+            // Reset modo cesta
+            document.querySelector('input[name="modoCesta"][value="normal"]').checked = true;
+            toggleModoCesta();
+            
             calcularTotalFinal(0);
         }
 
-        // --- 5. VISUALIZAÇÃO DE PEDIDOS (DASHBOARD) ---
+        // --- VISUALIZAÇÃO E FILTROS ---
+        
+        function filtrarRota(rota) {
+            filtroRotaAtual = rota;
+            // Atualiza UI dos botões
+            document.querySelectorAll('.btn-rota').forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow', 'text-gray-800', 'font-medium');
+                btn.classList.add('text-gray-500', 'hover:bg-white');
+            });
+            
+            const idBtn = rota === 'Coxipó' ? 'btnRotaCoxipo' : 
+                          rota === 'VG' ? 'btnRotaVG' : 
+                          rota === 'Cuiabá' ? 'btnRotaCuiaba' : 
+                          rota === 'CPA' ? 'btnRotaCPA' : 'btnRotaTodos';
+                          
+            const btnAtivo = document.getElementById(idBtn);
+            if(btnAtivo) {
+                btnAtivo.classList.remove('text-gray-500', 'hover:bg-white');
+                btnAtivo.classList.add('bg-white', 'shadow', 'text-gray-800', 'font-medium');
+            }
+
+            renderizarListaPedidos();
+        }
+
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
             const filtroData = document.getElementById('filtroData').value;
             
             container.innerHTML = '';
 
-            // Filtra por data (compara string YYYY-MM-DD)
-            const pedidosFiltrados = pedidos.filter(p => p.data.startsWith(filtroData));
+            let pedidosFiltrados = pedidos.filter(p => p.data.startsWith(filtroData));
             
-            // Ordena por Rota e depois por Nome
+            // Aplica filtro de Rota
+            if (filtroRotaAtual !== 'todos') {
+                pedidosFiltrados = pedidosFiltrados.filter(p => p.rota === filtroRotaAtual);
+            }
+
             pedidosFiltrados.sort((a, b) => {
                 if (a.rota === b.rota) return a.cliente.nome.localeCompare(b.cliente.nome);
                 return a.rota.localeCompare(b.rota);
             });
 
-            // Resumo de Rotas
+            // Resumo (contagem)
             const resumo = {};
             pedidosFiltrados.forEach(p => {
                 resumo[p.rota] = (resumo[p.rota] || 0) + 1;
@@ -597,7 +656,7 @@
             ).join('');
 
             if (pedidosFiltrados.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-400 mt-10">Nenhum pedido nesta data.</div>';
+                container.innerHTML = '<div class="text-center text-gray-400 mt-10">Nenhum pedido encontrado.</div>';
                 return;
             }
 
@@ -605,12 +664,19 @@
                 const card = document.createElement('div');
                 card.className = "bg-white p-3 rounded border border-gray-200 shadow-sm hover:shadow-md transition relative";
                 
-                // Formata lista de cestas brevemente
-                const resumoItens = p.itens.map(i => `${i.tipo} (${i.marca})`).join(', ');
+                const resumoItens = p.itens.map(i => {
+                    let txt = `${i.tipo}`;
+                    if(i.modo === 'alterada') txt += ` (Alt: ${i.identificacao})`;
+                    return txt;
+                }).join(', ');
 
-                // Badge status pagto
                 const statusColor = p.pagamento.status === 'pago' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
                 
+                // HTML para Seleção de Entregador dentro do card
+                const opcoesEntregadores = Object.keys(ENTREGADORES).map(k => 
+                    `<option value="${k}">${ENTREGADORES[k].nome}</option>`
+                ).join('');
+
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-1">
                         <div>
@@ -626,16 +692,25 @@
                     <p class="text-xs text-gray-600 mb-1 truncate"><i class="fa-solid fa-basket-shopping mr-1"></i>${resumoItens}</p>
                     <p class="text-xs text-gray-500 mb-2 truncate"><i class="fa-solid fa-location-dot mr-1"></i>${p.cliente.endereco}</p>
 
-                    <div class="flex justify-end gap-2 mt-2 border-t pt-2 border-gray-100">
-                        <button onclick="imprimirPedido('${p.id}')" class="text-gray-600 hover:text-black text-xs border border-gray-300 px-2 py-1 rounded">
-                            <i class="fa-solid fa-print"></i> Imprimir
-                        </button>
-                        <button onclick="exportarUnicoPedido('${p.id}')" class="text-blue-600 hover:text-blue-800 text-xs border border-blue-200 px-2 py-1 rounded">
-                            <i class="fa-solid fa-download"></i> JSON
-                        </button>
-                        <button onclick="excluirPedido('${p.id}')" class="text-red-400 hover:text-red-600 text-xs px-1">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <div class="flex justify-between items-center gap-2 mt-2 border-t pt-2 border-gray-100">
+                        <!-- Área Whatsapp Individual -->
+                        <div class="flex items-center gap-1 bg-green-50 p-1 rounded border border-green-100">
+                            <select id="selEntregador_${p.id}" class="text-xs bg-transparent border-none focus:ring-0 text-gray-700 font-medium">
+                                ${opcoesEntregadores}
+                            </select>
+                            <button onclick="enviarPedidoZap('${p.id}')" class="text-green-600 hover:text-green-800" title="Enviar para Motorista">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex gap-1">
+                            <button onclick="imprimirPedido('${p.id}')" class="text-gray-600 hover:text-black text-xs border border-gray-300 px-2 py-1 rounded">
+                                <i class="fa-solid fa-print"></i>
+                            </button>
+                            <button onclick="excluirPedido('${p.id}')" class="text-red-400 hover:text-red-600 text-xs px-2 py-1 rounded">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(card);
@@ -650,7 +725,67 @@
             }
         }
 
-        // --- 6. EXPORTAÇÃO E IMPRESSÃO ---
+        // --- ZAP E IMPRESSÃO ---
+
+        function enviarPedidoZap(id) {
+            const p = pedidos.find(item => item.id === id);
+            const keyEntregador = document.getElementById(`selEntregador_${id}`).value;
+            const entregador = ENTREGADORES[keyEntregador];
+            
+            if(!p || !entregador) return;
+
+            // Montar mensagem
+            let msg = `*PEDIDO #${p.id.slice(-4)}*\n`;
+            msg += `*Cliente:* ${p.cliente.nome}\n`;
+            msg += `*Endereço:* ${p.cliente.endereco} - ${p.cliente.bairro || ''}\n`;
+            msg += `*Link Maps:* ${p.cliente.maps || 'Sem link'}\n`;
+            msg += `*Obs:* ${p.obs || '-'}\n\n`;
+            msg += `*ITENS:* \n`;
+            p.itens.forEach(i => {
+                let detalhe = i.tipo;
+                if(i.modo === 'alterada') detalhe += ` (⚠️ CÓD: ${i.identificacao})`;
+                msg += `- ${detalhe}\n`;
+            });
+            msg += `\n*Pagamento:* ${p.pagamento.metodo} (${p.pagamento.status})\n`;
+            msg += `*Total a Receber:* R$ ${p.financeiro.total.toFixed(2)}`;
+
+            const link = `https://wa.me/${entregador.num}?text=${encodeURIComponent(msg)}`;
+            window.open(link, '_blank');
+        }
+
+        function enviarListaRotaWhatsapp() {
+            const filtroData = document.getElementById('filtroData').value;
+            // Pega os pedidos que estão sendo exibidos (já filtrados por data e rota)
+            // Mas vamos garantir a lógica limpa:
+            let lista = pedidos.filter(p => p.data.startsWith(filtroData));
+            
+            if (filtroRotaAtual !== 'todos') {
+                lista = lista.filter(p => p.rota === filtroRotaAtual);
+            }
+
+            if (lista.length === 0) return alert('Nenhum pedido listado para enviar.');
+
+            let msg = `*RELATÓRIO DE ROTA - ${filtroRotaAtual.toUpperCase()}*\n`;
+            msg += `Data: ${filtroData.split('-').reverse().join('/')}\n\n`;
+
+            lista.forEach((p, index) => {
+                msg += `*${index+1}. ${p.cliente.nome}*\n`;
+                p.itens.forEach(i => {
+                   if(i.modo === 'alterada') {
+                       msg += `   [⚠️ ALTERADA - CÓD ${i.identificacao}] - ${i.tipo}\n`;
+                   } else {
+                       msg += `   [Normal] - ${i.tipo}\n`;
+                   }
+                });
+                msg += `----------------\n`;
+            });
+
+            // Envia para o usuário (ou definir um número fixo de logística aqui)
+            // Se quiser enviar para um número específico, troque o 'phone=' abaixo
+            // Sem 'phone', ele abre o WhatsApp Web para escolher o contato.
+            const link = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+            window.open(link, '_blank');
+        }
 
         function exportarPedidosJson() {
             const filtroData = document.getElementById('filtroData').value;
@@ -661,21 +796,9 @@
             const dataStr = JSON.stringify(lista, null, 2);
             const blob = new Blob([dataStr], {type: "application/json"});
             const url = URL.createObjectURL(blob);
-            
             const a = document.createElement('a');
             a.href = url;
             a.download = `pedidos_${filtroData}.json`;
-            a.click();
-        }
-
-        function exportarUnicoPedido(id) {
-            const pedido = pedidos.find(p => p.id === id);
-            const dataStr = JSON.stringify(pedido, null, 2);
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `pedido_${pedido.cliente.nome.replace(/\s+/g,'_')}.json`;
             a.click();
         }
 
@@ -687,22 +810,27 @@
             const dataF = new Date(p.data).toLocaleDateString('pt-BR');
             const horaF = new Date(p.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            // Monta HTML da impressão
             let htmlItens = '';
             p.itens.forEach(item => {
+                // Atualização: Identificação na impressão
+                let tituloShow = item.tipo;
+                if(item.modo === 'alterada' && item.identificacao) {
+                    tituloShow += ` <b>(${item.identificacao})</b>`;
+                }
+
                 const desc = item.modo === 'alterada' ? 
                     `<br><span style="font-size:10px; margin-left: 5px; display:block; white-space: pre-wrap;">- ${item.conteudo.join('<br>- ')}</span>` : 
                     '';
+                
                 htmlItens += `
                     <div style="margin-bottom: 5px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
-                        <b>${item.tipo}</b> (${item.marca})
+                        <b>${tituloShow}</b> (${item.marca})
                         <div style="float:right;">R$ ${item.preco},00</div>
                         ${desc}
                     </div>
                 `;
             });
 
-            const linkMaps = p.cliente.maps ? `<br>Maps: ${p.cliente.maps}` : '';
             const obsBlock = p.obs ? `<div style="margin-top:5px; font-weight:bold; border: 1px solid #000; padding: 2px;">OBS: ${p.obs}</div>` : '';
             const brindeBlock = p.brinde !== 'Nenhum' ? `<div style="margin-top:5px;">🎁 BRINDE: <b>${p.brinde}</b></div>` : '';
 
@@ -717,7 +845,7 @@
                 <div><b>TEL:</b> ${p.cliente.telefone}</div>
                 <div style="margin-top:3px;"><b>ROTA:</b> ${p.rota}</div>
                 <div style="font-size: 11px; margin-top:2px;">
-                    ${p.cliente.endereco} - ${p.cliente.cidade}
+                    ${p.cliente.endereco}
                 </div>
 
                 <div style="border-bottom: 1px solid #000; margin: 10px 0;"></div>
