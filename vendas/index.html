@@ -386,11 +386,11 @@
         // --- ESTADO GLOBAL ---
         let carrinho = []; 
         let pedidos = []; 
-        let cupons = []; // LISTA DE CUPONS
-        let cupomSelecionado = null; // CUPOM APLICADO NO PEDIDO ATUAL (OBJETO OU SIMPLES VALOR)
+        let cupons = []; 
+        let cupomSelecionado = null; 
 
         let filtroRotaAtual = 'todos'; 
-        let dragSrcEl = null; // Para Drag n Drop
+        let dragSrcEl = null; 
         
         const KEY_CLIENTES = 'sistema_empresarial_clientes';
         const KEY_PEDIDOS = 'sistema_empresarial_vendas';
@@ -439,15 +439,13 @@
             localStorage.setItem(KEY_CUPONS, JSON.stringify(cupons));
         }
 
-        // --- GESTÃO DE CUPONS (MODIFICADO) ---
-        
+        // --- GESTÃO DE CUPONS ---
         function verificarCuponsCliente() {
             const idCliente = document.getElementById('selCliente').value;
             const divArea = document.getElementById('areaCupons');
             const divPessoais = document.getElementById('divCuponsPessoais');
             const selectPessoais = document.getElementById('selCupomPessoal');
             
-            // Reset
             removerCupom();
             selectPessoais.innerHTML = '<option value="">-- Selecione para usar --</option>';
             
@@ -456,10 +454,8 @@
                 return;
             }
 
-            // Exibir área de cupons
             divArea.classList.remove('hidden');
 
-            // Filtrar cupons pessoais válidos (Lógica mantida para histórico)
             const hoje = new Date().setHours(0,0,0,0);
             const cuponsValidos = cupons.filter(c => 
                 c.idCliente === idCliente && 
@@ -493,7 +489,6 @@
             } else {
                 divValor.classList.add('hidden');
                 document.getElementById('selValorCupomAmigo').value = '0';
-                // Se estava usando este modo, remove
                 if (cupomSelecionado && cupomSelecionado.tipo === 'amigo_manual') {
                     removerCupom();
                 }
@@ -505,7 +500,6 @@
             let tipo = '';
             let codigo = '';
 
-            // Reset UI inversa
             if (origem === 'pessoal') {
                 document.getElementById('chkUsarCupomAmigo').checked = false;
                 toggleCupomAmigo();
@@ -518,7 +512,7 @@
                     codigo = dados.codigo;
                 }
             } else if (origem === 'amigo') {
-                document.getElementById('selCupomPessoal').value = ''; // Limpa o outro
+                document.getElementById('selCupomPessoal').value = ''; 
                 
                 const selValor = document.getElementById('selValorCupomAmigo');
                 valor = parseFloat(selValor.value);
@@ -533,11 +527,9 @@
                     codigo: codigo
                 };
                 
-                // UI Feedback
                 document.getElementById('msgCupomAplicado').classList.remove('hidden');
                 document.getElementById('valorDescontoCupom').innerText = valor.toFixed(2).replace('.', ',');
                 
-                // Desabilitar inputs conflitantes (Desconto Manual)
                 document.getElementById('desconto').disabled = true;
                 document.getElementById('desconto').value = 0;
                 
@@ -656,12 +648,28 @@
                 }
                 identificacao = codInput;
 
-                const linhas = document.querySelectorAll('#areaItensCesta .flex');
-                linhas.forEach(row => {
-                    const q = row.querySelector('.item-qtd').value;
-                    const d = row.querySelector('.item-desc').value;
-                    if (q > 0) {
-                        itensFinais.push(`${q} ${d}`);
+                // --- Lógica Alterada para capturar cabeçalhos (Alimentos, Higiene) ---
+                const container = document.getElementById('areaItensCesta');
+                let headerPendente = null;
+
+                Array.from(container.children).forEach(child => {
+                    // Se for um título (DIV com font-bold)
+                    if (child.tagName === 'DIV' && child.classList.contains('font-bold')) {
+                        headerPendente = child.innerText; // Ex: "Alimentos"
+                    } 
+                    // Se for linha de item
+                    else if (child.classList.contains('flex')) {
+                        const q = child.querySelector('.item-qtd').value;
+                        const d = child.querySelector('.item-desc').value;
+                        
+                        if (q > 0) {
+                            // Se existe um cabeçalho pendente, adiciona ele primeiro
+                            if (headerPendente) {
+                                itensFinais.push(`<b>${headerPendente}:</b>`);
+                                headerPendente = null; // Já adicionou este cabeçalho
+                            }
+                            itensFinais.push(`${q} ${d}`);
+                        }
                     }
                 });
             }
@@ -731,7 +739,6 @@
                  sub = parseFloat(txt);
             }
             
-            // Prioridade para Cupom, senão pega desconto manual
             let desc = 0;
             if (cupomSelecionado) {
                 desc = cupomSelecionado.valor;
@@ -743,7 +750,7 @@
             document.getElementById('lblTotalFinal').innerText = final.toFixed(2).replace('.', ',');
         }
 
-        // --- FINALIZAÇÃO (MODIFICADO) ---
+        // --- FINALIZAÇÃO ---
         function finalizarPedido() {
             const selCliente = document.getElementById('selCliente');
             if (!selCliente.value) return alert('Selecione um cliente!');
@@ -754,12 +761,10 @@
             const subtotalText = document.getElementById('lblSubtotal').innerText.replace(',', '.');
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
             
-            // Valor do desconto aplicado na venda ATUAL
             let descontoFinal = 0;
             if (cupomSelecionado) {
                 descontoFinal = cupomSelecionado.valor;
                 
-                // SE for cupom do sistema (pessoal), marcar como usado
                 if (cupomSelecionado.tipo === 'pessoal_sistema') {
                     const cupomIdx = cupons.findIndex(c => c.codigo === cupomSelecionado.codigo);
                     if (cupomIdx > -1) {
@@ -771,22 +776,16 @@
                 descontoFinal = parseFloat(document.getElementById('desconto').value);
             }
 
-            // GERAÇÃO DE NOVOS CUPONS (Lógica Manual Solicitada)
-            // Agora pegamos o valor do select manual, não mais calculado
             const valGerar = parseInt(document.getElementById('selGerarCupomValor').value);
             
-            // Dados para o futuro cupom
             let codPessoal = null;
             let codAmigo = null;
             let valorNovoDesc = 0;
-            let nomeCestaNovoDesc = "Cesta Básica"; // Padrão genérico
+            let nomeCestaNovoDesc = "Cesta Básica"; 
 
-            // Se o usuário selecionou um valor para gerar
             if (valGerar > 0) {
                 valorNovoDesc = valGerar;
 
-                // Tenta inferir o nome da cesta baseada na maior cesta do carrinho apenas para rotulo
-                // (mas o valor é fixo conforme selecionado)
                 let maiorPeso = 0;
                 carrinho.forEach(item => {
                     const nome = item.tipo.toLowerCase();
@@ -799,7 +798,6 @@
                     if(peso > maiorPeso) { maiorPeso = peso; nomeCestaNovoDesc = nomeC; }
                 });
 
-                // Data Validade
                 const dataVal = new Date();
                 dataVal.setDate(dataVal.getDate() + 35);
                 const dataValISO = dataVal.toISOString();
@@ -821,8 +819,8 @@
                     {
                         codigo: codAmigo,
                         tipo: 'amigo',
-                        idCliente: null, // Genérico
-                        origemIdCliente: clienteDados.id, // Quem deu o presente
+                        idCliente: null, 
+                        origemIdCliente: clienteDados.id, 
                         origemNomeCliente: clienteDados.nome,
                         valor: valorNovoDesc,
                         cestaAlvo: nomeCestaNovoDesc,
@@ -832,7 +830,6 @@
                     }
                 ];
 
-                // Salvar novos cupons
                 cupons.push(...novosCupons);
                 salvarCuponsLocais();
             }
@@ -887,16 +884,16 @@
             carrinho = [];
             renderizarCarrinho();
             
-            removerCupom(); // Reset cupons
+            removerCupom(); 
 
             document.getElementById('selCliente').value = "";
-            document.getElementById('areaCupons').classList.add('hidden'); // Esconder área cupons
+            document.getElementById('areaCupons').classList.add('hidden'); 
             
             document.getElementById('obs').value = "";
             document.getElementById('pagStatus').value = "pendente";
             document.getElementById('desconto').value = "0";
             document.getElementById('brinde').value = "Nenhum";
-            document.getElementById('selGerarCupomValor').value = "0"; // Reset seletor de geração
+            document.getElementById('selGerarCupomValor').value = "0"; 
             
             document.querySelector('input[name="modoCesta"][value="normal"]').checked = true;
             toggleModoCesta();
@@ -940,7 +937,6 @@
             }
         }
 
-        // --- FUNÇÃO PARA PEGAR LISTA ATUAL DE PEDIDOS (Filtrados) ---
         function getPedidosVisiveis() {
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
@@ -949,17 +945,13 @@
                 lista = lista.filter(p => p.rota === filtroRotaAtual);
             }
 
-            // Ordena sempre pela propriedade "ordem"
             lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
             return lista;
         }
 
-        // --- MOVIMENTAÇÃO (Setas - Agora corrigidas e robustas) ---
         function moverPedido(id, direcao) {
             const listaAtual = getPedidosVisiveis();
             
-            // 1. Normalizar a ordem da lista visível (10, 20, 30...)
-            // Isso garante que os indices estão limpos antes de qualquer troca
             listaAtual.forEach((p, index) => {
                 p.ordem = index * 10;
             });
@@ -969,9 +961,7 @@
 
             const indexAlvo = indexAtual + direcao;
 
-            // Verificar se o movimento é válido
             if (indexAlvo >= 0 && indexAlvo < listaAtual.length) {
-                // Trocar as ordens
                 const ordemTemp = listaAtual[indexAtual].ordem;
                 listaAtual[indexAtual].ordem = listaAtual[indexAlvo].ordem;
                 listaAtual[indexAlvo].ordem = ordemTemp;
@@ -981,24 +971,24 @@
             }
         }
 
-        // --- DRAG AND DROP HANDLERS (Arrastar e Soltar) ---
+        // --- DRAG AND DROP ---
         function handleDragStart(e) {
             this.classList.add('dragging');
             dragSrcEl = this;
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.dataset.id); // Guardar ID
+            e.dataTransfer.setData('text/plain', this.dataset.id);
         }
 
         function handleDragOver(e) {
             if (e.preventDefault) {
-                e.preventDefault(); // Necessário para permitir o drop
+                e.preventDefault(); 
             }
             e.dataTransfer.dropEffect = 'move';
             return false;
         }
 
         function handleDragEnter(e) {
-            this.classList.add('border-indigo-500', 'bg-indigo-50'); // Feedback visual
+            this.classList.add('border-indigo-500', 'bg-indigo-50'); 
         }
 
         function handleDragLeave(e) {
@@ -1010,7 +1000,6 @@
                 e.stopPropagation(); 
             }
             
-            // Limpa estilos
             document.querySelectorAll('.draggable-card').forEach(col => {
                 col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50');
             });
@@ -1019,22 +1008,17 @@
             const idDestino = this.dataset.id;
 
             if (dragSrcEl !== this) {
-                // Lógica de Reordenação por Arrasto
                 const listaAtual = getPedidosVisiveis();
                 
-                // Normaliza
                 listaAtual.forEach((p, index) => { p.ordem = index * 10; });
 
                 const idxOrigem = listaAtual.findIndex(p => p.id === idOrigem);
                 const idxDestino = listaAtual.findIndex(p => p.id === idDestino);
 
                 if (idxOrigem > -1 && idxDestino > -1) {
-                    // Remove da posição antiga
                     const [itemMovido] = listaAtual.splice(idxOrigem, 1);
-                    // Insere na nova posição
                     listaAtual.splice(idxDestino, 0, itemMovido);
 
-                    // Renumera tudo novamente para salvar persistente
                     listaAtual.forEach((p, index) => { p.ordem = index * 10; });
 
                     salvarPedidosLocais();
@@ -1050,10 +1034,10 @@
             });
         }
 
-        // --- RENDERIZAÇÃO ---
+        // --- RENDERIZAÇÃO (CARD COMPACTO ATUALIZADO) ---
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
-            const pedidosFiltrados = getPedidosVisiveis(); // Usa a função centralizada de sort
+            const pedidosFiltrados = getPedidosVisiveis();
 
             // Resumo Rotas
             const resumo = {};
@@ -1075,12 +1059,10 @@
                 const isPago = p.pagamento.status === 'pago';
                 const borderClass = isPago ? 'border-green-500' : 'border-yellow-400';
                 
-                // Configuração Drag and Drop
                 card.setAttribute('draggable', 'true');
                 card.dataset.id = p.id;
                 card.className = "draggable-card bg-white border-l-4 " + borderClass + " shadow-sm rounded-r mb-2 transition-all-300 flex";
                 
-                // Event Listeners Nativos
                 card.addEventListener('dragstart', handleDragStart);
                 card.addEventListener('dragenter', handleDragEnter);
                 card.addEventListener('dragover', handleDragOver);
@@ -1100,16 +1082,15 @@
                 const detalhesItens = p.itens.map(i => {
                     const isAlt = i.modo === 'alterada';
                     return `
-                        <div class="flex justify-between border-b border-gray-200 py-1 last:border-0">
+                        <div class="flex justify-between border-b border-gray-100 py-0.5 last:border-0 text-[10px]">
                             <span>${i.tipo} <small class="text-gray-500">(${i.marca})</small></span>
-                            ${isAlt ? `<span class="bg-red-100 text-red-800 text-[10px] px-1 rounded border border-red-200">COD: ${i.identificacao}</span>` : ''}
+                            ${isAlt ? `<span class="bg-red-100 text-red-800 px-1 rounded border border-red-200">COD: ${i.identificacao}</span>` : ''}
                         </div>
                     `;
                 }).join('');
 
                 const localizacao = `${p.cliente.endereco || ''}, ${p.cliente.bairro || ''}`;
                 
-                // Botões de subir/descer
                 const botoesOrdem = pedidosFiltrados.length > 1 ? `
                     <div class="flex flex-col gap-1 mr-2 justify-center pl-1">
                         <button onclick="moverPedido('${p.id}', -1)" class="bg-gray-100 hover:bg-gray-200 text-gray-600 w-6 h-6 rounded flex items-center justify-center border border-gray-300 ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Subir">
@@ -1122,77 +1103,69 @@
                     </div>
                 ` : '<div class="pl-2"></div>';
 
+                // -- NOVO LAYOUT COMPACTO NA AREA DE DETALHES --
                 card.innerHTML = `
-                    <!-- Área de Ordenação (Esquerda) -->
                     ${botoesOrdem}
 
                     <div class="flex-1">
-                        <!-- CABEÇALHO (Visível sempre) -->
+                        <!-- HEADER (Mantido Limpo) -->
                         <div class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-50 transition" onclick="toggleDetalhes('${p.id}')">
-                            
-                            <!-- Col 1: Sequencia e Rota -->
                             <div class="min-w-[50px] text-center flex flex-col gap-1">
                                 <span class="bg-indigo-600 text-white text-[10px] font-bold px-1 rounded shadow-sm">${index + 1}º</span>
                                 <span class="text-[9px] font-black uppercase bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded border border-gray-200 block">${p.rota.substring(0,3).toUpperCase()}</span>
                             </div>
-
-                            <!-- Col 2: Cliente & Endereço (Expandível) -->
                             <div class="flex-1 min-w-0 flex flex-col justify-center">
                                 <div class="font-bold text-gray-800 text-sm truncate leading-tight">${p.cliente.nome}</div>
                                 <div class="text-[10px] text-gray-500 truncate flex items-center gap-1">
                                     <i class="fa-solid fa-location-dot text-[9px] text-gray-400"></i> ${localizacao}
                                 </div>
                             </div>
-
-                            <!-- Col 3: Resumo Itens (Desktop) -->
                             <div class="hidden sm:block w-1/3 px-2">
                                  <div class="text-[10px] text-gray-600 truncate bg-gray-50 border border-gray-100 rounded px-1 py-0.5">
                                     <i class="fa-solid fa-basket-shopping text-gray-400 mr-1"></i> ${itemsSummary}
                                  </div>
                             </div>
-
-                            <!-- Col 4: Preço e Expandir -->
                             <div class="text-right flex flex-col items-end min-w-[70px]">
                                 <span class="font-bold text-indigo-700 text-sm">R$ ${p.financeiro.total.toFixed(0)}</span>
                                 <i id="icon_expand_${p.id}" class="fa-solid fa-chevron-down text-gray-400 text-xs transition-all-300"></i>
                             </div>
                         </div>
 
-                        <!-- CORPO (Detalhes colapsados) -->
-                        <div id="detalhes_${p.id}" class="hidden bg-gray-50 border-t border-gray-100 text-xs text-gray-700">
-                            <div class="p-2 grid grid-cols-1 gap-2">
-                                <!-- Detalhes Itens -->
-                                <div class="bg-white p-2 rounded border border-gray-200 shadow-sm">
-                                    <div class="font-bold text-gray-400 text-[9px] uppercase mb-1">Itens do Pedido</div>
+                        <!-- DETALHES COMPACTOS (Grade densa) -->
+                        <div id="detalhes_${p.id}" class="hidden bg-gray-50 border-t border-gray-200 text-[11px] text-gray-700">
+                            <div class="p-1.5">
+                                <!-- Linha 1: Lista de Itens (Compacta) -->
+                                <div class="bg-white p-1 rounded border border-gray-200 mb-1">
                                     ${detalhesItens}
-                                    ${p.brinde !== 'Nenhum' ? `<div class="mt-1 text-green-700 font-bold"><i class="fa-solid fa-gift"></i> ${p.brinde}</div>` : ''}
                                 </div>
                                 
-                                <!-- Obs e Pagamento -->
-                                <div class="flex gap-2">
-                                    <div class="flex-1 bg-white p-2 rounded border border-gray-200">
-                                        <div class="font-bold text-gray-400 text-[9px] uppercase">Obs</div>
-                                        <div class="italic text-gray-600">${p.obs || '-'}</div>
+                                <!-- Linha 2: Grid 4 Colunas (Obs, Brinde, Pagto, Ações) Compacto -->
+                                <div class="grid grid-cols-4 gap-1 items-stretch">
+                                    
+                                    <!-- Obs -->
+                                    <div class="col-span-1 bg-white p-1 rounded border border-gray-200 flex flex-col justify-center">
+                                        <div class="text-[9px] font-bold text-gray-400 uppercase leading-none mb-0.5">Obs</div>
+                                        <div class="leading-tight truncate" title="${p.obs || ''}">${p.obs || '-'}</div>
                                     </div>
-                                    <div class="w-1/3 bg-white p-2 rounded border border-gray-200 text-center">
-                                        <div class="font-bold text-gray-400 text-[9px] uppercase">Pagamento</div>
-                                        <div class="font-bold uppercase">${p.pagamento.metodo}</div>
-                                    </div>
-                                </div>
 
-                                <!-- Barra de Ações -->
-                                <div class="mt-1 flex justify-between items-center bg-white p-1 rounded border border-gray-200">
-                                    <div class="flex items-center gap-1">
-                                        <select id="selEntregador_${p.id}" class="text-[10px] border border-gray-200 rounded py-1 pl-1 pr-4 bg-transparent focus:ring-0">
-                                            ${opcoesEntregadores}
-                                        </select>
-                                        <button onclick="enviarPedidoZap('${p.id}')" class="bg-green-100 hover:bg-green-200 text-green-700 px-2 py-1 rounded border border-green-200 font-bold flex items-center gap-1">
-                                            <i class="fa-brands fa-whatsapp"></i> Enviar
-                                        </button>
+                                    <!-- Brinde/Pagto -->
+                                    <div class="col-span-1 bg-white p-1 rounded border border-gray-200 flex flex-col justify-center text-center">
+                                        ${p.brinde !== 'Nenhum' ? `<div class="text-green-700 font-bold text-[10px] leading-none mb-0.5">🎁 ${p.brinde}</div>` : ''}
+                                        <div class="leading-tight font-medium">${p.pagamento.metodo.toUpperCase()}</div>
                                     </div>
-                                    <div class="flex gap-1">
-                                        <button onclick="imprimirPedido('${p.id}')" class="text-gray-500 hover:text-black p-1.5 border border-gray-200 rounded hover:bg-gray-100" title="Imprimir"><i class="fa-solid fa-print"></i></button>
-                                        <button onclick="excluirPedido('${p.id}')" class="text-red-400 hover:text-red-600 p-1.5 border border-red-100 rounded hover:bg-red-50" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+
+                                    <!-- Entregador e Zap -->
+                                    <div class="col-span-2 bg-white p-1 rounded border border-gray-200 flex items-center justify-between gap-1">
+                                        <div class="flex items-center gap-1 flex-1">
+                                            <select id="selEntregador_${p.id}" class="w-full text-[10px] border border-gray-300 rounded py-0.5 pl-1 bg-gray-50 focus:ring-0 h-6">
+                                                ${opcoesEntregadores}
+                                            </select>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <button onclick="enviarPedidoZap('${p.id}')" class="bg-green-100 text-green-700 w-6 h-6 rounded flex items-center justify-center hover:bg-green-200" title="Zap"><i class="fa-brands fa-whatsapp"></i></button>
+                                            <button onclick="imprimirPedido('${p.id}')" class="bg-gray-100 text-gray-600 w-6 h-6 rounded flex items-center justify-center hover:bg-gray-200" title="Print"><i class="fa-solid fa-print"></i></button>
+                                            <button onclick="excluirPedido('${p.id}')" class="bg-red-50 text-red-500 w-6 h-6 rounded flex items-center justify-center hover:bg-red-100" title="Del"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1203,7 +1176,7 @@
             });
         }
 
-        // ... (Resto das funções mantidas) ...
+        // --- MANIPULAÇÃO DE DADOS E WHATSAPP ---
         function excluirPedido(id) {
             if(confirm('Confirmar exclusão deste pedido?')) {
                 pedidos = pedidos.filter(p => p.id !== id);
@@ -1253,7 +1226,6 @@
 
             if (lista.length === 0) return alert('Nenhum pedido listado para enviar.');
 
-            // Agrupamento por Rota e Itens
             const resumoPorRota = {};
 
             lista.forEach(p => {
@@ -1263,7 +1235,6 @@
                 }
 
                 p.itens.forEach(item => {
-                    // Cria uma chave única para o item
                     let nomeItem = `${item.tipo} ${item.marca}`;
                     if (item.modo === 'alterada') {
                         nomeItem += ` - Cód ${item.identificacao}`;
@@ -1276,24 +1247,18 @@
                 });
             });
 
-            // Construção da Mensagem
             const dataFormatada = filtroData.split('-').reverse().join('/');
             let msg = `*RESUMO DE CARGA - ${dataFormatada}*\n`;
 
-            // Ordenar rotas (alfabética)
             const rotas = Object.keys(resumoPorRota).sort();
 
             rotas.forEach(r => {
                 msg += `\n*Rota: ${r}*\n`;
-                
-                // Ordenar itens dentro da rota
                 const itens = Object.keys(resumoPorRota[r]).sort();
-                
                 itens.forEach(itemKey => {
                     const qtd = resumoPorRota[r][itemKey];
                     msg += `${qtd}x ${itemKey}\n`;
                 });
-                
                 msg += `-----\n`;
             });
 
@@ -1307,12 +1272,10 @@
             
             if (lista.length === 0) return alert('Nada para exportar na data selecionada.');
 
-            // Filtrar rota se necessário, para exportar exatamente o que está vendo
             if (filtroRotaAtual !== 'todos') {
                 lista = lista.filter(p => p.rota === filtroRotaAtual);
             }
 
-            // Importante: Ordena pela ordem visual definida pelo usuário
             lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
 
             const dataStr = JSON.stringify(lista, null, 2);
@@ -1324,7 +1287,7 @@
             a.click();
         }
 
-        // --- IMPRESSÃO (MODIFICADO PARA LER VALOR FIXO) ---
+        // --- IMPRESSÃO (MODIFICADO COM SEPARAÇÃO DE CATEGORIAS E CUPOM SEM CODIGO) ---
         function imprimirPedido(id) {
             const p = pedidos.find(item => item.id === id);
             if (!p) return;
@@ -1333,7 +1296,6 @@
             const dataF = new Date(p.data).toLocaleDateString('pt-BR');
             const horaF = new Date(p.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            // Verifica se o pedido tem cupons gerados salvos (Novo modelo)
             let codPessoal = null;
             let codAmigo = null;
             let valorDesconto = 0;
@@ -1346,10 +1308,6 @@
                 codAmigo = p.cuponsGerados.amigo;
                 valorDesconto = p.cuponsGerados.valor;
                 nomeCestaDesconto = p.cuponsGerados.cestaNome;
-            } else if (!p.cuponsGerados) {
-                // Legado: Se for um pedido antigo sem a estrutura nova, não imprime cupons
-                // ou use lógica antiga se desejar, mas vou deixar desativado para consistência com o seletor "Não Gerar"
-                gerarCuponsImpressao = false;
             }
 
             let htmlItens = '';
@@ -1359,15 +1317,28 @@
                     tituloShow += ` <b>(${item.identificacao})</b>`;
                 }
 
-                const desc = item.modo === 'alterada' ? 
-                    `<br><span style="font-size:10px; margin-left: 5px; display:block; white-space: pre-wrap;">- ${item.conteudo.join('<br>- ')}</span>` : 
-                    '';
+                // Lógica de Renderização do Conteúdo (Suportando Títulos)
+                let conteudoFormatado = '';
+                if (item.modo === 'alterada') {
+                    const linhasConteudo = item.conteudo.map(linha => {
+                        // Se a linha começa com <b>, é um Título de Categoria
+                        if (linha.startsWith('<b>')) {
+                            // Remove tags HTML para limpar, mas mantem negrito e quebra
+                            return `<br>${linha}`; 
+                        } else {
+                            // Item normal
+                            return `- ${linha}`;
+                        }
+                    });
+                    
+                    conteudoFormatado = `<br><span style="font-size:10px; margin-left: 5px; display:block; white-space: pre-wrap;">${linhasConteudo.join('<br>')}</span>`;
+                }
                 
                 htmlItens += `
                     <div style="margin-bottom: 5px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
                         <b>${tituloShow}</b> (${item.marca})
                         <div style="float:right;">R$ ${item.preco},00</div>
-                        ${desc}
+                        ${conteudoFormatado}
                     </div>
                 `;
             });
@@ -1375,12 +1346,11 @@
             const obsBlock = p.obs ? `<div style="margin-top:5px; font-weight:bold; border: 1px solid #000; padding: 2px;">OBS: ${p.obs}</div>` : '';
             const brindeBlock = p.brinde !== 'Nenhum' ? `<div style="margin-top:5px;">🎁 BRINDE: <b>${p.brinde}</b></div>` : '';
 
-            // Data Validade
             const dataPedido = new Date(p.data);
             dataPedido.setDate(dataPedido.getDate() + 35);
             const validadeStr = dataPedido.toLocaleDateString('pt-BR');
 
-            // Cupons HTML (Só gera se existir valor)
+            // Cupons HTML (SEM CÓDIGO)
             let cuponsHtml = '';
             if (gerarCuponsImpressao) {
                 cuponsHtml = `
@@ -1394,7 +1364,7 @@
                         <div style="font-size: 11px;">Olá <b>${p.cliente.nome}</b>, obrigado pela preferência!</div>
                         <div style="font-size: 12px; margin-top: 5px;">Ganhe <b>R$ ${valorDesconto},00</b> de desconto na compra da <b>${nomeCestaDesconto}</b></div>
                         <div style="font-size: 10px; margin-top: 5px;">Válido até: <b>${validadeStr}</b></div>
-                        <div style="font-size: 10px; font-weight:bold; margin-top: 2px;">COD: ${codPessoal || 'GERADO NA LOJA'}</div>
+                        <div style="font-size: 11px; font-weight:bold; margin-top: 5px;">⚠️ SOMENTE 1 CUPOM POR CESTA BÁSICA</div>
                         <div style="font-size: 9px;">(Válido p/ sua próxima compra)</div>
                     </div>
 
@@ -1404,7 +1374,7 @@
                         <div style="font-size: 11px;">Um presente especial de <b>${p.cliente.nome}</b> para você!</div>
                         <div style="font-size: 12px; margin-top: 5px;">Use este cupom para ganhar <b>R$ ${valorDesconto},00</b> de desconto na <b>${nomeCestaDesconto}</b></div>
                         <div style="font-size: 10px; margin-top: 5px;">Válido até: <b>${validadeStr}</b></div>
-                        <div style="font-size: 10px; font-weight:bold; margin-top: 2px;">COD: ${codAmigo || 'GERADO NA LOJA'}</div>
+                        <div style="font-size: 11px; font-weight:bold; margin-top: 5px;">⚠️ SOMENTE 1 CUPOM POR CESTA BÁSICA</div>
                         <div style="font-size: 9px;">(Entregue para um parente ou amigo)</div>
                     </div>
                     
