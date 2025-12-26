@@ -156,6 +156,12 @@
                         <option value="Explica">Explica</option>
                         <option value="Glossário">Glossário</option>
                         <option value="Artigo">Artigo</option>
+                        <option value="Casos">Casos</option>
+                        <option value="Questões">Questões</option>
+                        <option value="Prática">Prática</option>
+                        <option value="Majoritário">Majoritário</option>
+                        <option value="Doutrina">Doutrina</option>
+                        <option value="Correlatos">Correlatos</option>
                         <option value="Lei">Lei</option>
                         <option value="Youtube">Youtube</option>
                         <option value="Matéria">Matéria</option>
@@ -391,7 +397,8 @@
                     questoes: makeLink("Crie 5 questões objetivas de direito com gabarito sobre"),
                     pratica: makeLink("Como aplicar na prática jurídica o tema"),
                     majoritario: makeLink("Entendimentos jurisprudenciais majoritários sobre"),
-                    doutrina: makeLink("Entendimentos doutrinários divergentes e majoritários sobre")
+                    doutrina: makeLink("Entendimentos doutrinários divergentes e majoritários sobre"),
+                    correlatos: makeLink("Artigos de lei, súmulas e teses jurídicas correlatas a")
                 };
 
                 const subnotes = note.subnotes || [];
@@ -430,6 +437,7 @@
                             <a href="${links.pratica}" target="_blank" class="bg-white border border-green-200 text-green-700 px-2 py-1 rounded text-[10px] font-medium hover:bg-green-600 hover:text-white transition flex items-center gap-1"><i class="fa-solid fa-gavel"></i> Prática</a>
                             <a href="${links.majoritario}" target="_blank" class="bg-white border border-red-200 text-red-700 px-2 py-1 rounded text-[10px] font-medium hover:bg-red-600 hover:text-white transition flex items-center gap-1"><i class="fa-solid fa-scale-balanced"></i> Majoritário</a>
                             <a href="${links.doutrina}" target="_blank" class="bg-white border border-amber-200 text-amber-700 px-2 py-1 rounded text-[10px] font-medium hover:bg-amber-600 hover:text-white transition flex items-center gap-1"><i class="fa-solid fa-book-open"></i> Doutrina</a>
+                            <a href="${links.correlatos}" target="_blank" class="bg-white border border-gray-400 text-gray-700 px-2 py-1 rounded text-[10px] font-medium hover:bg-gray-600 hover:text-white transition flex items-center gap-1"><i class="fa-solid fa-link"></i> Correlatos</a>
                         </div>
                     </div>
 
