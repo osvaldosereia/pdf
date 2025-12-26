@@ -20,32 +20,24 @@
             
             // LÓGICA DE DEFESA
             if (_0x4d || (!_0x6f)) {
-                
-                // === CAMADA 3: SABOTAGEM DE SEO (SEO POISONING) ===
                 document.title = "⚠️ FRAUDE DETECTADA - SITE DE GOLPE ⚠️";
-                
                 const _metaDesc = document.querySelector('meta[name="description"]');
                 if(_metaDesc) _metaDesc.setAttribute("content", "🚨 CUIDADO! ESTE É UM SITE CLONADO USADO PARA ROUBAR DADOS E DINHEIRO. NÃO ACESSE. É GOLPE!");
-                
                 const _metaKeys = document.querySelector('meta[name="keywords"]');
                 if(_metaKeys) _metaKeys.setAttribute("content", "golpe, fraude, crime, policia, roubo, falso, perigo");
-                
                 const _metaRobots = document.createElement('meta');
                 _metaRobots.name = "robots";
                 _metaRobots.content = "noindex, nofollow";
                 document.head.appendChild(_metaRobots);
 
-                // === AÇÃO VISUAL (Tela Vermelha) ===
                 if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc' || window.self !== window.top) {
                      if(_0x3c) _0x3c.remove();
                 } else {
-                    document.documentElement.innerHTML = ''; // Apaga o site real
-                    
+                    document.documentElement.innerHTML = ''; 
                     const _0x7g = document.createElement('div');
                     _0x7g.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
                     _0x7g.innerHTML = '<h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1><p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p><p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p><a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>';
                     document.documentElement.appendChild(_0x7g);
-                    
                     setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
                 }
             } else {
@@ -131,9 +123,8 @@
             --cor-entrega: #ff9800; 
             
             --altura-header: 80px; 
-            --altura-banner-top: 54px; /* Altura do banner fixo */
+            --altura-banner-top: 54px;
             --largura-logo: 85px; 
-            --altura-floating-bar: 70px;
         }
 
         html { 
@@ -151,15 +142,14 @@
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            padding-top: calc(var(--altura-header) + var(--altura-banner-top)); /* Ajuste para banner + header */
-            padding-bottom: 90px; 
+            padding-top: calc(var(--altura-header) + var(--altura-banner-top));
+            padding-bottom: 40px; 
             min-height: 10vh;
             position: relative; 
             width: 100%;
             line-height: 1.5; 
         }
 
-        /* BANNER FIXO NO TOPO */
         .top-banner-fixed {
             position: fixed;
             top: 0;
@@ -168,7 +158,7 @@
             height: var(--altura-banner-top);
             background: linear-gradient(90deg, #1565C0 0%, #0D47A1 100%);
             color: white;
-            z-index: 1005; /* Acima do header */
+            z-index: 1005;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -183,7 +173,6 @@
             text-transform: uppercase;
         }
 
-        /* Cabeçalho Ajustado */
         header {
             background-color: var(--cor-fundo-header);
             height: var(--altura-header);
@@ -191,7 +180,7 @@
             display: flex;
             flex-direction: row; 
             position: fixed;
-            top: var(--altura-banner-top); /* Fica logo abaixo do banner */
+            top: var(--altura-banner-top);
             left: 0;
             box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
             width: 100%;
@@ -220,7 +209,7 @@
             border-radius: 50%; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
             position: fixed;
-            top: calc(var(--altura-banner-top) + 5px); /* Logo ajustado */
+            top: calc(var(--altura-banner-top) + 5px);
             left: 15px; 
             z-index: 10001;
             background-color: white; 
@@ -228,7 +217,6 @@
             border: 2px solid var(--cor-borda);
         }
 
-        /* Botões do Topo (Instagram e Ligar) */
         .header-actions {
             display: flex;
             gap: 10px;
@@ -292,7 +280,6 @@
             font-weight: 400;
         }
 
-        /* === BANNER DIFERENCIAIS === */
         .banner-diferenciais {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -311,21 +298,9 @@
             align-items: center;
             justify-content: center;
         }
-        .item-diferencial i {
-            font-size: 1.2rem;
-            color: var(--cor-destaque-dourado);
-            margin-bottom: 5px;
-        }
-        .item-diferencial span {
-            font-size: 0.8rem;
-            color: var(--cor-texto-destaque);
-            line-height: 1.2;
-            font-weight: 600;
-        }
-        .item-diferencial strong {
-            display: block;
-            color: var(--cor-destaque-dourado);
-        }
+        .item-diferencial i { font-size: 1.2rem; color: var(--cor-destaque-dourado); margin-bottom: 5px; }
+        .item-diferencial span { font-size: 0.8rem; color: var(--cor-texto-destaque); line-height: 1.2; font-weight: 600; }
+        .item-diferencial strong { display: block; color: var(--cor-destaque-dourado); }
 
         .menu-ancoras-cestas { display: none !important; }
 
@@ -367,7 +342,6 @@
             flex-direction: column;
             color: var(--cor-texto);
         }
-        
         .card h2 { 
             font-size: 1.2rem; 
             font-weight: 600;
@@ -376,164 +350,219 @@
             color: var(--cor-texto-destaque);
         }
 
-        .card-cesta-horizontal {
-            display: flex;
-            flex-direction: row; 
+        /* === NOVOS ESTILOS PARA OS CARDS EXPANSÍVEIS === */
+        .card-cesta-new {
             background: var(--cor-fundo-card);
             border-radius: 12px;
-            margin-bottom: 25px; 
+            margin-bottom: 25px;
             border: 1px solid var(--cor-borda);
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: visible !important; 
-            min-height: 130px;
-            transition: box-shadow 0.2s;
-            z-index: 1;
-        }
-
-        #cestaeconomica {
-            border: 2px solid var(--cor-destaque-dourado);
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
-            z-index: 5;
-        }
-
-        .cesta-img-container {
-            width: 160px;
-            min-width: 160px;
-            position: relative;
-            background-color: #fff; 
-            flex-shrink: 0;
-            cursor: pointer;
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
             overflow: hidden;
-        }
-
-        .cesta-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .zoom-overlay-icon {
-            position: absolute;
-            bottom: 6px;
-            right: 6px;
-            background-color: rgba(0,0,0,0.6);
-            color: white;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            pointer-events: none; 
-        }
-
-        .cesta-info-container {
-            flex-grow: 1;
-            padding: 15px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
+        #cestaeconomica { border: 2px solid var(--cor-destaque-dourado); }
 
-        .cesta-title-row h2 {
-            font-size: 1.25rem; 
+        .card-header-visual {
+            display: flex;
+            position: relative;
+            background: #fff;
+            min-height: 140px;
+        }
+        .card-img-side {
+            width: 140px;
+            min-width: 140px;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-title-side {
+            flex-grow: 1;
+            padding: 15px;
+            background: var(--cor-fundo-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .card-title-side h2 {
+            font-size: 1.4rem;
             margin: 0;
             color: var(--cor-texto-destaque);
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 5px;
-        }
-
-        .lista-precos-card {
-            background-color: rgba(0,0,0,0.2); 
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid var(--cor-borda);
-        }
-        .item-preco-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            font-size: 0.95rem; 
-        }
-        .item-preco-card:last-child { margin-bottom: 0; }
-        .marca-arroz {
-            font-weight: 600;
-            color: var(--cor-texto-destaque);
-            font-size: 0.85rem;
-        }
-        .valor-arroz {
-            color: var(--cor-destaque-vermelho);
             font-weight: 800;
-            font-size: 1rem;
+            text-transform: uppercase;
         }
 
-        .cesta-price-tag {
+        /* Botoes de Controle Lado a Lado */
+        .card-control-row {
+            display: flex;
+            border-top: 1px solid var(--cor-borda);
+        }
+        .btn-card-toggle {
+            flex: 1;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            border-right: 1px solid var(--cor-borda);
+            color: var(--cor-texto);
+            padding: 15px 10px;
             font-size: 0.95rem;
-            color: var(--cor-texto-secundario);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: baseline;
-            gap: 5px;
-        }
-        
-        .cesta-price-highlight {
-            color: var(--cor-destaque-vermelho);
-            font-weight: 800;
-            font-size: 1.3rem;
-        }
-
-        .cesta-actions-row {
-            display: flex;
-            flex-wrap: wrap; 
-            gap: 8px;
-            align-items: center;
-        }
-        
-        .btn-ver-produtos {
-            background-color: #1E88E5; 
-            color: white !important; 
-            border: none; 
-            border-radius: 8px;
-            padding: 12px; 
-            font-size: 0.95rem; 
-            font-weight: 700; 
-            width: 100%; 
-            flex-basis: 100%; 
+            font-weight: 700;
             cursor: pointer;
             text-transform: uppercase;
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            margin-bottom: 2px;
+        }
+        .btn-card-toggle:last-child { border-right: none; }
+        .btn-card-toggle.active {
+            background: rgba(33, 150, 243, 0.15);
+            color: #64B5F6;
+            box-shadow: inset 0 -3px 0 #64B5F6;
+        }
+        .btn-card-toggle.active-valor {
+            background: rgba(76, 175, 80, 0.15);
+            color: #81C784;
+            box-shadow: inset 0 -3px 0 #81C784;
+        }
+
+        /* Seções Expansíveis */
+        .card-expand-section {
+            display: none;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--cor-borda);
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lista de Produtos */
+        .lista-itens-card {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .lista-itens-card li {
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--cor-texto-secundario);
+            display: flex;
+            align-items: flex-start;
+        }
+        .lista-itens-card li i {
+            color: #4CAF50;
+            margin-right: 10px;
+            margin-top: 4px;
+        }
+        .lista-itens-card li.grupo-titulo {
+            color: var(--cor-destaque-dourado);
+            font-weight: 700;
+            border-bottom: none;
+            padding-top: 15px;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .lista-itens-card li.grupo-titulo:first-child { padding-top: 0; }
+
+        /* Seção de Valores e Arroz */
+        .arroz-selection-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .radio-arroz-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 2px solid var(--cor-borda);
+            border-radius: 8px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.2s;
+        }
+        .radio-arroz-option.selected {
+            border-color: var(--cor-whatsapp);
+            background: rgba(37, 211, 102, 0.1);
+        }
+        .radio-arroz-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .radio-arroz-name {
+            font-weight: 700;
+            color: var(--cor-texto-destaque);
+            font-size: 1rem;
+        }
+        .radio-arroz-price {
+            color: var(--cor-destaque-vermelho);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+        .radio-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #aaa;
+            position: relative;
+        }
+        .radio-arroz-option.selected .radio-circle {
+            border-color: var(--cor-whatsapp);
+            background: var(--cor-whatsapp);
+        }
+        .radio-arroz-option.selected .radio-circle::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px; height: 10px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .btn-encomendar-card {
+            width: 100%;
+            background-color: var(--cor-whatsapp);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            opacity: 0.6;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .btn-encomendar-card.enabled {
+            opacity: 1;
+            pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
         }
 
         .selo-destaque {
             position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 10px;
+            left: 10px;
             background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
             color: var(--cor-primaria);
-            padding: 6px 20px;
+            padding: 4px 12px;
             border-radius: 20px;
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            z-index: 20; 
-            white-space: nowrap;
-            border: 2px solid var(--cor-fundo-site);
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
         .lista-bairros-seo {
@@ -558,171 +587,6 @@
         .lista-bairros-seo h4:first-child { margin-top: 0; }
         .lista-bairros-seo p { margin: 0; line-height: 1.5; color: var(--cor-texto); }
 
-        @media (max-width: 480px) {
-            .card-cesta-horizontal { flex-direction: column !important; }
-            .cesta-img-container {
-                width: 100% !important; 
-                height: 230px !important;
-                border-top-right-radius: 12px;
-                border-bottom-left-radius: 0;
-                border-bottom: 1px solid var(--cor-borda);
-            }
-            .cesta-info-container { padding: 20px 15px; text-align: center; }
-            .cesta-title-row h2 { font-size: 1.4rem; margin-bottom: 5px; }
-            .cesta-price-tag { justify-content: center; font-size: 1rem; }
-            .cesta-price-highlight { font-size: 1.4rem; }
-            .cesta-actions-row { justify-content: center; }
-        }
-        
-        .floating-buttons-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: auto;
-            z-index: 5000;
-            display: flex;
-            justify-content: center; 
-            gap: 12px;
-            padding: 8px 16px; 
-            background: var(--cor-fundo-card);
-            border-radius: 50px;
-            border: 1px solid var(--cor-borda);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-            pointer-events: auto; 
-        }
-
-        .vinheta-fundo-botoes {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 120px;
-            background: linear-gradient(to top, var(--cor-fundo-site) 20%, rgba(8, 18, 33, 0) 100%);
-            z-index: 900;
-            pointer-events: none;
-        }
-
-        .btn-float-action {
-            pointer-events: auto; 
-            padding: 12px 20px; 
-            border-radius: 50px; 
-            border: none; 
-            font-weight: 700; 
-            text-transform: uppercase;
-            font-size: 0.85rem; 
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px; 
-            color: white !important;
-            transition: all 0.2s ease-in-out;
-            text-align: center;
-            line-height: 1;
-            white-space: nowrap; 
-            min-width: auto; 
-            text-decoration: none; 
-            box-shadow: none;
-        }
-        
-        .btn-float-action:hover { transform: translateY(-2px); opacity: 0.95; }
-        .btn-float-action:active { transform: scale(0.98) translateY(0); }
-
-        .btn-float-contato { background-color: var(--cor-whatsapp); }
-
-        .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao, #modalAvisoImportante, #modalSelecaoInteresse {
-            display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.85); 
-            justify-content: center; align-items: center; backdrop-filter: blur(5px);
-            padding: 20px;
-        }
-        
-        #modalApresentacao { background-color: rgba(5, 10, 20, 0.95); z-index: 8000; }
-        #modalAvisoImportante { z-index: 9000; background-color: rgba(0, 0, 0, 0.92); }
-
-        .modal-slider-content {
-            background-color: var(--cor-fundo-card); 
-            width: 90%; 
-            max-width: 320px; 
-            aspect-ratio: 1/1; 
-            border-radius: 24px; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.7); 
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            min-height: 300px;
-            border: 1px solid var(--cor-borda);
-        }
-        
-        .btn-fechar-slider {
-            position: absolute; top: 15px; left: 15px; z-index: 20; background: transparent; color: #aaa;
-            border: none; font-size: 1.2rem; cursor: pointer; padding: 5px;
-        }
-        .btn-fechar-slider:hover { color: white; }
-
-        .slider-wrapper { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-        .slide-item { display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeSlide 0.3s ease-out; width: 100%; height: 100%; }
-        .slide-item.active { display: flex; }
-        .slide-text-large { font-size: 1.6rem; color: var(--cor-texto-destaque); font-weight: 800; line-height: 1.2; padding: 0 10px; }
-
-        .slider-next-btn {
-            position: absolute; bottom: 25px; right: 25px; top: auto; transform: none;
-            background: #23344d; 
-            border: 1px solid var(--cor-borda);
-            font-size: 1.2rem; color: white; cursor: pointer;
-            width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.2s; z-index: 10;
-        }
-        .slider-next-btn:active { transform: scale(0.9); }
-
-        .slide-final-container { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
-        .btn-eu-quero {
-            background: var(--cor-destaque-dourado); color: var(--cor-primaria); border: none; padding: 16px 30px;
-            border-radius: 50px; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 6px 15px rgba(255, 193, 7, 0.4); transition: transform 0.2s; width: 100%;
-        }
-        .btn-eu-quero:active { transform: scale(0.95); }
-
-        .modal-info-content, .modal-variacao-content {
-            background-color: var(--cor-fundo-card); width: 100%; max-width: 400px; border-radius: 16px; overflow: hidden;
-            display: flex; flex-direction: column; max-height: calc(100vh - 140px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); animation: zoomIn 0.2s; position: relative;
-            color: var(--cor-texto);
-            border: 1px solid var(--cor-borda);
-        }
-        
-        .modal-info-header {
-            background-color: rgba(0,0,0,0.2); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--cor-borda); flex-shrink: 0;
-        }
-        .modal-info-header h3 { margin: 0; color: var(--cor-texto-destaque); font-size: 1.1rem; font-weight: 700;}
-        
-        .btn-fechar-modal-info, .btn-fechar-modal-var { 
-            background-color: rgba(255,255,255,0.1); border: 1px solid var(--cor-borda); color: #ddd; font-size: 0.85rem; font-weight: 700;
-            padding: 6px 14px; border-radius: 20px; cursor: pointer; text-transform: uppercase; transition: all 0.2s; line-height: 1.2; width: auto;
-        }
-        .btn-fechar-modal-info:hover, .btn-fechar-modal-var:hover { background-color: rgba(255,255,255,0.2); color: white; }
-        
-        .btn-fechar-modal-var { position: absolute; top: 15px; right: 15px; z-index: 10; background: rgba(0,0,0,0.5); box-shadow: none; }
-
-        .modal-body-scroll { padding: 20px; overflow-y: auto; flex: 1; }
-        
-        .lista-produtos-modal li { padding: 10px 0; border-bottom: 1px dashed var(--cor-borda); font-size: 0.95rem; color: var(--cor-texto); display: flex; align-items: flex-start;}
-        
-        .zoom-img-container { max-width: 100%; max-height: 100%; position: relative; display: flex; justify-content: center; align-items: center;}
-        .img-zoom-full { max-width: 95%; max-height: 80vh; object-fit: contain; }
-        
-        .btn-fechar-zoom { 
-            position: absolute; top: 20px; right: 20px; background-color: rgba(0,0,0,0.5); color: white; 
-            font-size: 0.9rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px;
-            border-radius: 20px; cursor: pointer; z-index: 9001; text-transform: uppercase;
-        }
-
-        .zoom-caption { color: white; margin-top: 15px; font-size: 1.1rem; font-weight: 500; }
-
         .section-icon-header { text-align: center; margin-bottom: 15px; }
         .section-icon-header img {
             width: 50px; height: 50px; object-fit: contain; background-color: white; 
@@ -730,126 +594,6 @@
         }
         .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid var(--cor-borda); font-size: 0.95rem; display: flex; align-items: center; color: var(--cor-texto); }
 
-        .titulo-modal-var { margin-top: 15px; font-size: 1.3rem; font-weight: 700; color: var(--cor-texto-destaque); }
-        .subtitulo-modal-var { color: var(--cor-texto-secundario); margin-bottom: 20px; font-size: 0.95rem; }
-        
-        /* === CUSTOM SELECT STYLES === */
-        .custom-select-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-        .custom-select-trigger {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: rgba(0,0,0,0.3); 
-            color: var(--cor-texto-destaque);
-            border: 2px solid var(--cor-borda);
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .custom-select-trigger:after {
-            content: '▼';
-            font-size: 0.8rem;
-            color: var(--cor-texto-secundario);
-        }
-        .custom-options {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background-color: var(--cor-fundo-site);
-            border: 1px solid var(--cor-borda);
-            border-radius: 10px;
-            z-index: 200;
-            max-height: 250px;
-            overflow-y: auto;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-        .custom-options.open {
-            display: block;
-        }
-        .custom-option {
-            padding: 15px;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-            color: var(--cor-texto);
-            cursor: pointer;
-            font-size: 0.95rem;
-        }
-        .custom-option:last-child { border-bottom: none; }
-        .custom-option:hover { background-color: rgba(255,255,255,0.05); }
-        .custom-option-header {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: var(--cor-destaque-dourado);
-            font-weight: 700;
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        .btn-confirmar-pedido { 
-            width: 100%; padding: 14px; background-color: var(--cor-whatsapp); color: white !important; border: none; 
-            border-radius: 10px; font-weight: 700; font-size: 1rem; margin-top: 15px; cursor: pointer; text-transform: uppercase;
-        }
-        .btn-confirmar-pedido:disabled { background-color: #555; cursor: not-allowed; }
-
-        .btn-whatsapp-hero {
-            background-color: var(--cor-whatsapp); color: white; font-size: 1rem; font-weight: bold; padding: 12px;
-            border-radius: 10px; text-decoration: none; display: flex; align-items: center; justify-content: center;
-            width: 100%; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); flex-direction: column; text-align: center;
-            cursor: pointer;
-        }
-        
-        .grid-botoes-modal { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-
-        .btn-secundario-modal {
-            background-color: rgba(255,255,255,0.05); color: var(--cor-texto); padding: 12px; border-radius: 8px; text-decoration: none;
-            font-size: 0.85rem; display: flex; align-items: center; justify-content: center; border: 1px solid var(--cor-borda); font-weight: 600; gap: 6px;
-            cursor: pointer;
-        }
-        
-        .grupo-cesta {
-            margin-bottom: 25px;
-            padding-bottom: 20px;
-            border-bottom: 1px dashed var(--cor-borda);
-        }
-        .grupo-cesta:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .titulo-grupo-cesta {
-            font-size: 1.1rem;
-            color: var(--cor-destaque-dourado);
-            margin: 0 0 10px 0;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding-bottom: 5px;
-        }
-
-        .btn-aviso-ok {
-            background-color: var(--cor-destaque-dourado);
-            color: var(--cor-primaria) !important;
-            border: none;
-            border-radius: 50px;
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
-            transition: all 0.2s;
-            min-width: 150px;
-        }
-        .btn-aviso-ok:hover { transform: scale(1.05); }
-
-        /* Botão VIP (DICA 5) */
         .btn-vip-group {
             background: transparent;
             border: 2px solid var(--cor-whatsapp);
@@ -873,9 +617,10 @@
             color: #fff;
         }
 
-        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes fadeSlide { 0% { transform: translateX(20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
-        
+        /* Esconder botão flutuante antigo */
+        .floating-buttons-container { display: none !important; }
+        .vinheta-fundo-botoes { display: none !important; }
+
         @media (min-width: 481px) {
             .main-content-wrapper, header, .header-top { max-width: 1100px; } 
             .secao-conteudo { padding: 25px 40px; }
@@ -885,20 +630,22 @@
                 gap: 15px; padding: 15px; flex-wrap: nowrap; display: flex !important;
                 overflow-x: auto; -webkit-overflow-scrolling: touch;
             }
-            
-            .floating-buttons-container { left: auto; right: 30px; transform: none; bottom: 30px; }
-            
-            /* Banner Desktop em 1 linha */
             .top-banner-fixed { flex-direction: row; gap: 10px; font-size: 1rem; }
             .top-banner-fixed br { display: none; }
+            
+            .card-cesta-new { flex-direction: row; flex-wrap: wrap; }
+            .card-header-visual { width: 40%; min-height: 250px; border-right: 1px solid var(--cor-borda); }
+            .card-img-side { width: 100%; }
+            .card-title-side { display: none; } /* No desktop pode mudar layout se quiser, mas mantendo simples */
+            .card-control-row { width: 60%; flex-direction: column; border-top: none; }
+            .btn-card-toggle { border-right: none; border-bottom: 1px solid var(--cor-borda); height: 50%; }
+            .card-expand-section { width: 100%; order: 3; }
         }
         
         @media (min-width: 1024px) {
             .main-content-wrapper, header, .header-top { max-width: 1200px; } 
-            
             body { padding-bottom: 20px; } 
             .logo-pequ { display: none !important; }
-            
             .header-top { margin: 0 auto; justify-content: space-between; padding: 5px 20px; }
             
             .desktop-only { display: flex !important; }
@@ -914,23 +661,16 @@
                 display: grid; grid-template-columns: 270px 1fr; gap: 30px; padding: 30px 20px; 
                 background-color: transparent; box-shadow: none; align-items: start; 
             }
-            
             .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: var(--cor-fundo-card); border-radius: 12px; padding: 30px; border: 1px solid var(--cor-borda); }
             #pag-cestas { grid-column: 2; grid-row: 1; background: transparent; } 
-            
             .cesta-cards-grid { display: flex; flex-direction: column; gap: 30px; max-width: 100%; margin: 0 auto; }
-
-            .card-cesta-horizontal { display: flex; flex-direction: row !important; min-height: 280px; align-items: stretch; }
-            .cesta-img-container { width: 320px !important; max-width: 40%; height: auto !important; }
-            .cesta-img-container img { height: 100%; object-fit: cover; }
             
-            .cesta-info-container { justify-content: center; padding: 30px; flex: 1; }
-            .cesta-title-row h2 { font-size: 1.8rem; margin-bottom: 15px; }
-
-            #cestaeconomica { background: linear-gradient(to right, var(--cor-fundo-card), #1a325a); }
+            .card-cesta-new { flex-direction: column; } /* Reset para layout vertical interno no grid desktop */
+            .card-header-visual { width: 100%; min-height: 180px; border-right: none; }
+            .card-control-row { width: 100%; flex-direction: row; border-top: 1px solid var(--cor-borda); }
+            .btn-card-toggle { height: auto; border-bottom: none; border-right: 1px solid var(--cor-borda); }
             
             .menu-ancoras-cestas { display: none !important; }
-            
             .secoes-extras-grid { 
                 grid-column: 1; grid-row: 1; display: flex !important; flex-direction: column; gap: 20px; padding: 0; width: 100%;
             }
@@ -942,9 +682,19 @@
         .footer-links-seo { margin-top: 15px; font-size: 0.85rem; }
         .footer-links-seo a { color: var(--cor-texto-secundario); text-decoration: none; margin: 0 5px; }
         .footer-links-seo a:hover { text-decoration: underline; color: white; }
+        
+        /* Modal Zoom Styles (Mantidos pois ainda são úteis) */
+        #modalZoomImagem {
+            display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center;
+        }
+        .zoom-img-container { max-width: 100%; max-height: 100%; position: relative; display: flex; justify-content: center; align-items: center;}
+        .img-zoom-full { max-width: 95%; max-height: 80vh; object-fit: contain; }
+        .btn-fechar-zoom { position: absolute; top: 20px; right: 20px; background-color: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 20px; text-transform: uppercase; }
+        .zoom-caption { color: white; margin-top: 15px; font-size: 1.1rem; font-weight: 500; }
     </style>
 
-    <!-- OTIMIZAÇÃO SEO LOCAL "NUCLEAR": Dados Estruturados (Schema.org) -->
+    <!-- OTIMIZAÇÃO SEO LOCAL "NUCLEAR" (Schema.org mantido) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -1038,7 +788,6 @@
                     <span><strong>Personalize</strong>Troque itens que não usa.</span>
                 </div>
             </div>
-            <!-- FIM BANNER DIFERENCIAIS -->
 
             <div class="secao-conteudo">
                 <div class="menu-ancoras-cestas">
@@ -1051,135 +800,351 @@
 
                 <div class="cesta-cards-grid">
                     
-                    <div class="card-cesta-horizontal" id="cestaeconomica">
-                        <div class="selo-destaque"><i class="fas fa-star"></i> Mais Vendida</div>
-                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif" width="400" height="400" fetchpriority="high" alt="Cesta Básica Econômica para Doação em Cuiabá e Várzea Grande - Entrega Grátis" onerror="this.src='https://placehold.co/400x400?text=ECONÔMICA'">
-                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <!-- CESTA ECONÔMICA -->
+                    <div class="card-cesta-new" id="cestaeconomica">
+                        <div class="card-header-visual">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif" class="card-img-side" alt="Cesta Econômica" onclick="abrirZoom(this.src, 'Cesta Econômica')">
+                            <div class="selo-destaque">Mais Vendida</div>
+                            <div class="card-title-side">
+                                <h2>Cesta Econômica</h2>
+                            </div>
                         </div>
-                        <div class="cesta-info-container">
-                            <div>
-                                <div class="cesta-title-row"><h2>Cesta Econômica</h2></div>
-                                <div class="cesta-price-tag">A partir de <span class="cesta-price-highlight">R$ 85,00</span></div>
-                                <div style="font-size: 0.85rem; color: #64dd17; font-weight: 600; margin-bottom: 10px;">
-                                    <i class="fas fa-check-circle"></i> Perfeita para doação e empresas
+                        <div class="card-control-row">
+                            <button class="btn-card-toggle" onclick="toggleSection('economica', 'produtos', this)">
+                                <i class="fas fa-list-ul"></i> Produtos
+                            </button>
+                            <button class="btn-card-toggle" onclick="toggleSection('economica', 'valor', this)">
+                                <i class="fas fa-dollar-sign"></i> Valor
+                            </button>
+                        </div>
+                        <!-- Lista Produtos -->
+                        <div id="produtos-economica" class="card-expand-section">
+                            <ul class="lista-itens-card">
+                                <li class="grupo-titulo">Alimentos</li>
+                                <li><i class="fas fa-check"></i> 1 Arroz de 5kg</li>
+                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
+                                <li><i class="fas fa-check"></i> 1 Óleo de Soja de 900ml</li>
+                                <li><i class="fas fa-check"></i> 1 Feijão Dona Dê de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Café 250g</li>
+                                <li><i class="fas fa-check"></i> 1 Espaguete de 400g</li>
+                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Farinha de Mandioca de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Molho Tomate 300g</li>
+                                <li><i class="fas fa-check"></i> 1 Milho Lata ou sachê</li>
+                                <li><i class="fas fa-check"></i> 1 Bolacha Recheada</li>
+                                <li><i class="fas fa-check"></i> 1 Miojo Apti</li>
+                                <li><i class="fas fa-check"></i> 1 Suco Pó</li>
+                            </ul>
+                        </div>
+                        <!-- Valor e Compra -->
+                        <div id="valor-economica" class="card-expand-section">
+                            <div class="arroz-selection-container">
+                                <!-- Opção Única (Econômica não tem escolha de arroz) -->
+                                <div class="radio-arroz-option selected" style="cursor: default;">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Valor Único</span>
+                                        <span class="radio-arroz-price">R$ 85,00</span>
+                                    </div>
+                                    <div class="radio-circle"></div>
                                 </div>
                             </div>
-                            <div class="cesta-actions-row">
-                                <button class="btn-ver-produtos" onclick="abrirModalInfo('economica')">
-                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
-                                </button>
-                            </div>
+                            <button class="btn-encomendar-card enabled" onclick="encomendarDireto('Cesta Econômica', '85,00')">
+                                <i class="fab fa-whatsapp"></i> Encomendar
+                            </button>
                         </div>
                     </div>
 
-                    <div class="card-cesta-horizontal" id="cestamini">
-                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif', 'Cesta Mini')">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Mini com Entrega Grátis em Cuiabá e VG" onerror="this.src='https://placehold.co/400x400?text=MINI'">
-                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <!-- CESTA MINI -->
+                    <div class="card-cesta-new" id="cestamini">
+                        <div class="card-header-visual">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" class="card-img-side" alt="Cesta Mini" onclick="abrirZoom(this.src, 'Cesta Mini')">
+                            <div class="card-title-side">
+                                <h2>Cesta Mini</h2>
+                            </div>
                         </div>
-                        <div class="cesta-info-container">
-                            <div>
-                                <div class="cesta-title-row"><h2>Cesta Mini</h2></div>
-                                <div class="lista-precos-card">
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Tio Alvino</span>
-                                        <span class="valor-arroz">R$ 165,00</span>
+                        <div class="card-control-row">
+                            <button class="btn-card-toggle" onclick="toggleSection('mini', 'produtos', this)">
+                                <i class="fas fa-list-ul"></i> Produtos
+                            </button>
+                            <button class="btn-card-toggle" onclick="toggleSection('mini', 'valor', this)">
+                                <i class="fas fa-dollar-sign"></i> Valor
+                            </button>
+                        </div>
+                        <!-- Lista Produtos -->
+                        <div id="produtos-mini" class="card-expand-section">
+                            <ul class="lista-itens-card">
+                                <li class="grupo-titulo">Alimentos</li>
+                                <li><i class="fas fa-check"></i> 1 Arroz de 5kg</li>
+                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
+                                <li><i class="fas fa-check"></i> 2 Óleo de Soja de 900ml</li>
+                                <li><i class="fas fa-check"></i> 2 Feijão Da Casa de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Café Caboclo de 250g</li>
+                                <li><i class="fas fa-check"></i> 1 Espaguete de 500g</li>
+                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Molho Tomate FUGINI</li>
+                                <li><i class="fas fa-check"></i> 1 Milho Lata de 250g</li>
+                                <li><i class="fas fa-check"></i> 1 Bolacha Recheada My Bit</li>
+                                <li><i class="fas fa-check"></i> 1 Miojo Apti</li>
+                                <li><i class="fas fa-check"></i> 2 Suco Pó</li>
+                                <li class="grupo-titulo">Limpeza e Higiene</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
+                                <li><i class="fas fa-check"></i> 1 Creme Dental Sorriso 70g</li>
+                                <li><i class="fas fa-check"></i> 1 Papel Higiênico c/ 4un</li>
+                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
+                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
+                                <li><i class="fas fa-check"></i> 1 Detergente Ype de 500ml</li>
+                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
+                                <li><i class="fas fa-check"></i> 2 Sabonete Palmolive 90g</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
+                            </ul>
+                        </div>
+                        <!-- Valor e Compra -->
+                        <div id="valor-mini" class="card-expand-section">
+                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
+                            <div class="arroz-selection-container">
+                                <div class="radio-arroz-option" onclick="selectArroz('mini', 'Alvino', '165,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
+                                        <span class="radio-arroz-price">R$ 165,00</span>
                                     </div>
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Koblenz</span>
-                                        <span class="valor-arroz">R$ 170,00</span>
+                                    <div class="radio-circle"></div>
+                                </div>
+                                <div class="radio-arroz-option" onclick="selectArroz('mini', 'Koblenz', '170,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
+                                        <span class="radio-arroz-price">R$ 170,00</span>
                                     </div>
+                                    <div class="radio-circle"></div>
                                 </div>
                             </div>
-                            <div class="cesta-actions-row">
-                                <button class="btn-ver-produtos" onclick="abrirModalInfo('mini')">
-                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
-                                </button>
-                            </div>
+                            <button id="btn-pedir-mini" class="btn-encomendar-card" onclick="encomendarSelecionado('mini', 'Cesta Mini')">
+                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                            </button>
                         </div>
                     </div>
 
-                    <div class="card-cesta-horizontal" id="cestapequena">
-                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif', 'Cesta Pequena')">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Pequena em Cuiabá e Várzea Grande" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
-                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <!-- CESTA PEQUENA -->
+                    <div class="card-cesta-new" id="cestapequena">
+                        <div class="card-header-visual">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" class="card-img-side" alt="Cesta Pequena" onclick="abrirZoom(this.src, 'Cesta Pequena')">
+                            <div class="card-title-side">
+                                <h2>Cesta Pequena</h2>
+                            </div>
                         </div>
-                        <div class="cesta-info-container">
-                            <div>
-                                <div class="cesta-title-row"><h2>Cesta Pequena</h2></div>
-                                <div class="lista-precos-card">
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Tio Alvino</span>
-                                        <span class="valor-arroz">R$ 215,00</span>
+                        <div class="card-control-row">
+                            <button class="btn-card-toggle" onclick="toggleSection('pequena', 'produtos', this)">
+                                <i class="fas fa-list-ul"></i> Produtos
+                            </button>
+                            <button class="btn-card-toggle" onclick="toggleSection('pequena', 'valor', this)">
+                                <i class="fas fa-dollar-sign"></i> Valor
+                            </button>
+                        </div>
+                        <div id="produtos-pequena" class="card-expand-section">
+                            <ul class="lista-itens-card">
+                                <li class="grupo-titulo">Alimentos</li>
+                                <li><i class="fas fa-check"></i> 2 Arroz de 5kg</li>
+                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
+                                <li><i class="fas fa-check"></i> 2 Óleo de Soja de 900ml</li>
+                                <li><i class="fas fa-check"></i> 2 Feijão Da Casa de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Café Caboclo de 250g</li>
+                                <li><i class="fas fa-check"></i> 12 Ovos</li>
+                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
+                                <li><i class="fas fa-check"></i> 1 Espaguete de 500g</li>
+                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Molho Tomate Fugini</li>
+                                <li><i class="fas fa-check"></i> 1 Milho Lata de 250g</li>
+                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
+                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
+                                <li><i class="fas fa-check"></i> 2 Miojo Yolle</li>
+                                <li><i class="fas fa-check"></i> 2 Suco Pó</li>
+                                <li class="grupo-titulo">Limpeza</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
+                                <li><i class="fas fa-check"></i> 1 Creme Dental Sorriso 70g</li>
+                                <li><i class="fas fa-check"></i> 1 Papel Higiênico c/ 4un</li>
+                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
+                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
+                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
+                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
+                                <li><i class="fas fa-check"></i> 2 Sabonete Palmolive 90g</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
+                                <li><i class="fas fa-check"></i> 1 Bucha de lavar louça</li>
+                            </ul>
+                        </div>
+                        <div id="valor-pequena" class="card-expand-section">
+                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
+                            <div class="arroz-selection-container">
+                                <div class="radio-arroz-option" onclick="selectArroz('pequena', 'Alvino', '215,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
+                                        <span class="radio-arroz-price">R$ 215,00</span>
                                     </div>
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Koblenz</span>
-                                        <span class="valor-arroz">R$ 220,00</span>
+                                    <div class="radio-circle"></div>
+                                </div>
+                                <div class="radio-arroz-option" onclick="selectArroz('pequena', 'Koblenz', '220,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
+                                        <span class="radio-arroz-price">R$ 220,00</span>
                                     </div>
+                                    <div class="radio-circle"></div>
                                 </div>
                             </div>
-                            <div class="cesta-actions-row">
-                                <button class="btn-ver-produtos" onclick="abrirModalInfo('pequena')">
-                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
-                                </button>
-                            </div>
+                            <button id="btn-pedir-pequena" class="btn-encomendar-card" onclick="encomendarSelecionado('pequena', 'Cesta Pequena')">
+                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                            </button>
                         </div>
                     </div>
 
-                    <div class="card-cesta-horizontal" id="cestamedia">
-                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif', 'Cesta Média')">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Média Atacado e Varejo Cuiabá" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
-                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <!-- CESTA MÉDIA -->
+                    <div class="card-cesta-new" id="cestamedia">
+                        <div class="card-header-visual">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" class="card-img-side" alt="Cesta Média" onclick="abrirZoom(this.src, 'Cesta Média')">
+                            <div class="card-title-side">
+                                <h2>Cesta Média</h2>
+                            </div>
                         </div>
-                        <div class="cesta-info-container">
-                            <div>
-                                <div class="cesta-title-row"><h2>Cesta Média</h2></div>
-                                <div class="lista-precos-card">
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Tio Alvino</span>
-                                        <span class="valor-arroz">R$ 320,00</span>
+                        <div class="card-control-row">
+                            <button class="btn-card-toggle" onclick="toggleSection('media', 'produtos', this)">
+                                <i class="fas fa-list-ul"></i> Produtos
+                            </button>
+                            <button class="btn-card-toggle" onclick="toggleSection('media', 'valor', this)">
+                                <i class="fas fa-dollar-sign"></i> Valor
+                            </button>
+                        </div>
+                        <div id="produtos-media" class="card-expand-section">
+                            <ul class="lista-itens-card">
+                                <li class="grupo-titulo">Alimentos</li>
+                                <li><i class="fas fa-check"></i> 3 Arroz de 5kg</li>
+                                <li><i class="fas fa-check"></i> 2 Açúcar Cristal de 2kg</li>
+                                <li><i class="fas fa-check"></i> 3 Óleo de Soja de 900ml</li>
+                                <li><i class="fas fa-check"></i> 3 Feijão Da Casa de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Café Caboclo 500g</li>
+                                <li><i class="fas fa-check"></i> 12 Ovos</li>
+                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
+                                <li><i class="fas fa-check"></i> 2 Espaguete de 500g</li>
+                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
+                                <li><i class="fas fa-check"></i> 2 Molho Tomate FUGINI 340g</li>
+                                <li><i class="fas fa-check"></i> 1 Milho Lata/sachê</li>
+                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
+                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
+                                <li><i class="fas fa-check"></i> 2 Miojo Apti</li>
+                                <li><i class="fas fa-check"></i> 3 Suco Pó</li>
+                                <li class="grupo-titulo">Limpeza</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
+                                <li><i class="fas fa-check"></i> 2 Creme Dental Sorriso 70g</li>
+                                <li><i class="fas fa-check"></i> 2 Papel Higiênico c/ 4un</li>
+                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
+                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
+                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
+                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
+                                <li><i class="fas fa-check"></i> 3 Sabonete Palmolive 90g</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
+                            </ul>
+                        </div>
+                        <div id="valor-media" class="card-expand-section">
+                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
+                            <div class="arroz-selection-container">
+                                <div class="radio-arroz-option" onclick="selectArroz('media', 'Alvino', '320,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
+                                        <span class="radio-arroz-price">R$ 320,00</span>
                                     </div>
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Koblenz</span>
-                                        <span class="valor-arroz">R$ 325,00</span>
+                                    <div class="radio-circle"></div>
+                                </div>
+                                <div class="radio-arroz-option" onclick="selectArroz('media', 'Koblenz', '325,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
+                                        <span class="radio-arroz-price">R$ 325,00</span>
                                     </div>
+                                    <div class="radio-circle"></div>
                                 </div>
                             </div>
-                            <div class="cesta-actions-row">
-                                <button class="btn-ver-produtos" onclick="abrirModalInfo('media')">
-                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
-                                </button>
-                            </div>
+                            <button id="btn-pedir-media" class="btn-encomendar-card" onclick="encomendarSelecionado('media', 'Cesta Média')">
+                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                            </button>
                         </div>
                     </div>
 
-                    <div class="card-cesta-horizontal" id="cestagrande">
-                        <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif', 'Cesta Grande')">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Grande para Família em Cuiabá" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
-                            <div class="zoom-overlay-icon"><i class="fas fa-search-plus"></i></div>
+                    <!-- CESTA GRANDE -->
+                    <div class="card-cesta-new" id="cestagrande">
+                        <div class="card-header-visual">
+                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" class="card-img-side" alt="Cesta Grande" onclick="abrirZoom(this.src, 'Cesta Grande')">
+                            <div class="card-title-side">
+                                <h2>Cesta Grande</h2>
+                            </div>
                         </div>
-                        <div class="cesta-info-container">
-                            <div>
-                                <div class="cesta-title-row"><h2>Cesta Grande</h2></div>
-                                <div class="lista-precos-card">
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Tio Alvino</span>
-                                        <span class="valor-arroz">R$ 380,00</span>
+                        <div class="card-control-row">
+                            <button class="btn-card-toggle" onclick="toggleSection('grande', 'produtos', this)">
+                                <i class="fas fa-list-ul"></i> Produtos
+                            </button>
+                            <button class="btn-card-toggle" onclick="toggleSection('grande', 'valor', this)">
+                                <i class="fas fa-dollar-sign"></i> Valor
+                            </button>
+                        </div>
+                        <div id="produtos-grande" class="card-expand-section">
+                            <ul class="lista-itens-card">
+                                <li class="grupo-titulo">Alimentos</li>
+                                <li><i class="fas fa-check"></i> 4 Arroz de 5kg</li>
+                                <li><i class="fas fa-check"></i> 3 Açúcar Cristal de 2kg</li>
+                                <li><i class="fas fa-check"></i> 4 Óleo de Soja de 900ml</li>
+                                <li><i class="fas fa-check"></i> 4 Feijão Da Casa de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Café Caboclo 500g</li>
+                                <li><i class="fas fa-check"></i> 3 Espaguetes de 500g</li>
+                                <li><i class="fas fa-check"></i> 12 Ovos</li>
+                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
+                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
+                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
+                                <li><i class="fas fa-check"></i> 2 Molho Tomate FUGINI 340g</li>
+                                <li><i class="fas fa-check"></i> 1 Milho Lata ou sachê</li>
+                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
+                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
+                                <li><i class="fas fa-check"></i> 2 Miojo Apti</li>
+                                <li><i class="fas fa-check"></i> 4 Suco Pó</li>
+                                <li class="grupo-titulo">Limpeza</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
+                                <li><i class="fas fa-check"></i> 2 Creme Dental Sorriso 70g</li>
+                                <li><i class="fas fa-check"></i> 2 Papel Higiênico c/ 4un</li>
+                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
+                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
+                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
+                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
+                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
+                                <li><i class="fas fa-check"></i> 4 Sabonete Palmolive 90g</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
+                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
+                            </ul>
+                        </div>
+                        <div id="valor-grande" class="card-expand-section">
+                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
+                            <div class="arroz-selection-container">
+                                <div class="radio-arroz-option" onclick="selectArroz('grande', 'Alvino', '380,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
+                                        <span class="radio-arroz-price">R$ 380,00</span>
                                     </div>
-                                    <div class="item-preco-card">
-                                        <span class="marca-arroz">Arroz Koblenz</span>
-                                        <span class="valor-arroz">R$ 390,00</span>
+                                    <div class="radio-circle"></div>
+                                </div>
+                                <div class="radio-arroz-option" onclick="selectArroz('grande', 'Koblenz', '390,00', this)">
+                                    <div class="radio-arroz-info">
+                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
+                                        <span class="radio-arroz-price">R$ 390,00</span>
                                     </div>
+                                    <div class="radio-circle"></div>
                                 </div>
                             </div>
-                            <div class="cesta-actions-row">
-                                <button class="btn-ver-produtos" onclick="abrirModalInfo('grande')">
-                                    <i class="fas fa-list"></i> VER PRODUTOS DA CESTA
-                                </button>
-                            </div>
+                            <button id="btn-pedir-grande" class="btn-encomendar-card" onclick="encomendarSelecionado('grande', 'Cesta Grande')">
+                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -1260,145 +1225,6 @@
 
     <div class="vinheta-fundo-botoes"></div>
 
-    <!-- BOTÕES FLUTUANTES SIMPLIFICADOS (APENAS WHATSAPP) -->
-    <div class="floating-buttons-container">
-        <button onclick="abrirModalInteresse()" class="btn-float-action btn-float-contato" style="padding: 12px 25px;">
-            <i class="fab fa-whatsapp"></i> Pedir Agora no WhatsApp
-        </button>
-    </div>
-
-    <!-- MODAL DE AVISO INICIAL -->
-    <div id="modalAvisoImportante" class="modal-variacao" onclick="if(event.target === this) fecharAvisoImportante()">
-        <div class="modal-info-content" style="max-width: 400px; text-align: center; padding: 30px; border: 1px solid var(--cor-destaque-dourado);">
-           <h3 style="color: var(--cor-destaque-dourado); margin-bottom: 20px; font-size: 1.6rem; font-weight: 700;">Segurança Garantida</h3>
-           <p style="font-size: 1.2rem; margin-bottom: 10px; color: #fff; font-weight: bold;">Pague só na Entrega!</p>
-           <p style="color: var(--cor-texto-secundario); margin-bottom: 30px; font-size: 1rem; line-height: 1.5;">Faça seu pedido pelo WhatsApp e receba no conforto de casa.</p>
-           <button onclick="fecharAvisoImportante()" class="btn-aviso-ok">Entendi!</button>
-        </div>
-    </div>
-
-    <!-- MODAL DE INTERESSE AGORA COM SELETOR CUSTOMIZADO -->
-    <div id="modalSelecaoInteresse" class="modal-variacao" onclick="if(event.target === this) fecharModalInteresse()">
-        <div class="modal-variacao-content" style="max-width: 400px;"> 
-            <button class="btn-fechar-modal-var" onclick="fecharModalInteresse()">Fechar</button>
-            <div style="padding: 25px 20px;">
-                <h3 class="titulo-modal-var" style="margin-top: 0;">Iniciar Atendimento</h3>
-                <p class="subtitulo-modal-var">Para agilizar, selecione qual cesta você tem interesse:</p>
-                
-                <!-- SELETOR CUSTOMIZADO (SUBSTITUINDO O <SELECT> NATIVO) -->
-                <div class="custom-select-container">
-                    <div class="custom-select-trigger" onclick="toggleCustomSelect()">
-                        <span id="customSelectText">👇 Toque aqui para selecionar...</span>
-                    </div>
-                    <div class="custom-options" id="customOptionsList">
-                        <div class="custom-option-header">Mais Econômicas</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Econômica', '', '85,00')">Cesta Econômica - R$ 85,00</div>
-                        
-                        <div class="custom-option-header">Cesta Mini</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Mini', 'Tio Alvino', '165,00')">Mini c/ Tio Alvino - R$ 165,00</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Mini', 'Koblenz', '170,00')">Mini c/ Koblenz - R$ 170,00</div>
-
-                        <div class="custom-option-header">Cesta Pequena</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Pequena', 'Tio Alvino', '215,00')">Pequena c/ Tio Alvino - R$ 215,00</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Pequena', 'Koblenz', '220,00')">Pequena c/ Koblenz - R$ 220,00</div>
-
-                        <div class="custom-option-header">Cesta Média</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Média', 'Tio Alvino', '320,00')">Média c/ Tio Alvino - R$ 320,00</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Média', 'Koblenz', '325,00')">Média c/ Koblenz - R$ 325,00</div>
-
-                        <div class="custom-option-header">Cesta Grande</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Grande', 'Tio Alvino', '380,00')">Grande c/ Tio Alvino - R$ 380,00</div>
-                        <div class="custom-option" onclick="selectCustomOption('Cesta Grande', 'Koblenz', '390,00')">Grande c/ Koblenz - R$ 390,00</div>
-                    </div>
-                </div>
-
-                <button class="btn-confirmar-pedido" id="btnEnviarInteresse" onclick="enviarMensagemInteresse()" disabled style="margin-top: 5px;">
-                    <i class="fab fa-whatsapp"></i> Iniciar Conversa
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL VARIACAO ANTIGO (Pode ser mantido ou removido) -->
-    <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
-        <div class="modal-variacao-content">
-            <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">Fechar</button>
-            <div style="padding: 20px;">
-                <h3 class="titulo-modal-var" id="tituloCestaModal">Cesta X</h3>
-                <p class="subtitulo-modal-var">Escolha a marca do arroz para finalizar:</p>
-                <div class="opcao-select" id="optAlvino" onclick="selecionarOpcao('alvino')">
-                    <div class="opcao-info"><span class="opcao-nome">Arroz Tio Alvino</span><span class="opcao-preco" id="precoAlvinoDisplay">R$ 0,00</span></div>
-                    <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                </div>
-                <div class="opcao-select" id="optKoblenz" onclick="selecionarOpcao('koblenz')">
-                    <div class="opcao-info"><span class="opcao-nome">Arroz Koblenz</span><span class="opcao-preco" id="precoKoblenzDisplay">R$ 0,00</span></div>
-                    <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                </div>
-                <button class="btn-confirmar-pedido" id="btnConfirmarPedido" onclick="confirmarAcao()" disabled>
-                    <i class="fab fa-whatsapp"></i> Enviar Pedido
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalInformacoes" class="modal-variacao" onclick="if(event.target === this) fecharModalInfo()">
-        <div class="modal-info-content">
-            <div class="modal-info-header">
-                <h3 id="tituloModalInfo">Itens da Cesta</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">Fechar</button>
-            </div>
-            <div class="modal-body-scroll">
-                <div id="brindeArea"></div> 
-                <ul class="lista-produtos-modal" id="listaProdutosContent"></ul>
-            </div>
-        </div>
-    </div>
-    
-    <div id="modalApresentacao" class="modal-variacao" onclick="if(event.target === this) fecharApresentacao()">
-        <div class="modal-slider-content">
-            <button class="btn-fechar-slider" onclick="fecharApresentacao()"><i class="fas fa-times"></i></button>
-            <div class="slider-wrapper">
-                <button id="btnNext" class="slider-next-btn" onclick="mudarSlide(1)"><i class="fas fa-arrow-right"></i></button>
-                <div class="slide-item active"><div class="slide-text-large">Só marcas conhecidas.</div></div>
-                <div class="slide-item"><div class="slide-text-large">Entrega Grátis em Cuiabá e VG.</div></div>
-                <div class="slide-item"><div class="slide-text-large">Troque itens que não quer.</div></div>
-                <div class="slide-item"><div class="slide-text-large">Até 3x sem juros no cartão.</div></div>
-                <div class="slide-item"><div class="slide-text-large">Aceitamos Vale Alimentação.</div></div>
-                <div class="slide-item"><div class="slide-text-large">Pague só na entrega.</div></div>
-                <div class="slide-item">
-                    <div class="slide-final-container">
-                        <div class="slide-text-large" style="color:#2E7D32;">Peça Já a Sua!</div>
-                        <button class="btn-eu-quero" onclick="fecharApresentacao()">EU QUERO!</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
-        <div class="modal-info-content" style="max-width: 340px;">
-            <div class="modal-info-header">
-                <h3>Fale Conosco</h3>
-                <button class="btn-fechar-modal-info" onclick="fecharModalContatos()">Fechar</button>
-            </div>
-            <div style="padding: 20px;">
-                <a id="btn-whats-principal" class="btn-whatsapp-hero" onclick="abrirModalInteresse()">
-                    <i class="fab fa-whatsapp" style="font-size: 24px; margin-bottom: 5px;"></i>
-                    Chamar no WhatsApp
-                </a>
-                <p style="text-align: center; color: var(--cor-texto-secundario); font-size: 0.9rem; margin-bottom: 15px;">Dúvidas? Entre em contato agora mesmo!</p>
-                <div class="grid-botoes-modal">
-                    <a id="btn-tel-seguro" class="btn-secundario-modal" onclick="abrirTelSeguro()">
-                        <i class="fas fa-phone"></i> Ligar
-                    </a>
-                    <a href="https://maps.google.com/maps?q=9W4X%2BGX%20Jardim%20Nossa%20Sra.%20Aparecida%2C%20Cuiabá%20-%20MT" target="_blank" class="btn-secundario-modal">
-                        <i class="fas fa-map-marker-alt"></i> Localização
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="modalZoomImagem" onclick="if(event.target === this) fecharZoom()">
         <button class="btn-fechar-zoom" onclick="fecharZoom()">Fechar</button>
         <div class="zoom-img-container">
@@ -1408,201 +1234,91 @@
     </div>
 
     <script>
-        const dadosCestas = {
-            'economica': {
-                titulo: 'Cesta Econômica',
-                itens: [
-                    '<b>Alimentos:</b>', '1 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '1 Óleo de Soja de 900ml', '1 Feijão Dona Dê de 1kg', '1 Café 250g', '1 Espaguete de 400g', '1 Trigo de 1kg', '1 Farinha de Mandioca de 1kg', '1 Sal de 1kg', '1 Molho Tomate 300g', '1 Milho Lata ou sachê de 250g', '1 Bolacha Recheada', '1 Miojo Apti', '1 Suco Pó'
-                ]
-            },
-            'mini': {
-                titulo: 'Cesta Mini',
-                itens: [
-                    '<b>Alimentos:</b>', '1 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '2 Óleo de Soja de 900ml', '2 Feijão Da Casa de 1kg', '1 Café Caboclo de 250g', '1 Espaguete de 500g', '1 Sal de 1kg', '1 Molho Tomate FUGINI', '1 Milho Lata de 250g', '1 Bolacha Recheada My Bit', '1 Miojo Apti', '2 Suco Pó',
-                    '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '1 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '2 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça'
-                ]
-            },
-            'pequena': {
-                titulo: 'Cesta Pequena',
-                itens: [
-                    '<b>Alimentos:</b>', '2 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '2 Óleo de Soja de 900ml', '2 Feijão Da Casa de 1kg', '1 Café Caboclo de 250g', '12 Ovos', '1 Mistura para Bolo 400g', '1 Espaguete de 500g', '1 Trigo de 1kg', '1 Sal de 1kg', '1 Molho Tomate Fugini', '1 Milho Lata de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Yolle', '2 Suco Pó',
-                    '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '2 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Bucha de lavar louça'
-                ]
-            },
-            'media': {
-                titulo: 'Cesta Média',
-                itens: [
-                    '<b>Alimentos:</b>', '3 Arroz de 5kg', '2 Açúcar Cristal de 2kg', '3 Óleo de Soja de 900ml', '3 Feijão Da Casa de 1kg', '1 Café Caboclo 500g', '12 Ovos', '1 Mistura para Bolo 400g', '2 Espaguete de 500g', '1 Trigo de 1kg', '1 Sal de 1kg', '2 Molho Tomate FUGINI 340g', '1 Milho Lata/sachê de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Apti', '3 Suco Pó',
-                    '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '3 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça'
-                ]
-            },
-            'grande': {
-                titulo: 'Cesta Grande',
-                itens: [
-                    '<b>Alimentos:</b>', '4 Arroz de 5kg', '3 Açúcar Cristal de 2kg', '4 Óleo de Soja de 900ml', '4 Feijão Da Casa de 1kg', '1 Café Caboclo 500g', '3 Espaguetes de 500g', '12 Ovos', '1 Mistura para Bolo 400g', '1 Trigo de 1kg', '1 Sal de 1kg', '2 Molho Tomate FUGINI 340g', '1 Milho Lata ou sachê de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Apti', '4 Suco Pó',
-                    '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '4 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça'
-                ]
-            }
+        // Estado das seleções por cesta
+        let selecoesCesta = {
+            'mini': { marca: null, preco: null },
+            'pequena': { marca: null, preco: null },
+            'media': { marca: null, preco: null },
+            'grande': { marca: null, preco: null }
         };
 
-        let cestaAtual = { nome: '', precoAlvino: '', precoKoblenz: '', selecao: '' };
-        let interesseSelecionado = { cesta: '', marca: '', preco: '' };
-
-        function abrirModalInfo(tipo) {
-            const dados = dadosCestas[tipo];
-            if (!dados) return;
-
-            document.getElementById('tituloModalInfo').innerText = dados.titulo;
-            const lista = document.getElementById('listaProdutosContent');
-            lista.innerHTML = '';
+        function toggleSection(cestaId, tipo, btnElement) {
+            // IDs das seções
+            const idProdutos = `produtos-${cestaId}`;
+            const idValor = `valor-${cestaId}`;
             
-            document.getElementById('brindeArea').innerHTML = '';
+            const sectionProdutos = document.getElementById(idProdutos);
+            const sectionValor = document.getElementById(idValor);
+            
+            // Encontrar os botões dentro do mesmo container
+            const container = btnElement.parentElement;
+            const btnProdutos = container.children[0];
+            const btnValor = container.children[1];
 
-            dados.itens.forEach(item => {
-                const li = document.createElement('li');
-                if(item.includes('<b>')) {
-                    li.innerHTML = item; 
-                    li.style.borderBottom = "none";
-                    li.style.marginTop = "10px";
-                    li.style.backgroundColor = "rgba(255,255,255,0.05)";
-                    li.style.padding = "5px 10px";
-                    li.style.borderRadius = "4px";
-                    li.style.color = "var(--cor-texto-destaque)";
+            if (tipo === 'produtos') {
+                if (sectionProdutos.style.display === 'block') {
+                    // Fechar se já estiver aberto
+                    sectionProdutos.style.display = 'none';
+                    btnProdutos.classList.remove('active');
                 } else {
-                    li.innerHTML = `<i class="fas fa-check" style="color: #4CAF50; margin-right: 10px; margin-top: 4px;"></i> ${item}`;
+                    // Abrir e fechar o outro
+                    sectionProdutos.style.display = 'block';
+                    sectionValor.style.display = 'none';
+                    btnProdutos.classList.add('active');
+                    btnValor.classList.remove('active-valor');
                 }
-                lista.appendChild(li);
-            });
-
-            document.getElementById('modalInformacoes').style.display = 'flex';
-        }
-
-        function fecharModalInfo() { document.getElementById('modalInformacoes').style.display = 'none'; }
-
-        function abrirModalVariacao(nomeCesta, precoAlvino, precoKoblenz) {
-            cestaAtual = { nome: nomeCesta, precoAlvino, precoKoblenz, selecao: '' };
-            
-            document.getElementById('tituloCestaModal').innerText = nomeCesta;
-            document.getElementById('precoAlvinoDisplay').innerText = `R$ ${precoAlvino}`;
-            document.getElementById('precoKoblenzDisplay').innerText = `R$ ${precoKoblenz}`;
-            
-            document.getElementById('optAlvino').classList.remove('selected');
-            document.getElementById('optKoblenz').classList.remove('selected');
-            document.getElementById('btnConfirmarPedido').disabled = true;
-            
-            document.querySelectorAll('.radio-custom').forEach(el => {
-                el.style.backgroundColor = 'transparent'; el.style.borderColor = '#ccc';
-            });
-            document.getElementById('modalVariacao').style.display = 'flex';
-        }
-
-        function fecharModalVariacao() { document.getElementById('modalVariacao').style.display = 'none'; }
-
-        function selecionarOpcao(marca) {
-            cestaAtual.selecao = marca;
-            document.getElementById('optAlvino').classList.remove('selected');
-            document.getElementById('optKoblenz').classList.remove('selected');
-            document.getElementById(`opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'}`).classList.add('selected');
-            
-            document.querySelectorAll('.radio-custom').forEach(el => {
-                el.style.backgroundColor = 'transparent'; el.style.borderColor = '#ccc';
-            });
-            const selectedRadio = document.querySelector(`#opt${marca === 'alvino' ? 'Alvino' : 'Koblenz'} .radio-custom`);
-            if(selectedRadio) {
-                selectedRadio.style.backgroundColor = 'var(--cor-info)';
-                selectedRadio.style.borderColor = 'var(--cor-info)';
-            }
-            document.getElementById('btnConfirmarPedido').disabled = false;
-        }
-        
-        function abrirModalInteresse() {
-            fecharModalContatos();
-            document.getElementById('modalSelecaoInteresse').style.display = 'flex';
-            // Abre automaticamente o seletor customizado ao entrar no modal
-            setTimeout(() => {
-                const trigger = document.querySelector('.custom-select-trigger');
-                if(trigger) toggleCustomSelect();
-            }, 300);
-        }
-
-        function fecharModalInteresse() {
-            document.getElementById('modalSelecaoInteresse').style.display = 'none';
-            document.getElementById('customOptionsList').classList.remove('open');
-        }
-
-        // --- LÓGICA DO SELETOR CUSTOMIZADO ---
-        function toggleCustomSelect() {
-            const options = document.getElementById('customOptionsList');
-            options.classList.toggle('open');
-        }
-
-        // Fecha o seletor se clicar fora dele
-        window.onclick = function(event) {
-            if (!event.target.matches('.custom-select-trigger') && !event.target.closest('.custom-select-trigger')) {
-                const options = document.getElementById('customOptionsList');
-                if (options && options.classList.contains('open')) {
-                    options.classList.remove('open');
+            } else if (tipo === 'valor') {
+                if (sectionValor.style.display === 'block') {
+                    // Fechar se já estiver aberto
+                    sectionValor.style.display = 'none';
+                    btnValor.classList.remove('active-valor');
+                } else {
+                    // Abrir e fechar o outro
+                    sectionValor.style.display = 'block';
+                    sectionProdutos.style.display = 'none';
+                    btnValor.classList.add('active-valor');
+                    btnProdutos.classList.remove('active');
                 }
             }
         }
 
-        function selectCustomOption(cesta, marca, preco) {
-            interesseSelecionado = { cesta, marca, preco };
+        function selectArroz(cestaId, marca, preco, elementoOption) {
+            // Atualizar estado
+            selecoesCesta[cestaId] = { marca: marca, preco: preco };
             
-            let textoDisplay = cesta;
-            if (marca) {
-                textoDisplay += ` (${marca === 'Tio Alvino' ? 'Tio Alvino' : 'Koblenz'})`;
-            }
-            textoDisplay += ` - R$ ${preco}`;
-
-            document.getElementById('customSelectText').innerText = textoDisplay;
-            document.getElementById('customOptionsList').classList.remove('open'); // Fecha o menu
+            // Atualizar visual (Radio)
+            // Remover selecionado de todos irmãos
+            const container = elementoOption.parentElement;
+            const options = container.querySelectorAll('.radio-arroz-option');
+            options.forEach(opt => opt.classList.remove('selected'));
             
-            // Habilita o botão
-            document.getElementById('btnEnviarInteresse').disabled = false;
+            // Adicionar selecionado ao clicado
+            elementoOption.classList.add('selected');
+            
+            // Habilitar botão
+            const btn = document.getElementById(`btn-pedir-${cestaId}`);
+            if(btn) btn.classList.add('enabled');
         }
 
-        function enviarMensagemInteresse() {
-            let texto = `Olá! Tenho interesse na *${interesseSelecionado.cesta}*`;
-            
-            if(interesseSelecionado.marca) {
-                texto += ` com *${interesseSelecionado.marca === 'Tio Alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz'}*`;
-            }
-            
-            texto += ` no valor de *R$ ${interesseSelecionado.preco}*. Gostaria de saber mais.`;
+        function encomendarSelecionado(cestaId, nomeCesta) {
+            const selecao = selecoesCesta[cestaId];
+            if (!selecao.marca) return; // Segurança extra
+
+            const marcaNome = selecao.marca === 'Alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
+            const texto = `Olá! Gostaria de encomendar a *${nomeCesta}* com *${marcaNome}* no valor de *R$ ${selecao.preco}*.`;
             
             window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
-            fecharModalInteresse();
-        }
-
-        function getWhatsNumber() {
-            var p1 = "55"; var p2 = "65"; var p3 = "9981"; var p4 = "50975";
-            return p1 + p2 + p3 + p4;
-        }
-
-        function abrirWhatsSeguro() {
-            abrirModalInteresse();
-        }
-
-        function abrirTelSeguro() {
-            window.location.href = `tel:${getWhatsNumber()}`;
-        }
-
-        function confirmarAcao() {
-            const marcaNome = cestaAtual.selecao === 'alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
-            const precoFinal = cestaAtual.selecao === 'alvino' ? cestaAtual.precoAlvino : cestaAtual.precoKoblenz;
-            const texto = `Olá! Gostaria de encomendar a *${cestaAtual.nome}* com *${marcaNome}* no valor de *R$ ${precoFinal}*.`;
-            window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
-            fecharModalVariacao();
         }
 
         function encomendarDireto(nome, preco) {
             const texto = `Olá! Gostaria de encomendar a *${nome}* no valor de *R$ ${preco}*.`;
             window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
         }
-        
-        function abrirModalContatos() { document.getElementById('modalContatos').style.display = 'flex'; }
-        function fecharModalContatos() { document.getElementById('modalContatos').style.display = 'none'; }
+
+        function getWhatsNumber() {
+            var p1 = "55"; var p2 = "65"; var p3 = "9981"; var p4 = "50975";
+            return p1 + p2 + p3 + p4;
+        }
 
         function abrirZoom(src, alt) {
             document.getElementById('imgZoomTarget').src = src;
@@ -1615,50 +1331,6 @@
              document.querySelectorAll('.chip-ancora').forEach(el => el.classList.remove('active'));
              elemento.classList.add('active');
         }
-
-        function abrirAvisoImportante() {
-            document.getElementById('modalAvisoImportante').style.display = 'flex';
-        }
-        function fecharAvisoImportante() {
-            document.getElementById('modalAvisoImportante').style.display = 'none';
-        }
-
-        let slideIndex = 1;
-        
-        function verificarApresentacao() {
-            const ultimaVisita = localStorage.getItem('donaAntoniaUltimaVisita');
-            const agora = new Date().getTime();
-            if (!ultimaVisita || (agora - parseInt(ultimaVisita)) / (1000 * 60 * 60 * 24) > 30) {
-                setTimeout(() => { document.getElementById('modalApresentacao').style.display = 'flex'; initSlider(); }, 1000);
-            }
-        }
-
-        function fecharApresentacao() {
-            localStorage.setItem('donaAntoniaUltimaVisita', new Date().getTime().toString());
-            document.getElementById('modalApresentacao').style.display = 'none';
-        }
-
-        function initSlider() { slideIndex = 1; showSlides(slideIndex); }
-        function mudarSlide(n) { showSlides(slideIndex += n); }
-
-        function showSlides(n) {
-            let i; let slides = document.getElementsByClassName("slide-item");
-            const btnNext = document.getElementById("btnNext");
-            if (n > slides.length) {slideIndex = 1}    
-            if (n < 1) {slideIndex = slides.length}
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-                slides[i].classList.remove("active");
-            }
-            slides[slideIndex-1].style.display = "flex";
-            slides[slideIndex-1].classList.add("active");
-            
-            if (slideIndex === slides.length) { btnNext.style.display = "none"; } else { btnNext.style.display = "flex"; }
-        }
-
-        window.addEventListener('load', () => { 
-            setTimeout(abrirAvisoImportante, 1000); 
-        });
     </script>
 </body>
 </html>
