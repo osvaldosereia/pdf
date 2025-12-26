@@ -756,6 +756,29 @@
         .titulo-modal-var { margin-top: 15px; font-size: 1.3rem; font-weight: 700; color: var(--cor-texto-destaque); }
         .subtitulo-modal-var { color: var(--cor-texto-secundario); margin-bottom: 20px; font-size: 0.95rem; }
         
+        /* NOVO ESTILO PARA O SELECT */
+        .form-select-cesta {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--cor-fundo-site); 
+            color: var(--cor-texto-destaque);
+            border: 2px solid var(--cor-borda);
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 20px;
+            cursor: pointer;
+            appearance: none; 
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        .form-select-cesta:focus {
+            border-color: var(--cor-info);
+        }
+
         .opcao-select {
             display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 2px solid var(--cor-borda); 
             border-radius: 10px; margin-bottom: 10px; cursor: pointer; text-align: left; transition: all 0.2s;
@@ -1239,105 +1262,50 @@
         </div>
     </div>
 
+    <!-- MODAL DE INTERESSE AGORA COM DROPDOWN (SELECT) -->
     <div id="modalSelecaoInteresse" class="modal-variacao" onclick="if(event.target === this) fecharModalInteresse()">
-        <div class="modal-variacao-content">
+        <div class="modal-variacao-content" style="max-width: 400px;"> 
             <button class="btn-fechar-modal-var" onclick="fecharModalInteresse()">Fechar</button>
-            <div style="padding: 20px; max-height: 85vh; overflow-y: auto;">
-                <h3 class="titulo-modal-var" style="margin-bottom: 5px;">Qual cesta você gostou?</h3>
-                <p class="subtitulo-modal-var">Selecione para iniciar o atendimento:</p>
+            <div style="padding: 25px 20px;">
+                <h3 class="titulo-modal-var" style="margin-top: 0;">Iniciar Atendimento</h3>
+                <p class="subtitulo-modal-var">Para agilizar, selecione qual cesta você tem interesse:</p>
                 
-                <div id="listaOpcoesInteresse">
-                    <div class="grupo-cesta">
-                        <p class="titulo-grupo-cesta">Cesta Econômica</p>
-                        <div class="opcao-select" id="optInteresse-economica" onclick="selecionarInteresse('Cesta Econômica', '', '85,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Padrão</span>
-                                <span class="opcao-preco">R$ 85,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                    </div>
+                <select id="selectCestaInteresse" class="form-select-cesta" onchange="atualizarSelecaoDropdown()">
+                    <option value="" selected disabled>👇 Toque aqui para selecionar...</option>
+                    
+                    <optgroup label="Mais Econômicas">
+                        <option value="Cesta Econômica||85,00">Cesta Econômica - R$ 85,00</option>
+                    </optgroup>
 
-                    <div class="grupo-cesta">
-                        <p class="titulo-grupo-cesta">Cesta Mini</p>
-                        <div class="opcao-select" id="optInteresse-mini-alvino" onclick="selecionarInteresse('Cesta Mini', 'Tio Alvino', '165,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Tio Alvino</span>
-                                <span class="opcao-preco">R$ 165,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                        <div class="opcao-select" id="optInteresse-mini-koblenz" onclick="selecionarInteresse('Cesta Mini', 'Koblenz', '170,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Koblenz</span>
-                                <span class="opcao-preco">R$ 170,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                    </div>
+                    <optgroup label="Cesta Mini">
+                        <option value="Cesta Mini|Tio Alvino|165,00">Mini c/ Tio Alvino - R$ 165,00</option>
+                        <option value="Cesta Mini|Koblenz|170,00">Mini c/ Koblenz - R$ 170,00</option>
+                    </optgroup>
 
-                    <div class="grupo-cesta">
-                        <p class="titulo-grupo-cesta">Cesta Pequena</p>
-                        <div class="opcao-select" id="optInteresse-pequena-alvino" onclick="selecionarInteresse('Cesta Pequena', 'Tio Alvino', '215,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Tio Alvino</span>
-                                <span class="opcao-preco">R$ 215,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                        <div class="opcao-select" id="optInteresse-pequena-koblenz" onclick="selecionarInteresse('Cesta Pequena', 'Koblenz', '220,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Koblenz</span>
-                                <span class="opcao-preco">R$ 220,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                    </div>
+                    <optgroup label="Cesta Pequena">
+                        <option value="Cesta Pequena|Tio Alvino|215,00">Pequena c/ Tio Alvino - R$ 215,00</option>
+                        <option value="Cesta Pequena|Koblenz|220,00">Pequena c/ Koblenz - R$ 220,00</option>
+                    </optgroup>
 
-                    <div class="grupo-cesta">
-                        <p class="titulo-grupo-cesta">Cesta Média</p>
-                        <div class="opcao-select" id="optInteresse-media-alvino" onclick="selecionarInteresse('Cesta Média', 'Tio Alvino', '320,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Tio Alvino</span>
-                                <span class="opcao-preco">R$ 320,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                        <div class="opcao-select" id="optInteresse-media-koblenz" onclick="selecionarInteresse('Cesta Média', 'Koblenz', '325,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Koblenz</span>
-                                <span class="opcao-preco">R$ 325,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                    </div>
+                    <optgroup label="Cesta Média">
+                        <option value="Cesta Média|Tio Alvino|320,00">Média c/ Tio Alvino - R$ 320,00</option>
+                        <option value="Cesta Média|Koblenz|325,00">Média c/ Koblenz - R$ 325,00</option>
+                    </optgroup>
 
-                    <div class="grupo-cesta">
-                        <p class="titulo-grupo-cesta">Cesta Grande</p>
-                        <div class="opcao-select" id="optInteresse-grande-alvino" onclick="selecionarInteresse('Cesta Grande', 'Tio Alvino', '380,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Tio Alvino</span>
-                                <span class="opcao-preco">R$ 380,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                        <div class="opcao-select" id="optInteresse-grande-koblenz" onclick="selecionarInteresse('Cesta Grande', 'Koblenz', '390,00')">
-                            <div class="opcao-info">
-                                <span class="opcao-nome">Arroz Koblenz</span>
-                                <span class="opcao-preco">R$ 390,00</span>
-                            </div>
-                            <div class="radio-custom" style="width: 20px; height: 20px; border: 2px solid #ccc; border-radius: 50%;"></div>
-                        </div>
-                    </div>
-                </div>
+                    <optgroup label="Cesta Grande">
+                        <option value="Cesta Grande|Tio Alvino|380,00">Grande c/ Tio Alvino - R$ 380,00</option>
+                        <option value="Cesta Grande|Koblenz|390,00">Grande c/ Koblenz - R$ 390,00</option>
+                    </optgroup>
+                </select>
 
-                <button class="btn-confirmar-pedido" id="btnEnviarInteresse" onclick="enviarMensagemInteresse()" disabled>
+                <button class="btn-confirmar-pedido" id="btnEnviarInteresse" onclick="enviarMensagemInteresse()" disabled style="margin-top: 5px;">
                     <i class="fab fa-whatsapp"></i> Iniciar Conversa
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- MODAL VARIACAO ANTIGO (Pode ser mantido ou removido, mantido para evitar erros se algo ainda o chamar) -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
             <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">Fechar</button>
@@ -1542,44 +1510,24 @@
             document.getElementById('modalSelecaoInteresse').style.display = 'none';
         }
 
-        function selecionarInteresse(nomeCesta, marca, preco) {
-            interesseSelecionado = { cesta: nomeCesta, marca: marca, preco: preco };
+        // --- NOVA FUNÇÃO PARA O SELECT DROPDOWN ---
+        function atualizarSelecaoDropdown() {
+            const select = document.getElementById('selectCestaInteresse');
+            const btn = document.getElementById('btnEnviarInteresse');
             
-            const opcoes = document.querySelectorAll('#listaOpcoesInteresse .opcao-select');
-            opcoes.forEach(op => {
-                op.classList.remove('selected');
-                const radio = op.querySelector('.radio-custom');
-                if(radio) {
-                    radio.style.backgroundColor = 'transparent';
-                    radio.style.borderColor = '#ccc';
-                }
-            });
-
-            let idParaSelecionar = 'optInteresse-';
-            if (nomeCesta === 'Cesta Econômica') {
-                idParaSelecionar += 'economica';
+            if (select.value) {
+                const partes = select.value.split('|');
+                interesseSelecionado = {
+                    cesta: partes[0],
+                    marca: partes[1], // pode ser vazio (caso da Econômica)
+                    preco: partes[2]
+                };
+                btn.disabled = false;
+                // Opcional: Atualizar texto do botão para confirmar visualmente
+                // btn.innerHTML = `<i class="fab fa-whatsapp"></i> Pedir ${partes[0]}`; 
             } else {
-                const mapCesta = { 'Cesta Mini': 'mini', 'Cesta Pequena': 'pequena', 'Cesta Média': 'media', 'Cesta Grande': 'grande' };
-                const mapMarca = { 'Tio Alvino': 'alvino', 'Koblenz': 'koblenz' };
-                idParaSelecionar += `${mapCesta[nomeCesta]}-${mapMarca[marca]}`;
+                btn.disabled = true;
             }
-
-            const selectedElement = document.getElementById(idParaSelecionar);
-            if(selectedElement) {
-                selectedElement.classList.add('selected');
-                const radio = selectedElement.querySelector('.radio-custom');
-                if(radio) {
-                    radio.style.backgroundColor = 'var(--cor-info)';
-                    radio.style.borderColor = 'var(--cor-info)';
-                }
-            }
-
-            const btnEnviar = document.getElementById('btnEnviarInteresse');
-            btnEnviar.disabled = false;
-
-            setTimeout(() => {
-                btnEnviar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 150);
         }
 
         function enviarMensagemInteresse() {
