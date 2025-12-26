@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
+    <!-- === DICA 4: LOCAL PARA O PIXEL DA META (FACEBOOK/INSTAGRAM) === -->
+    <!-- Peça para seu gestor de tráfego gerar o código do Pixel e cole ele aqui abaixo -->
+    <!-- 
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', 'SEU_ID_DO_PIXEL_AQUI');
+      fbq('track', 'PageView');
+    </script>
+    -->
+    <!-- FIM DO PIXEL -->
+
     <!-- === CAMADA 1: Ocultar tudo por padrão === -->
     <style id="security-lock">html{display:none !important;}</style>
 
@@ -22,25 +40,20 @@
             if (_0x4d || (!_0x6f)) {
                 
                 // === CAMADA 3: SABOTAGEM DE SEO (SEO POISONING) ===
-                // Isso destrói a reputação do site clonado no Google antes de apagar o conteúdo
                 document.title = "⚠️ FRAUDE DETECTADA - SITE DE GOLPE ⚠️";
                 
-                // Injeta Meta Tags de "Perigo" para o robô do Google ler
                 const _metaDesc = document.querySelector('meta[name="description"]');
                 if(_metaDesc) _metaDesc.setAttribute("content", "🚨 CUIDADO! ESTE É UM SITE CLONADO USADO PARA ROUBAR DADOS E DINHEIRO. NÃO ACESSE. É GOLPE!");
                 
                 const _metaKeys = document.querySelector('meta[name="keywords"]');
                 if(_metaKeys) _metaKeys.setAttribute("content", "golpe, fraude, crime, policia, roubo, falso, perigo");
                 
-                // Tenta forçar o Google a NÃO indexar essa página pirata
                 const _metaRobots = document.createElement('meta');
                 _metaRobots.name = "robots";
                 _metaRobots.content = "noindex, nofollow";
                 document.head.appendChild(_metaRobots);
 
                 // === AÇÃO VISUAL (Tela Vermelha) ===
-                // Verifica se não é preview do editor (para não travar você mesmo)
-                // Adicionamos verificação extra para garantir que o preview funcione
                 if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc' || window.self !== window.top) {
                      if(_0x3c) _0x3c.remove();
                 } else {
@@ -51,11 +64,9 @@
                     _0x7g.innerHTML = '<h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1><p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p><p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p><a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>';
                     document.documentElement.appendChild(_0x7g);
                     
-                    // Redireciona
                     setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
                 }
             } else {
-                // Se for o site oficial, libera a visão
                 if(_0x3c) { _0x3c.remove(); }
             }
         })();
@@ -71,22 +82,17 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="preconnect" href="https://maps.google.com">
     
-    <!-- Meta Tags para Mobile -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dona Antônia">
-    <!-- IMAGENS COM CAMINHO ABSOLUTO -->
     <link rel="apple-touch-icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
     <link rel="shortcut icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
 
-    <!-- TÍTULO HÍBRIDO OTIMIZADO -->
     <title>Cestas Básicas em Cuiabá e VG | Dona Antônia | Entrega Grátis</title>
     
-    <!-- META DESCRIPTION -->
     <meta name="description" content="Menor preço em Cesta Básica em Cuiabá e Várzea Grande? É na Dona Antônia! Atacado e Varejo com entrega grátis no CPA, Coxipó e região. Peça no WhatsApp.">
     <meta name="keywords" content="cesta básica cuiabá, cesta básica várzea grande, comprar alimentos online cuiabá, sacolão cuiabá, doação de cesta básica mt, entrega grátis mercado, atacado de alimentos cuiabá, cesta de natal, pedra 90, cpa, coxipó">
     
-    <!-- OPEN GRAPH -->
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Cestas Básicas em Cuiabá e VG | Dona Antônia | Entrega Grátis" />
@@ -95,7 +101,6 @@
     <meta property="og:image" content="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" />
     <meta property="og:site_name" content="Dona Antônia Alimentos" />
 
-    <!-- GEO TAGS -->
     <meta name="geo.region" content="BR-MT" />
     <meta name="geo.placename" content="Cuiabá" />
     <meta name="geo.position" content="-15.6025;-56.0968" />
@@ -126,38 +131,24 @@
             user-select: text;
         }
 
-        /* === PALETA DE CORES: TEMA ESCURO (AZUL NOTURNO) === */
         :root {
-            /* Branding e Bases */
-            --cor-primaria: #0F2546; /* Azul Escuro da Marca */
-            --cor-fundo-site: #081221; /* Azul Quase Preto (Fundo da Página) */
-            --cor-fundo-card: #0F2546; /* Azul da Logo (Fundo dos Cards) */
-            --cor-fundo-header: #0b182d; /* Header Ligeiramente Destacado */
-            
-            /* Textos */
-            --cor-texto: #e0e0e0; /* Cinza Claro para Texto Corrido */
-            --cor-texto-destaque: #ffffff; /* Branco Puro para Títulos */
-            --cor-texto-secundario: #b0bec5; /* Cinza Azulado para detalhes */
-            
-            /* Detalhes e Bordas */
-            --cor-borda: #1c355e; /* Azul Médio para Bordas Sutis */
-            
-            /* Cores de Ação e Destaque */
-            --cor-destaque-vermelho: #ff5252; /* Vermelho Mais Vivo para Fundo Escuro */
-            --cor-destaque-dourado: #ffb300; /* Dourado/Âmbar */
-            
-            /* Redes Sociais e Serviços */
+            --cor-primaria: #0F2546; 
+            --cor-fundo-site: #081221; 
+            --cor-fundo-card: #0F2546; 
+            --cor-fundo-header: #0b182d; 
+            --cor-texto: #e0e0e0; 
+            --cor-texto-destaque: #ffffff; 
+            --cor-texto-secundario: #b0bec5; 
+            --cor-borda: #1c355e; 
+            --cor-destaque-vermelho: #ff5252; 
+            --cor-destaque-dourado: #ffb300; 
             --cor-whatsapp: #25D366; 
             --cor-telegram: #0088cc;
             --cor-facebook: #1877F2; 
+            --cor-info: #64b5f6; 
+            --cor-entrega: #ff9800; 
             
-            /* Funcionais */
-            --cor-info: #64b5f6; /* Azul Claro */
-            --cor-entrega: #ff9800; /* Laranja */
-            
-            /* Dimensões */
             --altura-header: 80px; 
-            /* AUMENTADO PARA MOBILE */
             --largura-logo: 90px; 
             --altura-floating-bar: 70px;
         }
@@ -177,7 +168,7 @@
             color: var(--cor-texto);
             margin: 0; 
             padding: 0;
-            padding-top: var(--altura-header); /* REINSERIDO: Espaço para Header Fixo */
+            padding-top: var(--altura-header); 
             padding-bottom: 90px; 
             min-height: 10vh;
             position: relative; 
@@ -195,23 +186,22 @@
             max-width: 480px; 
             margin: 0 auto; 
             background-color: var(--cor-fundo-site); 
-            box-shadow: none; /* Removido sombra no escuro */
+            box-shadow: none;
             transition: max-width 0.3s ease; 
         }
         
         .desktop-only { display: none !important; }
 
-        /* === TITULO H1 SEO (Tema Escuro) === */
         .seo-main-title {
             text-align: center;
             padding: 20px 15px 10px 15px;
-            background: var(--cor-fundo-card); /* Fundo Azul */
+            background: var(--cor-fundo-card); 
             border-radius: 0 0 12px 12px;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--cor-borda);
         }
         .seo-main-title h1 {
-            font-size: 1.35rem; /* Aumentado ligeiramente */
+            font-size: 1.35rem; 
             font-weight: 800; 
             margin: 0;
             letter-spacing: -0.5px;
@@ -225,7 +215,41 @@
             font-weight: 400;
         }
 
-        /* === MENU DE ANCORAS (Tema Escuro) === */
+        /* === NOVO BANNER DIFERENCIAIS (DICA 2) === */
+        .banner-diferenciais {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+        .item-diferencial {
+            background: rgba(255, 179, 0, 0.1);
+            border: 1px solid var(--cor-destaque-dourado);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .item-diferencial i {
+            font-size: 1.2rem;
+            color: var(--cor-destaque-dourado);
+            margin-bottom: 5px;
+        }
+        .item-diferencial span {
+            font-size: 0.8rem;
+            color: var(--cor-texto-destaque);
+            line-height: 1.2;
+            font-weight: 600;
+        }
+        .item-diferencial strong {
+            display: block;
+            color: var(--cor-destaque-dourado);
+        }
+
         .menu-ancoras-cestas { display: none !important; }
 
         .chip-ancora {
@@ -243,31 +267,26 @@
         }
         .chip-ancora.active {
             background-color: var(--cor-destaque-dourado);
-            color: var(--cor-primaria); /* Texto escuro no fundo dourado */
+            color: var(--cor-primaria);
             border-color: var(--cor-destaque-dourado);
         }
 
-        /* --- CABEÇALHO (FIXO E ESCURO) --- */
         header {
             background-color: var(--cor-fundo-header);
             height: var(--altura-header);
             padding: 0;
             display: flex;
             flex-direction: row; 
-            
-            /* VOLTOU A SER FIXO */
             position: fixed;
             top: 0;
             left: 0;
-            
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); /* Sombra mais forte */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
             width: 100%;
             z-index: 1000;
             contain: layout size; 
             border-bottom: 1px solid var(--cor-borda);
         }
         
-        /* Container interno do header centralizado */
         .header-top {
             display: flex;
             justify-content: flex-end; 
@@ -277,64 +296,64 @@
             padding: 5px 15px;
             position: relative;
             z-index: 1002;
-            max-width: 480px; /* Limite mobile padrão */
+            max-width: 480px; 
             margin: 0 auto;
         }
 
-        /* Logo Pequena (AGORA FIXA E MAIOR) */
         .logo-pequ { 
             height: var(--largura-logo);
             width: var(--largura-logo); 
             object-fit: cover; 
             border-radius: 50%; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-            
-            /* MUDANÇA PARA FIXED */
             position: fixed;
             top: 5px; 
             left: 15px; 
-            z-index: 10001; /* Acima do header (1000) */
+            z-index: 10001;
             background-color: white; 
             padding: 0; 
             border: 2px solid var(--cor-borda);
         }
 
-        /* ALERTA NO HEADER (DESTACADO) */
+        /* HEADER ALERT OTIMIZADO (DICA 1) */
         .header-alert-box {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             text-align: right;
-            
-            /* CORES VIBRANTES PARA DESTAQUE */
+            /* Cor mais amigável: Azul/Verde ou manter vermelho se for muito critico, 
+               mas aqui vamos focar no beneficio */
             color: #ffffff; 
-            background: #D32F2F; /* Vermelho Sólido */
-            border: 2px solid #B71C1C;
+            background: linear-gradient(135deg, #1565C0, #0D47A1); /* Azul segurança */
+            border: 2px solid #42A5F5;
             
-            font-size: 0.95rem; /* Fonte Maior */
-            font-weight: 700;   /* Negrito */
+            font-size: 0.85rem; 
+            font-weight: 500;
             line-height: 1.2;
             
             margin-left: auto; 
-            max-width: 68%; /* Um pouco mais de espaço */
+            max-width: 68%; 
             gap: 10px;
-            padding: 8px 15px; /* Mais preenchimento */
+            padding: 8px 15px; 
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
         .header-alert-box i {
             font-size: 1.4rem;
-            color: #FFD700; /* Ícone Amarelo para Atenção */
+            color: #FFD700; 
+        }
+        .header-alert-box strong {
+            color: #FFD700;
+            text-transform: uppercase;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 380px) {
-            /* AJUSTE MOBILE: Logo não diminui tanto */
             :root { --largura-logo: 85px; --altura-header: 85px; }
             .logo-pequ { left: 10px; top: 8px; }
-            .header-alert-box { font-size: 0.85rem; padding: 6px 10px; }
+            .header-alert-box { font-size: 0.8rem; padding: 6px 10px; }
         }
 
-        /* --- CARDS E CONTEÚDO (Tema Escuro) --- */
         .secao-conteudo { padding: 15px; }
         
         .card { 
@@ -358,7 +377,6 @@
             color: var(--cor-texto-destaque);
         }
 
-        /* CARD DE CESTA (Tema Escuro) */
         .card-cesta-horizontal {
             display: flex;
             flex-direction: row; 
@@ -376,7 +394,7 @@
 
         #cestaeconomica {
             border: 2px solid var(--cor-destaque-dourado);
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.2); /* Glow dourado */
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
             z-index: 5;
         }
 
@@ -384,7 +402,7 @@
             width: 160px;
             min-width: 160px;
             position: relative;
-            background-color: #fff; /* Mantém fundo branco para a foto do produto */
+            background-color: #fff; 
             flex-shrink: 0;
             cursor: pointer;
             border-top-left-radius: 12px;
@@ -432,9 +450,8 @@
             margin-bottom: 5px;
         }
 
-        /* Lista de Preços (Tema Escuro) */
         .lista-precos-card {
-            background-color: rgba(0,0,0,0.2); /* Fundo escuro translúcido */
+            background-color: rgba(0,0,0,0.2); 
             border-radius: 8px;
             padding: 10px;
             margin-bottom: 12px;
@@ -502,7 +519,7 @@
         }
         
         .btn-ver-produtos {
-            background-color: #1E88E5; /* Azul um pouco mais claro para contraste */
+            background-color: #1E88E5; 
             color: white !important; 
             border: none; 
             border-radius: 8px;
@@ -527,7 +544,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
-            color: var(--cor-primaria); /* Texto escuro */
+            color: var(--cor-primaria);
             padding: 6px 20px;
             border-radius: 20px;
             font-weight: 800;
@@ -537,14 +554,13 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             z-index: 20; 
             white-space: nowrap;
-            border: 2px solid var(--cor-fundo-site); /* Borda da cor do fundo */
+            border: 2px solid var(--cor-fundo-site);
         }
 
-        /* SEO Bairros (Tema Escuro) */
         .lista-bairros-seo {
             font-size: 0.85rem;
             color: var(--cor-texto-secundario);
-            background: rgba(0,0,0,0.2); /* Fundo escuro */
+            background: rgba(0,0,0,0.2); 
             padding: 15px;
             border-radius: 8px;
             margin-top: 15px;
@@ -552,7 +568,7 @@
             border: 1px solid var(--cor-borda);
         }
         .lista-bairros-seo h4 {
-            color: var(--cor-destaque-dourado); /* Dourado para destacar */
+            color: var(--cor-destaque-dourado); 
             margin: 15px 0 5px 0;
             font-size: 0.9rem;
             font-weight: 700;
@@ -563,7 +579,6 @@
         .lista-bairros-seo h4:first-child { margin-top: 0; }
         .lista-bairros-seo p { margin: 0; line-height: 1.5; color: var(--cor-texto); }
 
-        /* === MOBILE === */
         @media (max-width: 480px) {
             .card-cesta-horizontal { flex-direction: column !important; }
             .cesta-img-container {
@@ -581,7 +596,6 @@
             .btn-cta-small { padding: 14px; font-size: 1rem; }
         }
         
-        /* === BOTÕES FLUTUANTES SIMPLIFICADOS (Tema Escuro) === */
         .floating-buttons-container {
             position: fixed;
             bottom: 20px;
@@ -593,7 +607,7 @@
             justify-content: center; 
             gap: 12px;
             padding: 8px 16px; 
-            background: var(--cor-fundo-card); /* Fundo Azul */
+            background: var(--cor-fundo-card);
             border-radius: 50px;
             border: 1px solid var(--cor-borda);
             box-shadow: 0 6px 20px rgba(0,0,0,0.5);
@@ -606,7 +620,6 @@
             left: 0;
             width: 100%;
             height: 120px;
-            /* Gradiente escuro */
             background: linear-gradient(to top, var(--cor-fundo-site) 20%, rgba(8, 18, 33, 0) 100%);
             z-index: 900;
             pointer-events: none;
@@ -640,19 +653,16 @@
         .btn-float-action:active { transform: scale(0.98) translateY(0); }
 
         .btn-float-instagram { background-color: #C13584; }
-        .btn-float-contato { background-color: var(--cor-whatsapp); /* Verde para destaque */ }
+        .btn-float-contato { background-color: var(--cor-whatsapp); }
 
-        /* === MODAIS (Tema Escuro) === */
         .modal-variacao, #modalContatos, #modalInformacoes, #modalZoomImagem, #modalApresentacao, #modalAvisoImportante, #modalSelecaoInteresse {
             display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.85); /* Fundo mais escuro */
+            background-color: rgba(0,0,0,0.85); 
             justify-content: center; align-items: center; backdrop-filter: blur(5px);
             padding: 20px;
         }
         
         #modalApresentacao { background-color: rgba(5, 10, 20, 0.95); z-index: 8000; }
-        
-        /* Modal de Aviso Importante - Z-index alto para garantir visibilidade */
         #modalAvisoImportante { z-index: 9000; background-color: rgba(0, 0, 0, 0.92); }
 
         .modal-slider-content {
@@ -684,7 +694,7 @@
 
         .slider-next-btn {
             position: absolute; bottom: 25px; right: 25px; top: auto; transform: none;
-            background: #23344d; /* Azul escuro */
+            background: #23344d; 
             border: 1px solid var(--cor-borda);
             font-size: 1.2rem; color: white; cursor: pointer;
             width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -738,7 +748,7 @@
 
         .section-icon-header { text-align: center; margin-bottom: 15px; }
         .section-icon-header img {
-            width: 50px; height: 50px; object-fit: contain; background-color: white; /* Fundo branco para o ícone */
+            width: 50px; height: 50px; object-fit: contain; background-color: white; 
             border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid var(--cor-borda); font-size: 0.95rem; display: flex; align-items: center; color: var(--cor-texto); }
@@ -775,7 +785,6 @@
             cursor: pointer;
         }
         
-        /* Adicionado para separar melhor as cestas */
         .grupo-cesta {
             margin-bottom: 25px;
             padding-bottom: 20px;
@@ -790,15 +799,12 @@
         .titulo-grupo-cesta {
             font-size: 1.1rem;
             color: var(--cor-destaque-dourado);
-            margin: 0 0 10px 0; /* Ajustado margem */
+            margin: 0 0 10px 0;
             font-weight: 700;
             text-transform: uppercase;
-            /* border-bottom removido daqui para usar no grupo container */
             padding-bottom: 5px;
         }
-        /* .titulo-grupo-cesta:first-of-type removido pois agora é controlado pelo container .grupo-cesta */
 
-        /* Botão do novo modal de aviso */
         .btn-aviso-ok {
             background-color: var(--cor-destaque-dourado);
             color: var(--cor-primaria) !important;
@@ -814,6 +820,30 @@
             min-width: 150px;
         }
         .btn-aviso-ok:hover { transform: scale(1.05); }
+
+        /* Botão VIP (DICA 5) */
+        .btn-vip-group {
+            background: transparent;
+            border: 2px solid var(--cor-whatsapp);
+            color: var(--cor-whatsapp);
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-vip-group:hover {
+            background: var(--cor-whatsapp);
+            color: #fff;
+        }
 
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes fadeSlide { 0% { transform: translateX(20px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
@@ -941,23 +971,33 @@
                 <a href="#pag-entrega">Entrega</a>
             </nav>
 
-            <!-- AVISO INTEGRADO NO HEADER (Substituindo botão antigo) -->
+            <!-- AVISO INTEGRADO NO HEADER (DICA 1: FRASE POSITIVA) -->
             <div class="header-alert-box">
-                <i class="fas fa-shield-alt"></i>
-                <span>Pague somente na entrega.<br><strong>Não vendemos online.</strong></span>
+                <i class="fas fa-check-circle"></i>
+                <span>Faça seu pedido pelo WhatsApp<br><strong>e pague só na Entrega!</strong></span>
             </div>
         </div>
     </header>
 
     <main class="main-content-wrapper">
-        <!-- BANNER VERMELHO DE PAGAMENTO REMOVIDO -->
-
         <div id="pag-cestas">
             <div class="seo-main-title">
                 <h1>Cestas Básicas em Cuiabá e VG - Dona Antônia</h1>
                 <p>O Melhor Preço em Cuiabá e Várzea Grande. Entrega Grátis.</p>
-                <!-- BOTÃO AVALIAR GOOGLE REMOVIDO -->
             </div>
+
+            <!-- === DICA 2: BANNER DE DIFERENCIAIS === -->
+            <div class="banner-diferenciais">
+                <div class="item-diferencial">
+                    <i class="fas fa-shipping-fast"></i>
+                    <span><strong>Entrega Rápida</strong>Pediu até 10h, recebe hoje!</span>
+                </div>
+                <div class="item-diferencial">
+                    <i class="fas fa-sync-alt"></i>
+                    <span><strong>Personalize</strong>Troque itens que não usa.</span>
+                </div>
+            </div>
+            <!-- FIM BANNER DIFERENCIAIS -->
 
             <div class="secao-conteudo">
                 <div class="menu-ancoras-cestas">
@@ -970,7 +1010,6 @@
 
                 <div class="cesta-cards-grid">
                     
-                    <!-- CESTA ECONÔMICA COM ALT TEXT COMPLETO (SEO) -->
                     <div class="card-cesta-horizontal" id="cestaeconomica">
                         <div class="selo-destaque"><i class="fas fa-star"></i> Mais Vendida</div>
                         <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif', 'Cesta Econômica')">
@@ -993,7 +1032,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA MINI (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestamini">
                         <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif', 'Cesta Mini')">
                             <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Mini com Entrega Grátis em Cuiabá e VG" onerror="this.src='https://placehold.co/400x400?text=MINI'">
@@ -1002,8 +1040,6 @@
                         <div class="cesta-info-container">
                             <div>
                                 <div class="cesta-title-row"><h2>Cesta Mini</h2></div>
-                                <!-- SELO BRINDE REMOVIDO -->
-                                
                                 <div class="lista-precos-card">
                                     <div class="item-preco-card">
                                         <span class="marca-arroz">Arroz Tio Alvino</span>
@@ -1023,7 +1059,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA PEQUENA (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestapequena">
                         <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif', 'Cesta Pequena')">
                             <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Pequena em Cuiabá e Várzea Grande" onerror="this.src='https://placehold.co/400x400?text=PEQUENA'">
@@ -1032,8 +1067,6 @@
                         <div class="cesta-info-container">
                             <div>
                                 <div class="cesta-title-row"><h2>Cesta Pequena</h2></div>
-                                <!-- SELO BRINDE REMOVIDO -->
-                                
                                 <div class="lista-precos-card">
                                     <div class="item-preco-card">
                                         <span class="marca-arroz">Arroz Tio Alvino</span>
@@ -1053,7 +1086,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA MEDIA (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestamedia">
                         <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif', 'Cesta Média')">
                             <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Média Atacado e Varejo Cuiabá" onerror="this.src='https://placehold.co/400x400?text=MÉDIA'">
@@ -1062,8 +1094,6 @@
                         <div class="cesta-info-container">
                             <div>
                                 <div class="cesta-title-row"><h2>Cesta Média</h2></div>
-                                <!-- SELO BRINDE REMOVIDO -->
-                                
                                 <div class="lista-precos-card">
                                     <div class="item-preco-card">
                                         <span class="marca-arroz">Arroz Tio Alvino</span>
@@ -1083,7 +1113,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA GRANDE (SEM BRINDE) -->
                     <div class="card-cesta-horizontal" id="cestagrande">
                         <div class="cesta-img-container" onclick="abrirZoom('https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif', 'Cesta Grande')">
                             <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" width="400" height="400" loading="lazy" alt="Cesta Básica Grande para Família em Cuiabá" onerror="this.src='https://placehold.co/400x400?text=GRANDE'">
@@ -1092,8 +1121,6 @@
                         <div class="cesta-info-container">
                             <div>
                                 <div class="cesta-title-row"><h2>Cesta Grande</h2></div>
-                                <!-- SELO BRINDE REMOVIDO -->
-                                
                                 <div class="lista-precos-card">
                                     <div class="item-preco-card">
                                         <span class="marca-arroz">Arroz Tio Alvino</span>
@@ -1143,7 +1170,6 @@
                     <div style="text-align: center;">
                         <p style="font-size: 0.95rem; color: var(--cor-texto);">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
                         
-                        <!-- CONTEÚDO SEO COMPLETO: BAIRROS -->
                         <div class="lista-bairros-seo">
                             <h4>📍 Cuiabá - Região Norte (CPA):</h4>
                             <p>CPA I, CPA II, CPA III e CPA IV, Morada da Serra, Três Barras, Jardim Ubirajara, Nova Conquista, 1º de Março, Jardim Vitória, Novo Paraíso.</p>
@@ -1167,6 +1193,13 @@
             </div>
         </div>
 
+        <!-- === DICA 5: BOTÃO GRUPO VIP === -->
+        <div style="padding: 0 15px;">
+            <a href="https://wa.me/5565998150975?text=Quero%20entrar%20no%20grupo%20VIP%20de%20ofertas" target="_blank" class="btn-vip-group">
+                <i class="fas fa-star"></i> Entre no Grupo VIP de Ofertas
+            </a>
+        </div>
+
         <footer class="seo-text-block" style="text-align: center; font-size: 0.85rem; color: var(--cor-texto-secundario); padding: 20px;">
             <p><strong>Super Cestas Básicas Dona Antônia</strong></p>
             <p style="margin-top: 5px;">R. Trinta, 105 - Jardim Nossa Sra. Aparecida, Cuiabá - MT, 78090-660</p>
@@ -1186,27 +1219,26 @@
 
     <div class="vinheta-fundo-botoes"></div>
 
-    <!-- BOTÕES FLUTUANTES SIMPLIFICADOS -->
+    <!-- BOTÕES FLUTUANTES SIMPLIFICADOS (DICA 3: BOTÃO WHATSAPP "GRUDENTO" E MAIOR) -->
     <div class="floating-buttons-container">
         <a href="https://www.instagram.com/super.cestas.dona.antonia/" target="_blank" class="btn-float-action btn-float-instagram">
-            <i class="fab fa-instagram"></i> INSTAGRAM
+            <i class="fab fa-instagram"></i>
         </a>
-        <button onclick="abrirModalContatos()" class="btn-float-action btn-float-contato">
-            <i class="fab fa-whatsapp"></i> Conversar por Whatsapp
+        <button onclick="abrirModalContatos()" class="btn-float-action btn-float-contato" style="padding: 12px 25px;">
+            <i class="fab fa-whatsapp"></i> Pedir Agora no WhatsApp
         </button>
     </div>
 
-    <!-- NOVO MODAL: AVISO IMPORTANTE (SUBSTITUI SLIDE) -->
+    <!-- MODAL DE AVISO INICIAL (DICA 1: FRASE POSITIVA TAMBÉM AQUI) -->
     <div id="modalAvisoImportante" class="modal-variacao" onclick="if(event.target === this) fecharAvisoImportante()">
         <div class="modal-info-content" style="max-width: 400px; text-align: center; padding: 30px; border: 1px solid var(--cor-destaque-dourado);">
-           <h3 style="color: var(--cor-destaque-dourado); margin-bottom: 20px; font-size: 1.6rem; font-weight: 700;">Fique Atento</h3>
-           <p style="font-size: 1.2rem; margin-bottom: 10px; color: #fff; font-weight: bold;">Não Vendemos pela Internet</p>
-           <p style="color: var(--cor-texto-secundario); margin-bottom: 30px; font-size: 1rem; line-height: 1.5;">Só pague depois que a Cesta Básica chegar na sua casa.</p>
-           <button onclick="fecharAvisoImportante()" class="btn-aviso-ok">Ok, entendi.</button>
+           <h3 style="color: var(--cor-destaque-dourado); margin-bottom: 20px; font-size: 1.6rem; font-weight: 700;">Segurança Garantida</h3>
+           <p style="font-size: 1.2rem; margin-bottom: 10px; color: #fff; font-weight: bold;">Pague só na Entrega!</p>
+           <p style="color: var(--cor-texto-secundario); margin-bottom: 30px; font-size: 1rem; line-height: 1.5;">Faça seu pedido pelo WhatsApp e receba no conforto de casa.</p>
+           <button onclick="fecharAvisoImportante()" class="btn-aviso-ok">Entendi!</button>
         </div>
     </div>
 
-    <!-- NOVO MODAL: SELEÇÃO DE INTERESSE (SUBSTITUI ENCOMENDA DIRETA) -->
     <div id="modalSelecaoInteresse" class="modal-variacao" onclick="if(event.target === this) fecharModalInteresse()">
         <div class="modal-variacao-content">
             <button class="btn-fechar-modal-var" onclick="fecharModalInteresse()">Fechar</button>
@@ -1215,7 +1247,6 @@
                 <p class="subtitulo-modal-var">Selecione para iniciar o atendimento:</p>
                 
                 <div id="listaOpcoesInteresse">
-                    <!-- CESTA ECONÔMICA (SEM VARIAÇÃO DE ARROZ) -->
                     <div class="grupo-cesta">
                         <p class="titulo-grupo-cesta">Cesta Econômica</p>
                         <div class="opcao-select" id="optInteresse-economica" onclick="selecionarInteresse('Cesta Econômica', '', '85,00')">
@@ -1227,7 +1258,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA MINI -->
                     <div class="grupo-cesta">
                         <p class="titulo-grupo-cesta">Cesta Mini</p>
                         <div class="opcao-select" id="optInteresse-mini-alvino" onclick="selecionarInteresse('Cesta Mini', 'Tio Alvino', '165,00')">
@@ -1246,7 +1276,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA PEQUENA -->
                     <div class="grupo-cesta">
                         <p class="titulo-grupo-cesta">Cesta Pequena</p>
                         <div class="opcao-select" id="optInteresse-pequena-alvino" onclick="selecionarInteresse('Cesta Pequena', 'Tio Alvino', '215,00')">
@@ -1265,7 +1294,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA MÉDIA -->
                     <div class="grupo-cesta">
                         <p class="titulo-grupo-cesta">Cesta Média</p>
                         <div class="opcao-select" id="optInteresse-media-alvino" onclick="selecionarInteresse('Cesta Média', 'Tio Alvino', '320,00')">
@@ -1284,7 +1312,6 @@
                         </div>
                     </div>
 
-                    <!-- CESTA GRANDE -->
                     <div class="grupo-cesta">
                         <p class="titulo-grupo-cesta">Cesta Grande</p>
                         <div class="opcao-select" id="optInteresse-grande-alvino" onclick="selecionarInteresse('Cesta Grande', 'Tio Alvino', '380,00')">
@@ -1311,7 +1338,6 @@
         </div>
     </div>
 
-    <!-- MODAL VARIACAO (Ainda mantido caso precise logicamente, mas sem triggers diretos dos botões) -->
     <div id="modalVariacao" class="modal-variacao" onclick="if(event.target === this) fecharModalVariacao()">
         <div class="modal-variacao-content">
             <button class="btn-fechar-modal-var" onclick="fecharModalVariacao()">Fechar</button>
@@ -1333,7 +1359,6 @@
         </div>
     </div>
 
-    <!-- MODAL INFORMAÇÕES (SEM BRINDES) -->
     <div id="modalInformacoes" class="modal-variacao" onclick="if(event.target === this) fecharModalInfo()">
         <div class="modal-info-content">
             <div class="modal-info-header">
@@ -1341,13 +1366,12 @@
                 <button class="btn-fechar-modal-info" onclick="fecharModalInfo()">Fechar</button>
             </div>
             <div class="modal-body-scroll">
-                <div id="brindeArea"></div> <!-- Mantido vazio intencionalmente -->
+                <div id="brindeArea"></div> 
                 <ul class="lista-produtos-modal" id="listaProdutosContent"></ul>
             </div>
         </div>
     </div>
     
-    <!-- MODAL SLIDER (CÓDIGO MANTIDO MAS DESATIVADO VIA JS) -->
     <div id="modalApresentacao" class="modal-variacao" onclick="if(event.target === this) fecharApresentacao()">
         <div class="modal-slider-content">
             <button class="btn-fechar-slider" onclick="fecharApresentacao()"><i class="fas fa-times"></i></button>
@@ -1369,7 +1393,6 @@
         </div>
     </div>
 
-    <!-- MODAL CONTATOS -->
     <div id="modalContatos" class="modal-variacao" onclick="if(event.target === this) fecharModalContatos()">
         <div class="modal-info-content" style="max-width: 340px;">
             <div class="modal-info-header">
@@ -1394,7 +1417,6 @@
         </div>
     </div>
 
-    <!-- MODAL ZOOM IMAGEM -->
     <div id="modalZoomImagem" onclick="if(event.target === this) fecharZoom()">
         <button class="btn-fechar-zoom" onclick="fecharZoom()">Fechar</button>
         <div class="zoom-img-container">
@@ -1404,7 +1426,6 @@
     </div>
 
     <script>
-        // === DADOS DAS CESTAS (SEM BRINDES) ===
         const dadosCestas = {
             'economica': {
                 titulo: 'Cesta Econômica',
@@ -1453,10 +1474,8 @@
             const lista = document.getElementById('listaProdutosContent');
             lista.innerHTML = '';
             
-            // Área de brinde limpa
             document.getElementById('brindeArea').innerHTML = '';
 
-            // Renderizar Itens
             dados.itens.forEach(item => {
                 const li = document.createElement('li');
                 if(item.includes('<b>')) {
@@ -1478,7 +1497,6 @@
 
         function fecharModalInfo() { document.getElementById('modalInformacoes').style.display = 'none'; }
 
-        // Mantido para compatibilidade, caso ainda haja referência
         function abrirModalVariacao(nomeCesta, precoAlvino, precoKoblenz) {
             cestaAtual = { nome: nomeCesta, precoAlvino, precoKoblenz, selecao: '' };
             
@@ -1515,9 +1533,7 @@
             document.getElementById('btnConfirmarPedido').disabled = false;
         }
         
-        // --- FUNÇÕES DO NOVO MODAL DE INTERESSE ---
         function abrirModalInteresse() {
-            // Fecha o modal de contato anterior para não ficar sobreposto
             fecharModalContatos();
             document.getElementById('modalSelecaoInteresse').style.display = 'flex';
         }
@@ -1529,7 +1545,6 @@
         function selecionarInteresse(nomeCesta, marca, preco) {
             interesseSelecionado = { cesta: nomeCesta, marca: marca, preco: preco };
             
-            // Limpa seleções anteriores visualmente
             const opcoes = document.querySelectorAll('#listaOpcoesInteresse .opcao-select');
             opcoes.forEach(op => {
                 op.classList.remove('selected');
@@ -1540,7 +1555,6 @@
                 }
             });
 
-            // Constrói o ID baseado nos parâmetros
             let idParaSelecionar = 'optInteresse-';
             if (nomeCesta === 'Cesta Econômica') {
                 idParaSelecionar += 'economica';
@@ -1563,7 +1577,6 @@
             const btnEnviar = document.getElementById('btnEnviarInteresse');
             btnEnviar.disabled = false;
 
-            // Rola suavemente até o botão para que o usuário veja a próxima ação
             setTimeout(() => {
                 btnEnviar.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 150);
@@ -1588,7 +1601,6 @@
         }
 
         function abrirWhatsSeguro() {
-            // Função antiga mantida para compatibilidade, mas agora redirecionada
             abrirModalInteresse();
         }
 
@@ -1609,7 +1621,6 @@
             window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
         }
         
-        // Modais Contatos e Zoom
         function abrirModalContatos() { document.getElementById('modalContatos').style.display = 'flex'; }
         function fecharModalContatos() { document.getElementById('modalContatos').style.display = 'none'; }
 
@@ -1625,7 +1636,6 @@
              elemento.classList.add('active');
         }
 
-        // Funções do Novo Aviso Importante
         function abrirAvisoImportante() {
             document.getElementById('modalAvisoImportante').style.display = 'flex';
         }
@@ -1633,7 +1643,6 @@
             document.getElementById('modalAvisoImportante').style.display = 'none';
         }
 
-        // Slider (Mantido, mas função de abertura automática desativada)
         let slideIndex = 1;
         
         function verificarApresentacao() {
@@ -1668,9 +1677,6 @@
         }
 
         window.addEventListener('load', () => { 
-            // verificarApresentacao(); // DESATIVADO: Slide de apresentação inicial
-            
-            // ATIVADO: Novo Aviso Importante (Segurança)
             setTimeout(abrirAvisoImportante, 1000); 
         });
     </script>
