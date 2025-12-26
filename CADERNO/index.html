@@ -52,6 +52,20 @@
         /* Animação suave */
         .fade-in { animation: fadeIn 0.2s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Dropdown Menu Animation */
+        .dropdown-menu {
+            transform-origin: top right;
+            transition: transform 0.1s ease-out, opacity 0.1s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .group:hover .dropdown-menu, .dropdown-menu:hover {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-800">
@@ -156,7 +170,6 @@
                         <option value="Explica">Explica</option>
                         <option value="Glossário">Glossário</option>
                         <option value="Artigo">Artigo</option>
-                        <option value="Importante">Importante</option>
                         <option value="Lei">Lei</option>
                         <option value="Youtube">Youtube</option>
                         <option value="Matéria">Matéria</option>
@@ -381,42 +394,67 @@
                 const timeCreated = new Date(note.timestamp).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 const promptBase = encodeURIComponent(note.content.substring(0, 100));
                 
-                const linkExplain = `https://www.google.com/search?q=Explique+didaticamente+o+conceito+juridico:+${promptBase}&udm=50`;
-                const linkGlossary = `https://www.google.com/search?q=Glossario+juridico+definicao+de:+${promptBase}&udm=50`;
-                const linkArticle = `https://www.google.com/search?q=Artigo+academico+direito+sobre:+${promptBase}&udm=50`;
+                // Gera links com novos prompts de IA
+                const makeLink = (prompt) => `https://www.google.com/search?q=${encodeURIComponent(prompt + ': ' + promptBase)}&udm=50`;
+
+                const links = {
+                    explicar: makeLink("Explique didaticamente o conceito jurídico"),
+                    glossario: makeLink("Glossário jurídico definição de"),
+                    artigo: makeLink("Artigo acadêmico direito sobre"),
+                    caso: makeLink("Crie 3 casos concretos jurídicos sobre"),
+                    questoes: makeLink("Crie 5 questões objetivas de direito com gabarito sobre"),
+                    pratica: makeLink("Como aplicar na prática jurídica o tema"),
+                    majoritario: makeLink("Entendimentos jurisprudenciais majoritários sobre"),
+                    doutrina: makeLink("Entendimentos doutrinários divergentes e majoritários sobre")
+                };
 
                 const subnotes = note.subnotes || [];
 
                 const el = document.createElement('div');
-                el.className = "bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition group flex flex-col";
+                el.className = "bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition group flex flex-col relative";
                 
                 el.innerHTML = `
-                    <div class="flex justify-between items-start mb-3">
-                        <div>
-                            ${note.tag ? `<span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-semibold uppercase tracking-wider mr-2">${note.tag}</span>` : ''}
-                            <span class="text-xs text-gray-400"><i class="fa-regular fa-clock"></i> ${timeCreated}</span>
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            ${note.tag ? `<span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider mr-2">${note.tag}</span>` : ''}
+                            <span class="text-[10px] text-gray-400"><i class="fa-regular fa-clock"></i> ${timeCreated}</span>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="openModal('edit_note', ${note.id})" class="text-gray-300 hover:text-blue-500 transition" title="Editar Nota"><i class="fa-solid fa-pencil"></i></button>
-                             <button onclick="toggleReminder(${note.id})" class="text-gray-300 hover:text-amber-500 transition ${note.reminder ? 'text-amber-500' : ''}" title="Destaque no Calendário"><i class="fa-solid fa-bell"></i></button>
-                            <button onclick="deleteNote(${note.id})" class="text-gray-300 hover:text-red-500 transition" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="openModal('edit_note', ${note.id})" class="text-gray-300 hover:text-blue-500 transition text-xs" title="Editar Nota"><i class="fa-solid fa-pencil"></i></button>
+                             <button onclick="toggleReminder(${note.id})" class="text-gray-300 hover:text-amber-500 transition text-xs ${note.reminder ? 'text-amber-500' : ''}" title="Destaque no Calendário"><i class="fa-solid fa-bell"></i></button>
+                            <button onclick="deleteNote(${note.id})" class="text-gray-300 hover:text-red-500 transition text-xs" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                     
-                    <div class="serif text-gray-800 whitespace-pre-wrap mb-6 text-lg leading-relaxed">${note.content}</div>
+                    <div class="serif text-gray-800 whitespace-pre-wrap mb-4 text-base leading-relaxed">${note.content}</div>
 
-                    <div class="flex gap-2 mb-4">
-                        <a href="${linkExplain}" target="_blank" class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-indigo-100 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles"></i> Explicar</a>
-                        <a href="${linkGlossary}" target="_blank" class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-teal-100 flex items-center gap-1"><i class="fa-solid fa-book"></i> Glossário</a>
-                        <a href="${linkArticle}" target="_blank" class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-purple-100 flex items-center gap-1"><i class="fa-solid fa-pen-nib"></i> Artigo</a>
+                    <!-- Botão IA com Dropdown -->
+                    <div class="relative group w-max mb-3">
+                        <button class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-indigo-100 flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Assistente IA
+                        </button>
+                        
+                        <!-- Menu Dropdown -->
+                        <div class="dropdown-menu absolute left-0 top-full mt-1 w-56 bg-white border border-gray-100 rounded-lg shadow-xl z-50 p-1 flex flex-col gap-1">
+                            <a href="${links.explicar}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 rounded text-left"><i class="fa-solid fa-chalkboard-user w-4"></i> Explicar Conceito</a>
+                            <a href="${links.glossario}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-teal-50 hover:text-teal-700 rounded text-left"><i class="fa-solid fa-book w-4"></i> Glossário</a>
+                            <a href="${links.artigo}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-purple-50 hover:text-purple-700 rounded text-left"><i class="fa-solid fa-pen-nib w-4"></i> Artigo Acadêmico</a>
+                            <div class="h-px bg-gray-100 my-0.5"></div>
+                            <a href="${links.caso}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-blue-50 hover:text-blue-700 rounded text-left"><i class="fa-solid fa-briefcase w-4"></i> Casos Concretos (3)</a>
+                            <a href="${links.questoes}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-orange-50 hover:text-orange-700 rounded text-left"><i class="fa-solid fa-list-check w-4"></i> Questões Objetivas (5)</a>
+                            <a href="${links.pratica}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-green-50 hover:text-green-700 rounded text-left"><i class="fa-solid fa-gavel w-4"></i> Prática Jurídica</a>
+                            <div class="h-px bg-gray-100 my-0.5"></div>
+                            <a href="${links.majoritario}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-red-50 hover:text-red-700 rounded text-left"><i class="fa-solid fa-scale-balanced w-4"></i> Entend. Majoritário</a>
+                            <a href="${links.doutrina}" target="_blank" class="block px-3 py-1.5 text-xs text-gray-600 hover:bg-amber-50 hover:text-amber-700 rounded text-left"><i class="fa-solid fa-book-open w-4"></i> Entend. Doutrinário</a>
+                        </div>
                     </div>
 
-                    <!-- Rodapé -->
-                    <div class="mt-auto border-t border-gray-100 pt-3">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Subnotas</span>
-                            <button onclick="openModal('add_subnote', ${note.id})" class="text-slate-500 hover:bg-slate-100 px-3 py-1.5 rounded text-xs flex items-center gap-1 font-semibold border border-transparent hover:border-gray-200 transition">
-                                <i class="fa-solid fa-plus"></i> Nova Subnota
+                    <!-- Rodapé Compacto -->
+                    <div class="mt-auto border-t border-gray-100 pt-2">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wide">Subnotas</span>
+                            <button onclick="openModal('add_subnote', ${note.id})" class="text-slate-500 hover:bg-slate-100 px-2 py-1 rounded text-[10px] flex items-center gap-1 font-semibold border border-transparent hover:border-gray-200 transition">
+                                <i class="fa-solid fa-plus"></i> Nova
                             </button>
                         </div>
                         ${renderSubnoteChips(note.id, subnotes)}
@@ -434,26 +472,26 @@
             const chipsHtml = subnotes.map((sn, idx) => `
                 <button onclick="toggleSubnote(${noteId}, ${sn.id})" 
                     id="chip-${sn.id}"
-                    class="chip-btn flex-shrink-0 bg-white border border-gray-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold hover:bg-indigo-50 hover:border-indigo-200 transition focus:outline-none whitespace-nowrap">
+                    class="chip-btn flex-shrink-0 bg-white border border-gray-200 text-slate-600 px-2 py-0.5 rounded-full text-[10px] font-semibold hover:bg-indigo-50 hover:border-indigo-200 transition focus:outline-none whitespace-nowrap">
                     ${sn.title || 'Subnota ' + (idx + 1)}
                 </button>
             `).join('');
 
             // Renderiza os conteúdos
             const contentsHtml = subnotes.map((sn) => `
-                <div id="content-${sn.id}" class="hidden mt-3 bg-white p-4 rounded-lg border border-gray-200 shadow-sm relative fade-in">
+                <div id="content-${sn.id}" class="hidden mt-2 bg-white p-3 rounded-lg border border-gray-200 shadow-sm relative fade-in">
                     <div class="absolute top-2 right-2 flex gap-2">
-                        <button onclick="openModal('edit_subnote', ${noteId}, ${sn.id})" class="text-gray-300 hover:text-blue-500" title="Editar Subnota">
+                        <button onclick="openModal('edit_subnote', ${noteId}, ${sn.id})" class="text-gray-300 hover:text-blue-500 text-xs" title="Editar Subnota">
                             <i class="fa-solid fa-pencil"></i>
                         </button>
-                        <button onclick="deleteSubnote(${noteId}, ${sn.id})" class="text-gray-300 hover:text-red-400" title="Excluir Subnota">
+                        <button onclick="deleteSubnote(${noteId}, ${sn.id})" class="text-gray-300 hover:text-red-400 text-xs" title="Excluir Subnota">
                             <i class="fa-solid fa-times"></i>
                         </button>
                     </div>
-                    <div class="rich-content text-sm text-slate-700 mb-3 mt-4">${sn.text}</div>
+                    <div class="rich-content text-xs text-slate-700 mb-2 mt-3 leading-relaxed">${sn.text}</div>
                     ${sn.link ? `
                         <div class="text-right border-t border-gray-100 pt-2">
-                            <a href="${sn.link}" target="_blank" class="inline-flex items-center gap-1 bg-indigo-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-indigo-700 transition">
+                            <a href="${sn.link}" target="_blank" class="inline-flex items-center gap-1 bg-indigo-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-indigo-700 transition">
                                 Abrir Link <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
