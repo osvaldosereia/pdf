@@ -55,7 +55,6 @@
         );
 
         const Truck = (props) => <IconBase {...props}><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l4 4v4c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></IconBase>;
-        // Settings usado no modal de pagamento
         const Settings = (props) => <IconBase {...props}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></IconBase>;
         const List = (props) => <IconBase {...props}><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></IconBase>;
         const Upload = (props) => <IconBase {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></IconBase>;
@@ -526,7 +525,7 @@
                     {/* --- MODAL DETALHES --- */}
                     {detailsModal.open && detailsModal.order && (
                         <div className="fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
-                            <div className="bg-white w-full max-w-md rounded-2xl p-6 relative max-h-[85vh] overflow-y-auto">
+                            <div className="bg-white w-full max-w-md rounded-2xl p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
                                 <button 
                                     onClick={() => setDetailsModal({ open: false, order: null })}
                                     className="absolute top-4 right-4 text-gray-500 bg-gray-100 rounded-full p-1"
@@ -534,52 +533,93 @@
                                     <XCircle size={24} />
                                 </button>
                                 
-                                <div className="mb-4">
-                                    <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Pedido</span>
-                                    <h2 className="text-2xl font-bold text-gray-800">
-                                        {detailsModal.order.itens[0]?.tipo || 'Cesta'}
-                                    </h2>
-                                    <p className="text-gray-500">{detailsModal.order.itens[0]?.marca}</p>
-                                </div>
+                                {/* Lógica para variáveis de exibição */}
+                                {(() => {
+                                    const item = detailsModal.order.itens[0] || {};
+                                    const isPaid = detailsModal.order.pagamento.status === 'pago';
+                                    const isChanged = item.modo === 'alterada';
+                                    
+                                    return (
+                                        <>
+                                            {/* BANNER DE STATUS DE PAGAMENTO */}
+                                            <div className={`p-4 rounded-xl text-center mb-5 border-2 ${
+                                                isPaid 
+                                                ? 'bg-green-100 border-green-500 text-green-800' 
+                                                : 'bg-red-100 border-red-500 text-red-800'
+                                            }`}>
+                                                <span className="block text-xs font-bold uppercase tracking-wider mb-1 opacity-80">Situação do Pagamento</span>
+                                                <div className="flex flex-col items-center">
+                                                    <span className="text-2xl font-black flex items-center gap-2">
+                                                        {isPaid ? <CheckCircle size={28}/> : <DollarSign size={28}/>}
+                                                        {isPaid ? 'JÁ PAGO' : 'A RECEBER'}
+                                                    </span>
+                                                    {!isPaid && (
+                                                        <div className="mt-1 bg-white/50 px-3 py-1 rounded font-bold text-lg">
+                                                            R$ {detailsModal.order.financeiro.total}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
 
-                                <div className="bg-gray-50 p-4 rounded-xl mb-4 border border-gray-100">
-                                    <div className="flex justify-between mb-2">
-                                        <span className="text-gray-600">Subtotal</span>
-                                        <span className="font-semibold">R$ {detailsModal.order.financeiro.subtotal}</span>
-                                    </div>
-                                    <div className="flex justify-between mb-2 text-red-500">
-                                        <span className="">Desconto</span>
-                                        <span className="font-semibold">- R$ {detailsModal.order.financeiro.desconto}</span>
-                                    </div>
-                                    <div className="flex justify-between pt-2 border-t border-gray-200 text-lg font-bold text-gray-800">
-                                        <span>Total</span>
-                                        <span>R$ {detailsModal.order.financeiro.total}</span>
-                                    </div>
-                                </div>
+                                            {/* GRID PRINCIPAL: CÓDIGO E TIPO */}
+                                            <div className="grid grid-cols-2 gap-3 mb-5">
+                                                {/* Tipo da Cesta (Padrao vs Alterada) */}
+                                                <div className={`p-3 rounded-lg border-2 text-center flex flex-col justify-center ${
+                                                    isChanged 
+                                                    ? 'bg-orange-50 border-orange-400 text-orange-900' 
+                                                    : 'bg-blue-50 border-blue-200 text-blue-900'
+                                                }`}>
+                                                    <span className="text-xs font-bold uppercase opacity-70 mb-1">Tipo da Cesta</span>
+                                                    <span className="font-bold text-lg leading-tight">
+                                                        {isChanged ? '⚠️ ALTERADA' : 'PADRÃO'}
+                                                    </span>
+                                                </div>
 
-                                <div className="mb-6">
-                                    <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
-                                        <List size={18} /> Itens da Cesta
-                                    </h3>
-                                    <ul className="text-sm text-gray-600 space-y-1 list-disc pl-5">
-                                        {detailsModal.order.itens[0]?.conteudo.map((item, idx) => {
-                                            // Limpa tags HTML básicas se vierem do JSON
-                                            const cleanItem = item.replace(/<[^>]*>?/gm, '');
-                                            if (!cleanItem) return null;
-                                            return <li key={idx}>{cleanItem}</li>
-                                        })}
-                                    </ul>
-                                </div>
+                                                {/* Código da Cesta */}
+                                                <div className="p-3 rounded-lg border-2 bg-gray-50 border-gray-300 text-center flex flex-col justify-center">
+                                                    <span className="text-xs font-bold uppercase text-gray-500 mb-1">Código / ID</span>
+                                                    <span className="font-black text-3xl text-gray-800 tracking-tighter">
+                                                        {item.identificacao || '-'}
+                                                    </span>
+                                                </div>
+                                            </div>
 
-                                {detailsModal.order.brinde && (
-                                    <div className="bg-purple-50 text-purple-800 p-3 rounded-lg font-bold text-center mb-6 border border-purple-100">
-                                        🎁 Brinde: {detailsModal.order.brinde}
-                                    </div>
-                                )}
+                                            {/* OBSERVAÇÃO (Se houver) */}
+                                            {detailsModal.order.obs && (
+                                                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-5 rounded-r-lg shadow-sm">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <Info size={20} className="text-yellow-600"/>
+                                                        <span className="font-bold text-yellow-800 uppercase text-sm">Observação Importante:</span>
+                                                    </div>
+                                                    <p className="text-yellow-900 font-medium text-lg leading-snug">
+                                                        "{detailsModal.order.obs}"
+                                                    </p>
+                                                </div>
+                                            )}
+
+                                            {/* Descrição do Produto */}
+                                            <div className="text-center mb-6 pt-4 border-t border-gray-100">
+                                                <p className="text-sm text-gray-400 uppercase font-bold mb-1">Produto</p>
+                                                <h3 className="text-xl font-bold text-gray-800">{item.tipo || 'Cesta'}</h3>
+                                                <p className="text-gray-500 font-medium">{item.marca}</p>
+                                            </div>
+
+                                            {/* Brinde (Se houver) */}
+                                            {detailsModal.order.brinde && (
+                                                <div className="bg-purple-100 text-purple-800 p-4 rounded-xl font-bold text-center mb-6 border-2 border-purple-200 border-dashed">
+                                                    <div className="text-xs uppercase opacity-70 mb-1">Não esquecer</div>
+                                                    <div className="text-lg flex items-center justify-center gap-2">
+                                                        🎁 {detailsModal.order.brinde}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </>
+                                    );
+                                })()}
 
                                 <button 
                                     onClick={() => setDetailsModal({ open: false, order: null })}
-                                    className="w-full bg-gray-800 text-white py-3 rounded-xl font-bold"
+                                    className="w-full bg-gray-900 text-white py-4 rounded-xl font-bold text-lg active:scale-95 transition-transform shadow-lg"
                                 >
                                     Fechar
                                 </button>
