@@ -197,21 +197,21 @@
                 </div>
             </div>
 
-            <!-- COLUNA 4: ANÁLISE ESTRATÉGICA (3/12) -->
+            <!-- COLUNA 4: ESTATÍSTICAS (3/12) -->
             <div class="col-span-3 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
                 <div class="p-3 border-b border-gray-100 bg-purple-50 flex justify-between items-center shrink-0">
                     <div class="flex items-center gap-2">
                         <div class="bg-purple-100 p-1.5 rounded-full text-purple-600">
-                            <i class="fa-solid fa-magnifying-glass-chart text-xs"></i>
+                            <i class="fa-solid fa-chart-simple text-xs"></i>
                         </div>
                         <div>
-                            <h2 class="font-bold text-purple-900 text-sm uppercase">Estratégia</h2>
+                            <h2 class="font-bold text-purple-900 text-sm uppercase">Estatísticas</h2>
                         </div>
                     </div>
                     
                     <!-- SELETOR DE VISÃO -->
                     <div class="relative">
-                        <select id="seletorAnalise" onchange="renderizarAnaliseEstrategica()" 
+                        <select id="seletorAnalise" onchange="renderizarEstatisticas()" 
                             class="appearance-none bg-white border border-purple-300 text-purple-900 text-[10px] font-bold rounded pl-2 pr-6 py-1 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer shadow-sm hover:bg-purple-50 transition w-32">
                             <option value="tipo_cesta">📦 Cestas/Arroz</option>
                             <option value="brindes">🎁 Brindes</option>
@@ -336,18 +336,38 @@
 
             vendas.sort((a, b) => new Date(b.data) - new Date(a.data));
             
-            // Limpa cupons vencidos há mais de 30 dias para não sujar o banco
+            // --- LIMPEZA DE DADOS (SYNC COM VENDAS) ---
+            // Cria um conjunto de IDs de clientes que possuem vendas ativas
+            const idsClientesComVendas = new Set(vendas.map(v => v.cliente.id));
+            
+            // Filtra os cupons, mantendo apenas aqueles cujos clientes ainda têm vendas no sistema
+            // Se todas as vendas de um cliente forem apagadas, os cupons dele também serão
+            const cuponsOriginais = cupons.length;
+            cupons = cupons.filter(c => {
+                // Mantém se tiver ID de cliente válido nas vendas OU se for cupom avulso sem ID (raro no sistema atual)
+                if (c.idCliente) {
+                    return idsClientesComVendas.has(c.idCliente);
+                }
+                return true; 
+            });
+
+            // Limpa cupons vencidos há mais de 30 dias
             const hoje = new Date();
             cupons = cupons.filter(c => {
                 const dataExp = new Date(c.expiracao || c.validade);
                 const diff = (hoje - dataExp) / (1000 * 60 * 60 * 24);
                 return diff < 30; 
             });
-            localStorage.setItem(KEY_CUPONS, JSON.stringify(cupons));
+
+            // Se houve limpeza, atualiza o localStorage
+            if (cupons.length !== cuponsOriginais) {
+                localStorage.setItem(KEY_CUPONS, JSON.stringify(cupons));
+            }
+            // ------------------------------------------
 
             aplicarFiltros();
             renderizarRadar();
-            renderizarCupons('semana'); // Default view
+            renderizarCupons('semana'); 
         }
 
         function exportarBackup() {
@@ -559,7 +579,7 @@
 
             atualizarKPIsDashboard();
             renderizarPosVendaCompacto(); // Coluna 1
-            renderizarAnaliseEstrategica(); // Coluna 4
+            renderizarEstatisticas(); // Coluna 4 (Renomeado)
         }
 
         function atualizarKPIsDashboard() {
@@ -803,9 +823,9 @@
             }
         }
 
-        // --- COLUNA 4: ANÁLISE ---
+        // --- COLUNA 4: ESTATÍSTICAS (Renomeado) ---
 
-        function renderizarAnaliseEstrategica() {
+        function renderizarEstatisticas() {
             const view = document.getElementById('seletorAnalise').value;
             const tbody = document.getElementById('tabelaAnalise');
             tbody.innerHTML = '';
