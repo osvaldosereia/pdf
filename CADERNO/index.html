@@ -8,14 +8,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Serif para leitura jurídica) -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Open Sans', sans-serif; background-color: #f3f4f6; }
         h1, h2, h3, .serif { font-family: 'Merriweather', serif; }
         
-        /* Scrollbar personalizada fina */
+        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #c5c5c5; border-radius: 4px; }
@@ -28,11 +28,25 @@
             content: ''; display: block; width: 6px; height: 6px; 
             background-color: #ef4444; border-radius: 50%; margin: 2px auto 0;
         }
+
+        /* Estilos para o conteúdo colado (Subnotas) */
+        .rich-content ul { list-style-type: disc; margin-left: 1.5em; }
+        .rich-content ol { list-style-type: decimal; margin-left: 1.5em; }
+        .rich-content strong { font-weight: 700; color: #1e293b; }
+        .rich-content em { font-style: italic; }
+        .rich-content p { margin-bottom: 0.5em; }
+        
+        /* Placeholder para div contenteditable */
+        [contenteditable]:empty:before {
+            content: attr(placeholder);
+            color: #9ca3af;
+            display: block; /* For Firefox */
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden text-slate-800">
 
-    <!-- Header Simples -->
+    <!-- Header -->
     <header class="bg-slate-900 text-white p-4 shadow-md flex justify-between items-center shrink-0">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-scale-balanced text-2xl text-amber-500"></i>
@@ -46,27 +60,18 @@
     <!-- Layout Principal -->
     <main class="flex flex-1 overflow-hidden">
         
-        <!-- Coluna Esquerda: Filtros e Calendário -->
+        <!-- Coluna Esquerda -->
         <aside class="w-80 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
-            
-            <!-- Gerenciador de Tags -->
             <div class="p-5 border-b border-gray-100 overflow-y-auto flex-1">
                 <h2 class="text-sm font-bold uppercase text-slate-500 mb-3 tracking-wide">Matérias / Tags</h2>
-                
                 <div class="flex gap-2 mb-4">
-                    <input type="text" id="newTagInput" placeholder="Nova tag (ex: Penal)" 
+                    <input type="text" id="newTagInput" placeholder="Nova tag..." 
                            class="w-full px-3 py-1.5 text-sm border rounded focus:outline-none focus:border-slate-600">
-                    <button onclick="addTag()" class="bg-slate-800 text-white px-3 rounded hover:bg-slate-700">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                    <button onclick="addTag()" class="bg-slate-800 text-white px-3 rounded hover:bg-slate-700"><i class="fa-solid fa-plus"></i></button>
                 </div>
-
-                <div id="tagFilterList" class="flex flex-col gap-2">
-                    <!-- Tags inseridas via JS -->
-                </div>
+                <div id="tagFilterList" class="flex flex-col gap-2"></div>
             </div>
 
-            <!-- Calendário Mensal -->
             <div class="p-5 bg-slate-50">
                 <div class="flex justify-between items-center mb-4">
                     <button onclick="changeMonth(-1)" class="text-slate-500 hover:text-slate-800"><i class="fa-solid fa-chevron-left"></i></button>
@@ -76,22 +81,18 @@
                 <div class="grid grid-cols-7 gap-1 text-center text-xs text-slate-500 mb-2">
                     <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
                 </div>
-                <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-sm">
-                    <!-- Dias inseridos via JS -->
-                </div>
+                <div id="calendarGrid" class="grid grid-cols-7 gap-1 text-sm"></div>
             </div>
         </aside>
 
-        <!-- Coluna Direita: Anotações -->
+        <!-- Coluna Direita -->
         <section class="flex-1 flex flex-col bg-gray-50 h-full relative">
-            
-            <!-- Input Area Fixa no Topo -->
+            <!-- Input Area -->
             <div class="p-6 bg-white shadow-sm shrink-0 z-20">
                 <div class="max-w-4xl mx-auto">
                     <div class="mb-2 flex gap-2">
                         <select id="noteTagSelect" class="border rounded px-3 py-1 text-sm text-slate-600 focus:outline-none">
                             <option value="">Sem Tag</option>
-                            <!-- Opções via JS -->
                         </select>
                         <span class="text-xs text-gray-400 self-center">Hoje: <span id="displayDate"></span></span>
                     </div>
@@ -107,42 +108,60 @@
                 </div>
             </div>
 
-            <!-- Lista de Notas (Scrollável) -->
+            <!-- Lista de Notas -->
             <div class="flex-1 overflow-y-auto p-6 scroll-smooth" id="notesContainer">
                 <div class="max-w-4xl mx-auto space-y-6" id="notesList">
-                    <!-- Notas inseridas via JS -->
                     <div class="text-center text-gray-400 mt-10">
                         <i class="fa-regular fa-folder-open text-4xl mb-2"></i>
-                        <p>Nenhuma anotação encontrada para os filtros atuais.</p>
+                        <p>Nenhuma anotação encontrada.</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Modal para Inputs Extras (Link/Youtube) -->
+    <!-- Modal Dinâmico -->
     <div id="inputModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-96">
-            <h3 id="modalTitle" class="font-bold mb-4">Adicionar Recurso</h3>
-            <input type="text" id="modalInput" class="w-full border p-2 rounded mb-4" placeholder="Cole o link ou texto aqui...">
-            <div class="flex justify-end gap-2">
-                <button onclick="closeModal()" class="px-4 py-2 text-slate-600 hover:bg-gray-100 rounded">Cancelar</button>
-                <button id="modalConfirmBtn" class="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700">Adicionar</button>
+        <div class="bg-white p-6 rounded-lg shadow-xl w-[500px]">
+            <h3 id="modalTitle" class="font-bold mb-4 text-lg text-slate-800">Adicionar Recurso</h3>
+            
+            <!-- Campo de Título (Para Links e Vídeos) -->
+            <div id="modalTitleContainer" class="mb-3 hidden">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Título / Descrição</label>
+                <input type="text" id="modalInputTitle" class="w-full border p-2 rounded focus:border-slate-800 outline-none" placeholder="Ex: Aula do STF sobre...">
+            </div>
+
+            <!-- Campo de Conteúdo (URL ou Texto Rico) -->
+            <div class="mb-4">
+                <label id="modalContentLabel" class="block text-xs font-bold text-gray-500 uppercase mb-1">Conteúdo</label>
+                
+                <!-- Input simples para Links/Videos -->
+                <input type="text" id="modalInputUrl" class="w-full border p-2 rounded focus:border-slate-800 outline-none hidden" placeholder="https://...">
+                
+                <!-- Input rico para Subnotas/Códigos -->
+                <div id="modalInputRich" contenteditable="true" 
+                     class="w-full border p-2 rounded focus:border-slate-800 outline-none min-h-[100px] max-h-[300px] overflow-y-auto bg-gray-50 rich-content"
+                     placeholder="Cole aqui seu texto com formatação..."></div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+                <button onclick="closeModal()" class="px-4 py-2 text-slate-600 hover:bg-gray-100 rounded text-sm font-semibold">Cancelar</button>
+                <button id="modalConfirmBtn" class="px-4 py-2 bg-slate-800 text-white rounded hover:bg-slate-700 text-sm font-semibold">Salvar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- ESTADO E CONFIGURAÇÃO ---
-        const STORE_KEY = 'law_notes_db_v1';
+        // --- CONFIG ---
+        const STORE_KEY = 'law_notes_db_v2'; // Versão atualizada do DB
         let state = {
             tags: ['Constitucional', 'Penal', 'Civil', 'Processo Civil'],
-            notes: [], // { id, content, tag, date, timestamp, reminder, subnotes: [], links: [] }
+            notes: [], 
             filterTag: null,
             currentDate: new Date()
         };
 
-        // --- INICIALIZAÇÃO ---
+        // --- INIT ---
         function init() {
             loadData();
             renderTags();
@@ -150,7 +169,6 @@
             renderNotes();
             updateDateDisplay();
             
-            // Atalho Ctrl+Enter para salvar
             document.getElementById('noteContent').addEventListener('keydown', function(e) {
                 if (e.ctrlKey && e.key === 'Enter') addNote();
             });
@@ -159,7 +177,7 @@
         function saveData() {
             localStorage.setItem(STORE_KEY, JSON.stringify(state));
             renderTags();
-            renderCalendar(); // Atualiza bolinhas de lembrete
+            renderCalendar();
             renderNotes();
         }
 
@@ -172,152 +190,7 @@
             }
         }
 
-        function updateDateDisplay() {
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('displayDate').textContent = new Date().toLocaleDateString('pt-BR', options);
-        }
-
-        // --- GERENCIAMENTO DE TAGS ---
-        function addTag() {
-            const input = document.getElementById('newTagInput');
-            const val = input.value.trim();
-            if (val && !state.tags.includes(val)) {
-                state.tags.push(val);
-                input.value = '';
-                saveData();
-            }
-        }
-
-        function removeTag(tag) {
-            if (confirm(`Excluir a tag "${tag}"?`)) {
-                state.tags = state.tags.filter(t => t !== tag);
-                // Opcional: remover a tag das notas existentes
-                state.notes.forEach(n => { if (n.tag === tag) n.tag = ''; });
-                if (state.filterTag === tag) state.filterTag = null;
-                saveData();
-            }
-        }
-
-        function toggleFilter(tag) {
-            state.filterTag = state.filterTag === tag ? null : tag;
-            renderTags();
-            renderNotes();
-        }
-
-        function renderTags() {
-            const list = document.getElementById('tagFilterList');
-            const select = document.getElementById('noteTagSelect');
-            
-            list.innerHTML = '';
-            select.innerHTML = '<option value="">Sem Tag</option>';
-
-            state.tags.forEach(tag => {
-                // Filtro Sidebar
-                const isActive = state.filterTag === tag;
-                const div = document.createElement('div');
-                div.className = `flex justify-between items-center px-3 py-2 rounded cursor-pointer text-sm transition ${isActive ? 'bg-slate-200 font-semibold' : 'hover:bg-gray-100'}`;
-                div.innerHTML = `
-                    <span onclick="toggleFilter('${tag}')" class="flex-1 truncate"><i class="fa-solid fa-tag text-xs mr-2 text-slate-400"></i>${tag}</span>
-                    <button onclick="removeTag('${tag}')" class="text-gray-300 hover:text-red-500 ml-2"><i class="fa-solid fa-times"></i></button>
-                `;
-                list.appendChild(div);
-
-                // Select Input
-                const opt = document.createElement('option');
-                opt.value = tag;
-                opt.textContent = tag;
-                select.appendChild(opt);
-            });
-        }
-
-        // --- CALENDÁRIO ---
-        function changeMonth(delta) {
-            state.currentDate.setMonth(state.currentDate.getMonth() + delta);
-            renderCalendar();
-        }
-
-        function renderCalendar() {
-            const year = state.currentDate.getFullYear();
-            const month = state.currentDate.getMonth();
-            
-            document.getElementById('currentMonthYear').textContent = 
-                state.currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const grid = document.getElementById('calendarGrid');
-            grid.innerHTML = '';
-
-            // Dias vazios
-            for (let i = 0; i < firstDay; i++) {
-                grid.innerHTML += `<div></div>`;
-            }
-
-            // Dias do mês
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                
-                // Checar se tem lembrete nesse dia
-                const hasReminder = state.notes.some(n => n.reminder && n.date === dateStr);
-                const isToday = new Date().toISOString().split('T')[0] === dateStr;
-
-                const dayDiv = document.createElement('div');
-                dayDiv.className = `calendar-day h-8 w-8 flex flex-col items-center justify-center rounded-full text-xs cursor-pointer mx-auto ${hasReminder ? 'has-reminder' : ''} ${isToday ? 'bg-slate-200 font-bold' : ''}`;
-                dayDiv.textContent = day;
-                
-                // Clique no calendário filtra notas daquele dia
-                dayDiv.onclick = () => {
-                    // Implementação futura: filtrar por data
-                    alert(`Notas do dia ${dateStr}`);
-                };
-
-                grid.appendChild(dayDiv);
-            }
-        }
-
-        // --- NOTAS (CORE) ---
-        function addNote() {
-            const contentInput = document.getElementById('noteContent');
-            const tagSelect = document.getElementById('noteTagSelect');
-            const content = contentInput.value.trim();
-
-            if (!content) return;
-
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
-
-            const newNote = {
-                id: Date.now(),
-                content: content,
-                tag: tagSelect.value,
-                date: dateStr,
-                timestamp: now.getTime(),
-                reminder: false,
-                subnotes: [], // { id, text }
-                resources: [] // { type: 'link'|'video'|'code', value }
-            };
-
-            state.notes.unshift(newNote); // Adiciona no topo
-            contentInput.value = '';
-            saveData();
-        }
-
-        function deleteNote(id) {
-            if (confirm('Tem certeza que deseja apagar esta anotação?')) {
-                state.notes = state.notes.filter(n => n.id !== id);
-                saveData();
-            }
-        }
-
-        function toggleReminder(id) {
-            const note = state.notes.find(n => n.id === id);
-            if (note) {
-                note.reminder = !note.reminder;
-                saveData();
-            }
-        }
-
-        // --- RENDERIZAÇÃO DAS NOTAS ---
+        // --- RENDER ---
         function renderNotes() {
             const container = document.getElementById('notesList');
             container.innerHTML = '';
@@ -328,80 +201,68 @@
             });
 
             if (filteredNotes.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-gray-400 mt-10">
-                        <i class="fa-solid fa-book-open text-4xl mb-4 opacity-30"></i>
-                        <p>Nenhuma anotação encontrada.</p>
-                    </div>`;
+                container.innerHTML = `<div class="text-center text-gray-400 mt-10"><i class="fa-solid fa-book-open text-4xl mb-4 opacity-30"></i><p>Nenhuma anotação encontrada.</p></div>`;
                 return;
             }
 
             filteredNotes.forEach(note => {
                 const dateFormatted = new Date(note.timestamp).toLocaleString('pt-BR');
+                const promptBase = encodeURIComponent(note.content.substring(0, 100));
                 
-                // Links de IA (Google Search com Prompt e parametro &udm=50)
-                const promptBase = encodeURIComponent(note.content.substring(0, 100)); // Pega os primeiros 100 caracteres
+                // Links IA
                 const linkExplain = `https://www.google.com/search?q=Explique+didaticamente+o+conceito+juridico:+${promptBase}&udm=50`;
                 const linkGlossary = `https://www.google.com/search?q=Glossario+juridico+definicao+de:+${promptBase}&udm=50`;
                 const linkArticle = `https://www.google.com/search?q=Artigo+academico+direito+sobre:+${promptBase}&udm=50`;
 
+                // Filtros de Recursos
+                const links = note.resources ? note.resources.filter(r => r.type === 'link') : [];
+                const videos = note.resources ? note.resources.filter(r => r.type === 'video') : [];
+                const codes = note.resources ? note.resources.filter(r => r.type === 'code') : [];
+                const subnotes = note.subnotes || [];
+
                 const el = document.createElement('div');
-                el.className = "bg-white border border-gray-200 rounded-lg shadow-sm p-5 hover:shadow-md transition group";
+                el.className = "bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition group flex flex-col";
                 
                 el.innerHTML = `
+                    <!-- Header Nota -->
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             ${note.tag ? `<span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded font-semibold uppercase tracking-wider mr-2">${note.tag}</span>` : ''}
                             <span class="text-xs text-gray-400">${dateFormatted}</span>
                         </div>
                         <div class="flex gap-2">
-                             <button onclick="toggleReminder(${note.id})" class="text-gray-300 hover:text-amber-500 transition ${note.reminder ? 'text-amber-500' : ''}" title="Lembrete no Calendário">
-                                <i class="fa-solid fa-bell"></i>
-                            </button>
-                            <button onclick="deleteNote(${note.id})" class="text-gray-300 hover:text-red-500 transition" title="Excluir">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
+                             <button onclick="toggleReminder(${note.id})" class="text-gray-300 hover:text-amber-500 transition ${note.reminder ? 'text-amber-500' : ''}" title="Lembrete no Calendário"><i class="fa-solid fa-bell"></i></button>
+                            <button onclick="deleteNote(${note.id})" class="text-gray-300 hover:text-red-500 transition" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                     
-                    <div class="serif text-gray-800 whitespace-pre-wrap mb-4 text-lg leading-relaxed">${note.content}</div>
+                    <!-- Conteúdo Principal -->
+                    <div class="serif text-gray-800 whitespace-pre-wrap mb-6 text-lg leading-relaxed">${note.content}</div>
 
-                    <!-- Recursos Anexados -->
-                    ${renderResources(note)}
-                    
-                    <!-- Subnotas -->
-                    <div class="ml-4 pl-4 border-l-2 border-gray-100 mt-3 space-y-2 text-sm text-gray-600">
-                        ${note.subnotes.map(sn => `<div class="flex justify-between bg-gray-50 p-2 rounded"><span>• ${sn.text}</span> <button onclick="deleteSubnote(${note.id}, ${sn.id})" class="text-xs text-red-300 hover:text-red-500"><i class="fa-solid fa-times"></i></button></div>`).join('')}
+                    <!-- Botões de Ação Rápida (IA) -->
+                    <div class="flex gap-2 mb-4">
+                        <a href="${linkExplain}" target="_blank" class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-indigo-100 flex items-center gap-1"><i class="fa-solid fa-wand-magic-sparkles"></i> Explicar</a>
+                        <a href="${linkGlossary}" target="_blank" class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-teal-100 flex items-center gap-1"><i class="fa-solid fa-book"></i> Glossário</a>
+                        <a href="${linkArticle}" target="_blank" class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-purple-100 flex items-center gap-1"><i class="fa-solid fa-pen-nib"></i> Artigo</a>
                     </div>
 
-                    <div class="mt-4 pt-3 border-t border-gray-100 flex flex-wrap gap-2 items-center">
-                        <!-- Barra de Ferramentas -->
-                        <div class="flex gap-1 mr-4 border-r border-gray-200 pr-4">
-                            <button onclick="openModal('subnote', ${note.id})" class="btn-tool text-slate-500 hover:bg-slate-100 px-2 py-1 rounded text-xs flex items-center gap-1" title="Adicionar Subnota">
-                                <i class="fa-solid fa-list-ul"></i> Sub
-                            </button>
-                            <button onclick="openModal('link', ${note.id})" class="btn-tool text-blue-500 hover:bg-blue-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Adicionar Link">
-                                <i class="fa-solid fa-link"></i> Link
-                            </button>
-                            <button onclick="openModal('video', ${note.id})" class="btn-tool text-red-500 hover:bg-red-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Vídeo Youtube">
-                                <i class="fa-brands fa-youtube"></i> Vídeo
-                            </button>
-                             <button onclick="openModal('code', ${note.id})" class="btn-tool text-green-600 hover:bg-green-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Artigo de Código/Lei">
-                                <i class="fa-solid fa-code"></i> Lei
-                            </button>
+                    <!-- Área de Anexos (Colapsável) -->
+                    <div class="mt-auto border-t border-gray-100 pt-3">
+                        <!-- Barra de Ferramentas / Contadores -->
+                        <div class="flex flex-wrap items-center gap-3 mb-2">
+                            <span class="text-xs font-bold text-gray-400 uppercase mr-2">Adicionar:</span>
+                            <button onclick="openModal('subnote', ${note.id})" class="text-slate-500 hover:bg-slate-100 px-2 py-1 rounded text-xs flex items-center gap-1" title="Adicionar Subnota"><i class="fa-solid fa-plus"></i> Subnota</button>
+                            <button onclick="openModal('link', ${note.id})" class="text-blue-500 hover:bg-blue-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Adicionar Link"><i class="fa-solid fa-plus"></i> Link</button>
+                            <button onclick="openModal('video', ${note.id})" class="text-red-500 hover:bg-red-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Vídeo Youtube"><i class="fa-solid fa-plus"></i> Vídeo</button>
+                             <button onclick="openModal('code', ${note.id})" class="text-green-600 hover:bg-green-50 px-2 py-1 rounded text-xs flex items-center gap-1" title="Artigo de Lei"><i class="fa-solid fa-plus"></i> Lei</button>
                         </div>
 
-                        <!-- Ações AI -->
-                        <div class="flex gap-2">
-                            <a href="${linkExplain}" target="_blank" class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-indigo-100 flex items-center gap-1">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> Explicar
-                            </a>
-                            <a href="${linkGlossary}" target="_blank" class="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-teal-100 flex items-center gap-1">
-                                <i class="fa-solid fa-book"></i> Glossário
-                            </a>
-                            <a href="${linkArticle}" target="_blank" class="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold hover:bg-purple-100 flex items-center gap-1">
-                                <i class="fa-solid fa-pen-nib"></i> Artigo
-                            </a>
+                        <!-- Seções Expansíveis -->
+                        <div class="space-y-1">
+                            ${renderCollapsibleSection(note.id, 'Links', links, 'fa-link', 'text-blue-600')}
+                            ${renderCollapsibleSection(note.id, 'Vídeos', videos, 'fa-youtube', 'text-red-600')}
+                            ${renderCollapsibleSection(note.id, 'Artigos de Lei', codes, 'fa-scale-balanced', 'text-green-700')}
+                            ${renderCollapsibleSection(note.id, 'Subnotas', subnotes, 'fa-align-left', 'text-slate-600')}
                         </div>
                     </div>
                 `;
@@ -409,40 +270,52 @@
             });
         }
 
-        function renderResources(note) {
-            if (!note.resources || note.resources.length === 0) return '';
+        function renderCollapsibleSection(noteId, title, items, icon, colorClass) {
+            if (!items || items.length === 0) return '';
             
-            return `<div class="grid gap-2 mb-3">
-                ${note.resources.map((res, idx) => {
-                    if (res.type === 'video') {
-                        // Tenta extrair ID do youtube simples
-                        let vId = res.value.split('v=')[1];
-                        if (!vId) vId = res.value.split('/').pop(); 
-                        const ampersandPosition = vId.indexOf('&');
-                        if(ampersandPosition != -1) vId = vId.substring(0, ampersandPosition);
-                        
-                        // Video pequeno: w-64 (256px)
-                        return `<div class="w-64 bg-black rounded overflow-hidden aspect-video relative group/vid shadow-sm">
-                                    <iframe class="w-full h-full" src="https://www.youtube.com/embed/${vId}" frameborder="0" allowfullscreen></iframe>
-                                    <button onclick="deleteResource(${note.id}, ${idx})" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 text-xs hidden group-hover/vid:block">X</button>
-                                </div>`;
-                    } else if (res.type === 'link') {
-                        return `<div class="flex items-center gap-2 bg-blue-50 p-2 rounded text-sm text-blue-700 truncate">
-                                    <i class="fa-solid fa-link"></i> <a href="${res.value}" target="_blank" class="hover:underline truncate flex-1">${res.value}</a>
-                                    <button onclick="deleteResource(${note.id}, ${idx})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-times"></i></button>
-                                </div>`;
-                    } else if (res.type === 'code') {
-                        // Texto claro com fundo cinza claro
-                         return `<div class="bg-gray-50 text-slate-800 border border-gray-200 p-3 rounded font-mono text-sm relative group/code shadow-inner">
-                                    <pre class="whitespace-pre-wrap">${res.value}</pre>
-                                    <button onclick="deleteResource(${note.id}, ${idx})" class="absolute top-1 right-1 text-slate-400 hover:text-red-500 hidden group-hover/code:block"><i class="fa-solid fa-times"></i></button>
-                                </div>`;
-                    }
-                }).join('')}
-            </div>`;
+            // Gerar HTML interno baseado no tipo
+            let contentHtml = '';
+            
+            if (title === 'Links' || title === 'Vídeos') {
+                contentHtml = items.map((item, idx) => `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 mb-1">
+                        <a href="${item.value}" target="_blank" class="flex items-center gap-2 text-sm ${colorClass} hover:underline font-semibold truncate">
+                            <i class="fa-solid ${icon}"></i> ${item.title || item.value} <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-50"></i>
+                        </a>
+                        <button onclick="deleteResource('${title}', ${noteId}, ${item.id || idx})" class="text-gray-300 hover:text-red-400 px-2"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                `).join('');
+            } else if (title === 'Subnotas') {
+                contentHtml = items.map((item) => `
+                    <div class="bg-yellow-50 p-3 rounded border border-yellow-100 mb-2 text-sm text-slate-700 rich-content relative group/sub">
+                        ${item.text}
+                        <button onclick="deleteSubnote(${noteId}, ${item.id})" class="absolute top-2 right-2 text-yellow-300 hover:text-red-400 hidden group-hover/sub:block"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                `).join('');
+            } else if (title === 'Artigos de Lei') {
+                contentHtml = items.map((item, idx) => `
+                    <div class="bg-gray-100 p-3 rounded border border-gray-200 mb-2 font-mono text-xs text-slate-800 relative group/code">
+                        <div class="font-bold mb-1 text-slate-500">${item.title || 'Artigo'}</div>
+                        <div class="whitespace-pre-wrap">${item.value}</div>
+                        <button onclick="deleteResource('code', ${noteId}, ${item.id || idx})" class="absolute top-2 right-2 text-gray-400 hover:text-red-400 hidden group-hover/code:block"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                `).join('');
+            }
+
+            return `
+                <details class="group/details">
+                    <summary class="list-none cursor-pointer py-1 px-2 rounded hover:bg-gray-100 inline-flex items-center gap-2 text-xs font-bold text-gray-500 uppercase select-none">
+                        <i class="fa-solid fa-chevron-right text-[10px] transition group-open/details:rotate-90"></i>
+                        ${title} <span class="bg-slate-200 text-slate-600 px-1.5 rounded-full text-[10px]">${items.length}</span>
+                    </summary>
+                    <div class="pl-4 mt-1 border-l-2 border-gray-100 ml-2">
+                        ${contentHtml}
+                    </div>
+                </details>
+            `;
         }
 
-        // --- MODAL E ADIÇÃO DE RECURSOS ---
+        // --- MODAL & AÇÕES ---
         let currentModalAction = null;
         let currentNoteId = null;
 
@@ -450,76 +323,187 @@
             currentModalAction = action;
             currentNoteId = noteId;
             const modal = document.getElementById('inputModal');
-            const title = document.getElementById('modalTitle');
-            const input = document.getElementById('modalInput');
+            const titleEl = document.getElementById('modalTitle');
+            
+            const divTitle = document.getElementById('modalTitleContainer');
+            const inputTitle = document.getElementById('modalInputTitle');
+            const inputUrl = document.getElementById('modalInputUrl');
+            const inputRich = document.getElementById('modalInputRich');
+            const contentLabel = document.getElementById('modalContentLabel');
 
             modal.classList.remove('hidden');
-            input.value = '';
-            input.focus();
+            
+            // Reset
+            inputTitle.value = '';
+            inputUrl.value = '';
+            inputRich.innerHTML = '';
+            divTitle.classList.add('hidden');
+            inputUrl.classList.add('hidden');
+            inputRich.classList.add('hidden');
 
-            if (action === 'subnote') {
-                title.innerText = 'Nova Subnota';
-                input.placeholder = 'Digite o texto da subnota...';
-            } else if (action === 'link') {
-                title.innerText = 'Adicionar Link';
-                input.placeholder = 'https://...';
+            if (action === 'link') {
+                titleEl.innerText = 'Adicionar Link';
+                divTitle.classList.remove('hidden');
+                inputUrl.classList.remove('hidden');
+                inputTitle.placeholder = 'Título do Link (ex: Artigo Conjur)';
+                inputUrl.placeholder = 'https://...';
+                contentLabel.innerText = 'URL';
+                inputTitle.focus();
             } else if (action === 'video') {
-                title.innerText = 'Adicionar Vídeo do YouTube';
-                input.placeholder = 'Cole a URL do vídeo...';
+                titleEl.innerText = 'Adicionar Vídeo Youtube';
+                divTitle.classList.remove('hidden');
+                inputUrl.classList.remove('hidden');
+                inputTitle.placeholder = 'Título do Vídeo';
+                inputUrl.placeholder = 'https://youtube.com/...';
+                contentLabel.innerText = 'URL do Vídeo';
+                inputTitle.focus();
+            } else if (action === 'subnote') {
+                titleEl.innerText = 'Nova Subnota';
+                inputRich.classList.remove('hidden');
+                inputRich.setAttribute('placeholder', 'Cole o texto formatado aqui...');
+                contentLabel.innerText = 'Conteúdo (Texto com formatação)';
+                inputRich.focus();
             } else if (action === 'code') {
-                title.innerText = 'Artigo de Lei / Código';
-                input.placeholder = 'Art. 5º Todos são iguais perante a lei...';
+                titleEl.innerText = 'Adicionar Lei / Artigo';
+                divTitle.classList.remove('hidden');
+                inputRich.classList.remove('hidden');
+                inputTitle.placeholder = 'Referência (Ex: Art. 5, CF/88)';
+                inputRich.setAttribute('placeholder', 'Cole o texto da lei aqui...');
+                contentLabel.innerText = 'Texto da Lei';
+                inputTitle.focus();
             }
         }
 
         function closeModal() {
             document.getElementById('inputModal').classList.add('hidden');
-            currentModalAction = null;
-            currentNoteId = null;
         }
 
         document.getElementById('modalConfirmBtn').addEventListener('click', () => {
-            const val = document.getElementById('modalInput').value.trim();
-            if (!val) return;
-
             const note = state.notes.find(n => n.id === currentNoteId);
             if (!note) return;
 
+            const title = document.getElementById('modalInputTitle').value.trim();
+            const url = document.getElementById('modalInputUrl').value.trim();
+            const richText = document.getElementById('modalInputRich').innerHTML; // Pega HTML para preservar formato
+            const plainText = document.getElementById('modalInputRich').innerText;
+
             if (currentModalAction === 'subnote') {
-                note.subnotes.push({ id: Date.now(), text: val });
-            } else {
+                if (!plainText.trim() && !richText.includes('<img')) return; // Validação básica
+                note.subnotes = note.subnotes || [];
+                note.subnotes.push({ id: Date.now(), text: richText }); // Salva HTML
+            } 
+            else if (currentModalAction === 'code') {
+                if (!plainText.trim()) return;
                 note.resources = note.resources || [];
-                note.resources.push({ type: currentModalAction, value: val });
+                note.resources.push({ 
+                    type: 'code', 
+                    value: plainText, // Para código usamos texto puro ou HTML limpo
+                    title: title || 'Trecho de Lei',
+                    id: Date.now()
+                });
+            }
+            else {
+                // Link ou Video
+                if (!url) return;
+                note.resources = note.resources || [];
+                note.resources.push({ 
+                    type: currentModalAction, 
+                    value: url, 
+                    title: title || url, // Se não tiver título, usa a URL
+                    id: Date.now()
+                });
             }
 
             saveData();
             closeModal();
         });
 
-        function deleteResource(noteId, resIndex) {
-            if(confirm('Remover este anexo?')) {
-                const note = state.notes.find(n => n.id === noteId);
-                note.resources.splice(resIndex, 1);
-                saveData();
-            }
-        }
-
+        // --- DELETAR ITENS ---
         function deleteSubnote(noteId, subId) {
             const note = state.notes.find(n => n.id === noteId);
             note.subnotes = note.subnotes.filter(s => s.id !== subId);
             saveData();
         }
 
-        function clearData() {
-            if(confirm('ATENÇÃO: Isso apagará todas as suas anotações e tags. Deseja continuar?')) {
-                localStorage.removeItem(STORE_KEY);
-                location.reload();
-            }
+        function deleteResource(groupType, noteId, resIdOrIndex) {
+            if(!confirm('Remover este item?')) return;
+            const note = state.notes.find(n => n.id === noteId);
+            
+            if (groupType === 'code') groupType = 'code'; // Ajuste lógico se precisar
+            
+            // Se o ID existir (novos itens), filtra por ID. Se for legado, usa index (logica retrocompatível)
+            // Como recriei a estrutura, vamos filtrar pelo ID nos resources
+            note.resources = note.resources.filter(r => r.id !== resIdOrIndex && r !== note.resources[resIdOrIndex]);
+            
+            saveData();
         }
 
-        // Iniciar App
-        init();
+        // --- OUTRAS FUNÇÕES (Mantidas) ---
+        function updateDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('displayDate').textContent = new Date().toLocaleDateString('pt-BR', options);
+        }
+        function addTag() {
+            const val = document.getElementById('newTagInput').value.trim();
+            if (val && !state.tags.includes(val)) { state.tags.push(val); document.getElementById('newTagInput').value = ''; saveData(); }
+        }
+        function removeTag(tag) {
+            if (confirm(`Excluir tag "${tag}"?`)) {
+                state.tags = state.tags.filter(t => t !== tag);
+                state.notes.forEach(n => { if (n.tag === tag) n.tag = ''; });
+                if (state.filterTag === tag) state.filterTag = null;
+                saveData();
+            }
+        }
+        function toggleFilter(tag) { state.filterTag = state.filterTag === tag ? null : tag; renderTags(); renderNotes(); }
+        function renderTags() {
+            const list = document.getElementById('tagFilterList');
+            const select = document.getElementById('noteTagSelect');
+            list.innerHTML = ''; select.innerHTML = '<option value="">Sem Tag</option>';
+            state.tags.forEach(tag => {
+                const isActive = state.filterTag === tag;
+                list.innerHTML += `<div class="flex justify-between items-center px-3 py-2 rounded cursor-pointer text-sm transition ${isActive ? 'bg-slate-200 font-semibold' : 'hover:bg-gray-100'}"><span onclick="toggleFilter('${tag}')" class="flex-1 truncate"><i class="fa-solid fa-tag text-xs mr-2 text-slate-400"></i>${tag}</span><button onclick="removeTag('${tag}')" class="text-gray-300 hover:text-red-500 ml-2"><i class="fa-solid fa-times"></i></button></div>`;
+                select.innerHTML += `<option value="${tag}">${tag}</option>`;
+            });
+        }
+        function changeMonth(delta) { state.currentDate.setMonth(state.currentDate.getMonth() + delta); renderCalendar(); }
+        function renderCalendar() {
+            const year = state.currentDate.getFullYear();
+            const month = state.currentDate.getMonth();
+            document.getElementById('currentMonthYear').textContent = state.currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+            for (let i = 0; i < firstDay; i++) grid.innerHTML += `<div></div>`;
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasReminder = state.notes.some(n => n.reminder && n.date === dateStr);
+                const isToday = new Date().toISOString().split('T')[0] === dateStr;
+                grid.innerHTML += `<div onclick="alert('Notas de ${dateStr}')" class="calendar-day h-8 w-8 flex flex-col items-center justify-center rounded-full text-xs cursor-pointer mx-auto ${hasReminder ? 'has-reminder' : ''} ${isToday ? 'bg-slate-200 font-bold' : ''}">${day}</div>`;
+            }
+        }
+        function addNote() {
+            const content = document.getElementById('noteContent').value.trim();
+            if (!content) return;
+            const now = new Date();
+            state.notes.unshift({
+                id: Date.now(),
+                content: content,
+                tag: document.getElementById('noteTagSelect').value,
+                date: now.toISOString().split('T')[0],
+                timestamp: now.getTime(),
+                reminder: false,
+                subnotes: [], resources: []
+            });
+            document.getElementById('noteContent').value = '';
+            saveData();
+        }
+        function deleteNote(id) { if (confirm('Apagar nota?')) { state.notes = state.notes.filter(n => n.id !== id); saveData(); } }
+        function toggleReminder(id) { const n = state.notes.find(x => x.id === id); if(n) { n.reminder = !n.reminder; saveData(); } }
+        function clearData() { if(confirm('Apagar TUDO?')) { localStorage.removeItem(STORE_KEY); location.reload(); } }
 
+        init();
     </script>
 </body>
 </html>
