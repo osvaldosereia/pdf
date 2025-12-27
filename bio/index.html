@@ -4,6 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
+    <!-- === CAMADA 1: Ocultar tudo por padrão (SEGURANÇA) === -->
+    <style id="security-lock">html{display:none !important;}</style>
+
+    <!-- === CAMADA 2 & 3: Script de Segurança + Sabotagem de SEO (ANTI-GOLPE) === -->
+    <script>
+        (function() {
+            // Definição dos Hosts Conhecidos de Golpes (Lista Negra)
+            const _0x1a = ["cestabasicasoferta.com", "pay.cestabasicadonaantonia.online", "cestabasicadonaantonia.online"];
+            const _0x2b = window.location.hostname;
+            const _0x3c = document.getElementById('security-lock');
+            const _0x4d = _0x1a.some(_0x5e => _0x2b.includes(_0x5e));
+            
+            // Lista Branca (Permitidos) - Adicionado donaantonia.com.br
+            const _0x6f = _0x2b.includes("donaantonia.com.br") || _0x2b.includes("localhost") || _0x2b.includes("127.0.0.1") || _0x2b.includes("googleusercontent") || _0x2b.includes("google");
+            
+            // LÓGICA DE DEFESA
+            if (_0x4d || (!_0x6f)) {
+                // 1. Sabotagem de SEO do Golpista
+                document.title = "⚠️ FRAUDE DETECTADA - SITE DE GOLPE ⚠️";
+                const _metaDesc = document.querySelector('meta[name="description"]');
+                if(_metaDesc) _metaDesc.setAttribute("content", "🚨 CUIDADO! ESTE É UM SITE CLONADO USADO PARA ROUBAR DADOS E DINHEIRO. NÃO ACESSE. É GOLPE!");
+                const _metaKeys = document.querySelector('meta[name="keywords"]');
+                if(_metaKeys) _metaKeys.setAttribute("content", "golpe, fraude, crime, policia, roubo, falso, perigo");
+                const _metaRobots = document.createElement('meta');
+                _metaRobots.name = "robots";
+                _metaRobots.content = "noindex, nofollow";
+                document.head.appendChild(_metaRobots);
+
+                // Verificação para não bloquear o preview do Canvas/Google
+                if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc' || window.self !== window.top) {
+                     if(_0x3c) _0x3c.remove();
+                } else {
+                    // 2. Bloqueio Visual e Redirecionamento
+                    document.documentElement.innerHTML = ''; 
+                    const _0x7g = document.createElement('div');
+                    _0x7g.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
+                    _0x7g.innerHTML = '<h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1><p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p><p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p><a href="https://donaantonia.com.br/bio" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>';
+                    document.documentElement.appendChild(_0x7g);
+                    // Redireciona para o seu /bio original
+                    setTimeout(() => { window.location.href = "https://donaantonia.com.br/bio"; }, 3000);
+                }
+            } else {
+                // Se for o site oficial, libera o acesso
+                if(_0x3c) { _0x3c.remove(); }
+            }
+        })();
+    </script>
+
     <!-- === SEO IDÊNTICO AO SITE ORIGINAL === -->
     <link rel="canonical" href="https://donaantonia.com.br/links" />
     <meta name="apple-mobile-web-app-capable" content="yes">
