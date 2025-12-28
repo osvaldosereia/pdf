@@ -22,10 +22,9 @@
         
         .wa-header { background-color: #008069; }
         
-        /* NOVO BACKGROUND PERSONALIZADO */
+        /* BACKGROUND PERSONALIZADO */
         .wa-bg { 
             background-color: #E5DDD5;
-            /* Padrão SVG Ajustado */
             background-image: url("data:image/svg+xml,%3Csvg width='320' height='180' viewBox='0 0 320 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239CAFA3' fill-opacity='0.20' fill-rule='evenodd'%3E%3Ctext x='20' y='70' font-family='Arial, sans-serif' font-size='24' font-weight='bold' transform='rotate(-8 20 70)'%3Ewww.donaantonia.com.br%3C/text%3E%3Ctext x='80' y='150' font-family='Arial, sans-serif' font-size='24' font-weight='bold' transform='rotate(-8 80 150)'%3E65 99815-0975%3C/text%3E%3C/g%3E%3C/svg%3E");
             background-repeat: repeat;
         }
@@ -46,7 +45,6 @@
             transition: all 0.2s;
             border: 1px solid #f0f0f0;
             cursor: pointer;
-            /* Flex layout para suportar subtítulos */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -57,7 +55,7 @@
         .wa-btn-title { font-weight: 600; font-size: 15px; line-height: 1.2; }
         .wa-btn-subtitle { font-weight: 400; font-size: 11px; color: #667781; margin-top: 4px; line-height: 1.2; }
 
-        /* Animation for typing */
+        /* Animation */
         .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
@@ -71,7 +69,7 @@
             -webkit-user-select: none;
         }
 
-        /* === ESTILOS DOS CARDS (DESIGN OTIMIZADO) === */
+        /* === ESTILOS DOS CARDS === */
         :root {
             --cor-destaque-dourado: #ffb300;
             --cor-texto-destaque: #0F2546;
@@ -81,178 +79,97 @@
             --cor-destaque-vermelho: #ff5252;
         }
 
-        .card-msg-container {
-            width: 100%;
-            max-width: 340px;
-        }
+        .card-msg-container { width: 100%; max-width: 340px; }
 
         .card-cesta-new {
-            background: #fff;
-            border-radius: 12px;
-            margin-bottom: 5px;
-            border: 1px solid var(--cor-borda);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: #fff; border-radius: 12px; margin-bottom: 5px;
+            border: 1px solid var(--cor-borda); box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* Novo Cabeçalho Horizontal */
+        /* Cabeçalho Horizontal */
         .card-header-visual {
-            display: flex;
-            flex-direction: row; /* Horizontal */
-            align-items: center;
-            background: #fff;
-            padding: 10px;
-            border-bottom: 1px solid #f0f0f0;
-            position: relative;
+            display: flex; flex-direction: row; align-items: center;
+            background: #fff; padding: 10px; border-bottom: 1px solid #f0f0f0; position: relative;
         }
         
-        /* FOTO DA CESTA AUMENTADA */
         .card-img-left {
-            width: 135px;
-            height: 135px;
-            object-fit: cover;
-            border-radius: 8px;
-            flex-shrink: 0;
-            border: 1px solid #eee;
+            width: 135px; height: 135px; object-fit: cover;
+            border-radius: 8px; flex-shrink: 0; border: 1px solid #eee;
         }
 
         .card-title-right {
-            flex-grow: 1;
-            padding-left: 15px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-grow: 1; padding-left: 15px; display: flex;
+            flex-direction: column; justify-content: center;
         }
 
         .card-title-right h2 {
-            font-size: 1.2rem;
-            margin: 0;
-            color: var(--cor-texto-destaque);
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
+            font-size: 1.2rem; margin: 0; color: var(--cor-texto-destaque);
+            font-weight: 800; text-transform: uppercase; letter-spacing: -0.5px; line-height: 1.2;
         }
 
         .selo-destaque {
-            position: absolute;
-            top: -5px; right: 10px;
+            position: absolute; top: -5px; right: 10px;
             background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
-            color: #0F2546;
-            padding: 4px 10px;
-            border-radius: 0 0 10px 10px;
-            font-weight: 800;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            z-index: 10;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            color: #0F2546; padding: 4px 10px; border-radius: 0 0 10px 10px;
+            font-weight: 800; font-size: 0.65rem; text-transform: uppercase;
+            z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Slider Horizontal de Produtos */
-        .product-slider-container {
-            background: #f9fafb;
-            padding: 15px 0;
-        }
+        /* Slider Horizontal */
+        .product-slider-container { background: #f9fafb; padding: 15px 0; }
         .product-slider {
-            display: flex;
-            overflow-x: auto;
-            gap: 12px;
-            padding: 0 15px;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
+            display: flex; overflow-x: auto; gap: 12px; padding: 0 15px;
+            scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
         }
         .product-slider::-webkit-scrollbar { height: 4px; }
         .product-slider::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
         .product-slide {
-            flex: 0 0 110px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 10px 5px;
-            text-align: center;
+            flex: 0 0 110px; display: flex; flex-direction: column;
+            align-items: center; background: #fff; border: 1px solid #e5e7eb;
+            border-radius: 10px; padding: 10px 5px; text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .product-slide img {
-            width: 65px;
-            height: 65px;
-            object-fit: contain;
-            margin-bottom: 8px;
+            width: 65px; height: 65px; object-fit: contain; margin-bottom: 8px;
         }
         .product-info { display: flex; flex-direction: column; line-height: 1.1; }
         .product-qty { 
-            font-size: 0.85rem; 
-            font-weight: 800; 
-            color: var(--cor-whatsapp);
-            margin-bottom: 3px;
+            font-size: 0.85rem; font-weight: 800; color: var(--cor-whatsapp); margin-bottom: 3px;
         }
         .product-name {
-            font-size: 0.75rem;
-            color: #444;
-            font-weight: 600;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            font-size: 0.75rem; color: #444; font-weight: 600;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
-        /* Lista de Preços (Apenas Visualização) */
-        .card-price-display-only {
-            padding: 10px 15px;
-            background: #fff;
-            border-top: 1px solid #eee;
-        }
+        /* Lista de Preços */
+        .card-price-display-only { padding: 10px 15px; background: #fff; border-top: 1px solid #eee; }
         .price-item-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-            color: #555;
+            display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 4px; color: #555;
         }
         .price-item-row strong { color: var(--cor-destaque-vermelho); }
 
         /* WIDGET DE ENCOMENDA */
         .order-widget {
-            background: #fff;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--cor-whatsapp);
-            margin-top: 5px;
+            background: #fff; border-radius: 12px; padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid var(--cor-whatsapp); margin-top: 5px;
         }
         .order-widget h3 {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--cor-texto-destaque);
-            margin-bottom: 10px;
-            text-align: center;
+            font-size: 1rem; font-weight: 700; color: var(--cor-texto-destaque); margin-bottom: 10px; text-align: center;
         }
 
         .radio-arroz-option {
-            display: flex; 
-            flex-direction: row; 
-            align-items: center; 
-            justify-content: space-between;
-            padding: 12px 15px;
-            border: 2px solid #eee; border-radius: 8px;
-            margin-bottom: 8px; cursor: pointer; background: white;
-            transition: all 0.2s;
+            display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+            padding: 12px 15px; border: 2px solid #eee; border-radius: 8px;
+            margin-bottom: 8px; cursor: pointer; background: white; transition: all 0.2s;
         }
         .radio-arroz-option:active { transform: scale(0.98); }
         .radio-arroz-option.selected { border-color: var(--cor-whatsapp); background: #f0fff4; }
         
         .radio-arroz-info { 
-            display: flex; 
-            flex-direction: row; 
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding-right: 15px;
+            display: flex; flex-direction: row; justify-content: space-between; align-items: center;
+            width: 100%; padding-right: 15px;
         }
         .radio-arroz-name { font-weight: 600; font-size: 0.9rem; color: #333; }
         .radio-arroz-price { color: var(--cor-destaque-vermelho); font-weight: 800; font-size: 1rem; }
@@ -262,57 +179,31 @@
             border: none; padding: 14px; border-radius: 8px;
             font-size: 1rem; font-weight: 800; text-transform: uppercase;
             cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 10px; box-shadow: 0 3px 0 #189d4b;
-            transition: transform 0.1s;
+            margin-top: 10px; box-shadow: 0 3px 0 #189d4b; transition: transform 0.1s;
         }
         .btn-encomendar-card:active { transform: translateY(3px); box-shadow: none; }
         
-        /* SCROLL HINT */
         .scroll-hint {
-            background-color: #fff8dc; /* Amarelo clarinho */
-            color: #b45309; /* Laranja escuro */
-            font-size: 0.75rem;
-            font-weight: 800; /* Negrito forte */
-            text-align: center;
-            padding: 8px;
-            margin: 0 10px 8px 10px;
-            border-radius: 6px;
-            border: 1px dashed #fcd34d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            animation: pulseHint 2s infinite;
+            background-color: #fff8dc; color: #b45309; font-size: 0.75rem;
+            font-weight: 800; text-align: center; padding: 8px; margin: 0 10px 8px 10px;
+            border-radius: 6px; border: 1px dashed #fcd34d; display: flex;
+            align-items: center; justify-content: center; gap: 6px; animation: pulseHint 2s infinite;
         }
-        @keyframes pulseHint {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
+        @keyframes pulseHint { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-        /* SETA FLUTUANTE ANIMADA */
         .slider-arrow-indicator {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #25D366;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 20;
-            animation: bounceRight 1.2s infinite;
-            pointer-events: none; 
-            transition: opacity 0.3s;
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9); border: 2px solid #25D366;
+            border-radius: 50%; width: 36px; height: 36px; display: flex;
+            align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 20; animation: bounceRight 1.2s infinite; pointer-events: none; transition: opacity 0.3s;
         }
-        @keyframes bounceRight {
-            0%, 100% { transform: translate(0, -50%); }
-            50% { transform: translate(6px, -50%); }
-        }
+        @keyframes bounceRight { 0%, 100% { transform: translate(0, -50%); } 50% { transform: translate(6px, -50%); } }
+
+        /* Estilo Card Empresa */
+        .company-social-row { display: flex; justify-content: center; gap: 15px; padding: 10px; background: #f9f9f9; border-top: 1px solid #eee; }
+        .company-social-btn { color: #555; font-size: 1.5rem; transition: color 0.2s; }
+        .company-social-btn:hover { color: #008069; }
     </style>
 </head>
 <body class="h-[100dvh] flex flex-col overflow-hidden" oncontextmenu="return false;">
@@ -593,7 +484,6 @@
             const wrapper = element.parentElement;
             const arrow = wrapper.querySelector('.slider-arrow-indicator');
             
-            // Oculta a seta se a pessoa rolou um pouco (20px)
             if (element.scrollLeft > 20) {
                 if(arrow) arrow.style.opacity = '0';
             } else {
@@ -602,7 +492,6 @@
 
             if (state.cardHasInteracted) return; 
             
-            // Dispara lógica se chegar perto do fim
             if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 30) {
                 triggerPostCardFlow();
             }
@@ -625,6 +514,7 @@
             const opcoes = [
                 { text: `Encomendar a ${nomeCesta} ✅`, value: "encomendar_atual", nextStep: 6 },
                 { text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 5 },
+                { text: "Quem somos nós? 🏢", value: "quem_somos", nextStep: 7 },
                 { text: "Ver formas de pagamento 💳", value: "pagamento", nextStep: 6 }
             ];
 
@@ -748,6 +638,50 @@
             </div>`;
         }
 
+        // Função Geradora do Card da Empresa (Step 7)
+        function generateCompanyCardHTML() {
+            // Imagens placeholder (você deve substituir por imagens reais em img/empresa/)
+            const fotosEmpresa = ['fachada.jpg', 'equipe.jpg', 'estoque.jpg']; 
+            
+            const slidesHTML = fotosEmpresa.map((foto, index) => {
+                const imgPath = `img/empresa/${foto}`;
+                const fallbackImg = `https://placehold.co/400x250/eee/999?text=Dona+Antonia+${index+1}`;
+                
+                return `
+                <div class="product-slide" style="flex: 0 0 240px; border:none; box-shadow:none;">
+                    <img src="${imgPath}" onerror="this.src='${fallbackImg}'" style="width:100%; height:160px; object-fit:cover; border-radius:8px;" alt="Empresa">
+                </div>`;
+            }).join('');
+
+            return `
+            <div class="card-msg-container">
+                <div class="card-cesta-new">
+                    <div class="card-header-visual">
+                        <img src="img/logo.png" class="card-img-left" style="width:70px; height:70px;" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Osvaldo'">
+                        <div class="card-title-right">
+                            <h2 style="font-size:1.1rem">Dona Antônia Alimentos</h2>
+                            <p style="font-size:0.8rem; color:#666;">Desde 2016 em Cuiabá & VG</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-slider-container" style="padding: 10px 0;">
+                        <div class="slider-wrapper">
+                            <div class="product-slider">
+                                ${slidesHTML}
+                                <div style="min-width: 15px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="company-social-row">
+                        <a href="https://instagram.com" target="_blank" class="company-social-btn"><i class="ph ph-instagram-logo text-pink-600"></i></a>
+                        <a href="https://facebook.com" target="_blank" class="company-social-btn"><i class="ph ph-facebook-logo text-blue-600"></i></a>
+                        <a href="https://wa.me/${CONFIG.whatsAppNumber}" target="_blank" class="company-social-btn"><i class="ph ph-whatsapp-logo text-green-500"></i></a>
+                    </div>
+                </div>
+            </div>`;
+        }
+
         function generateOrderWidget(cesta) {
             const riceOptionsHTML = cesta.opcoes.map(opt => `
                 <div class="radio-arroz-option" onclick="selectRice('${cesta.id}', '${opt.arroz}', '${opt.preco}')">
@@ -831,11 +765,8 @@
                 if (value === 'salvar_brinde') {
                     // Abre link de salvar
                     window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=Olá! Salvei seu contato e quero meu OMO de brinde!`, '_blank');
-                    // Decide para onde ir baseado na intenção original (guardada?)
-                    // Vamos simplificar: se escolheu brinde, assumimos que vai encomendar depois
                     state.step = 3; // Vai para widget de encomenda
                 }
-                // Se for "pagamento" ou "encomendar_atual", o nextStep já cuida (4 ou 3)
             }
 
             nextStepFlow(value);
@@ -964,6 +895,21 @@
                         { text: "Salvar e Ganhar Brinde 🎁", value: "salvar_brinde", nextStep: 6 }, // Mantém step 6 para logica no handleOptionClick
                         { text: "Só ver Pagamento 💳", value: "pagamento", nextStep: 4 },
                         { text: "Só Encomendar ✅", value: "encomendar_atual", nextStep: 3 }
+                    ]);
+                    break;
+
+                case 7: // QUEM SOMOS NÓS (NOVO)
+                    await addMessage(`Que bom que você quer saber mais sobre a gente! 🤝`);
+                    await addMessage(generateCompanyCardHTML());
+                    
+                    await addMessage(`Somos de Cuiabá, com 8 anos de tradição entregando qualidade na sua mesa.`);
+                    await addMessage(`Pode confiar, a entrega é garantida e o produto é de primeira.`);
+                    
+                    // Retorno estratégico ao fluxo de vendas
+                    await addMessage(`E aí, vamos aproveitar?`, 'bot', 2000);
+                    showOptions([
+                        { text: "Ganhar meu Brinde 🎁", value: "salvar_brinde", nextStep: 6 }, // Volta pro brinde
+                        { text: "Ver as Cestas novamente 🛒", value: "menu_cestas", nextStep: 5 }
                     ]);
                     break;
                     
