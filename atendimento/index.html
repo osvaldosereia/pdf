@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cesta Econômica | Fale com o Osvaldo</title>
+    <meta name="description" content="Garanta sua Cesta Básica com economia real em Cuiabá e Várzea Grande. Entrega rápida e aceitamos todos os vales.">
+    <meta name="theme-color" content="#008069">
+
+    <!-- PILLAR 1: SEO & PERFORMANCE -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- PILLAR 3: SECURITY HEADERS -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https: data:;">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+
+    <style>
+        /* WhatsApp Specific Styles */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #E5DDD5; }
+        
+        .wa-header { background-color: #008069; }
+        .wa-bg { 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-repeat: repeat;
+            opacity: 0.9;
+        }
+        
+        .msg-in { background-color: #FFFFFF; border-radius: 0 8px 8px 8px; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
+        .msg-out { background-color: #E7FFDB; border-radius: 8px 0 8px 8px; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
+        
+        /* Botões Estilo Menu WhatsApp */
+        .msg-options { background-color: transparent; padding: 0; box-shadow: none; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; width: 85%; }
+        .wa-btn {
+            background-color: white;
+            color: #008069;
+            font-weight: 600;
+            padding: 10px 16px;
+            border-radius: 8px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+            transition: all 0.2s;
+            border: 1px solid #f0f0f0;
+            cursor: pointer;
+        }
+        .wa-btn:active { background-color: #f0f2f5; transform: scale(0.98); }
+
+        /* Animation for typing */
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .protected-img, .protected-msg {
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="h-[100dvh] flex flex-col overflow-hidden" oncontextmenu="return false;">
+
+    <!-- HEADER -->
+    <header class="wa-header text-white p-3 flex items-center shadow-md z-30 shrink-0">
+        <div class="mr-2">
+            <i class="ph ph-arrow-left text-xl cursor-pointer"></i>
+        </div>
+        <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-3 border border-white/30 relative shrink-0">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Osvaldo&backgroundColor=c0aede" alt="Osvaldo" class="w-full h-full object-cover protected-img">
+            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div class="flex-1 min-w-0">
+            <h1 class="font-bold text-lg leading-tight truncate">Osvaldo - Cestas</h1>
+            <p id="status-text" class="text-xs text-green-100/80 truncate">Online</p>
+        </div>
+        <div class="flex gap-4 text-xl shrink-0">
+            <i class="ph ph-video-camera cursor-pointer"></i>
+            <i class="ph ph-phone cursor-pointer"></i>
+            <i class="ph ph-dots-three-vertical cursor-pointer"></i>
+        </div>
+    </header>
+
+    <!-- CHAT AREA -->
+    <main id="chat-container" class="wa-bg flex-1 overflow-y-auto p-4 space-y-3 relative scrolling-touch">
+        <div class="flex justify-center mb-6 protected-msg">
+            <div class="bg-[#FFF5C4] text-gray-800 text-[10px] py-1 px-3 rounded-lg shadow-sm text-center max-w-[80%]">
+                <i class="ph-fill ph-lock-key inline-block mr-1"></i> As mensagens são protegidas com criptografia de ponta-a-ponta.
+            </div>
+        </div>
+        <!-- Messages area -->
+    </main>
+
+    <!-- INPUT AREA -->
+    <footer class="bg-[#F0F2F5] p-2 flex items-center gap-2 shrink-0 z-30 pb-safe">
+        <div class="bg-white rounded-full p-2 text-gray-500 text-xl cursor-pointer">
+            <i class="ph ph-smiley"></i>
+        </div>
+        
+        <div class="flex-1 bg-white rounded-full px-4 py-2 shadow-sm flex items-center">
+            <input type="text" id="user-input" placeholder="Digite seu nome..." class="w-full outline-none text-base bg-transparent text-gray-800" autocomplete="off">
+        </div>
+
+        <div id="send-btn" class="bg-[#008069] text-white rounded-full p-3 shadow-md cursor-pointer transition active:scale-95 flex items-center justify-center">
+            <i class="ph-fill ph-paper-plane-right text-xl"></i>
+        </div>
+    </footer>
+
+    <script>
+        const CONFIG = {
+            ownerName: "Osvaldo",
+            whatsAppGroupLink: "https://chat.whatsapp.com/IOI3gSBLRVk4jGK2QMunp1"
+        };
+
+        if (window.self !== window.top) window.top.location.href = window.self.location.href;
+        
+        function pushDataLayer(event, data = {}) {
+            console.log(`[DataLayer] Event: ${event}`, data);
+        }
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const statusText = document.getElementById('status-text');
+
+        let state = { step: 0, userName: '' };
+
+        const getGreeting = () => {
+            const h = new Date().getHours();
+            return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+        };
+
+        const getCurrentTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        function scrollToBottom() {
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Função addMessage atualizada com "typingTime" variável
+        function addMessage(text, sender = 'bot', delay = 0, typingTime = 1200) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    if (sender === 'bot') {
+                        statusText.innerText = 'Digitando...';
+                        const typingId = `typing-${Date.now()}`;
+                        const typingHTML = `
+                            <div id="${typingId}" class="flex justify-start w-full mb-2">
+                                <div class="msg-in p-3 px-4 rounded-lg relative">
+                                    <div class="flex gap-1 text-gray-400">
+                                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                        <div class="w-1.5 h-1.5 bg-gray-400 rounded-full typing-dot"></div>
+                                    </div>
+                                </div>
+                            </div>`;
+                        chatContainer.insertAdjacentHTML('beforeend', typingHTML);
+                        scrollToBottom();
+
+                        setTimeout(() => {
+                            const typingEl = document.getElementById(typingId);
+                            if(typingEl) typingEl.remove();
+                            
+                            const html = `
+                                <div class="flex justify-start w-full mb-2 fade-in">
+                                    <div class="msg-in p-2 px-3 rounded-lg relative max-w-[85%] text-gray-800 text-[15px] leading-snug shadow-sm protected-msg">
+                                        ${text}
+                                        <span class="block text-[10px] text-gray-400 text-right mt-1 -mr-1">${getCurrentTime()}</span>
+                                    </div>
+                                </div>`;
+                            chatContainer.insertAdjacentHTML('beforeend', html);
+                            statusText.innerText = 'Online';
+                            scrollToBottom();
+                            resolve();
+                        }, typingTime); // Tempo de "Digitação" agora é flexível
+                    } else {
+                        const html = `
+                            <div class="flex justify-end w-full mb-2">
+                                <div class="msg-out p-2 px-3 rounded-lg relative max-w-[85%] text-gray-800 text-[15px] leading-snug shadow-sm protected-msg">
+                                    ${text}
+                                    <span class="block text-[10px] text-[#97a892] text-right mt-1 -mr-1">
+                                        ${getCurrentTime()} <i class="ph-bold ph-checks text-blue-500 ml-1"></i>
+                                    </span>
+                                </div>
+                            </div>`;
+                        chatContainer.insertAdjacentHTML('beforeend', html);
+                        scrollToBottom();
+                        resolve();
+                    }
+                }, delay);
+            });
+        }
+
+        function showOptions(options) {
+            setTimeout(() => {
+                const optionsId = `opts-${Date.now()}`;
+                let buttonsHTML = options.map(opt => `
+                    <button onclick="handleOptionClick('${opt.text}', '${opt.value}', ${opt.nextStep}, '${optionsId}')" 
+                            class="wa-btn text-left">
+                        ${opt.text}
+                    </button>
+                `).join('');
+
+                const html = `
+                    <div id="${optionsId}" class="flex justify-start w-full mb-2">
+                        <div class="msg-options">
+                            ${buttonsHTML}
+                        </div>
+                    </div>`;
+                chatContainer.insertAdjacentHTML('beforeend', html);
+                scrollToBottom();
+                userInput.disabled = true;
+                userInput.placeholder = "Selecione uma opção acima 👆";
+            }, 600);
+        }
+
+        // --- INICIALIZAÇÃO OTIMIZADA ---
+        window.onload = async () => {
+            // Começa rápido (200ms)
+            setTimeout(async () => {
+                // Digita rápido (600ms)
+                await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 0, 600);
+                
+                // Digita rápido a apresentação
+                await addMessage(`Aqui é o *${CONFIG.ownerName}*, da Cesta Básica Econômica.`, 'bot', 200, 800);
+                
+                // Pergunta o nome e foca no input
+                await addMessage(`Pra gente começar, qual é o seu primeiro nome?`, 'bot', 200, 800);
+                
+                // Tenta focar para o usuário já digitar
+                userInput.focus();
+            }, 200);
+        };
+
+        async function handleInput() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            if (state.step === 0) {
+                state.userName = text.split(' ')[0];
+                state.step = 1;
+                userInput.value = '';
+                await addMessage(text, 'user');
+                
+                userInput.disabled = true;
+                userInput.placeholder = "Aguarde...";
+                
+                nextStepFlow();
+            }
+        }
+
+        async function handleOptionClick(text, value, nextStep, containerId) {
+            const container = document.getElementById(containerId);
+            if(container) container.remove(); // Limpa botões após clique
+
+            await addMessage(text, 'user');
+            state.step = nextStep;
+            pushDataLayer('Interaction', { step: nextStep, value: value });
+            nextStepFlow();
+        }
+
+        async function nextStepFlow() {
+            const name = state.userName;
+
+            switch (state.step) {
+                case 1:
+                    await addMessage(`Prazer, ${name}! 😀`);
+                    await addMessage(`Me diz uma coisa... você já costuma comprar cesta básica?`);
+                    showOptions([
+                        { text: "Sim, já compro 👍", value: "sim", nextStep: 2 },
+                        { text: "Não, compro no mercado 🛒", value: "nao", nextStep: 3 }
+                    ]);
+                    break;
+
+                case 2: // Já compra
+                    await addMessage(`Ah, que ótimo! Então você sabe como ajuda na economia de casa.`);
+                    await addMessage(`A nossa cesta é *diferenciada*. Preço baixo de verdade e marcas de primeira (Arroz Tio Lino, Açúcar Itamarati...). 🍚`);
+                    await addMessage(`E o melhor: dá pra personalizar. Se não gosta de algo, a gente troca!`);
+                    await addMessage(`Gostou da ideia?`);
+                    showOptions([
+                        { text: "Gostei, quero saber mais 😍", value: "interesse", nextStep: 4 },
+                        { text: "Quero ver o preço 💲", value: "preco", nextStep: 4 }
+                    ]);
+                    break;
+
+                case 3: // Mercado
+                    await addMessage(`Entendi! Olha, vou te contar um segredo... 🤫`);
+                    await addMessage(`Comprar item por item no supermercado sai *muito mais caro* no final do mês.`);
+                    await addMessage(`Com a gente você recebe tudo em casa e paga bem menos por marcas ótimas.`);
+                    await addMessage(`Quer ver como vale a pena?`);
+                    showOptions([
+                        { text: "Quero sim! 🙌", value: "interesse_educado", nextStep: 4 }
+                    ]);
+                    break;
+
+                case 4: // Pagamento
+                    await addMessage(`Show! 🚀`);
+                    await addMessage(`Pra facilitar sua vida, aceitamos de tudo:`);
+                    await addMessage(`✅ 3x sem juros no Cartão de Crédito.`);
+                    await addMessage(`✅ Vale Alimentação/Refeição: *Alelo, Sodexo, Pluxee, Caju, Flash, iFood...*`);
+                    await addMessage(`Fica bom pra você assim?`);
+                    showOptions([
+                        { text: "Fica ótimo! 💳", value: "aprovacao_pagamento", nextStep: 5 },
+                        { text: "Aceita PIX? 💠", value: "pergunta_pix", nextStep: 5 }
+                    ]);
+                    break;
+
+                case 5: // Fechamento
+                    await addMessage(`Aceitamos sim! Pix, dinheiro, cartão... a gente dá um jeito. 😉`);
+                    await addMessage(`Agora, ${name}, pra garantir esse preço especial e ganhar brindes, entra no nosso **Grupo VIP**.`);
+                    await addMessage(`🎁 Toda semana tem sorteio e desconto exclusivo pra quem tá lá.`);
+                    
+                    setTimeout(() => {
+                        const finalHTML = `
+                            <div class="flex justify-center w-full mt-4 mb-4">
+                                <a href="${CONFIG.whatsAppGroupLink}" target="_blank" onclick="pushDataLayer('Lead', {value: 85, currency: 'BRL'})"
+                                   class="bg-[#25D366] text-white font-bold py-3 px-6 rounded-full shadow-xl flex items-center gap-2 animate-bounce hover:scale-105 transition">
+                                    <i class="ph-bold ph-whatsapp-logo text-2xl"></i>
+                                    ENTRAR NO GRUPO VIP
+                                </a>
+                            </div>`;
+                        chatContainer.insertAdjacentHTML('beforeend', finalHTML);
+                        scrollToBottom();
+                    }, 1000);
+                    break;
+            }
+        }
+
+        sendBtn.addEventListener('click', handleInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleInput();
+        });
+    </script>
+</body>
+</html>
