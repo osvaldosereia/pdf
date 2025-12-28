@@ -128,10 +128,11 @@
             transition: all 0.2s; font-size: 1.2rem;
         }
         .nav-arrow-btn:active { background: #e0e0e0; transform: scale(0.95); }
+        .nav-title-group { text-align: center; flex: 1; }
         .nav-title-display {
             font-weight: 800; color: #0F2546; font-size: 1.1rem; text-transform: uppercase;
-            text-align: center; flex: 1;
         }
+        .nav-subtitle { font-size: 0.7rem; color: #666; font-weight: 500; margin-top: -2px; }
 
         .card-header-visual {
             display: flex; flex-direction: column;
@@ -351,7 +352,8 @@
             viewedBaskets: [],
             timerRef: null,
             currentBasketIndex: 0,
-            selectedDiscountId: null
+            selectedDiscountId: null,
+            scrollTriggered: false
         };
 
         const getGreeting = () => {
@@ -460,6 +462,9 @@
         window.switchBasketCard = function(direction) {
             const container = document.getElementById('unified-card-content');
             if(!container) return;
+            
+            // Reset scroll state when switching baskets
+            state.scrollTriggered = false;
 
             // Fade out
             const elementsToFade = container.querySelectorAll('.card-img-container, .product-slider-container, .card-price-display-only, .selo-destaque');
@@ -601,7 +606,10 @@
                 <div class="card-cesta-new">
                     <div class="card-nav-header">
                         <div class="nav-arrow-btn" onclick="switchBasketCard(-1)"><i class="ph-bold ph-caret-left"></i></div>
-                        <div id="card-nav-title" class="nav-title-display">${initialCesta.nome}</div>
+                        <div class="nav-title-group">
+                            <div id="card-nav-title" class="nav-title-display">${initialCesta.nome}</div>
+                            <div class="nav-subtitle">Toque para trocar</div>
+                        </div>
                         <div class="nav-arrow-btn" onclick="switchBasketCard(1)"><i class="ph-bold ph-caret-right"></i></div>
                     </div>
                     <div id="unified-card-content">
@@ -617,7 +625,7 @@
             return `
             <div class="card-msg-container">
                 <div class="discount-container">
-                    <h3 class="text-center font-bold text-lg text-[#0F2546] mb-2"><i class="ph-fill ph-tag text-green-500"></i> TABELA DE DESCONTOS</h3>
+                    <h3 class="text-center font-bold text-lg text-[#0F2546] mb-2"><i class="ph-fill ph-tag text-green-500"></i> Descontos pra você:</h3>
                     <div class="bg-yellow-50 border border-yellow-200 rounded p-2">
                         <table class="discount-table">
                             ${rows}
@@ -639,7 +647,7 @@
             return `
             <div class="card-msg-container">
                 <div class="discount-container">
-                    <p class="font-bold text-sm mb-2 text-gray-700">Qual cesta você quer?</p>
+                    <p class="font-bold text-sm mb-2 text-gray-700">Escolha um desconto:</p>
                     ${options}
                     <button onclick="submitDiscount()" class="w-full bg-[#008069] text-white font-bold py-3 rounded-lg mt-2 shadow-md hover:bg-[#006d59] active:scale-95 transition">
                         GARANTIR MEU DESCONTO <i class="ph-bold ph-whatsapp-logo ml-1"></i>
@@ -719,6 +727,22 @@
             const wrapper = element.parentElement;
             const arrow = wrapper.querySelector('.slider-arrow-indicator');
             if (element.scrollLeft > 20) { if(arrow) arrow.style.opacity = '0'; } else { if(arrow) arrow.style.opacity = '1'; }
+
+            // GATILHO DE ROLAGEM (Scroll Trigger)
+            // Se o usuário rolou até o final (quase), assumimos que ele viu os produtos e avançamos
+            // Tolerância de 50px
+            if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 50) {
+                // Checa se está no passo de ver cestas (5) e se ainda não disparou
+                if (state.step === 5 && !state.scrollTriggered) {
+                    state.scrollTriggered = true;
+                    // Limpa timer de espera pois o usuário já interagiu
+                    clearTimeout(state.timerRef);
+                    // Avança após um pequeno delay para ele terminar de ler
+                    setTimeout(() => {
+                         if(state.step === 5) nextStepFlow('scroll_trigger');
+                    }, 1500); 
+                }
+            }
         };
 
         function handlePostClick() {
@@ -788,7 +812,7 @@
 
                 case 2: // Mostra Empresa
                     await addMessage(generateCompanyCardHTML());
-                    await addMessage(`Somos de Cuiabá, com 8 anos de tradição entregando qualidade na sua mesa.`);
+                    // REMOVIDO: Mensagem "Somos de Cuiabá..." (Já está no card)
                     // MUDANÇA: AGORA PERGUNTA ANTES DE MOSTRAR AS CESTAS
                     setTimeout(() => { 
                         state.step = 4; // Passo intermediário para perguntar
@@ -814,22 +838,23 @@
 
                 case 5: // Exibe Card UNIFICADO
                     state.currentBasketIndex = 0; // Começa na Grande
+                    state.scrollTriggered = false; // Reset trigger
                     await addMessage(`Você pode navegar entre elas aqui mesmo 👇`);
                     await addMessage(generateUnifiedCardFrame(CESTAS[0]));
                     
                     trackEvent('ViewContent', { content_name: CESTAS[0].nome });
 
-                    // TIMER DE RETENÇÃO (30s)
+                    // TIMER DE RETENÇÃO REDUZIDO (20s)
+                    // Se o usuário não fizer nada em 20s, avança.
+                    // Se rolar o slider (ver handleSlideScroll), avança antes.
                     state.timerRef = setTimeout(() => {
                         state.step = 6;
                         nextStepFlow('timer_trigger');
-                    }, 30000); 
+                    }, 20000); 
                     break;
 
                 case 6: // Pergunta Pagamento (Recuperação)
-                    if (triggerValue === 'timer_trigger') {
-                        await addMessage(`Ei ${name}, ainda está por aí? 👀`);
-                    }
+                    // REMOVIDO: "Ei fulano..." - Agora é direto.
                     await addMessage(`Posso te mostrar as formas de pagamento facilitadas?`);
                     showOptions([
                         { text: "Pode mostrar ✅", value: "show_payment", nextStep: 7 }
@@ -859,7 +884,7 @@
                             
                             setTimeout(async () => {
                                  // 2. Convite para Ação
-                                 await addMessage(`Você quer garantir esse desconto por 15 dias sem compromisso?`);
+                                 await addMessage(`${name}, mesmo que não vá comprar agora, garanta seu desconto.`);
                                  await addMessage(generateDiscountSelector()); 
                             }, 1500);
                         }, 1500);
