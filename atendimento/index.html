@@ -890,7 +890,7 @@
                     break;
 
                 case 6: // Pergunta Pagamento (Recuperação)
-                    await addMessage(`Posso te mostrar as formas de pagamento facilitadas?`);
+                    await addMessage(`Posso te mostrar as formas de pagamento?`);
                     showOptions([
                         { text: "Pode mostrar ✅", value: "show_payment", nextStep: 7 }
                     ]);
@@ -900,10 +900,12 @@
                     await addMessage(`Aceitamos praticamente tudo:`);
                     const listaPagamento = `
                         <ul class="list-disc pl-5 space-y-1">
-                            <li>Cartão de Crédito e Débito</li>
+                            <li>Cartão de Débito</li>
+                            <li>Cartão de Crédit em até 3x sem juros</li>
                             <li>Parcelamos em 3x sem juros no Cartão de Crédito</li>
                             <li>PIX ou Dinheiro na entrega</li>
                             <li>Vale Alimentação e Refeição (Alelo, Sodexo, Pluxee, Caju, Flash e Ifood)</li>
+                            <li>AINDA NÃO VENDEMOS A PRAZO OU PARA 30 DIAS</li>
                         </ul>`;
                     await addMessage(listaPagamento);
                     
