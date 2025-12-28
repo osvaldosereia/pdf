@@ -153,7 +153,8 @@
         /* Slider Horizontal de Produtos */
         .product-slider-container {
             background: #f9fafb;
-            padding: 15px 0;
+            padding: 10px 0 15px 0;
+            position: relative; /* Necessário para o overlay */
         }
         .product-slider {
             display: flex;
@@ -165,6 +166,11 @@
         }
         .product-slider::-webkit-scrollbar { height: 4px; }
         .product-slider::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+        /* Wrapper para a seta flutuante */
+        .slider-wrapper {
+            position: relative;
+        }
 
         .product-slide {
             flex: 0 0 110px;
@@ -267,9 +273,51 @@
         }
         .btn-encomendar-card:active { transform: translateY(3px); box-shadow: none; }
         
+        /* NOVO DESIGN DO SCROLL HINT (Para público leigo) */
         .scroll-hint {
-            font-size: 0.75rem; color: #666; text-align: center;
-            padding-bottom: 8px; font-style: italic; display: flex; align-items: center; justify-content: center; gap: 5px;
+            background-color: #fff8dc; /* Amarelo clarinho */
+            color: #b45309; /* Laranja escuro */
+            font-size: 0.75rem;
+            font-weight: 800; /* Negrito forte */
+            text-align: center;
+            padding: 8px;
+            margin: 0 10px 8px 10px;
+            border-radius: 6px;
+            border: 1px dashed #fcd34d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            animation: pulseHint 2s infinite;
+        }
+        @keyframes pulseHint {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* SETA FLUTUANTE ANIMADA */
+        .slider-arrow-indicator {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #25D366;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 20;
+            animation: bounceRight 1.2s infinite;
+            pointer-events: none; /* Deixa clicar "através" dela */
+            transition: opacity 0.3s;
+        }
+        @keyframes bounceRight {
+            0%, 100% { transform: translate(0, -50%); }
+            50% { transform: translate(6px, -50%); }
         }
     </style>
 </head>
@@ -325,11 +373,13 @@
                 arrozQtd: 4,
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif',
                 items: [
-                    '4 Arroz de 5kg', '3 Açúcar Cristal 2kg', '4 Óleo de Soja 900ml', 
-                    '4 Feijão 1kg', '1 Café 500g', '3 Espaguetes 500g', '12 Ovos',
-                    '1 Mistura Bolo', '1 Trigo 1kg', '1 Sal 1kg', '2 Molho Tomate',
-                    '1 Milho', '1 Tempero', '2 Bolacha Recheada', '2 Miojo', '4 Suco Pó',
-                    '1 Kit Limpeza'
+                    '4 Arroz Koblenz 5kg', '3 Açúcar Doce Dia 2kg', '4 Óleo de Soja Liza 900ml', 
+                    '4 Feijão Da Casa 1kg', '1 Café Caboclo 500g', '3 Espaguete QDelicia 500g', '12 Ovos',
+                    '1 Bolo Apti Chocolate 400g', '1 Trigo Vitoriosa 1kg', '1 Sal 1kg', '2 Molho Fugini 340g',
+                    '1 Milho Verde Predileta', '1 Tempero Tio Jonas', '2 Bolacha MyBit Recheada', '2 Miojo Apti', '4 Suco Frisco',
+                    '1 Sabão Barra Ype 900g', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico', '1 Amaciante Ype 2L',
+                    '1 Desinfetante Remmus 2L', '1 Sabão em Pó OMO 800g', '2 Detergente Ype 500ml', '1 Qboa 1 Litro',
+                    '4 Sabonete Palmolive 85g', '1 Lã de Aço Assolan', '1 Esponja de Lavar Louça'
                 ],
                 opcoes: [
                     { arroz: 'Tio Alvino', preco: '380,00' },
@@ -342,10 +392,13 @@
                 arrozQtd: 3,
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif',
                 items: [
-                    '3 Arroz de 5kg', '2 Açúcar Cristal', '3 Óleo', '3 Feijão', 
-                    '1 Café 500g', '12 Ovos', '1 Mistura Bolo', '2 Espaguetes',
-                    '1 Trigo', '1 Sal', '2 Molho Tomate', '1 Milho', '1 Tempero',
-                    '2 Bolacha', '2 Miojo', '3 Suco', '1 Kit Limpeza'
+                    '3 Arroz Koblenz 5kg', '2 Açúcar Doce Dia 2kg', '3 Óleo de Soja Liza 900ml', '3 Feijão Da Casa 1kg', 
+                    '1 Café Caboclo 500g', '12 Ovos', '1 Bolo Apti Chocolate 400g', '2 Espaguete QDelicia 500g',
+                    '1 Trigo Vitoriosa 1kg', '1 Sal 1kg', '2 Molho Fugini 340g', '1 Milho Verde Predileta', '1 Tempero Tio Jonas',
+                    '2 Bolacha MyBit Recheada', '2 Miojo Apti', '3 Suco Frisco', 
+                    '1 Sabão Barra Ype 900g', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico', '1 Amaciante Ype 2L',
+                    '1 Desinfetante Remmus 2L', '1 Sabão em Pó OMO 800g', '2 Detergente Ype 500ml', '1 Qboa 1 Litro',
+                    '3 Sabonete Palmolive 85g', '1 Lã de Aço Assolan', '1 Esponja de Lavar Louça'
                 ],
                 opcoes: [
                     { arroz: 'Tio Alvino', preco: '320,00' },
@@ -358,10 +411,13 @@
                 arrozQtd: 2,
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif',
                 items: [
-                    '2 Arroz de 5kg', '1 Açúcar 2kg', '2 Óleo', '2 Feijão', 
-                    '1 Café 250g', '12 Ovos', '1 Mistura Bolo', '1 Espaguete',
-                    '1 Trigo', '1 Sal', '1 Molho Tomate', '1 Milho', '1 Tempero',
-                    '2 Bolacha', '2 Miojo', '2 Suco', '1 Kit Limpeza'
+                    '2 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '2 Óleo de Soja Liza 900ml', '2 Feijão Da Casa 1kg', 
+                    '1 Café Caboclo 250g', '12 Ovos', '1 Bolo Apti Chocolate 400g', '1 Espaguete QDelicia 500g',
+                    '1 Trigo Vitoriosa 1kg', '1 Sal 1kg', '1 Molho Fugini 340g', '1 Milho Verde Predileta', '1 Tempero Tio Jonas',
+                    '2 Bolacha MyBit Recheada', '2 Miojo Apti', '2 Suco Frisco', 
+                    '1 Sabão Barra Ype 900g', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico', '1 Amaciante Ype 2L',
+                    '1 Desinfetante Remmus 2L', '1 Sabão em Pó OMO 800g', '2 Detergente Ype 500ml', '1 Qboa 1 Litro',
+                    '2 Sabonete Palmolive 85g', '1 Lã de Aço Assolan', '1 Esponja de Lavar Louça'
                 ],
                 opcoes: [
                     { arroz: 'Tio Alvino', preco: '215,00' },
@@ -374,9 +430,12 @@
                 arrozQtd: 1,
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif',
                 items: [
-                    '1 Arroz de 5kg', '1 Açúcar 2kg', '2 Óleo', '2 Feijão', 
-                    '1 Café 250g', '1 Espaguete', '1 Sal', '1 Molho Tomate', '1 Milho',
-                    '1 Bolacha', '1 Miojo', '2 Suco', '1 Kit Limpeza'
+                    '1 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '2 Óleo de Soja Liza 900ml', '2 Feijão Da Casa 1kg', 
+                    '1 Café Caboclo 250g', '1 Espaguete QDelicia 500g', '1 Sal 1kg', '1 Molho Fugini 340g', '1 Milho Verde Predileta',
+                    '1 Bolacha MyBit Recheada', '1 Miojo Apti', '2 Suco Frisco', 
+                    '1 Sabão Barra Ype 900g', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico', '1 Amaciante Ype 2L',
+                    '1 Desinfetante Remmus 2L', '1 Sabão em Pó OMO 800g', '1 Detergente Ype 500ml', '1 Qboa 1 Litro',
+                    '2 Sabonete Palmolive 85g', '1 Lã de Aço Assolan', '1 Esponja de Lavar Louça'
                 ],
                 opcoes: [
                     { arroz: 'Tio Alvino', preco: '165,00' },
@@ -390,9 +449,9 @@
                 arrozQtd: 1,
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif',
                 items: [
-                    '1 Arroz de 5kg', '1 Açúcar 2kg', '1 Óleo', '1 Feijão', 
-                    '1 Café 250g', '1 Espaguete', '1 Trigo', '1 Farinha Mandioca', 
-                    '1 Sal', '1 Molho Tomate', '1 Milho', '1 Bolacha', '1 Miojo', '1 Suco'
+                    '1 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '1 Óleo de Soja Liza 900ml', '1 Feijão Da Casa 1kg', 
+                    '1 Café Caboclo 250g', '1 Espaguete QDelicia 500g', '1 Trigo Vitoriosa 1kg', '1 Farinha Mandioca', 
+                    '1 Sal 1kg', '1 Molho Fugini 340g', '1 Milho Verde Predileta', '1 Bolacha MyBit Recheada', '1 Miojo Apti', '1 Suco Frisco'
                 ],
                 opcoes: [
                     { arroz: 'Valor Único', preco: '85,00' }
@@ -498,6 +557,7 @@
             });
         }
 
+        // Modified showOptions to support subtitles
         function showOptions(options) {
             setTimeout(() => {
                 const optionsId = `opts-${Date.now()}`;
@@ -533,9 +593,22 @@
             }
         };
 
+        // Detector de Scroll para Gatilho Inteligente & UI Feedback
         window.handleSlideScroll = function(element) {
+            const wrapper = element.parentElement;
+            const arrow = wrapper.querySelector('.slider-arrow-indicator');
+            
+            // Oculta a seta se a pessoa rolou um pouco (20px)
+            if (element.scrollLeft > 20) {
+                if(arrow) arrow.style.opacity = '0';
+            } else {
+                if(arrow) arrow.style.opacity = '1';
+            }
+
             if (state.cardHasInteracted) return; 
-            if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 20) {
+            
+            // Dispara lógica se chegar perto do fim
+            if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 30) {
                 triggerPostCardFlow();
             }
         };
@@ -571,14 +644,17 @@
             else if(lowerText.includes('açúcar') || lowerText.includes('acucar')) imgName = 'açucar doce dia 2 kg.webp';
             else if(lowerText.includes('bolacha')) imgName = 'bolacha mybit.webp';
             else if(lowerText.includes('bolo') || lowerText.includes('mistura')) imgName = 'bolo apti chocolate.webp';
-            else if(lowerText.includes('café') || lowerText.includes('cafe')) {
-                // Tenta detectar 500g ou 250g
+            else if(lowerText.includes('café') || lowerText.includes('cafe') || lowerText.includes('caboclo')) {
                 if(lowerText.includes('500g')) imgName = 'cafe caboclo 500g.webp';
                 else imgName = 'cafe caboclo 250g.webp';
             }
             else if(lowerText.includes('espaguete')) imgName = 'espaguete qdelicia.webp';
-            else if(lowerText.includes('esponja')) {
-                imgName = 'esponja assolan.webp';
+            else if(lowerText.includes('esponja de aço') || lowerText.includes('lã de aço') || lowerText.includes('assolan')) {
+                imgName = 'lã de aço assolan.webp';
+                folder = 'img/limpezaehigiente/';
+            }
+            else if(lowerText.includes('esponja')) { // Esponja comum
+                imgName = 'esponja de lavar louça.webp';
                 folder = 'img/limpezaehigiente/';
             }
             else if(lowerText.includes('feijão') || lowerText.includes('feijao')) imgName = 'feijão da casa.webp';
@@ -591,11 +667,16 @@
             else if(lowerText.includes('suco')) imgName = 'suco frisco.webp';
             else if(lowerText.includes('tempero')) imgName = 'tempero tio jonas.jpg';
             else if(lowerText.includes('trigo')) imgName = 'trigo vitoriosa.webp';
-            // Produtos de limpeza genericos (se o nome nao bate com esponja)
-            else if(lowerText.includes('limpeza')) {
-                folder = 'img/limpezaehigiente/';
-                imgName = 'limpeza_generico.png'; // Fallback
-            }
+            
+            // Limpeza
+            else if(lowerText.includes('creme dental')) { imgName = 'Creme Dental Sorriso 70g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('desinfetante')) { imgName = 'Desinfetante Remmus 2L.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('detergente')) { imgName = 'Detergente Ype 500ml.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('qboa')) { imgName = 'Qboa 1 Litro.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('amaciante')) { imgName = 'amaciante ype 2L.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabonete')) { imgName = 'sabonete palmolive 85g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabão barra') || lowerText.includes('sabao barra')) { imgName = 'sabão barra ype 900g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabão pó') || lowerText.includes('sabão em pó') || lowerText.includes('omo')) { imgName = 'sabão em pó omo 800g.webp'; folder = 'img/limpezaehigiente/'; }
 
             return `${folder}${imgName}`;
         }
@@ -637,6 +718,7 @@
             return `
             <div class="card-msg-container">
                 <div class="card-cesta-new">
+                    <!-- ... Header mantido ... -->
                     <div class="card-header-visual">
                         ${cesta.destaque ? `<div class="selo-destaque">${cesta.destaque}</div>` : ''}
                         <img src="${cesta.img}" class="card-img-left" alt="${cesta.nome}">
@@ -647,10 +729,19 @@
                     
                     <div class="product-slider-container">
                         <div class="scroll-hint">
-                            <i class="ph-bold ph-hand-swipe-left"></i> Arraste para ver os produtos
+                            <i class="ph-bold ph-hand-swipe-left text-lg"></i> 
+                            ARRASTE PARA O LADO PARA VER MAIS <i class="ph-bold ph-arrow-right"></i>
                         </div>
-                        <div class="product-slider" onscroll="handleSlideScroll(this)">
-                            ${slidesHTML}
+                        
+                        <div class="slider-wrapper">
+                            <div class="product-slider" onscroll="handleSlideScroll(this)">
+                                ${slidesHTML}
+                                <div style="min-width: 15px;"></div>
+                            </div>
+                            <!-- Seta Flutuante -->
+                            <div class="slider-arrow-indicator">
+                                <i class="ph-bold ph-caret-right text-green-600 text-xl"></i>
+                            </div>
                         </div>
                     </div>
 
