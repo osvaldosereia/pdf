@@ -35,7 +35,6 @@
         .wa-btn {
             background-color: white;
             color: #008069;
-            font-weight: 600;
             padding: 12px 16px;
             border-radius: 8px;
             width: 100%;
@@ -44,9 +43,16 @@
             transition: all 0.2s;
             border: 1px solid #f0f0f0;
             cursor: pointer;
-            font-size: 15px;
+            /* Flex layout para suportar subtítulos */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .wa-btn:active { background-color: #f0f2f5; transform: scale(0.98); }
+        
+        .wa-btn-title { font-weight: 600; font-size: 15px; line-height: 1.2; }
+        .wa-btn-subtitle { font-weight: 400; font-size: 11px; color: #667781; margin-top: 4px; line-height: 1.2; }
 
         /* Animation for typing */
         .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
@@ -101,7 +107,7 @@
         
         /* FOTO DA CESTA AUMENTADA (50% MAIOR QUE ANTES) */
         .card-img-left {
-            width: 135px; /* Aumentado de 90px para 135px */
+            width: 135px;
             height: 135px;
             object-fit: cover;
             border-radius: 8px;
@@ -177,7 +183,7 @@
         }
         .product-info { display: flex; flex-direction: column; line-height: 1.1; }
         .product-qty { 
-            font-size: 1rem; 
+            font-size: 0.85rem; /* Ajustado para caber "unidade" */
             font-weight: 800; 
             color: var(--cor-whatsapp);
             margin-bottom: 3px;
@@ -268,9 +274,7 @@
 
     <!-- HEADER -->
     <header class="wa-header text-white p-3 flex items-center shadow-md z-30 shrink-0">
-        <!-- REMOVIDO: Seta para esquerda -->
         <div class="w-10 h-10 rounded-full bg-gray-300 overflow-hidden mr-3 border border-white/30 relative shrink-0">
-            <!-- AVATAR CORRIGIDO -->
             <img src="img/logo.png" onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed=Osvaldo&backgroundColor=c0aede'" alt="Osvaldo" class="w-full h-full object-cover protected-img">
             <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
         </div>
@@ -279,7 +283,6 @@
             <p id="status-text" class="text-xs text-green-100/80 truncate">Online</p>
         </div>
         <div class="flex gap-4 text-xl shrink-0">
-            <!-- NOVOS ÍCONES -->
             <a href="https://instagram.com" target="_blank" class="text-white hover:text-gray-200"><i class="ph ph-instagram-logo"></i></a>
             <a href="#" target="_blank" class="text-white hover:text-gray-200"><i class="ph ph-globe"></i></a>
             <a href="https://wa.me/5565998150975" target="_blank" class="text-white hover:text-gray-200"><i class="ph ph-whatsapp-logo"></i></a>
@@ -291,10 +294,8 @@
         <!-- Messages area -->
     </main>
 
-    <!-- INPUT AREA (será ocultado após o nome) -->
+    <!-- INPUT AREA -->
     <footer id="input-footer" class="bg-[#F0F2F5] p-2 flex items-center gap-2 shrink-0 z-30 pb-safe">
-        <!-- REMOVIDO BOTÃO EMOJI ESQUERDO -->
-        
         <div class="flex-1 bg-white rounded-full px-4 py-2 shadow-sm flex items-center">
             <input type="text" id="user-input" placeholder="Digite seu nome..." class="w-full outline-none text-base bg-transparent text-gray-800" autocomplete="off">
         </div>
@@ -406,7 +407,7 @@
         let state = { 
             step: 0, 
             userName: '', 
-            clientDisplayName: '', // Nome composto para o Zap
+            clientDisplayName: '', 
             suggestedIndex: null, 
             browsingQueue: [],
             cardInteractionTimer: null,
@@ -427,7 +428,6 @@
             }, 100);
         }
 
-        // --- MENSAGEM COM DELAY HUMANO ---
         function calculateTypingTime(text) {
             const baseDelay = 1000;
             const charDelay = 30;
@@ -495,13 +495,15 @@
             });
         }
 
+        // Modified showOptions to support subtitles
         function showOptions(options) {
             setTimeout(() => {
                 const optionsId = `opts-${Date.now()}`;
                 let buttonsHTML = options.map(opt => `
                     <button onclick="handleOptionClick('${opt.text}', '${opt.value}', ${opt.nextStep}, '${optionsId}')" 
                             class="wa-btn text-left">
-                        ${opt.text}
+                        <span class="wa-btn-title">${opt.text}</span>
+                        ${opt.subtext ? `<span class="wa-btn-subtitle">${opt.subtext}</span>` : ''}
                     </button>
                 `).join('');
 
@@ -513,11 +515,9 @@
                     </div>`;
                 chatContainer.insertAdjacentHTML('beforeend', html);
                 scrollToBottom();
-                // User Input está escondido agora, não precisamos focar
             }, 800);
         }
 
-        // --- FUNÇÕES GLOBAIS DE CARD ---
         window.selectRice = function(id, nome, preco) {
             const btn = document.getElementById(`btn-pedir-${id}`);
             const allOpts = document.querySelectorAll(`#widget-${id} .radio-arroz-option`);
@@ -531,7 +531,6 @@
             }
         };
 
-        // Detector de Scroll para Gatilho Inteligente
         window.handleSlideScroll = function(element) {
             if (state.cardHasInteracted) return; 
             if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 20) {
@@ -554,7 +553,7 @@
 
             const opcoes = [
                 { text: `Encomendar a ${nomeCesta} ✅`, value: "encomendar_atual", nextStep: 3 },
-                { text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 5 }, // Vai direto para o Menu
+                { text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 5 },
                 { text: "Ver formas de pagamento 💳", value: "pagamento", nextStep: 4 }
             ];
 
@@ -586,8 +585,12 @@
 
         function parseProductItem(text) {
             const match = text.match(/^(\d+)\s+(.*)$/);
-            if(match) return { qty: match[1] + 'x', name: match[2], img: getProductImage(match[2]) };
-            return { qty: '1x', name: text, img: getProductImage(text) };
+            if(match) {
+                const qty = parseInt(match[1]);
+                const qtyText = qty > 1 ? `${qty} unidades` : `${qty} unidade`;
+                return { qty: qtyText, name: match[2], img: getProductImage(match[2]) };
+            }
+            return { qty: '1 unidade', name: text, img: getProductImage(text) };
         }
 
         function generateCardHTML(cesta) {
@@ -605,7 +608,6 @@
                 </div>`;
             }).join('');
             
-            // Lista simples de preços para o card
             const pricesHTML = cesta.opcoes.map(opt => `
                 <div class="price-item-row">
                     <span>${opt.arroz.includes('Valor') ? 'Valor Único' : 'Com ' + opt.arroz}</span>
@@ -640,7 +642,6 @@
             </div>`;
         }
 
-        // Gera o Widget de Encomenda (Aparece ao clicar em "Encomendar")
         function generateOrderWidget(cesta) {
             const riceOptionsHTML = cesta.opcoes.map(opt => `
                 <div class="radio-arroz-option" onclick="selectRice('${cesta.id}', '${opt.arroz}', '${opt.preco}')">
@@ -667,7 +668,6 @@
             </div>`;
         }
 
-        // --- LÓGICA DO ROTEIRO ---
         window.onload = async () => {
             setTimeout(async () => {
                 await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 1000);
@@ -682,16 +682,14 @@
             if (!text) return;
 
             if (state.step === 0) {
-                // Lógica de nome: pega até 2 partes
                 const parts = text.split(/\s+/);
-                state.userName = parts[0]; // Primeiro nome para conversa
-                state.clientDisplayName = parts.slice(0, 2).join(' '); // Até 2 nomes para Zap
+                state.userName = parts[0]; 
+                state.clientDisplayName = parts.slice(0, 2).join(' ');
 
                 state.step = 1;
                 userInput.value = '';
                 await addMessage(text, 'user');
                 
-                // ESCONDER O CAMPO DE INPUT
                 inputFooter.style.display = 'none';
                 
                 nextStepFlow();
@@ -713,15 +711,13 @@
             }
 
             if (value === 'ver_outra') {
-                 // Redireciona para o MENU (Passo 5) ao invés de navegar
                  state.step = 5;
             }
 
-            // Lógica para quando seleciona uma cesta específica na lista final
             if (value.startsWith('select_cesta_')) {
                 const index = parseInt(value.split('_')[2]);
                 state.suggestedIndex = index;
-                state.step = 2; // Volta a mostrar o card
+                state.step = 2; 
             }
 
             nextStepFlow(value);
@@ -743,7 +739,7 @@
                     ]);
                     break;
 
-                case 2: // Mostrar Cesta Sugerida
+                case 2:
                     state.cardHasInteracted = false; 
                     const index = state.suggestedIndex;
                     const cesta = CESTAS[index];
@@ -751,7 +747,7 @@
                     state.currentBasketId = cesta.id;
                     
                     if (triggerValue === 'ver_outra') {
-                        // Não entra aqui mais, pois "ver_outra" vai pro step 5
+                        // pass
                     } else if (triggerValue && triggerValue.startsWith('select_cesta')) {
                         await addMessage(`Aqui está a <b>${cesta.nome}</b>:`, 'bot', 1000);
                     } else {
@@ -760,23 +756,21 @@
 
                     await addMessage(generateCardHTML(cesta));
 
-                    // Timer Reduzido para 20 segundos
                     state.cardInteractionTimer = setTimeout(() => {
                         triggerPostCardFlow();
                     }, 20000); 
                     break;
 
-                case 3: // Clicou em "Encomendar a Cesta X"
+                case 3:
                     const idCestaAtual = state.currentBasketId;
                     const cestaParaPedir = CESTAS.find(c => c.id === idCestaAtual);
                     
                     if(cestaParaPedir) {
                         await addMessage(generateOrderWidget(cestaParaPedir));
                     }
-                    // Não avança automaticamente
                     break;
 
-                case 4: // Pagamento e Fechamento
+                case 4:
                     await addMessage(`Facilitamos o pagamento pra você:`);
                     const listaPagamento = `
                         <ul class="list-disc pl-5 space-y-1">
@@ -784,10 +778,11 @@
                             <li><b>Cartão de Débito</b></li>
                             <li><b>PIX</b> ou <b>Dinheiro</b> na entrega</li>
                             <li><b>Vale Alimentação/Refeição:</b> Alelo, Sodexo, Pluxee, Caju, Flash, iFood...</li>
+                            <li><b>Não vendemos pra 30 dias</b></li>
                         </ul>`;
                     await addMessage(listaPagamento);
+                    await addMessage('Aqui você só paga quando recebe a cesta na sua casa.', 'bot');
 
-                    // Delay reduzido de 5 segundos
                     setTimeout(async () => {
                         await addMessage(`O que deseja fazer agora?`, 'bot');
                         
@@ -795,15 +790,30 @@
                         const linkVip = CONFIG.whatsAppGroupLink;
 
                         showOptions([
-                            { text: "Salvar Contato 📞", value: "salvar", nextStep: 99 }, 
-                            { text: "Entrar no Grupo VIP 🎁", value: "vip", nextStep: 99 },
-                            { text: "Encomendar uma cesta 🛒", value: "menu_cestas", nextStep: 5 }
+                            { 
+                                text: "Salvar Contato 📞", 
+                                subtext: "Salve nosso zap para encomendar depois",
+                                value: "salvar", 
+                                nextStep: 99 
+                            }, 
+                            { 
+                                text: "Entrar no Grupo VIP 🎁", 
+                                subtext: "grupo de desconto e sorteio só para participantes",
+                                value: "vip", 
+                                nextStep: 99 
+                            },
+                            { 
+                                text: "Encomendar uma cesta 🛒", 
+                                subtext: "veja todas as cestas",
+                                value: "menu_cestas", 
+                                nextStep: 5 
+                            }
                         ]);
 
                     }, 5000);
                     break;
 
-                case 5: // Menu Lista de Cestas
+                case 5:
                     await addMessage(`Qual cesta você quer ver?`);
                     
                     const listaCestas = CESTAS.map((c, i) => ({
@@ -815,13 +825,12 @@
                     showOptions(listaCestas);
                     break;
                     
-                case 99: // Steps finais que abrem link
+                case 99:
                     if(triggerValue === 'salvar') {
                         window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=Olá! Aqui é o ${state.clientDisplayName}. Estou salvando seu contato!`, '_blank');
                     } else if(triggerValue === 'vip') {
                         window.open(CONFIG.whatsAppGroupLink, '_blank');
                     }
-                    // Volta para menu
                     state.step = 5; 
                     nextStepFlow();
                     break;
