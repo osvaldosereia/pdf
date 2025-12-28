@@ -251,14 +251,13 @@
         if (window.self !== window.top) window.top.location.href = window.self.location.href;
 
         // --- DADOS DAS CESTAS ---
-        // Adicionada propriedade 'brinde' e 'imgBrinde' para cada cesta
         const CESTAS = [
             {
                 id: 'grande',
                 nome: 'Cesta Grande',
                 arrozQtd: 4,
-                brinde: '1 Sabão em Pó OMO 800g',
-                imgBrinde: 'img/limpeza/sabão em pó omo 800g.webp',
+                brindeNome: '1 OMO 800g',
+                brindeImg: 'img/limpezaehigiente/sabão em pó omo 800g.webp',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif',
                 items: [
                     '4 Arroz Koblenz 5kg', '3 Açúcar Doce Dia 2kg', '4 Óleo de Soja Liza 900ml', 
@@ -275,8 +274,8 @@
                 id: 'media',
                 nome: 'Cesta Média',
                 arrozQtd: 3,
-                brinde: '1 Café Caboclo 250g',
-                imgBrinde: 'img/alimento/cafe caboclo 250g.webp',
+                brindeNome: '1 Café 250g',
+                brindeImg: 'img/alimento/cafe caboclo 250g.webp',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif',
                 items: [
                     '3 Arroz Koblenz 5kg', '2 Açúcar Doce Dia 2kg', '3 Óleo de Soja Liza 900ml', '3 Feijão Da Casa 1kg', 
@@ -293,8 +292,8 @@
                 id: 'pequena',
                 nome: 'Cesta Pequena',
                 arrozQtd: 2,
-                brinde: '1 Amaciante Ypê 2L',
-                imgBrinde: 'img/limpeza/amaciante ype 2L.webp',
+                brindeNome: '1 Amaciante 2L',
+                brindeImg: 'img/limpezaehigiente/amaciante ype 2L.webp',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif',
                 items: [
                     '2 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '2 Óleo de Soja Liza 900ml', '2 Feijão Da Casa 1kg', 
@@ -311,8 +310,8 @@
                 id: 'mini',
                 nome: 'Cesta Mini',
                 arrozQtd: 1,
-                brinde: '1 Feijão Da Casa 1kg',
-                imgBrinde: 'img/alimento/feijão da casa.webp',
+                brindeNome: '1 Feijão 1kg',
+                brindeImg: 'img/alimento/feijão da casa.webp',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif',
                 items: [
                     '1 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '2 Óleo de Soja Liza 900ml', '2 Feijão Da Casa 1kg', 
@@ -329,8 +328,8 @@
                 nome: 'Cesta Econômica',
                 destaque: 'Mais Vendida',
                 arrozQtd: 1,
-                brinde: '1 Trigo Vitoriosa 1kg',
-                imgBrinde: 'img/alimento/trigo vitoriosa.webp',
+                brindeNome: '1 Trigo 1kg',
+                brindeImg: 'img/alimento/trigo vitoriosa.webp',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif',
                 items: [
                     '1 Arroz Koblenz 5kg', '1 Açúcar Doce Dia 2kg', '1 Óleo de Soja Liza 900ml', '1 Feijão Da Casa 1kg', 
@@ -352,9 +351,10 @@
             step: 0, 
             userName: '', 
             clientDisplayName: '', 
-            viewedBaskets: [], // Armazena IDs das cestas já vistas
-            timerRef: null,    // Referencia para o timer de 15s
-            lastViewedBasketId: null // Para saber qual brinde oferecer
+            viewedBaskets: [],
+            timerRef: null,
+            lastViewedBasketId: null,
+            giftShown: false
         };
 
         const getGreeting = () => {
@@ -404,7 +404,7 @@
                             const typingEl = document.getElementById(typingId);
                             if(typingEl) typingEl.remove();
                             
-                            const isCard = text.includes('card-cesta-new') || text.includes('order-widget') || text.includes('omo');
+                            const isCard = text.includes('card-cesta-new') || text.includes('order-widget') || text.includes('product-slider-container');
                             const bubbleClass = isCard ? 'p-1 bg-transparent shadow-none' : 'p-2 px-3 bg-white shadow-sm';
                             
                             const html = `
@@ -476,7 +476,35 @@
             const wrapper = element.parentElement;
             const arrow = wrapper.querySelector('.slider-arrow-indicator');
             if (element.scrollLeft > 20) { if(arrow) arrow.style.opacity = '0'; } else { if(arrow) arrow.style.opacity = '1'; }
+            
+            if (state.cardHasInteracted) return; 
+            if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 30) {
+                triggerPostCardFlow();
+            }
         };
+
+        function triggerPostCardFlow() {
+            if (state.cardHasInteracted) return;
+            state.cardHasInteracted = true;
+            clearTimeout(state.cardInteractionTimer);
+            showPostCardMessages();
+        }
+
+        async function showPostCardMessages() {
+            const cestaAtual = CESTAS.find(c => c.id === state.currentBasketId);
+            const nomeCesta = cestaAtual ? cestaAtual.nome : 'esta cesta';
+
+            await addMessage(`O que quer fazer agora?`, 'bot');
+
+            const opcoes = [
+                { text: `Encomendar a ${nomeCesta} ✅`, value: "encomendar_atual", nextStep: 6 },
+                { text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 5 },
+                { text: "Quem somos nós? 🏢", value: "quem_somos", nextStep: 7 },
+                { text: "Ver formas de pagamento 💳", value: "pagamento", nextStep: 6 }
+            ];
+
+            showOptions(opcoes);
+        }
 
         function getProductImage(text) {
             const lowerText = text.toLowerCase();
@@ -494,11 +522,11 @@
             else if(lowerText.includes('espaguete')) imgName = 'espaguete qdelicia.webp';
             else if(lowerText.includes('esponja de aço') || lowerText.includes('lã de aço') || lowerText.includes('assolan')) {
                 imgName = 'lã de aço assolan.webp';
-                folder = 'img/limpeza/';
+                folder = 'img/limpezaehigiente/';
             }
             else if(lowerText.includes('esponja')) { 
                 imgName = 'esponja de lavar louça.webp';
-                folder = 'img/limpeza/';
+                folder = 'img/limpezaehigiente/';
             }
             else if(lowerText.includes('feijão') || lowerText.includes('feijao')) imgName = 'feijão da casa.webp';
             else if(lowerText.includes('milho')) imgName = 'milho verde predileta.webp';
@@ -511,15 +539,14 @@
             else if(lowerText.includes('tempero')) imgName = 'tempero tio jonas.jpg';
             else if(lowerText.includes('trigo')) imgName = 'trigo vitoriosa.webp';
             
-            // Limpeza
-            else if(lowerText.includes('creme dental')) { imgName = 'Creme Dental Sorriso 70g.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('desinfetante')) { imgName = 'Desinfetante Remmus 2L.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('detergente')) { imgName = 'Detergente Ype 500ml.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('qboa')) { imgName = 'Qboa 1 Litro.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('amaciante')) { imgName = 'amaciante ype 2L.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('sabonete')) { imgName = 'sabonete palmolive 85g.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('sabão barra') || lowerText.includes('sabao barra')) { imgName = 'sabão barra ype 900g.webp'; folder = 'img/limpeza/'; }
-            else if(lowerText.includes('sabão pó') || lowerText.includes('sabão em pó') || lowerText.includes('omo')) { imgName = 'sabão em pó omo 800g.webp'; folder = 'img/limpeza/'; }
+            else if(lowerText.includes('creme dental')) { imgName = 'Creme Dental Sorriso 70g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('desinfetante')) { imgName = 'Desinfetante Remmus 2L.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('detergente')) { imgName = 'Detergente Ype 500ml.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('qboa')) { imgName = 'Qboa 1 Litro.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('amaciante')) { imgName = 'amaciante ype 2L.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabonete')) { imgName = 'sabonete palmolive 85g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabão barra') || lowerText.includes('sabao barra')) { imgName = 'sabão barra ype 900g.webp'; folder = 'img/limpezaehigiente/'; }
+            else if(lowerText.includes('sabão pó') || lowerText.includes('sabão em pó') || lowerText.includes('omo')) { imgName = 'sabão em pó omo 800g.webp'; folder = 'img/limpezaehigiente/'; }
 
             return `${folder}${imgName}`;
         }
@@ -625,8 +652,70 @@
             </div>`;
         }
 
-        // --- LÓGICA DO ROTEIRO (REVISADA) ---
-        
+        // --- NEW GIFT CAROUSEL ---
+        function generateGiftCarouselHTML() {
+            const gifts = CESTAS.map(c => ({
+                cesta: c.nome,
+                nome: c.brindeNome, // e.g. "1 OMO 800g"
+                img: c.brindeImg
+            }));
+
+            const slidesHTML = gifts.map(gift => {
+                const fallbackImg = `https://placehold.co/120x120/eee/999?text=${gift.nome.split(' ')[1]}`;
+                return `
+                <div class="product-slide" style="flex: 0 0 140px; border-color: #fcd34d;">
+                    <img src="${gift.img}" onerror="this.src='${fallbackImg}'" style="width:70px; height:70px; margin-bottom:5px;">
+                    <div class="product-info">
+                        <span style="font-size:0.7rem; color:#666; margin-bottom:2px;">${gift.cesta}</span>
+                        <span style="font-size:0.85rem; font-weight:800; color:#008069; line-height:1.1;">${gift.nome}</span>
+                    </div>
+                </div>`;
+            }).join('');
+
+            return `
+            <div class="card-msg-container" style="margin-top:5px;">
+                <div class="card-cesta-new" style="border: 2px solid #fcd34d;">
+                    <div style="background:#fffbeb; padding:10px; text-align:center; border-bottom:1px solid #fcd34d;">
+                        <h3 style="font-size:0.95rem; font-weight:800; color:#b45309; margin:0;"><i class="ph-fill ph-gift"></i> BRINDES NA 1ª COMPRA</h3>
+                    </div>
+                    <div class="product-slider-container" style="background:#fff; padding:15px 0;">
+                        <div class="slider-wrapper">
+                            <div class="product-slider">
+                                ${slidesHTML}
+                                <div style="min-width: 15px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function generateOrderWidget(cesta) {
+            const riceOptionsHTML = cesta.opcoes.map(opt => `
+                <div class="radio-arroz-option" onclick="selectRice('${cesta.id}', '${opt.arroz}', '${opt.preco}')">
+                    <div class="radio-arroz-info">
+                        <span class="radio-arroz-name">${opt.arroz.includes('Valor') ? 'Valor Único' : 'Com ' + opt.arroz}</span>
+                        <span class="radio-arroz-price">R$ ${opt.preco}</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                         <div class="w-3 h-3 bg-green-500 rounded-full hidden selection-dot"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+            <div class="card-msg-container">
+                <div id="widget-${cesta.id}" class="order-widget">
+                    <h3>Finalize seu pedido da ${cesta.nome}:</h3>
+                    <p style="margin-bottom: 10px; font-size: 0.85rem; color:#666; text-align: center;">Escolha o arroz abaixo:</p>
+                    ${riceOptionsHTML}
+                    <button id="btn-pedir-${cesta.id}" class="btn-encomendar-card">
+                        <i class="fa-brands fa-whatsapp"></i> Escolha o Arroz
+                    </button>
+                </div>
+            </div>`;
+        }
+
         window.onload = async () => {
             setTimeout(async () => {
                 await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 1000);
@@ -641,7 +730,6 @@
             if (!text) return;
 
             if (state.step === 0) {
-                // Passo 0: Nome
                 const parts = text.split(/\s+/);
                 state.userName = parts[0]; 
                 state.clientDisplayName = parts.slice(0, 2).join(' ');
@@ -649,7 +737,7 @@
                 state.step = 1;
                 userInput.value = '';
                 await addMessage(text, 'user');
-                inputFooter.style.display = 'none'; // Esconde input
+                inputFooter.style.display = 'none';
                 
                 nextStepFlow();
             }
@@ -663,9 +751,16 @@
             state.step = nextStep;
 
             if (state.step === 4 && value.startsWith('select_cesta_')) {
-                // Se escolheu uma cesta da lista, pega o índice
                 const index = parseInt(value.split('_')[2]);
                 state.suggestedIndex = index;
+            }
+
+            // Lógica para o passo 6 (Decisão Brinde)
+            if (state.step === 6) {
+                if (value === 'salvar_brinde') {
+                    window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=Olá! Salvei seu contato e quero garantir meu brinde!`, '_blank');
+                    state.step = 3; 
+                }
             }
 
             nextStepFlow(value);
@@ -674,11 +769,10 @@
         async function nextStepFlow(triggerValue) {
             const name = state.userName;
 
-            // Cancela timer anterior se houver
             if(state.timerRef) clearTimeout(state.timerRef);
 
             switch (state.step) {
-                case 1: // Passo 1: Conhece a Empresa?
+                case 1: 
                     await addMessage(`Prazer, ${name}! 😀`);
                     await addMessage(`Você já conhece a Dona Antônia Alimentos?`);
                     showOptions([
@@ -687,32 +781,27 @@
                     ]);
                     break;
 
-                case 2: // Passo 2: Mostra Empresa (Se não conhece)
+                case 2: 
                     await addMessage(generateCompanyCardHTML());
+                    // Corrigido: Agora esta mensagem é tratada como mensagem normal pelo addMessage, recebendo balão
                     await addMessage(`Somos de Cuiabá, com 8 anos de tradição entregando qualidade na sua mesa.`);
-                    // Segue para mostrar cestas
                     setTimeout(() => {
                         state.step = 3; 
                         nextStepFlow();
                     }, 4000);
                     break;
 
-                case 3: // Passo 3: Intro Showcase
+                case 3: 
                     await addMessage(`Vou te mostrar as nossas cestas pra você conhecer.`);
                     showOptions([
                         { text: "OK, mostrar cestas", value: "ok", nextStep: 4 }
                     ]);
                     break;
 
-                case 4: // Passo 4: Menu de Cestas (Lista)
-                    // Se veio do card (loop), mostra "Aqui estão as outras..."
+                case 4: 
                     if (triggerValue === 'loop_cestas') {
                         await addMessage(`Dá uma olhada nas outras opções 👇`);
                     }
-
-                    // Filtra cestas já vistas para não poluir, mas mantém "Formas de Pagamento"
-                    // NOTA: Se viu todas, reseta ou mostra todas? Vamos mostrar todas mas indicar.
-                    // Na verdade, o requisito diz "lista menos a que ja foi vista".
                     
                     let opcoesCestas = [];
                     CESTAS.forEach((c, i) => {
@@ -721,14 +810,13 @@
                                 text: c.nome,
                                 subtext: `(${c.arrozQtd} pacote${c.arrozQtd > 1 ? 's' : ''} de arroz)`,
                                 value: `select_cesta_${i}`,
-                                nextStep: 5 // Vai para ver o card da cesta
+                                nextStep: 5 
                             });
                         }
                     });
 
-                    // Se não sobrou nenhuma (viu todas), mostra todas novamente
                     if (opcoesCestas.length === 0) {
-                        state.viewedBaskets = []; // Reset
+                        state.viewedBaskets = [];
                         CESTAS.forEach((c, i) => {
                             opcoesCestas.push({
                                 text: c.nome,
@@ -739,7 +827,6 @@
                         });
                     }
 
-                    // Adiciona opção de Pagamento no final
                     opcoesCestas.push({ 
                         text: "Formas de Pagamento 💳", 
                         subtext: "Ver como pagar e brindes",
@@ -750,25 +837,29 @@
                     showOptions(opcoesCestas);
                     break;
 
-                case 5: // Passo 5: Exibe Card da Cesta Selecionada
+                case 5: 
                     const index = state.suggestedIndex;
                     const cesta = CESTAS[index];
                     
                     state.currentBasketId = cesta.id;
-                    state.viewedBaskets.push(cesta.id); // Marca como vista
+                    state.viewedBaskets.push(cesta.id); 
 
                     await addMessage(`Essa é a <b>${cesta.nome}</b>:`);
                     await addMessage(generateCardHTML(cesta));
 
-                    // Timer de 15 segundos para reenviar a lista
                     state.timerRef = setTimeout(() => {
-                        // Simula "voltar para lista" automaticamente
                         state.step = 4;
                         nextStepFlow('loop_cestas');
                     }, 15000); 
                     break;
 
-                case 6: // Passo 6: Pagamento e Estratégia de Brinde
+                case 6: 
+                    if (state.giftShown) {
+                        if (triggerValue === 'encomendar_atual') { state.step = 3; nextStepFlow(); return; }
+                        if (triggerValue === 'pagamento') { state.step = 4; nextStepFlow(); return; }
+                    }
+                    state.giftShown = true;
+
                     await addMessage(`Facilitamos o pagamento pra você:`);
                     const listaPagamento = `
                         <ul class="list-disc pl-5 space-y-1">
@@ -779,66 +870,87 @@
                             <li class="text-red-500 font-bold">Não vendemos pra 30 dias</li>
                         </ul>`;
                     await addMessage(listaPagamento);
-                    await addMessage('Aqui você só paga quando recebe a cesta na sua casa.', 'bot');
+                    
+                    // Alerta em Amarelo Claro
+                    const alertMsg = `<div style="background-color:#fef9c3; color:#854d0e; padding:10px; border-radius:8px; text-align:center; font-weight:600; border:1px solid #fde047;">Aqui você só paga quando recebe a cesta na sua casa.</div>`;
+                    await addMessage(alertMsg);
 
-                    // Estratégia do Brinde
                     setTimeout(async () => {
-                        await addMessage(`🎁 <b>E tem presente pra você!</b>`, 'bot');
-                        await addMessage(`Salvando nosso contato agora, você garante um brinde exclusivo na sua próxima compra:`);
+                        await addMessage(`${name}, eu vou garantir um brinde pra quando você fizer a sua primeira compra.`);
                         
-                        // Mostra tabela de brindes ou brinde específico da última cesta vista
-                        let brindeMsg = '';
-                        let imgBrinde = '';
-                        
-                        // Se viu uma cesta por último, foca nela, senão mostra geral
-                        if (state.currentBasketId) {
-                            const lastCesta = CESTAS.find(c => c.id === state.currentBasketId);
-                            brindeMsg = `Como você viu a <b>${lastCesta.nome}</b>, você ganha: <b>${lastCesta.brinde}</b>!`;
-                            imgBrinde = lastCesta.imgBrinde;
-                        } else {
-                            // Genérico (pega da Grande como exemplo)
-                            brindeMsg = `Na Cesta Grande, por exemplo, você ganha <b>1 Sabão OMO 800g</b>!`;
-                            imgBrinde = CESTAS[0].imgBrinde;
-                        }
+                        // Carrossel de Brindes
+                        await addMessage(generateGiftCarouselHTML());
 
-                        const cardBrinde = `<div class="flex flex-col items-center justify-center mb-2 bg-white p-3 rounded-lg border border-yellow-400 shadow-sm">
-                            <img src="${imgBrinde}" onerror="this.src='https://placehold.co/150x150/FFF/000?text=Brinde'" class="w-32 h-32 object-contain mb-2">
-                            <p class="text-center text-sm text-gray-700">${brindeMsg}</p>
-                        </div>`;
-                        
-                        await addMessage(cardBrinde);
-
-                        // Botões Finais de Conversão
-                        const linkZap = `https://wa.me/${CONFIG.whatsAppNumber}?text=Olá! Aqui é o ${state.clientDisplayName}. Salvei o contato e quero garantir meu brinde!`;
-                        
                         showOptions([
                             { 
-                                text: "Salvar Contato e Garantir Brinde 🎁", 
+                                text: "Salvar contato e garantir brinde 🎁", 
                                 subtext: "Clique para confirmar no WhatsApp",
-                                value: "salvar", 
-                                nextStep: 99 
+                                value: "salvar_brinde", 
+                                nextStep: 6 
                             }, 
                             { 
-                                text: "Entrar no Grupo VIP 🚀", 
-                                subtext: "Ofertas relâmpago exclusivas",
-                                value: "vip", 
-                                nextStep: 99 
+                                text: "Ver as Cestas 🛒", 
+                                subtext: "Escolher outra opção",
+                                value: "menu_cestas", 
+                                nextStep: 5 // Redireciona para o loop de cestas, mas precisa ajustar index
+                            },
+                            { 
+                                text: "Formas de pagamento 💳", 
+                                subtext: "Rever condições",
+                                value: "pagamento", 
+                                nextStep: 6 
                             }
                         ]);
-
+                        
+                        // Ajuste para botão "Ver as Cestas" funcionar corretamente voltando ao menu
+                        // O nextStep 5 espera um indice, mas aqui queremos ir para a lista (step 4).
+                        // Vamos interceptar no handleOptionClick se necessário, ou mudar aqui.
+                        // Mudar para step 4 é melhor.
+                        
                     }, 2000);
                     break;
 
-                case 99: // Ações Finais (Links)
+                case 7: // QUEM SOMOS
+                    await addMessage(`Que bom que você quer saber mais sobre a gente! 🤝`);
+                    await addMessage(generateCompanyCardHTML());
+                    await addMessage(`Somos de Cuiabá, com 8 anos de tradição entregando qualidade na sua mesa.`);
+                    await addMessage(`Pode confiar, a entrega é garantida e o produto é de primeira.`);
+                    
+                    await addMessage(`E aí, vamos aproveitar?`, 'bot', 2000);
+                    showOptions([
+                        { text: "Ganhar meu Brinde 🎁", value: "salvar_brinde", nextStep: 6 },
+                        { text: "Ver as Cestas novamente 🛒", value: "menu_cestas", nextStep: 4 } // Vai para lista
+                    ]);
+                    break;
+                    
+                case 99:
                     if(triggerValue === 'salvar') {
                         window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=Olá! Aqui é o ${state.clientDisplayName}. Salvei o contato e quero garantir meu brinde!`, '_blank');
                     } else if(triggerValue === 'vip') {
                         window.open(CONFIG.whatsAppGroupLink, '_blank');
                     }
-                    // Fim do fluxo (pode reiniciar ou ficar parado)
+                    state.step = 5; 
+                    nextStepFlow();
                     break;
             }
         }
+        
+        // Pequena correção: botão "Ver as Cestas" no case 6 estava indo pro 5 sem indice. 
+        // No case 6, mudei visualmente, mas o nextStep precisa ser 4 (lista)
+        // Vou garantir que o clique no botão "menu_cestas" leve ao passo 4.
+        // Adicionando override no handleOptionClick para 'menu_cestas'
+        const originalHandleOptionClick = handleOptionClick;
+        handleOptionClick = async (text, value, nextStep, containerId) => {
+            if (value === 'menu_cestas') {
+                const container = document.getElementById(containerId);
+                if(container) container.remove();
+                await addMessage(text, 'user');
+                state.step = 4; // Força ir para lista
+                nextStepFlow();
+                return;
+            }
+            originalHandleOptionClick(text, value, nextStep, containerId);
+        };
 
         sendBtn.addEventListener('click', handleInput);
         userInput.addEventListener('keypress', (e) => {
