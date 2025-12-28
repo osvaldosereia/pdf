@@ -88,54 +88,53 @@
             flex-direction: column;
         }
 
+        /* Novo Cabeçalho Horizontal */
         .card-header-visual {
             display: flex;
-            flex-direction: column;
-            position: relative;
+            flex-direction: row; /* Horizontal */
+            align-items: center;
             background: #fff;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
         }
         
-        .card-title-row {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #f0f0f0;
-            background: #fdfdfd;
+        .card-img-left {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            border: 1px solid #eee;
         }
-        .card-title-row h2 {
-            font-size: 1.3rem;
+
+        .card-title-right {
+            flex-grow: 1;
+            padding-left: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-title-right h2 {
+            font-size: 1.2rem;
             margin: 0;
             color: var(--cor-texto-destaque);
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -0.5px;
-        }
-
-        /* Imagem Principal Maior */
-        .card-main-img-container {
-            width: 100%;
-            height: 250px; /* Aumentado */
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-            padding: 5px;
-        }
-        .card-main-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            line-height: 1.2;
         }
 
         .selo-destaque {
             position: absolute;
-            top: 10px; right: 10px;
+            top: -5px; right: 10px;
             background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
             color: #0F2546;
             padding: 4px 10px;
-            border-radius: 20px;
+            border-radius: 0 0 10px 10px;
             font-weight: 800;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             z-index: 10;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
@@ -143,8 +142,6 @@
 
         /* Slider Horizontal de Produtos */
         .product-slider-container {
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
             background: #f9fafb;
             padding: 15px 0;
         }
@@ -160,7 +157,7 @@
         .product-slider::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
 
         .product-slide {
-            flex: 0 0 110px; /* Aumentado */
+            flex: 0 0 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -172,8 +169,8 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         .product-slide img {
-            width: 65px; /* Aumentado */
-            height: 65px; /* Aumentado */
+            width: 65px;
+            height: 65px;
             object-fit: contain;
             margin-bottom: 8px;
         }
@@ -194,10 +191,36 @@
             overflow: hidden;
         }
 
-        /* Área de Preço Compacta */
-        .card-price-area {
-            padding: 15px;
+        /* Lista de Preços (Apenas Visualização) */
+        .card-price-display-only {
+            padding: 10px 15px;
             background: #fff;
+            border-top: 1px solid #eee;
+        }
+        .price-item-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: #555;
+        }
+        .price-item-row strong { color: var(--cor-destaque-vermelho); }
+
+        /* WIDGET DE ENCOMENDA (Aparece depois) */
+        .order-widget {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--cor-whatsapp);
+            margin-top: 5px;
+        }
+        .order-widget h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--cor-texto-destaque);
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         .radio-arroz-option {
@@ -215,7 +238,7 @@
         
         .radio-arroz-info { 
             display: flex; 
-            flex-direction: row; /* Texto e preço na mesma linha */
+            flex-direction: row; 
             justify-content: space-between;
             align-items: center;
             width: 100%;
@@ -392,7 +415,8 @@
             suggestedIndex: null, 
             browsingQueue: [],
             cardInteractionTimer: null,
-            cardHasInteracted: false
+            cardHasInteracted: false,
+            currentBasketId: null // Para saber qual cesta está sendo vista
         };
 
         const getGreeting = () => {
@@ -443,7 +467,7 @@
                             const typingEl = document.getElementById(typingId);
                             if(typingEl) typingEl.remove();
                             
-                            const isCard = text.includes('card-cesta-new');
+                            const isCard = text.includes('card-cesta-new') || text.includes('order-widget');
                             const bubbleClass = isCard ? 'p-1 bg-transparent shadow-none' : 'p-2 px-3 bg-white shadow-sm';
                             
                             const html = `
@@ -502,7 +526,7 @@
         // --- FUNÇÕES GLOBAIS DE CARD ---
         window.selectRice = function(id, nome, preco) {
             const btn = document.getElementById(`btn-pedir-${id}`);
-            const allOpts = document.querySelectorAll(`#val-${id} .radio-arroz-option`);
+            const allOpts = document.querySelectorAll(`#widget-${id} .radio-arroz-option`);
             allOpts.forEach(el => el.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
 
@@ -515,9 +539,7 @@
 
         // Detector de Scroll para Gatilho Inteligente
         window.handleSlideScroll = function(element) {
-            if (state.cardHasInteracted) return; // Já disparou
-
-            // Tolerância de 10px para considerar "fim"
+            if (state.cardHasInteracted) return; 
             if (element.scrollLeft + element.clientWidth >= element.scrollWidth - 20) {
                 triggerPostCardFlow();
             }
@@ -527,19 +549,18 @@
             if (state.cardHasInteracted) return;
             state.cardHasInteracted = true;
             clearTimeout(state.cardInteractionTimer);
-
-            // Continua o fluxo (Passo 2 - Parte B)
             showPostCardMessages();
         }
 
         async function showPostCardMessages() {
-            await addMessage(`Ela é bem completa. O que achou?`);
-            
+            const cestaAtual = CESTAS.find(c => c.id === state.currentBasketId);
+            const nomeCesta = cestaAtual ? cestaAtual.nome : 'esta cesta';
+
             const opcoes = [
-                { text: "Gostei dessa! 😍", value: "gostei", nextStep: 3 },
+                { text: `Encomendar a ${nomeCesta} ✅`, value: "encomendar_atual", nextStep: 3 },
+                { text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 2 },
+                { text: "Ver formas de pagamento 💳", value: "pagamento", nextStep: 4 }
             ];
-            
-            opcoes.push({ text: "Ver outras cestas 🔄", value: "ver_outra", nextStep: 2 });
 
             showOptions(opcoes);
         }
@@ -588,6 +609,43 @@
                 </div>`;
             }).join('');
             
+            // Lista simples de preços para o card
+            const pricesHTML = cesta.opcoes.map(opt => `
+                <div class="price-item-row">
+                    <span>${opt.arroz.includes('Valor') ? 'Valor Único' : 'Com ' + opt.arroz}</span>
+                    <strong>R$ ${opt.preco}</strong>
+                </div>
+            `).join('');
+
+            return `
+            <div class="card-msg-container">
+                <div class="card-cesta-new">
+                    <div class="card-header-visual">
+                        ${cesta.destaque ? `<div class="selo-destaque">${cesta.destaque}</div>` : ''}
+                        <img src="${cesta.img}" class="card-img-left" alt="${cesta.nome}">
+                        <div class="card-title-right">
+                            <h2>${cesta.nome}</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="product-slider-container">
+                        <div class="scroll-hint">
+                            <i class="ph-bold ph-hand-swipe-left"></i> Arraste para ver os produtos
+                        </div>
+                        <div class="product-slider" onscroll="handleSlideScroll(this)">
+                            ${slidesHTML}
+                        </div>
+                    </div>
+
+                    <div class="card-price-display-only">
+                        ${pricesHTML}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // Gera o Widget de Encomenda (Aparece ao clicar em "Encomendar")
+        function generateOrderWidget(cesta) {
             const riceOptionsHTML = cesta.opcoes.map(opt => `
                 <div class="radio-arroz-option" onclick="selectRice('${cesta.id}', '${opt.arroz}', '${opt.preco}')">
                     <div class="radio-arroz-info">
@@ -602,33 +660,13 @@
 
             return `
             <div class="card-msg-container">
-                <div class="card-cesta-new">
-                    <div class="card-header-visual">
-                        <div class="card-title-row">
-                            <h2>${cesta.nome}</h2>
-                        </div>
-                        ${cesta.destaque ? `<div class="selo-destaque">${cesta.destaque}</div>` : ''}
-                        <div class="card-main-img-container">
-                            <img src="${cesta.img}" class="card-main-img" alt="${cesta.nome}">
-                        </div>
-                    </div>
-                    
-                    <div class="product-slider-container">
-                        <div class="scroll-hint">
-                            <i class="ph-bold ph-hand-swipe-left"></i> Arraste para ver os produtos
-                        </div>
-                        <div class="product-slider" onscroll="handleSlideScroll(this)">
-                            ${slidesHTML}
-                        </div>
-                    </div>
-
-                    <div id="val-${cesta.id}" class="card-price-area">
-                        <p style="margin-bottom: 10px; font-size: 0.9rem; color:#666; font-weight: 600;">Selecione uma opção:</p>
-                        ${riceOptionsHTML}
-                        <button id="btn-pedir-${cesta.id}" class="btn-encomendar-card">
-                            <i class="fa-brands fa-whatsapp"></i> Escolha o Arroz
-                        </button>
-                    </div>
+                <div id="widget-${cesta.id}" class="order-widget">
+                    <h3>Finalize seu pedido da ${cesta.nome}:</h3>
+                    <p style="margin-bottom: 10px; font-size: 0.85rem; color:#666; text-align: center;">Escolha o arroz abaixo:</p>
+                    ${riceOptionsHTML}
+                    <button id="btn-pedir-${cesta.id}" class="btn-encomendar-card">
+                        <i class="fa-brands fa-whatsapp"></i> Escolha o Arroz
+                    </button>
                 </div>
             </div>`;
         }
@@ -679,8 +717,17 @@
                      state.suggestedIndex = state.browsingQueue.shift();
                      state.step = 2; // Loop
                  } else {
-                     state.step = 3; // Acabou, força fluxo "Gostei"
+                     // Acabou as cestas, sugere a grande ou menu
+                     state.suggestedIndex = 0;
+                     state.step = 2;
                  }
+            }
+
+            // Lógica para quando seleciona uma cesta específica na lista final
+            if (value.startsWith('select_cesta_')) {
+                const index = parseInt(value.split('_')[2]);
+                state.suggestedIndex = index;
+                state.step = 2; // Volta a mostrar o card
             }
 
             nextStepFlow(value);
@@ -703,15 +750,16 @@
                     break;
 
                 case 2: // Mostrar Cesta Sugerida
-                    state.cardHasInteracted = false; // Reset trigger
+                    state.cardHasInteracted = false; 
                     const index = state.suggestedIndex;
                     const cesta = CESTAS[index];
                     const qtdArroz = cesta.arrozQtd;
+                    state.currentBasketId = cesta.id;
                     
                     if (triggerValue === 'ver_outra') {
-                        // Se estiver navegando, pede licença
-                        await addMessage(`Posso te mostrar a próxima?`, 'bot', 1000);
-                        await addMessage(`Essa aqui é a **${cesta.nome}**:`);
+                        await addMessage(`Dá uma olhada nessa aqui, a **${cesta.nome}**:`, 'bot', 1000);
+                    } else if (triggerValue && triggerValue.startsWith('select_cesta')) {
+                        await addMessage(`Aqui está a **${cesta.nome}**:`, 'bot', 1000);
                     } else {
                          await addMessage(`Legal! Pra essa quantidade, vou te mostrar a **${cesta.nome}**, que vem com ${qtdArroz} arroz.`);
                     }
@@ -724,21 +772,14 @@
                     }, 120000); // 2 minutos
                     break;
 
-                case 3: // Fluxo "Gostei" - Brinde e Incentivo
-                    await addMessage(`Ótima escolha, ${name}!`);
-                    await addMessage(`Eu quero muito que você seja nosso cliente.`);
-                    await addMessage(`Vou te dar um brinde na sua primeira compra:`);
+                case 3: // Clicou em "Encomendar a Cesta X"
+                    const idCestaAtual = state.currentBasketId;
+                    const cestaParaPedir = CESTAS.find(c => c.id === idCestaAtual);
                     
-                    // Foto do Brinde (OMO Placeholder)
-                    const omoImg = `<div class="flex justify-center mb-2"><div class="bg-white p-2 rounded-lg shadow-sm border border-gray-200"><img src="https://placehold.co/200x200/2196F3/FFF?text=OMO+800g" class="w-40 h-40 object-contain mx-auto"><p class="text-center font-bold text-blue-600 mt-2">Sabão OMO 800g</p></div></div>`;
-                    await addMessage(omoImg);
-                    
-                    await addMessage(`(na compra da cesta básica grande você vai ganhar 1 sabão em pó omo de 800g.)`);
-                    
-                    showOptions([
-                        { text: "Ver formas de Pagamento 💳", value: "pagamento", nextStep: 4 },
-                        { text: "Conhecer as outras cestas 🔄", value: "ver_outra", nextStep: 2 }
-                    ]);
+                    if(cestaParaPedir) {
+                        await addMessage(generateOrderWidget(cestaParaPedir));
+                    }
+                    // Não avança automaticamente, fica esperando clique no Zap
                     break;
 
                 case 4: // Pagamento e Fechamento
@@ -752,25 +793,48 @@
                         </ul>`;
                     await addMessage(listaPagamento);
 
-                    await addMessage(`Agora é só finalizar! 👇`);
+                    // Delay de 15 segundos antes de mostrar opções finais
+                    setTimeout(async () => {
+                        await addMessage(`O que deseja fazer agora?`, 'bot');
+                        
+                        const linkZap = `https://wa.me/${CONFIG.whatsAppNumber}?text=Ol%C3%A1%20Osvaldo%2C%20estou%20salvando%20seu%20contato%21`;
+                        const linkVip = CONFIG.whatsAppGroupLink;
 
-                    const linkZap = `https://wa.me/${CONFIG.whatsAppNumber}?text=Ol%C3%A1%20Osvaldo%2C%20estou%20salvando%20seu%20contato%21`;
+                        showOptions([
+                            { text: "Salvar Contato 📞", value: "salvar", nextStep: 99 }, // 99 só pra segurar, onclick abre link
+                            { text: "Entrar no Grupo VIP 🎁", value: "vip", nextStep: 99 },
+                            { text: "Encomendar uma cesta 🛒", value: "menu_cestas", nextStep: 5 }
+                        ]);
+
+                        // Tratamento especial para abrir links nos botões acima (já que showOptions usa onclick padrão)
+                        // Ajuste no handleOptionClick seria ideal, mas aqui faremos um "override" visual simulado
+                        // ou simplificamos: o nextStep 5 leva ao menu, os outros poderiam ser links diretos se a função permitisse.
+                        // Como a estrutura é rigida, vamos adaptar o handleOptionClick para abrir link se for o caso.
+
+                    }, 15000);
+                    break;
+
+                case 5: // Menu Lista de Cestas
+                    await addMessage(`Qual cesta você quer ver novamente?`);
                     
-                    const finalButtons = `
-                        <div class="flex flex-col gap-3 w-full mt-4 mb-8 px-4">
-                            <a href="${linkZap}" target="_blank" 
-                               class="bg-[#128C7E] text-white font-bold py-3 px-6 rounded-lg shadow-md flex items-center justify-center gap-2 hover:bg-[#075E54] transition no-underline text-center">
-                                <i class="ph-bold ph-user-plus text-xl"></i>
-                                Salvar Contato no Zap
-                            </a>
-                            <a href="${CONFIG.whatsAppGroupLink}" target="_blank" 
-                               class="bg-[#25D366] text-white font-bold py-3 px-6 rounded-lg shadow-xl flex items-center justify-center gap-2 animate-bounce hover:scale-105 transition no-underline text-center">
-                                <i class="ph-bold ph-whatsapp-logo text-xl"></i>
-                                Entrar no Grupo VIP
-                            </a>
-                        </div>`;
-                    chatContainer.insertAdjacentHTML('beforeend', finalButtons);
-                    scrollToBottom();
+                    const listaCestas = CESTAS.map((c, i) => ({
+                        text: c.nome,
+                        value: `select_cesta_${i}`,
+                        nextStep: 2
+                    }));
+                    
+                    showOptions(listaCestas);
+                    break;
+                    
+                case 99: // Steps finais que abrem link
+                    if(triggerValue === 'salvar') {
+                        window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=Ol%C3%A1%20Osvaldo%2C%20estou%20salvando%20seu%20contato%21`, '_blank');
+                    } else if(triggerValue === 'vip') {
+                        window.open(CONFIG.whatsAppGroupLink, '_blank');
+                    }
+                    // Volta para menu
+                    state.step = 5; 
+                    nextStepFlow();
                     break;
             }
         }
