@@ -124,9 +124,11 @@
             background: #fff; border-radius: 16px; border: 1px solid #e0e0e0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; display: flex; flex-direction: column; position: relative;
         }
-        .card-top-row { display: flex; height: 180px; border-bottom: 1px solid #f5f5f5; }
+        /* AJUSTE: Altura aumentada para 230px (+50px) para acomodar melhor a imagem e chips */
+        .card-top-row { display: flex; height: 230px; border-bottom: 1px solid #f5f5f5; }
         .card-img-area { flex: 1; padding: 10px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .card-img-large { width: 150px; height: 150px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
+        /* AJUSTE: Imagem maior proporcionalmente */
+        .card-img-large { width: 190px; height: 190px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15)); }
         
         .card-chips-area {
             width: 95px; background: #f8f9fa; border-left: 1px solid #eee; 
@@ -360,14 +362,15 @@
 
         function addMessage(text, type = 'bot', delayOverride = null) {
             return new Promise(resolve => {
-                let delay = 800; // Tempo base aumentado para humanização
+                // AJUSTE: Tempo base aumentado para 1.2s para leitura mais lenta
+                let delay = 1200; 
                 if (type === 'bot') {
                     const isCard = text.includes('card-cesta') || text.includes('discount-container') || text.includes('company-header');
                     if (isCard) {
-                        delay = 800; 
+                        delay = 1500; // Cards demoram um pouco mais para "preparar"
                     } else {
-                        // Cálculo mais lento: mais tempo por caractere
-                        delay = Math.min(text.length * 30 + 500, 2500);
+                        // Cálculo mais lento: 40ms por letra + 600ms base, teto de 3.5s
+                        delay = Math.min(text.length * 40 + 600, 3500);
                     }
                 } else {
                     delay = 0;
@@ -388,7 +391,7 @@
                         `);
                         scrollToBottom();
 
-                        const typingTime = (text.includes('card-cesta') || text.includes('discount-container')) ? 1000 : delay; 
+                        const typingTime = (text.includes('card-cesta') || text.includes('discount-container')) ? 1500 : delay; 
                         
                         setTimeout(() => {
                             const el = document.getElementById(id);
@@ -421,7 +424,7 @@
                         scrollToBottom();
                         resolve();
                     }
-                }, type === 'user' ? 0 : 400); // Delay inicial maior
+                }, type === 'user' ? 0 : 500); // Delay inicial de 0.5s
             });
         }
 
@@ -441,7 +444,7 @@
                     </div>
                 `);
                 scrollToBottom();
-            }, 600); // Opções demoram um pouquinho mais
+            }, 800); // Opções aparecem com calma
         }
 
         window.handleOpt = async function(val, next, id, text) {
@@ -536,9 +539,9 @@
             // document.body.style.opacity = '1';
             trackEvent('PageView');
             
-            await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 600);
-            await addMessage(`Aqui é o <b>${CONFIG.ownerName}</b>, da Cesta Básica Dona Antônia.`, 'bot', 1000);
-            await addMessage(`Qual é o seu nome?`, 'bot', 800);
+            await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 800);
+            await addMessage(`Aqui é o <b>${CONFIG.ownerName}</b>, da Cesta Básica Dona Antônia.`, 'bot', 1200);
+            await addMessage(`Qual é o seu nome?`, 'bot', 1000);
         }
 
         // Trigger faster
@@ -570,8 +573,8 @@
 
             switch (state.step) {
                 case 1:
-                    await addMessage(`Prazer, ${name}! 😀`, 'bot', 800);
-                    await addMessage(`Você já conhece nossas cestas?`, 'bot', 1000);
+                    await addMessage(`Prazer, ${name}! 😀`, 'bot', 1000);
+                    await addMessage(`Você já conhece nossas cestas?`, 'bot', 1200);
                     showOptions([
                         { text: "Sim, já conheço 👍", val: "sim", next: 3 },
                         { text: "Não conheço 🤔", val: "nao", next: 2 }
@@ -605,18 +608,19 @@
                         </div>
                         </div>
                     `;
-                    await addMessage(companyHTML, 'bot', 1200);
-                    setTimeout(() => { state.step = 4; nextStep(); }, 4500);
+                    await addMessage(companyHTML, 'bot', 1500);
+                    // AJUSTE: Tempo aumentado de 4s para 6s para ler o card da empresa
+                    setTimeout(() => { state.step = 4; nextStep(); }, 6000);
                     break;
 
                 case 3: 
                 case 4:
-                    await addMessage(state.step === 3 ? "Vou te mostrar as opções então." : "Posso mostrar as cestas agora?", 'bot', 1000);
+                    await addMessage(state.step === 3 ? "Vou te mostrar as opções então." : "Posso mostrar as cestas agora?", 'bot', 1200);
                     showOptions([{ text: "Ver Cestas ✅", val: "ok", next: 5 }]);
                     break;
 
                 case 5: // Card Interativo
-                    await addMessage(`Navegue pelas opções abaixo 👇`, 'bot', 800);
+                    await addMessage(`Navegue pelas opções abaixo 👇`, 'bot', 1000);
                     const cardHTML = `
                         <div class="card-msg-container">
                             <div class="card-cesta-new">
@@ -629,22 +633,22 @@
                     await addMessage(cardHTML, 'bot');
                     trackEvent('ViewContent', { content_name: 'Catalogo' });
                     
-                    // Timer de segurança caso o usuário não clique em nada
+                    // AJUSTE: Tempo aumentado para 25 segundos para navegação tranquila
                     state.timerRef = setTimeout(() => { 
                         if(state.step === 5) {
                             state.step = 6; 
                             nextStep();
                         }
-                    }, 18000); // Mais tempo para ler
+                    }, 25000); 
                     break;
 
                 case 6: // Pergunta Pagamento
-                    await addMessage(`Gostou de alguma? Posso te mostrar como funciona o pagamento?`, 'bot', 1000);
+                    await addMessage(`Gostou de alguma? Posso te mostrar como funciona o pagamento?`, 'bot', 1200);
                     showOptions([{ text: "Pode mostrar 👍", val: "pay", next: 7 }]);
                     break;
                 
                 case 7: // Mostra Pagamento
-                    await addMessage(`Aceitamos praticamente tudo:`, 'bot', 800);
+                    await addMessage(`Aceitamos praticamente tudo:`, 'bot', 1000);
                     const payHTML = `
                         <ul class="list-disc" style="background:#fff; padding:15px 15px 15px 35px; border-radius:8px; box-shadow:0 1px 1px rgba(0,0,0,0.1);">
                             <li>Cartão de Débito</li>
@@ -655,17 +659,18 @@
                         </ul>
                     `;
                     await addMessage(payHTML, 'bot');
-                    setTimeout(() => { state.step = 8; nextStep(); }, 5000);
+                    // AJUSTE: Tempo aumentado para 7s para ler a lista de pagamento
+                    setTimeout(() => { state.step = 8; nextStep(); }, 7000);
                     break;
 
                 case 8: // Hook
-                    await addMessage(`⭐ ${name}, quero muito que você se torne nosso cliente.`, 'bot', 1000);
-                    await addMessage(`🚀 Posso te oferecer um desconto pra sua primeira compra?`, 'bot', 1000);
+                    await addMessage(`⭐ ${name}, quero muito que você se torne nosso cliente.`, 'bot', 1200);
+                    await addMessage(`🚀 Posso te oferecer um desconto pra sua primeira compra?`, 'bot', 1200);
                     showOptions([{ text: "Quero Desconto 🎁", val: "sim", next: 9 }]);
                     break;
 
                 case 9:
-                    await addMessage(`Que ótimo! Qual tamanho de cesta te interessa mais?`, 'bot', 800);
+                    await addMessage(`Que ótimo! Qual tamanho de cesta te interessa mais?`, 'bot', 1000);
                     const opts = CESTAS.map((c, i) => ({
                         text: c.nome.replace('Cesta ', ''),
                         sub: `(${c.arrozQtd} Arroz)`,
@@ -677,7 +682,7 @@
 
                 case 10: // Desconto
                     const selected = CESTAS.find(c => c.id === state.selectedDiscountId);
-                    await addMessage(`Boa escolha! Para a <b>${selected.nome}</b>, liberei isso:`, 'bot', 1000);
+                    await addMessage(`Boa escolha! Para a <b>${selected.nome}</b>, liberei isso:`, 'bot', 1200);
                     
                     const discountHTML = `
                         <div class="card-msg-container">
@@ -695,10 +700,10 @@
                         </div>
                     `;
                     await addMessage(discountHTML, 'bot');
-                    await addMessage("Clique acima para garantir. 👆", 'bot', 1000);
+                    await addMessage("Clique acima para garantir. 👆", 'bot', 1200);
                     
                     const textSave = encodeURIComponent("Estou salvando seu contato");
-                    await addMessage(`Não esqueça de salvar nosso contato: <a href="https://wa.me/${CONFIG.whatsAppSaveNumber}?text=${textSave}" target="_blank" class="text-link">65 99815-0965</a>`, 'bot', 1200);
+                    await addMessage(`Não esqueça de salvar nosso contato: <a href="https://wa.me/${CONFIG.whatsAppSaveNumber}?text=${textSave}" target="_blank" class="text-link">65 99815-0965</a>`, 'bot', 1500);
                     break;
             }
         }
@@ -713,6 +718,7 @@
             window.open(`https://wa.me/${CONFIG.whatsAppNumber}?text=${encodeURIComponent(msg)}`, '_blank');
             trackEvent('Lead');
             
+            // AJUSTE: Tempo aumentado para 2.5s antes de mandar os links sociais
             setTimeout(() => {
                 const socialHTML = `
                     <div class="social-container">
@@ -721,7 +727,7 @@
                     </div>
                 `;
                 addMessage(socialHTML, 'bot', 1000);
-            }, 1000);
+            }, 2500);
         }
 
         sendBtn.onclick = handleInput;
