@@ -825,9 +825,9 @@
             state.step = 8; // Atualiza estado para evitar loops
             
             if(!instant) {
-                await addMessage(`👀 Vi que você está olhando nossas cestas...`, 'bot', 1000);
+                await addMessage(`🙏 Espero que tenha gostado.`, 'bot', 1000);
             }
-            await addMessage(`🎁 Tenho um **desconto especial** para você fazer seu primeiro pedido agora!`, 'bot', 1200);
+            await addMessage(`🎁 Tenho um **desconto especial** para você fazer!`, 'bot', 1200);
             
             showOptions([{ text: "Quero meu Desconto 🎁", val: "quero_desc", next: 9 }]);
         }
