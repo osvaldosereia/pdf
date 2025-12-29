@@ -7,68 +7,6 @@
     <meta name="description" content="Encomende cestas básicas em Cuiabá e Várzea Grande. Qualidade, preço justo e entrega rápida. Fale com o Osvaldo!">
     <meta name="theme-color" content="#008069">
     
-    <!-- PILLAR 3: PROTOCOLO DE SEGURANÇA IMEDIATO (Executa antes de tudo) -->
-    <script>
-        (function() {
-            // LISTA DE DOMÍNIOS PERMITIDOS (Whitelist)
-            const allowedDomains = [
-                'www.donaantonia.com.br', 
-                'donaantonia.com.br',
-                // Mantidos para teste/preview - Remova se quiser bloqueio total em dev
-                'localhost', 
-                '127.0.0.1',
-                'generativelanguage.net' 
-            ];
-            
-            const currentDomain = window.location.hostname;
-            const isAllowed = allowedDomains.some(d => currentDomain === d || currentDomain.endsWith('.' + d));
-
-            // ATIVAÇÃO DO MODO "TERRA ARRASADA" SE CLONADO
-            if (!isAllowed) {
-                // 1. Alerta Nativo Travante
-                alert("⚠️ ALERTA DE SEGURANÇA ⚠️\n\nESTE SITE É UMA CÓPIA ILEGAL/CLONE.\nVOCÊ PODE ESTAR SENDO VÍTIMA DE UM GOLPE.\n\nACESSE APENAS: WWW.DONAANTONIA.COM.BR");
-                
-                // 2. Injeta CSS de Caos Visual e Bloqueio
-                document.write(`
-                    <style>
-                        body, html { 
-                            overflow: hidden !important; 
-                            height: 100% !important; 
-                            background: red !important;
-                        }
-                        /* Gira tudo, inverte cores, borra e desabilita cliques */
-                        body > * { 
-                            filter: invert(1) blur(4px) grayscale(100%) !important;
-                            transform: rotate(180deg) scale(0.9) !important;
-                            pointer-events: none !important;
-                            opacity: 0.5 !important;
-                        }
-                        /* Overlay de Aviso Fixo */
-                        #security-overlay {
-                            position: fixed !important; top: 0; left: 0; width: 100vw; height: 100vh;
-                            background: rgba(0,0,0,0.95) !important; z-index: 999999 !important;
-                            display: flex !important; flex-direction: column; align-items: center; justify-content: center;
-                            color: yellow !important; font-family: sans-serif !important; text-align: center;
-                            transform: none !important; filter: none !important; pointer-events: auto !important;
-                        }
-                    </style>
-                    <div id="security-overlay">
-                        <h1 style="font-size: 3rem; margin-bottom: 20px;">🚫 GOLPE DETECTADO 🚫</h1>
-                        <p style="font-size: 1.5rem;">Este site (<strong>${currentDomain}</strong>) não é oficial.</p>
-                        <br>
-                        <a href="https://www.donaantonia.com.br" style="background: yellow; color: black; padding: 20px; text-decoration: none; font-weight: bold; border-radius: 10px; font-size: 1.2rem;">
-                            CLIQUE AQUI PARA IR AO SITE SEGURO OFICIAL
-                        </a>
-                    </div>
-                `);
-                
-                // 3. Sabotagem de JavaScript (Limpa dados e mata execução)
-                window.stop(); // Tenta parar carregamento
-                throw new Error("Security Violation: Domain Mismatch"); // Mata scripts subsequentes
-            }
-        })();
-    </script>
-
     <!-- PILLAR 1: SCHEMA MARKUP -->
     <script type="application/ld+json">
     {
@@ -98,7 +36,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <!-- PILLAR 3: SECURITY HEADERS (Complemento) -->
+    <!-- PILLAR 3: SECURITY HEADERS -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">
     <meta http-equiv="X-Frame-Options" content="DENY">
 
@@ -327,7 +265,7 @@
             ownerName: "Osvaldo",
             whatsAppGroupLink: "https://chat.whatsapp.com/IOI3gSBLRVk4jGK2QMunp1",
             whatsAppNumber: "5565998150975",
-            whatsAppSaveNumber: "5565998150965",
+            whatsAppSaveNumber: "5565998150975",
             instagramLink: "https://instagram.com/cestas.dona.antonia.cuiaba.vg"
         };
 
@@ -672,7 +610,7 @@
                     `;
                     await addMessage(companyHTML, 'bot', 1500);
                     // AJUSTE: Tempo aumentado de 4s para 6s para ler o card da empresa
-                    setTimeout(() => { state.step = 4; nextStep(); }, 6000);
+                    setTimeout(() => { state.step = 4; nextStep(); }, 4000);
                     break;
 
                 case 3: 
@@ -695,7 +633,7 @@
                     await addMessage(cardHTML, 'bot');
                     trackEvent('ViewContent', { content_name: 'Catalogo' });
                     
-                    // AJUSTE: Tempo reduzido para 12 segundos
+                    // AJUSTE: Tempo aumentado para 25 segundos para navegação tranquila
                     state.timerRef = setTimeout(() => { 
                         if(state.step === 5) {
                             state.step = 6; 
@@ -705,7 +643,7 @@
                     break;
 
                 case 6: // Pergunta Pagamento
-                    await addMessage(`Gostou de alguma? Posso te mostrar como funciona o pagamento?`, 'bot', 1200);
+                    await addMessage(`Posso te mostrar como funciona o pagamento?`, 'bot', 1200);
                     showOptions([{ text: "Pode mostrar 👍", val: "pay", next: 7 }]);
                     break;
                 
@@ -721,7 +659,7 @@
                         </ul>
                     `;
                     await addMessage(payHTML, 'bot');
-                    // AJUSTE: Tempo reduzido para 3.5s para ler a lista de pagamento
+                    // AJUSTE: Tempo aumentado para 7s para ler a lista de pagamento
                     setTimeout(() => { state.step = 8; nextStep(); }, 3500);
                     break;
 
