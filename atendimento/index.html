@@ -51,8 +51,7 @@
             background-color: #E5DDD5;
             overflow: hidden;
             display: flex; flex-direction: column;
-            /* Inicia invisível para evitar flash de conteúdo quebrado */
-            visibility: hidden; opacity: 0; transition: opacity 0.5s ease;
+            /* REMOVIDO: visibilidade oculta que causava tela branca */
         }
 
         /* HEADER */
@@ -517,8 +516,9 @@
         async function initApp() {
             if (appInitialized) return;
             appInitialized = true;
-            document.body.style.visibility = 'visible';
-            document.body.style.opacity = '1';
+            // REMOVED HIDING STYLES
+            // document.body.style.visibility = 'visible';
+            // document.body.style.opacity = '1';
             trackEvent('PageView');
             
             await addMessage(`${getGreeting()}! Tudo bem? 👋`, 'bot', 400);
@@ -526,8 +526,14 @@
             await addMessage(`Qual é o seu nome?`, 'bot', 600);
         }
 
-        window.addEventListener('load', initApp);
-        setTimeout(initApp, 1500);
+        // Trigger faster
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+        
+        setTimeout(initApp, 1500); // Fail-safe
 
         async function handleInput() {
             const text = userInput.value.trim();
