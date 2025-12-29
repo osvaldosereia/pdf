@@ -574,7 +574,7 @@
             switch (state.step) {
                 case 1:
                     await addMessage(`Prazer, ${name}! 😀`, 'bot', 1000);
-                    await addMessage(`Você já conhece nossas cestas?`, 'bot', 1200);
+                    await addMessage(`Você já conhece a nossa empresa?`, 'bot', 1200);
                     showOptions([
                         { text: "Sim, já conheço 👍", val: "sim", next: 3 },
                         { text: "Não conheço 🤔", val: "nao", next: 2 }
@@ -643,7 +643,7 @@
                     break;
 
                 case 6: // Pergunta Pagamento
-                    await addMessage(`Gostou de alguma? Posso te mostrar como funciona o pagamento?`, 'bot', 1200);
+                    await addMessage(`Posso te mostrar como funciona o pagamento?`, 'bot', 1200);
                     showOptions([{ text: "Pode mostrar 👍", val: "pay", next: 7 }]);
                     break;
                 
@@ -670,7 +670,7 @@
                     break;
 
                 case 9:
-                    await addMessage(`Que ótimo! Qual tamanho de cesta te interessa mais?`, 'bot', 1000);
+                    await addMessage(`Legal! Pra qual cesta você quer o Desconto?`, 'bot', 1000);
                     const opts = CESTAS.map((c, i) => ({
                         text: c.nome.replace('Cesta ', ''),
                         sub: `(${c.arrozQtd} Arroz)`,
