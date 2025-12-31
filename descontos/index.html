@@ -95,7 +95,7 @@
             margin: 0; padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--background); color: var(--text-main);
-            padding-bottom: calc(var(--footer-h) + 20px); 
+            padding-bottom: calc(var(--footer-h) + 60px); /* Increased padding for larger footer */
         }
 
         /* --- HEADER (Standard Static) --- */
@@ -196,13 +196,35 @@
         }
         @keyframes pulse-green { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-        /* LIST */
+        /* LIST & GRID */
         .p-content-list { padding: 20px; }
-        .p-divider { 
-            display: flex; align-items: center; gap: 10px; margin: 0 0 16px; 
-            color: var(--text-sec); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+        
+        /* NEW: Highlighted Item Count */
+        .p-count-badge {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            letter-spacing: -0.3px;
         }
-        .p-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* NEW: Customization Note */
+        .customization-note {
+            background: #FFFBEB; /* Light Amber */
+            border: 1px solid #FEF3C7;
+            color: #B45309;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 16px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
 
         /* COMPACT GRID */
         .items-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -267,6 +289,22 @@
         .fc-zap { background: #DCFCE7; color: #16A34A; }
         .fc-info { background: var(--text-main); color: white; }
 
+        /* NEW FOOTER BUTTON */
+        .btn-group-discount {
+            width: 100%;
+            background: #16A34A; /* Green WhatsApp */
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
+            transition: transform 0.1s;
+        }
+        .btn-group-discount:active { transform: scale(0.98); }
+
         .modal-wrap {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.6); z-index: 1000;
@@ -327,6 +365,10 @@
             <a href="https://instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="f-chip fc-insta"><i class="ph-bold ph-instagram-logo"></i> Insta</a>
             <a href="https://facebook.com/super.cestas.cuiaba" target="_blank" class="f-chip fc-face"><i class="ph-bold ph-facebook-logo"></i> Face</a>
         </div>
+        <!-- NEW GROUP BUTTON -->
+        <a href="https://chat.whatsapp.com/SEU_LINK_AQUI" target="_blank" class="btn-group-discount">
+            <i class="ph-bold ph-users-three"></i> Participe do Grupo de Descontos
+        </a>
     </footer>
 
     <!-- MODALS -->
@@ -486,8 +528,8 @@
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif',
                 opts: [{ n: 'Valor Único', norm: 'R$ 85,00', desc: 'R$ 80,00', sel: true }],
                 items: [
-                    {q:1, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:1, n:'Óleo 900ml'},
-                    {q:1, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'Espaguete 400g'},
+                    {q:1, n:'Arroz Tio Alvino 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:1, n:'Óleo 900ml'},
+                    {q:1, n:'Feijão 1kg'}, {q:1, n:'Café Premiado 250g'}, {q:1, n:'Espaguete 400g'},
                     {q:1, n:'Trigo 1kg'}, {q:1, n:'Farinha Mandioca'}, {q:1, n:'Sal 1kg'},
                     {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'}, {q:1, n:'Bolacha Recheada'},
                     {q:1, n:'Miojo'}, {q:1, n:'Suco Pó'}
@@ -504,6 +546,11 @@
             const low = n.toLowerCase();
             const f = 'img/alimento/';
             const c = 'img/limpeza/';
+            
+            // Specific overrides
+            if(low.includes('arroz tio alvino')) return f + 'arroztioalvino.jpg';
+            if(low.includes('café premiado')) return f + 'cafepremiado.webp';
+
             if(low.includes('arroz')) return f + 'Arroz Koblenz 5kg.webp';
             if(low.includes('açúcar')) return f + 'açucar doce dia 2 kg.webp';
             if(low.includes('bolacha')) return f + 'bolacha mybit.webp';
@@ -603,8 +650,11 @@
                     </button>
                 </div>
                 <div class="p-content-list">
-                    <div class="p-divider"><i class="ph-bold ph-basket"></i> ${totalItems} ITENS INCLUSOS</div>
+                    <div class="p-count-badge">Essa Cesta possui ${totalItems} Produtos</div>
                     <div class="items-grid">${itemsHtml}</div>
+                    <div class="customization-note">
+                        <i class="ph-bold ph-arrows-left-right"></i> Você pode personalizar sua cesta trocando os produtos que não quer.
+                    </div>
                 </div>
             `;
         }
