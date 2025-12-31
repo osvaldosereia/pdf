@@ -26,7 +26,7 @@
                 console.warn(`⚠️ [SECURITY] Domínio não autorizado.`);
             }
             
-            // UX-friendly protection: Allow scrolling/interaction but prevent easy asset theft
+            // UX-friendly protection
             document.addEventListener('contextmenu', e => e.preventDefault());
             document.addEventListener('dragstart', e => e.preventDefault());
         })();
@@ -43,13 +43,12 @@
                 ...params
             };
             window.dataLayer.push(eventData);
-            // Meta Pixel Bridge
             if(typeof fbq === 'function') fbq('track', eventName, params, {eventID: eventData.eventID});
             console.log(`🚀 [TRACKING] ${eventName}`, eventData);
         }
     </script>
 
-    <!-- LIBS & FONTS (Plus Jakarta Sans for Modern Tech Feel) -->
+    <!-- LIBS & FONTS -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,8 +84,7 @@
             --radius-full: 9999px;
 
             --header-h: 64px;
-            --chips-h: 56px;
-            --footer-h: 80px;
+            --footer-h: 110px; /* Aumentado para acomodar wrap se necessário */
         }
 
         /* RESET & BASE */
@@ -102,7 +100,7 @@
             padding-bottom: calc(var(--footer-h) + 20px);
         }
 
-        /* --- HEADER (Glassmorphism & Scroll Logic) --- */
+        /* --- HEADER --- */
         .app-header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 50;
             height: var(--header-h);
@@ -152,35 +150,37 @@
         }
         .cta-button:active { transform: scale(0.96); box-shadow: 0 4px 10px -2px rgba(37, 99, 235, 0.3); }
 
-        /* --- STICKY CHIPS NAV --- */
+        /* --- STICKY CHIPS NAV (NO SCROLL) --- */
         .nav-chips-wrapper {
             position: sticky; top: 0; z-index: 40;
-            background: var(--bg-body); /* Fallback */
-            background: rgba(248, 250, 252, 0.95);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            padding: 12px 0;
+            background: rgba(248, 250, 252, 0.98);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            padding: 10px 0;
             transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-bottom: 1px solid rgba(0,0,0,0.03);
         }
-        /* Top value managed via JS based on header state */
 
         .chips-scroller {
-            display: flex; gap: 8px; overflow-x: auto;
-            padding: 0 16px; scrollbar-width: none;
-            justify-content: center; /* Center on larger screens */
+            display: flex; gap: 8px;
+            padding: 0 12px; 
+            justify-content: center;
+            flex-wrap: wrap; /* Permite quebra de linha para caber na tela */
         }
-        .chips-scroller::-webkit-scrollbar { display: none; }
 
         .chip-item {
-            padding: 8px 18px;
+            padding: 8px 14px; /* Padding reduzido para caber melhor */
             border-radius: var(--radius-full);
             background: var(--surface-white);
             border: 1px solid #E2E8F0;
             color: var(--text-body);
-            font-size: 13px; font-weight: 600;
+            font-size: 11px; /* Fonte ajustada */
+            font-weight: 700;
             white-space: nowrap; cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
+            flex-grow: 1; /* Ocupa espaço disponível */
+            text-align: center;
+            max-width: 100px; /* Limite para não esticar demais */
         }
         .chip-item.active {
             background: var(--text-heading);
@@ -209,7 +209,6 @@
         }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        /* Card Header Image */
         .p-card-image-box {
             position: relative;
             width: 100%; height: auto;
@@ -219,7 +218,7 @@
         .p-card-image {
             width: 100%; height: 100%; 
             object-fit: cover; display: block;
-            max-height: 450px; /* Tall vertical format */
+            max-height: 450px;
         }
         .p-card-gradient {
             position: absolute; bottom: 0; left: 0; right: 0;
@@ -228,7 +227,6 @@
             pointer-events: none;
         }
 
-        /* Card Content */
         .p-card-body { padding: 20px; }
         
         .p-card-title-row {
@@ -264,12 +262,11 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* Content Areas */
         .content-area { display: none; }
         .content-area.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Grid de Produtos (Visual Rico) */
+        /* Grid de Produtos */
         .items-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 12px;
@@ -279,13 +276,13 @@
             border: 1px solid #E2E8F0; border-radius: var(--radius-md);
             padding: 12px 8px;
             display: flex; flex-direction: column; align-items: center;
-            text-align: center; height: 220px; /* Vertical Stretch */
+            text-align: center; height: 220px;
             transition: transform 0.2s;
         }
         .item-mini:active { transform: scale(0.98); }
         
         .item-img {
-            width: 100%; height: 120px; /* Maximize Image */
+            width: 100%; height: 120px;
             object-fit: contain; margin-bottom: 8px;
             mix-blend-mode: multiply;
         }
@@ -301,7 +298,7 @@
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
         }
 
-        /* Valor & Pedido Section */
+        /* Valor & Pedido */
         .option-card {
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px; border: 2px solid #E2E8F0; border-radius: var(--radius-lg);
@@ -334,12 +331,12 @@
         }
         .btn-order-final:active { transform: scale(0.98); }
 
-        /* --- FIXED BOTTOM BAR (App Like) --- */
+        /* --- FIXED BOTTOM BAR (NO SCROLL) --- */
         .app-dock {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--surface-white);
             border-top: 1px solid #E2E8F0;
-            padding: 12px 16px 20px; /* Safe area padding bottom */
+            padding: 12px 16px 20px;
             z-index: 100;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
             display: flex; flex-direction: column; gap: 10px;
@@ -349,19 +346,21 @@
             color: var(--text-muted); text-align: center; letter-spacing: 1px;
         }
         .dock-chips-row {
-            display: flex; gap: 10px; overflow-x: auto;
-            justify-content: center; scrollbar-width: none;
+            display: flex; gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap; /* Permite quebra de linha */
             padding: 0 4px;
         }
-        .dock-chips-row::-webkit-scrollbar { display: none; }
 
         .dock-chip {
-            display: flex; align-items: center; gap: 6px;
-            padding: 8px 14px; border-radius: var(--radius-full);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px 12px; border-radius: var(--radius-full);
             background: #F1F5F9; border: 1px solid transparent;
-            font-size: 12px; font-weight: 600; color: var(--text-body);
+            font-size: 11px; font-weight: 600; color: var(--text-body);
             text-decoration: none; white-space: nowrap; cursor: pointer;
             transition: all 0.2s;
+            flex: 1; /* Distribui espaço */
+            min-width: fit-content; /* Garante que o texto caiba */
         }
         .dock-chip i { font-size: 16px; }
         .dock-chip:active { transform: scale(0.95); opacity: 0.9; }
@@ -372,16 +371,16 @@
         .dock-chip.zap { background: #DCFCE7; color: #16A34A; }
         .dock-chip.inst { background: var(--text-heading); color: white; }
 
-        /* --- MODALS (Bottom Sheet Style) --- */
+        /* --- MODALS --- */
         .modal-backdrop {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(15, 23, 42, 0.6); z-index: 2000;
             backdrop-filter: blur(4px);
             opacity: 0; pointer-events: none; transition: opacity 0.3s;
-            display: flex; align-items: flex-end; /* Bottom sheet default */
+            display: flex; align-items: flex-end;
         }
         .modal-backdrop.active { opacity: 1; pointer-events: auto; }
-        .modal-backdrop.center { align-items: center; justify-content: center; } /* Center variation */
+        .modal-backdrop.center { align-items: center; justify-content: center; }
 
         .sheet-card {
             background: var(--surface-white); width: 100%;
@@ -401,7 +400,6 @@
         }
         .modal-backdrop.active .popup-card { transform: scale(1); }
 
-        /* Modal Elements */
         .close-btn {
             position: absolute; top: 16px; right: 16px;
             background: #F1F5F9; border: none; width: 32px; height: 32px;
@@ -420,7 +418,6 @@
         }
         .std-input:focus { outline: none; border-color: var(--primary); background: white; }
 
-        /* Company Info Styles */
         .company-header { text-align: center; padding: 24px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; }
         .company-logo-lg { width: 72px; height: 72px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow-sm); margin-bottom: 12px; }
         .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
@@ -469,7 +466,7 @@
         </button>
     </section>
 
-    <!-- 3. STICKY NAVIGATION (Chips) -->
+    <!-- 3. STICKY NAVIGATION (Chips wrapped) -->
     <nav id="sticky-nav" class="nav-chips-wrapper">
         <div id="chips-container" class="chips-scroller">
             <!-- Injected via JS -->
@@ -506,30 +503,11 @@
             <button class="close-btn" onclick="closeModal('leadModal')"><i class="ph-bold ph-x"></i></button>
             <h2 class="modal-title">Garantir Oferta 🎁</h2>
             <p class="modal-sub">Preencha rapidinho para enviarmos o cupom no seu WhatsApp.</p>
-            
-            <div class="input-group">
-                <label class="input-label">Seu Nome</label>
-                <input type="text" id="inputName" class="std-input" placeholder="Ex: Maria Silva">
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">Cidade</label>
-                <select id="inputCity" class="std-input">
-                    <option value="Cuiabá">Cuiabá</option>
-                    <option value="Várzea Grande">Várzea Grande</option>
-                </select>
-            </div>
-            
-            <div class="input-group">
-                <label class="input-label">Bairro</label>
-                <input type="text" id="inputBairro" class="std-input" placeholder="Ex: Pedra 90">
-            </div>
-
+            <div class="input-group"><label class="input-label">Seu Nome</label><input type="text" id="inputName" class="std-input" placeholder="Ex: Maria Silva"></div>
+            <div class="input-group"><label class="input-label">Cidade</label><select id="inputCity" class="std-input"><option value="Cuiabá">Cuiabá</option><option value="Várzea Grande">Várzea Grande</option></select></div>
+            <div class="input-group"><label class="input-label">Bairro</label><input type="text" id="inputBairro" class="std-input" placeholder="Ex: Pedra 90"></div>
             <input type="hidden" id="inputContext">
-            
-            <button onclick="submitLead()" class="cta-button" style="width:100%; max-width:none; margin-top:10px;">
-                <i class="ph-bold ph-whatsapp-logo"></i> Enviar Pedido
-            </button>
+            <button onclick="submitLead()" class="cta-button" style="width:100%; max-width:none; margin-top:10px;"><i class="ph-bold ph-whatsapp-logo"></i> Enviar Pedido</button>
         </div>
     </div>
 
@@ -538,27 +516,17 @@
         <div class="popup-card">
             <button class="close-btn" onclick="closeModal('infoModal')" style="top:10px; right:10px;"><i class="ph-bold ph-x"></i></button>
             <div class="company-header">
-                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
-                     class="company-logo-lg" 
-                     onerror="this.src='https://placehold.co/100x100'">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="company-logo-lg" onerror="this.src='https://placehold.co/100x100'">
                 <h3 style="margin:0; font-size:18px; color:var(--text-heading);">Dona Antônia</h3>
                 <p style="margin:4px 0 0; font-size:12px; color:var(--text-muted);">CNPJ: 51.385.335.0001-06</p>
             </div>
             <div class="stats-row">
-                <div class="stat-tile">
-                    <span class="stat-val">+30 Mil</span>
-                    <span class="stat-lbl">Entregas</span>
-                </div>
-                <div class="stat-tile">
-                    <span class="stat-val">8 Anos</span>
-                    <span class="stat-lbl">Tradição</span>
-                </div>
+                <div class="stat-tile"><span class="stat-val">+30 Mil</span><span class="stat-lbl">Entregas</span></div>
+                <div class="stat-tile"><span class="stat-val">8 Anos</span><span class="stat-lbl">Tradição</span></div>
             </div>
             <div style="padding: 0 24px 24px; text-align: center;">
                 <p style="font-size:13px; line-height:1.5;">Qualidade garantida e entrega rápida em toda a região.</p>
-                <div style="background:#ECFDF5; color:#065F46; padding:10px; border-radius:8px; font-size:12px; font-weight:700; margin-top:12px;">
-                    <i class="ph-money"></i> Pague só na entrega
-                </div>
+                <div style="background:#ECFDF5; color:#065F46; padding:10px; border-radius:8px; font-size:12px; font-weight:700; margin-top:12px;"><i class="ph-money"></i> Pague só na entrega</div>
             </div>
         </div>
     </div>
@@ -566,23 +534,10 @@
     <!-- MODAL: CONTATO (Center Popup) -->
     <div id="contactModal" class="modal-backdrop center" onclick="if(event.target === this) closeModal('contactModal')">
         <div class="popup-card" style="padding-bottom: 20px;">
-            <div style="padding:24px 24px 10px;">
-                <h3 class="modal-title">Fale Conosco</h3>
-                <p class="modal-sub" style="margin-bottom:16px;">Clique para chamar:</p>
-            </div>
-            
-            <a href="tel:65996813588" class="contact-row">
-                <div class="contact-icon"><i class="ph-phone"></i></div>
-                <span>(65) 99681-3588</span>
-            </a>
-            <a href="https://wa.me/5565998150975" class="contact-row">
-                <div class="contact-icon" style="color:#16A34A; background:#DCFCE7;"><i class="ph-whatsapp-logo"></i></div>
-                <span>(65) 99815-0975</span>
-            </a>
-            
-            <div style="text-align: center; margin-top: 10px;">
-                <p style="font-size: 11px; color: var(--text-muted);">Seg a Sáb: 08:00 às 12:00</p>
-            </div>
+            <div style="padding:24px 24px 10px;"><h3 class="modal-title">Fale Conosco</h3><p class="modal-sub" style="margin-bottom:16px;">Clique para chamar:</p></div>
+            <a href="tel:65996813588" class="contact-row"><div class="contact-icon"><i class="ph-phone"></i></div><span>(65) 99681-3588</span></a>
+            <a href="https://wa.me/5565998150975" class="contact-row"><div class="contact-icon" style="color:#16A34A; background:#DCFCE7;"><i class="ph-whatsapp-logo"></i></div><span>(65) 99815-0975</span></a>
+            <div style="text-align: center; margin-top: 10px;"><p style="font-size: 11px; color: var(--text-muted);">Seg a Sáb: 08:00 às 12:00</p></div>
         </div>
     </div>
 
@@ -719,7 +674,10 @@
             if(n.includes('papel')) return c + 'papel higienico.webp';
             if(n.includes('sabonete')) return c + 'sabonete palmolive 85g.webp';
             if(n.includes('barra')) return c + 'sabão barra ype 900g.webp';
-            if(n.includes('omo')) return c + 'sabão barra ype 900g.webp'; // Fallback if no specific img
+            if(n.includes('sabão pó') || n.includes('omo')) {
+                // FALLBACK FOR OMO (Correct Placeholder to verify it exists)
+                return `https://placehold.co/150x150/f1f5f9/94a3b8?text=OMO`; 
+            }
 
             return `https://placehold.co/150x150/f1f5f9/94a3b8?text=${name.substr(0,3)}`;
         }
@@ -816,7 +774,6 @@
 
         // --- ACTIONS ---
         function switchBasket(key) {
-            // Scroll to top of card area slightly
             const offset = document.getElementById('sticky-nav').offsetHeight + 80;
             window.scrollTo({ top: offset, behavior: 'smooth' });
             renderBasket(key);
@@ -834,11 +791,8 @@
         }
 
         function selectOption(basketKey, optIndex) {
-            // Update Data State
             BASKETS[basketKey].options.forEach((o, i) => o.selected = i === optIndex);
-            // Re-render only the card (or just options part for optimization, but full render is safer for sync)
             renderBasket(basketKey);
-            // Switch to values tab immediately to show selection
             setTimeout(() => {
                 const tabs = document.querySelectorAll('.tab-btn');
                 switchTab(tabs[1], 'tab-vals'); 
@@ -888,13 +842,11 @@
             
             if (currentScroll > 50) {
                 if (currentScroll > lastScroll) {
-                    // Scrolling Down
                     header.classList.add('hidden');
                     nav.style.top = '0px';
                 } else {
-                    // Scrolling Up
                     header.classList.remove('hidden');
-                    nav.style.top = '64px'; // Matches header height
+                    nav.style.top = '64px';
                 }
             } else {
                 header.classList.remove('hidden');
