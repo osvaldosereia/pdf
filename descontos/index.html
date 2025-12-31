@@ -538,7 +538,7 @@
             const totalItems = data.items.reduce((acc, item) => acc + item.q, 0);
 
             const itemsHtml = data.items.map(i => {
-                const qtd = i.q === 1 ? '1 unidade' : `${i.q} unidade`;
+                const qtd = i.q === 1 ? '1 unidade' : `${i.q} unidades`;
                 return `
                 <div class="item-card">
                     <img src="${getImg(i.n)}" class="item-img" loading="lazy" decoding="async">
