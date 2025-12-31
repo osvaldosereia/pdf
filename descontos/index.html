@@ -115,7 +115,7 @@
         .intro-text {
             text-align: center;
             padding: 20px 16px 0;
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--text-sec);
             line-height: 1.4;
@@ -193,7 +193,8 @@
         /* BUTTONS */
         .btn-action-main {
             width: 100%; background: var(--primary); color: white;
-            padding: 14px; border: none; border-radius: 12px;
+            padding: 20px; /* Aumentado para 20px para maior destaque vertical */
+            border: none; border-radius: 12px;
             font-size: 14px; font-weight: 800; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
@@ -345,6 +346,7 @@
         .social-btn { flex: 1; padding: 8px; border-radius: 8px; background: #F1F5F9; text-align: center; text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 12px; }
         
         .btn-buy-modal { width: 100%; background: var(--green-strong); color: white; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(4, 120, 87, 0.4); margin-bottom: 12px; }
+        .btn-insta-modal { width: 100%; background: white; color: #E1306C; padding: 14px; border: 2px solid #E1306C; border-radius: 16px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
 
     </style>
 </head>
@@ -467,7 +469,6 @@
     </div>
 
     <script>
-        // ... existing script ...
         // --- DATA ---
         const BASKETS = {
             'GRANDE': {
@@ -649,6 +650,9 @@
 
             const btnClass = isRevealed ? 'btn-action-main revealed' : 'btn-action-main';
 
+            // Logic to toggle list visibility
+            const listDisplay = isRevealed ? 'block' : 'none';
+
             return `
                 <div class="p-header-block">
                         <div class="p-title-row">
@@ -671,7 +675,7 @@
                         ${btnText}
                     </button>
                 </div>
-                <div class="p-content-list">
+                <div class="p-content-list" style="display: ${listDisplay};">
                     <div class="p-count-badge">Essa Cesta possui ${totalItems} Produtos</div>
                     <div class="items-grid">${itemsHtml}</div>
                     <div class="customization-note">
