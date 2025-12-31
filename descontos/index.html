@@ -7,7 +7,8 @@
         ================================================================
     -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- Acessibilidade: Zoom habilitado para melhor pontuação -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Catálogo Completo | Dona Antônia Cuiabá</title>
     <meta name="description" content="Confira todas as nossas Cestas Básicas: Econômica, Pequena, Média e Grande. Entrega em Cuiabá e Várzea Grande.">
     <meta name="theme-color" content="#ffffff">
@@ -67,9 +68,9 @@
     </script>
 
     <!-- LIBS -->
-    <!-- ADICIONADO 'defer' PARA NÃO BLOQUEAR A RENDERIZAÇÃO -->
+    <!-- 'defer' para não bloquear renderização -->
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
-    <!-- ADICIONADO 'display=swap' PARA NÃO BLOQUEAR TEXTO -->
+    <!-- 'display=swap' para texto aparecer instantaneamente -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
@@ -128,7 +129,7 @@
             margin: 0 auto; 
         }
         
-        /* --- PRODUCT CARD (Vertical Layout + Performance) --- */
+        /* --- PRODUCT CARD --- */
         .product-section {
             background: var(--surface); 
             border-radius: 24px;
@@ -136,9 +137,8 @@
             box-shadow: var(--shadow-card);
             overflow: hidden;
             margin-bottom: 0;
-            /* MODERN RENDER OPTIMIZATION */
             content-visibility: auto; 
-            contain-intrinsic-size: 1px 600px; /* Estimated height to prevent scrollbar jumps */
+            contain-intrinsic-size: 1px 600px;
         }
 
         /* HEADER BLOCK */
@@ -153,7 +153,6 @@
         
         .basket-hero-img {
             width: 100%; height: auto; 
-            /* Enforce aspect ratio space reservation */
             aspect-ratio: 16/9; 
             max-height: 220px;
             object-fit: cover; border-radius: 12px;
@@ -249,7 +248,6 @@
         }
         .item-img {
             width: 100%; height: 90px;
-            /* CLS Prevention */
             aspect-ratio: 1/1; 
             object-fit: contain; margin-bottom: 2px;
             mix-blend-mode: multiply;
@@ -289,7 +287,7 @@
             z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
         }
         .footer-label { 
-            font-size: 11px; font-weight: 800; color: var(--text-main); /* Contraste aumentado */
+            font-size: 11px; font-weight: 800; color: var(--text-main);
             text-align: center; text-transform: uppercase; margin-bottom: 2px; 
         }
         
@@ -362,7 +360,7 @@
     <!-- STATIC HEADER -->
     <header class="app-header">
         <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
-             class="logo" alt="DA" onerror="this.src='https://placehold.co/100x100'">
+             class="logo" alt="Logo Dona Antônia" width="36" height="36" onerror="this.src='https://placehold.co/36x36'">
         <div class="brand"><h1>Super Cestas Dona Antônia</h1></div>
     </header>
 
@@ -434,7 +432,11 @@
         <div class="modal-box" style="text-align:center; max-height: 85vh; overflow-y: auto;">
             <button class="close-btn" onclick="closeModal('info')" aria-label="Fechar Modal" style="top:10px; right:10px;"><i class="ph-bold ph-x"></i></button>
             <div class="company-header">
-                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="company-logo-lg" onerror="this.src='https://placehold.co/100x100'">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
+                     class="company-logo-lg" 
+                     alt="Logo Dona Antônia"
+                     width="72" height="72"
+                     onerror="this.src='https://placehold.co/100x100'">
                 <h3 style="margin:0; font-size:18px; color:var(--text-main);">Dona Antônia</h3>
                 <p style="margin:4px 0 0; font-size:12px; color:var(--text-sec);">CNPJ: 51.385.335.0001-06</p>
             </div>
