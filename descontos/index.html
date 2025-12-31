@@ -3,14 +3,14 @@
 <head>
     <!-- 
         ================================================================
-        PILLAR 1: CORE WEB VITALS & SEO CONFIG
+        PILLAR 1: CORE WEB VITALS & SEO CONFIG (2025 STANDARDS)
         ================================================================
     -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Catálogo de Cestas Básicas | Dona Antônia Cuiabá</title>
     <meta name="description" content="Confira nosso catálogo completo de Cestas Básicas: Econômica, Pequena, Média e Grande. Entrega grátis em Cuiabá e Várzea Grande.">
-    <meta name="theme-color" content="#2563EB">
+    <meta name="theme-color" content="#ffffff">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.donaantonia.com.br/catalogo">
 
@@ -19,683 +19,892 @@
         (function() {
             const allowedDomains = ['www.donaantonia.com.br', 'donaantonia.com.br', 'localhost', '127.0.0.1'];
             const currentDomain = window.location.hostname;
-            const isPreviewEnv = currentDomain.includes('google') || currentDomain.includes('sandbox') || currentDomain.includes('content') || currentDomain.includes('firebaseapp');
+            // Allow preview environments
+            const isPreview = currentDomain.includes('google') || currentDomain.includes('sandbox') || currentDomain.includes('firebaseapp');
             
-            if (!isPreviewEnv && !allowedDomains.some(d => currentDomain.endsWith(d))) {
+            if (!isPreview && !allowedDomains.some(d => currentDomain.endsWith(d))) {
                 console.warn(`⚠️ [SECURITY] Domínio não autorizado.`);
             }
             
-            document.addEventListener('contextmenu', event => event.preventDefault());
-            document.addEventListener('dragstart', event => event.preventDefault());
+            // UX-friendly protection: Allow scrolling/interaction but prevent easy asset theft
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('dragstart', e => e.preventDefault());
         })();
     </script>
 
-    <!-- PILLAR 2: DATA LAYER -->
+    <!-- PILLAR 2: ADVANCED ANALYTICS -->
     <script>
         window.dataLayer = window.dataLayer || [];
         function trackEvent(eventName, params = {}) {
             const eventData = {
                 'event': eventName,
-                'eventID': 'evt_' + Date.now(),
+                'eventID': 'evt_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
                 'timestamp': new Date().toISOString(),
                 ...params
             };
             window.dataLayer.push(eventData);
+            // Meta Pixel Bridge
             if(typeof fbq === 'function') fbq('track', eventName, params, {eventID: eventData.eventID});
             console.log(`🚀 [TRACKING] ${eventName}`, eventData);
         }
     </script>
 
-    <!-- LIBS -->
+    <!-- LIBS & FONTS (Plus Jakarta Sans for Modern Tech Feel) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
+            /* MODERN COLOR PALETTE */
             --primary: #2563EB;
-            --primary-dark: #1e40af;
+            --primary-soft: #EFF6FF;
+            --primary-dark: #1D4ED8;
             --secondary: #10B981;
-            --bg-color: #F8FAFC;
-            --text-main: #0F172A;
-            --text-sub: #64748B;
-            --white: #ffffff;
-            --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-            --header-height: 70px;
-            --footer-height: 90px;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color); color: var(--text-main);
-            padding-bottom: var(--footer-height); /* Space for fixed footer */
-        }
-
-        /* HEADER (Top Bar) */
-        .catalog-header {
-            background: var(--white); padding: 10px 16px;
-            display: flex; align-items: center; gap: 12px;
-            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease-in-out;
-            height: var(--header-height);
-        }
-        .catalog-header.hidden { transform: translateY(-100%); }
-        
-        .brand-logo { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #E2E8F0; object-fit: cover; }
-        .brand-name { font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
-
-        /* HERO SECTION */
-        .hero-section { padding: 20px 16px; text-align: center; margin-top: var(--header-height); }
-        .hero-title { font-size: 22px; font-weight: 800; margin: 0 0 16px 0; color: var(--text-main); letter-spacing: -0.5px; }
-        
-        .btn-discount {
-            background: var(--primary); color: white; border: none;
-            width: 100%; max-width: 400px; padding: 14px;
-            font-size: 16px; font-weight: 700; border-radius: 12px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            transition: transform 0.2s; margin: 0 auto;
-        }
-        .btn-discount:active { transform: scale(0.98); background: var(--primary-dark); }
-
-        /* CHIPS MENU (Sticky & Styled) */
-        .chips-container {
-            display: flex; gap: 8px; overflow-x: auto; 
-            padding: 12px 16px;
-            scrollbar-width: none; justify-content: center;
+            --secondary-soft: #D1FAE5;
+            --secondary-dark: #059669;
             
-            /* Sticky Logic */
-            position: sticky;
-            top: var(--header-height); /* Default position under header */
-            z-index: 40;
-            background: rgba(248, 250, 252, 0.95); /* Semi-transparent bg */
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #E2E8F0;
-            transition: top 0.3s ease-in-out; /* Smooth transition for header sync */
-        }
-        .chips-container::-webkit-scrollbar { display: none; }
-        
-        .chip {
-            padding: 8px 16px; background: var(--white); border: 1px solid #E2E8F0;
-            border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text-sub);
-            white-space: nowrap; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .chip.active { background: var(--text-main); color: white; border-color: var(--text-main); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            --bg-body: #F8FAFC;
+            --surface-white: #FFFFFF;
+            --surface-glass: rgba(255, 255, 255, 0.92);
+            
+            --text-heading: #0F172A;
+            --text-body: #475569;
+            --text-muted: #94A3B8;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-        /* CATALOG LIST */
-        .catalog-list { padding: 20px 16px; display: flex; flex-direction: column; gap: 24px; max-width: 600px; margin: 0 auto; }
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
 
-        /* CARD STYLES */
-        .card-cesta-new {
-            background: var(--white); border-radius: 16px; overflow: hidden;
-            box-shadow: var(--card-shadow); border: 1px solid #F1F5F9;
-            margin-bottom: 20px; animation: fadeInScale 0.4s ease-out;
-            scroll-margin-top: 140px; /* Ensures scroll lands nicely below chips */
+            --header-h: 64px;
+            --chips-h: 56px;
+            --footer-h: 80px;
         }
-        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        .card-header-visual { position: relative; background: #f8fafc; padding: 0; }
+        /* RESET & BASE */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
         
-        /* FOTO DA CESTA */
-        .card-img-side {
-            width: 100%; 
-            height: auto; 
-            object-fit: cover; 
-            display: block; 
-            max-height: 450px; 
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: calc(var(--footer-h) + 20px);
         }
+
+        /* --- HEADER (Glassmorphism & Scroll Logic) --- */
+        .app-header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            height: var(--header-h);
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex; align-items: center; padding: 0 16px; gap: 12px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .app-header.hidden { transform: translateY(-100%); }
+
+        .logo-ring {
+            width: 42px; height: 42px; padding: 2px;
+            border-radius: 50%; border: 1px solid #E2E8F0;
+            background: var(--surface-white);
+        }
+        .logo-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
-        .card-title-side {
-            padding: 16px; background: white; border-bottom: 1px solid #f1f5f9;
+        .header-info { display: flex; flex-direction: column; }
+        .header-title { font-size: 14px; font-weight: 700; color: var(--text-heading); line-height: 1.2; }
+        .header-status { font-size: 11px; color: var(--secondary-dark); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .status-dot { width: 6px; height: 6px; background: var(--secondary); border-radius: 50%; animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* --- HERO & ACTIONS --- */
+        .hero-container {
+            margin-top: var(--header-h);
+            padding: 24px 16px 16px;
+            text-align: center;
+        }
+        .hero-heading {
+            font-size: 26px; font-weight: 800; color: var(--text-heading);
+            margin: 0 0 16px 0; letter-spacing: -0.03em; line-height: 1.1;
+        }
+        .hero-highlight { color: var(--primary); }
+
+        .cta-button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; max-width: 320px;
+            padding: 14px 20px;
+            background: var(--primary); color: white;
+            font-size: 15px; font-weight: 700;
+            border: none; border-radius: var(--radius-full);
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.4);
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:active { transform: scale(0.96); box-shadow: 0 4px 10px -2px rgba(37, 99, 235, 0.3); }
+
+        /* --- STICKY CHIPS NAV --- */
+        .nav-chips-wrapper {
+            position: sticky; top: 0; z-index: 40;
+            background: var(--bg-body); /* Fallback */
+            background: rgba(248, 250, 252, 0.95);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            padding: 12px 0;
+            transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        /* Top value managed via JS based on header state */
+
+        .chips-scroller {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding: 0 16px; scrollbar-width: none;
+            justify-content: center; /* Center on larger screens */
+        }
+        .chips-scroller::-webkit-scrollbar { display: none; }
+
+        .chip-item {
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            background: var(--surface-white);
+            border: 1px solid #E2E8F0;
+            color: var(--text-body);
+            font-size: 13px; font-weight: 600;
+            white-space: nowrap; cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .chip-item.active {
+            background: var(--text-heading);
+            color: var(--surface-white);
+            border-color: var(--text-heading);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+            transform: scale(1.02);
+        }
+
+        /* --- CATALOG GRID --- */
+        .catalog-container {
+            padding: 16px;
+            max-width: 600px; margin: 0 auto;
+            min-height: 60vh;
+        }
+
+        /* --- PRODUCT CARD COMPONENT --- */
+        .product-card {
+            background: var(--surface-white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            border: 1px solid #F1F5F9;
+            transition: opacity 0.3s ease;
+            opacity: 0; animation: fadeUp 0.5s forwards;
+        }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Card Header Image */
+        .p-card-image-box {
+            position: relative;
+            width: 100%; height: auto;
+            background: #F8FAFC;
+            overflow: hidden;
+        }
+        .p-card-image {
+            width: 100%; height: 100%; 
+            object-fit: cover; display: block;
+            max-height: 450px; /* Tall vertical format */
+        }
+        .p-card-gradient {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(0,0,0,0.05), transparent);
+            pointer-events: none;
+        }
+
+        /* Card Content */
+        .p-card-body { padding: 20px; }
+        
+        .p-card-title-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .p-card-title {
+            font-size: 22px; font-weight: 800; color: var(--text-heading); margin: 0;
+            letter-spacing: -0.02em;
+        }
+        .p-card-price-tag {
+            background: var(--primary-soft); color: var(--primary-dark);
+            padding: 6px 12px; border-radius: var(--radius-md);
+            font-size: 16px; font-weight: 700;
+        }
+
+        /* Tabs Switcher */
+        .tabs-switch {
+            display: flex; background: #F1F5F9;
+            padding: 4px; border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1; border: none; background: transparent;
+            padding: 10px; border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .tab-btn.active {
+            background: var(--surface-white);
+            color: var(--text-heading);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Content Areas */
+        .content-area { display: none; }
+        .content-area.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Grid de Produtos (Visual Rico) */
+        .items-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .item-mini {
+            background: var(--surface-white);
+            border: 1px solid #E2E8F0; border-radius: var(--radius-md);
+            padding: 12px 8px;
+            display: flex; flex-direction: column; align-items: center;
+            text-align: center; height: 220px; /* Vertical Stretch */
+            transition: transform 0.2s;
+        }
+        .item-mini:active { transform: scale(0.98); }
+        
+        .item-img {
+            width: 100%; height: 120px; /* Maximize Image */
+            object-fit: contain; margin-bottom: 8px;
+            mix-blend-mode: multiply;
+        }
+        .item-badge {
+            font-size: 11px; font-weight: 700;
+            color: var(--secondary-dark); background: var(--secondary-soft);
+            padding: 4px 8px; border-radius: 4px; margin-bottom: 6px;
+            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .item-name {
+            font-size: 11px; font-weight: 600; color: var(--text-heading);
+            line-height: 1.3;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        /* Valor & Pedido Section */
+        .option-card {
             display: flex; justify-content: space-between; align-items: center;
+            padding: 16px; border: 2px solid #E2E8F0; border-radius: var(--radius-lg);
+            margin-bottom: 10px; cursor: pointer; transition: all 0.2s;
+            background: var(--surface-white);
         }
-        .card-title-side h2 { margin: 0; font-size: 20px; font-weight: 800; color: var(--text-main); }
-        .price-badge { font-size: 18px; font-weight: 700; color: var(--primary); }
-
-        .card-control-row { display: flex; border-bottom: 1px solid #E2E8F0; }
-        .btn-card-toggle {
-            flex: 1; background: #F8FAFC; border: none; padding: 14px;
-            font-size: 14px; font-weight: 600; color: var(--text-sub);
-            cursor: pointer; transition: all 0.2s; border-right: 1px solid #E2E8F0;
+        .option-card.selected {
+            border-color: var(--primary); background: var(--primary-soft);
         }
-        .btn-card-toggle:last-child { border-right: none; }
-        .btn-card-toggle.active { background: white; color: var(--primary); box-shadow: inset 0 -2px 0 var(--primary); }
-        .btn-card-toggle i { margin-right: 6px; }
-
-        .card-expand-section { padding: 16px; display: none; }
-        .card-expand-section.active { display: block; }
-
-        /* PRODUCTS GRID */
-        .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; }
-        .mini-product-card {
-            background: #fff; border: 1px solid #E2E8F0; border-radius: 8px;
-            padding: 8px 4px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            height: 210px; gap: 4px;
+        .option-info h4 { margin: 0; font-size: 14px; color: var(--text-heading); }
+        .option-info p { margin: 2px 0 0; font-size: 16px; font-weight: 700; color: var(--primary); }
+        
+        .radio-check {
+            width: 22px; height: 22px; border-radius: 50%;
+            border: 2px solid #CBD5E1; position: relative;
         }
-        .mini-prod-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 2px; mix-blend-mode: multiply; }
-        .mini-prod-badge { background: #EFF6FF; color: var(--primary); font-size: 13px; font-weight: 800; padding: 4px 8px; border-radius: 4px; margin-bottom: 2px; width: 100%; }
-        .mini-prod-name { font-size: 11px; color: var(--text-main); font-weight: 600; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* RADIO SELECTION */
-        .arroz-selection-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-        .radio-arroz-option {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px; border: 2px solid #E2E8F0; border-radius: 12px;
-            cursor: pointer; transition: all 0.2s; background: white;
-        }
-        .radio-arroz-option.selected { border-color: var(--primary); background: #EFF6FF; }
-        .radio-arroz-info { display: flex; flex-direction: column; }
-        .radio-arroz-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
-        .radio-arroz-price { font-size: 16px; font-weight: 700; color: var(--primary); }
-        .radio-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #CBD5E1; position: relative; flex-shrink: 0; }
-        .radio-arroz-option.selected .radio-circle { border-color: var(--primary); }
-        .radio-arroz-option.selected .radio-circle::after {
-            content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 10px; height: 10px; background: var(--primary); border-radius: 50%;
+        .option-card.selected .radio-check { border-color: var(--primary); background: var(--primary); }
+        .option-card.selected .radio-check::after {
+            content: '✔'; color: white; font-size: 12px;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
 
-        .btn-encomendar-card {
-            background: #10B981; color: white; width: 100%; border: none;
-            padding: 16px; border-radius: 12px; font-weight: 700; font-size: 16px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); transition: background 0.2s;
+        .btn-order-final {
+            width: 100%; background: var(--secondary); color: white;
+            padding: 16px; border: none; border-radius: var(--radius-lg);
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            margin-top: 16px; transition: transform 0.1s;
         }
-        .btn-encomendar-card:active { transform: scale(0.98); background: #059669; }
+        .btn-order-final:active { transform: scale(0.98); }
 
-        /* --- COMPANY BOTTOM BAR (CHIPS STYLE) --- */
-        .company-bar {
+        /* --- FIXED BOTTOM BAR (App Like) --- */
+        .app-dock {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; border-top: 1px solid #E2E8F0;
-            padding: 12px 16px; z-index: 100;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            background: var(--surface-white);
+            border-top: 1px solid #E2E8F0;
+            padding: 12px 16px 20px; /* Safe area padding bottom */
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.04);
+            display: flex; flex-direction: column; gap: 10px;
         }
-        .company-bar-title {
-            font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-sub); letter-spacing: 0.5px;
+        .dock-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            color: var(--text-muted); text-align: center; letter-spacing: 1px;
         }
-        .company-buttons-chips {
-            display: flex; gap: 8px; overflow-x: auto; width: 100%;
-            scrollbar-width: none; justify-content: center; padding-bottom: 2px;
+        .dock-chips-row {
+            display: flex; gap: 10px; overflow-x: auto;
+            justify-content: center; scrollbar-width: none;
+            padding: 0 4px;
         }
-        .company-buttons-chips::-webkit-scrollbar { display: none; }
+        .dock-chips-row::-webkit-scrollbar { display: none; }
 
-        .footer-chip {
+        .dock-chip {
             display: flex; align-items: center; gap: 6px;
-            padding: 8px 16px;
-            background: #F8FAFC; border: 1px solid #E2E8F0;
-            border-radius: 20px;
-            font-size: 12px; font-weight: 600; color: var(--text-main);
-            text-decoration: none; cursor: pointer; white-space: nowrap;
+            padding: 8px 14px; border-radius: var(--radius-full);
+            background: #F1F5F9; border: 1px solid transparent;
+            font-size: 12px; font-weight: 600; color: var(--text-body);
+            text-decoration: none; white-space: nowrap; cursor: pointer;
             transition: all 0.2s;
         }
-        .footer-chip:active { transform: scale(0.95); opacity: 0.8; }
-        .footer-chip i { font-size: 16px; }
+        .dock-chip i { font-size: 16px; }
+        .dock-chip:active { transform: scale(0.95); opacity: 0.9; }
 
-        /* Brand Colors for Chips */
-        .footer-chip.instagram { color: #E1306C; background: #FFF0F5; border-color: #FFDBE9; }
-        .footer-chip.facebook { color: #1877F2; background: #EFF6FF; border-color: #BFDBFE; }
-        .footer-chip.whatsapp { color: #25D366; background: #DCFCE7; border-color: #BBF7D0; }
+        /* Brand Colors */
+        .dock-chip.insta { background: #FFF0F5; color: #E1306C; }
+        .dock-chip.face { background: #EFF6FF; color: #1877F2; }
+        .dock-chip.zap { background: #DCFCE7; color: #16A34A; }
+        .dock-chip.inst { background: var(--text-heading); color: white; }
 
-        /* MODAL COMMON */
-        .modal-overlay {
+        /* --- MODALS (Bottom Sheet Style) --- */
+        .modal-backdrop {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); z-index: 2000;
-            display: flex; align-items: flex-end;
-            opacity: 0; visibility: hidden; transition: all 0.3s;
+            background: rgba(15, 23, 42, 0.6); z-index: 2000;
             backdrop-filter: blur(4px);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            display: flex; align-items: flex-end; /* Bottom sheet default */
         }
-        .modal-overlay.center { align-items: center; justify-content: center; }
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-        
-        .modal-sheet {
-            background: white; width: 100%; border-radius: 20px 20px 0 0;
-            padding: 24px; max-width: 600px; margin: 0 auto;
+        .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+        .modal-backdrop.center { align-items: center; justify-content: center; } /* Center variation */
+
+        .sheet-card {
+            background: var(--surface-white); width: 100%;
+            border-radius: 24px 24px 0 0;
+            padding: 24px 20px 40px;
+            max-width: 600px; margin: 0 auto;
             transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            max-height: 90vh; overflow-y: auto;
+            max-height: 85vh; overflow-y: auto; position: relative;
         }
-        .modal-overlay.active .modal-sheet { transform: translateY(0); }
+        .modal-backdrop.active .sheet-card { transform: translateY(0); }
 
-        .modal-popup {
-            background: white; width: 90%; max-width: 340px; border-radius: 16px;
-            padding: 0; position: relative; overflow: hidden;
+        .popup-card {
+            background: var(--surface-white); width: 90%; max-width: 360px;
+            border-radius: var(--radius-xl); overflow: hidden;
             transform: scale(0.9); transition: transform 0.3s;
+            box-shadow: var(--shadow-float);
         }
-        .modal-overlay.active .modal-popup { transform: scale(1); }
+        .modal-backdrop.active .popup-card { transform: scale(1); }
 
-        .btn-close-modal {
-            position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; color: #94A3B8; cursor: pointer; z-index: 10;
+        /* Modal Elements */
+        .close-btn {
+            position: absolute; top: 16px; right: 16px;
+            background: #F1F5F9; border: none; width: 32px; height: 32px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: var(--text-muted); cursor: pointer;
         }
+        .modal-title { font-size: 20px; font-weight: 700; color: var(--text-heading); margin: 0 0 8px; }
+        .modal-sub { font-size: 14px; color: var(--text-body); margin: 0 0 24px; }
 
-        /* CONTACT MODAL LIST */
-        .contact-list { list-style: none; padding: 0; margin: 20px 0 0 0; }
-        .contact-item { 
-            display: flex; align-items: center; gap: 12px; padding: 12px; 
-            border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 10px;
-            text-decoration: none; color: var(--text-main); font-weight: 600;
+        .input-group { margin-bottom: 16px; }
+        .input-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-heading); margin-bottom: 6px; text-transform: uppercase; }
+        .std-input {
+            width: 100%; padding: 14px; border: 1px solid #CBD5E1; border-radius: var(--radius-md);
+            font-size: 16px; font-family: inherit; color: var(--text-heading);
+            background: #F8FAFC; transition: border 0.2s, background 0.2s;
         }
-        .contact-item i { font-size: 20px; color: var(--secondary); }
+        .std-input:focus { outline: none; border-color: var(--primary); background: white; }
 
-        /* INFO MODAL STYLES (Reused) */
-        .modal-header-info { text-align: center; padding: 20px; border-bottom: 1px solid #F1F5F9; }
-        .modal-header-info img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #E2E8F0; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 16px; }
-        .stat-box { background: #F8FAFC; padding: 10px; text-align: center; border-radius: 8px; border: 1px solid #E2E8F0; }
-        .stat-box strong { display: block; font-size: 14px; color: var(--text-main); }
-        .stat-box span { font-size: 10px; color: var(--text-sub); }
-
-        /* FORM STYLES */
-        .form-group { margin-bottom: 16px; }
-        .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-sub); }
-        .form-input, .form-select {
-            width: 100%; padding: 12px; border: 1px solid #CBD5E1; border-radius: 8px;
-            font-size: 15px; font-family: 'Inter', sans-serif;
+        /* Company Info Styles */
+        .company-header { text-align: center; padding: 24px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; }
+        .company-logo-lg { width: 72px; height: 72px; border-radius: 50%; border: 4px solid white; box-shadow: var(--shadow-sm); margin-bottom: 12px; }
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
+        .stat-tile {
+            background: #F8FAFC; padding: 16px; border-radius: var(--radius-md);
+            text-align: center; border: 1px solid #E2E8F0;
         }
-        .form-input:focus, .form-select:focus { outline: none; border-color: var(--primary); }
+        .stat-val { display: block; font-size: 16px; font-weight: 800; color: var(--primary); }
+        .stat-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+        .contact-row {
+            display: flex; align-items: center; gap: 12px; padding: 16px;
+            border: 1px solid #E2E8F0; border-radius: var(--radius-md);
+            text-decoration: none; color: var(--text-heading); font-weight: 600;
+            margin: 0 20px 12px; transition: background 0.2s;
+        }
+        .contact-row:active { background: #F1F5F9; }
+        .contact-icon { width: 40px; height: 40px; background: #EFF6FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 20px; }
 
     </style>
 </head>
-<body oncontextmenu="return false;">
+<body>
 
-    <!-- HEADER (Hide on scroll down) -->
-    <header id="main-header" class="catalog-header">
-        <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
-             class="brand-logo" alt="Logo Dona Antonia"
-             onerror="this.src='https://placehold.co/40x40/2563EB/ffffff?text=DA'">
-        <div class="brand-name">Super Cestas Dona Antônia<br>de Cuiabá e VG</div>
+    <!-- 1. TOP HEADER (Autohide) -->
+    <header id="main-header" class="app-header">
+        <div class="logo-ring">
+            <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
+                 class="logo-img" alt="Dona Antônia"
+                 onerror="this.src='https://placehold.co/100x100/2563EB/ffffff?text=DA'">
+        </div>
+        <div class="header-info">
+            <div class="header-title">Super Cestas Dona Antônia</div>
+            <div class="header-status"><div class="status-dot"></div> Aberto Agora</div>
+        </div>
     </header>
 
-    <!-- HERO & CTA -->
-    <section class="hero-section">
-        <h1 class="hero-title">Conheça as nossas<br>Cestas Básicas</h1>
-        <button onclick="openLeadModal('Geral')" class="btn-discount">
-            <i class="ph-bold ph-ticket"></i> Garantir meu Desconto
+    <!-- 2. HERO SECTION -->
+    <section class="hero-container">
+        <h1 class="hero-heading">
+            Economia real na<br>
+            <span class="hero-highlight">mesa da sua família</span>
+        </h1>
+        <button onclick="openLeadModal('Interesse Geral')" class="cta-button">
+            <i class="ph-bold ph-ticket"></i>
+            GARANTIR MEU DESCONTO
         </button>
     </section>
 
-    <!-- CHIPS NAVIGATION -->
-    <nav class="chips-container" id="nav-chips">
-        <!-- Rendered via JS -->
+    <!-- 3. STICKY NAVIGATION (Chips) -->
+    <nav id="sticky-nav" class="nav-chips-wrapper">
+        <div id="chips-container" class="chips-scroller">
+            <!-- Injected via JS -->
+        </div>
     </nav>
 
-    <!-- CATALOG MAIN -->
-    <main class="catalog-list" id="catalog-container">
-        <!-- Single Active Card Rendered Here -->
+    <!-- 4. MAIN CATALOG -->
+    <main id="catalog-mount" class="catalog-container">
+        <!-- Active Card Injected via JS -->
     </main>
 
-    <!-- COMPANY BOTTOM BAR (CHIPS) -->
-    <footer class="company-bar">
-        <div class="company-bar-title">Conheça a nossa Empresa</div>
-        <div class="company-buttons-chips">
-            <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="footer-chip instagram">
-                <i class="ph-logo-instagram"></i> Instagram
-            </a>
-            <a href="https://facebook.com/cestas.dona.antonia" target="_blank" class="footer-chip facebook">
-                <i class="ph-logo-facebook"></i> Facebook
-            </a>
-            <button onclick="openModal('infoModal')" class="footer-chip">
-                <i class="ph-storefront"></i> Sobre
+    <!-- 5. APP DOCK (Bottom Bar) -->
+    <footer class="app-dock">
+        <div class="dock-label">Conheça a Empresa</div>
+        <div class="dock-chips-row">
+            <button onclick="openModal('infoModal')" class="dock-chip inst">
+                <i class="ph-bold ph-storefront"></i> Sobre Nós
             </button>
-            <button onclick="openModal('contactModal')" class="footer-chip whatsapp">
-                <i class="ph-whatsapp-logo"></i> Contato
+            <button onclick="openModal('contactModal')" class="dock-chip zap">
+                <i class="ph-bold ph-whatsapp-logo"></i> Contato
             </button>
+            <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="dock-chip insta">
+                <i class="ph-bold ph-instagram-logo"></i> Instagram
+            </a>
+            <a href="https://facebook.com/cestas.dona.antonia" target="_blank" class="dock-chip face">
+                <i class="ph-bold ph-facebook-logo"></i> Facebook
+            </a>
         </div>
     </footer>
 
-    <!-- LEAD MODAL -->
-    <div id="leadModal" class="modal-overlay" onclick="if(event.target === this) closeModal('leadModal')">
-        <div class="modal-sheet">
-            <button class="btn-close-modal" onclick="closeModal('leadModal')"><i class="ph-bold ph-x"></i></button>
-            <h2 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 700;">Garantir Desconto 🎉</h2>
-            <p style="margin: 0 0 20px 0; font-size: 14px; color: var(--text-sub);">Preencha para receber o cupom no WhatsApp.</p>
-            <div class="form-group"><label class="form-label">Seu Nome</label><input type="text" id="inputName" class="form-input" placeholder="Ex: Maria da Silva"></div>
-            <div class="form-group"><label class="form-label">Cidade</label><select id="inputCity" class="form-select"><option value="Cuiabá">Cuiabá</option><option value="Várzea Grande">Várzea Grande</option></select></div>
-            <div class="form-group"><label class="form-label">Bairro</label><input type="text" id="inputBairro" class="form-input" placeholder="Ex: Pedra 90"></div>
-            <input type="hidden" id="inputContext" value="">
-            <button onclick="submitLead()" class="btn-discount" style="width: 100%;">Enviar para WhatsApp <i class="ph-bold ph-whatsapp-logo"></i></button>
+    <!-- MODAL: LEAD FORM (Bottom Sheet) -->
+    <div id="leadModal" class="modal-backdrop" onclick="if(event.target === this) closeModal('leadModal')">
+        <div class="sheet-card">
+            <button class="close-btn" onclick="closeModal('leadModal')"><i class="ph-bold ph-x"></i></button>
+            <h2 class="modal-title">Garantir Oferta 🎁</h2>
+            <p class="modal-sub">Preencha rapidinho para enviarmos o cupom no seu WhatsApp.</p>
+            
+            <div class="input-group">
+                <label class="input-label">Seu Nome</label>
+                <input type="text" id="inputName" class="std-input" placeholder="Ex: Maria Silva">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Cidade</label>
+                <select id="inputCity" class="std-input">
+                    <option value="Cuiabá">Cuiabá</option>
+                    <option value="Várzea Grande">Várzea Grande</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Bairro</label>
+                <input type="text" id="inputBairro" class="std-input" placeholder="Ex: Pedra 90">
+            </div>
+
+            <input type="hidden" id="inputContext">
+            
+            <button onclick="submitLead()" class="cta-button" style="width:100%; max-width:none; margin-top:10px;">
+                <i class="ph-bold ph-whatsapp-logo"></i> Enviar Pedido
+            </button>
         </div>
     </div>
 
-    <!-- INFO MODAL (Sobre) -->
-    <div id="infoModal" class="modal-overlay center" onclick="if(event.target === this) closeModal('infoModal')">
-        <div class="modal-popup">
-            <button class="btn-close-modal" onclick="closeModal('infoModal')"><i class="ph-bold ph-x"></i></button>
-            <div class="modal-header-info">
-                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" onerror="this.src='https://placehold.co/60x60'">
-                <h3 style="margin: 8px 0 0 0; font-size: 18px;">Dona Antônia</h3>
-                <p style="margin:0; font-size: 12px; color: #64748B;">CNPJ: 51.385.335.0001-06</p>
+    <!-- MODAL: SOBRE A EMPRESA (Center Popup) -->
+    <div id="infoModal" class="modal-backdrop center" onclick="if(event.target === this) closeModal('infoModal')">
+        <div class="popup-card">
+            <button class="close-btn" onclick="closeModal('infoModal')" style="top:10px; right:10px;"><i class="ph-bold ph-x"></i></button>
+            <div class="company-header">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
+                     class="company-logo-lg" 
+                     onerror="this.src='https://placehold.co/100x100'">
+                <h3 style="margin:0; font-size:18px; color:var(--text-heading);">Dona Antônia</h3>
+                <p style="margin:4px 0 0; font-size:12px; color:var(--text-muted);">CNPJ: 51.385.335.0001-06</p>
             </div>
-            <div class="stats-grid">
-                <div class="stat-box"><strong>+30 Mil</strong><span>Entregas</span></div>
-                <div class="stat-box"><strong>8 Anos</strong><span>Mercado</span></div>
-                <div class="stat-box"><strong>+6k</strong><span>Facebook</span></div>
-                <div class="stat-box"><strong>+2k</strong><span>Instagram</span></div>
+            <div class="stats-row">
+                <div class="stat-tile">
+                    <span class="stat-val">+30 Mil</span>
+                    <span class="stat-lbl">Entregas</span>
+                </div>
+                <div class="stat-tile">
+                    <span class="stat-val">8 Anos</span>
+                    <span class="stat-lbl">Tradição</span>
+                </div>
             </div>
-            <div style="padding: 0 16px 16px 16px; text-align: center;">
-                <p style="font-size: 13px; color: #334155; line-height: 1.5;">
-                    Tradição e qualidade em cestas básicas. Entregamos em toda Cuiabá e Várzea Grande com pagamento na hora.
-                </p>
-                <div style="background: #ECFDF5; color: #065F46; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; margin-top: 10px;">
+            <div style="padding: 0 24px 24px; text-align: center;">
+                <p style="font-size:13px; line-height:1.5;">Qualidade garantida e entrega rápida em toda a região.</p>
+                <div style="background:#ECFDF5; color:#065F46; padding:10px; border-radius:8px; font-size:12px; font-weight:700; margin-top:12px;">
                     <i class="ph-money"></i> Pague só na entrega
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- CONTACT MODAL -->
-    <div id="contactModal" class="modal-overlay center" onclick="if(event.target === this) closeModal('contactModal')">
-        <div class="modal-popup" style="padding: 24px;">
-            <button class="btn-close-modal" onclick="closeModal('contactModal')"><i class="ph-bold ph-x"></i></button>
-            <h3 style="margin: 0 0 4px 0;">Fale Conosco</h3>
-            <p style="margin: 0; font-size: 13px; color: #64748B;">Clique para ligar ou chamar no Zap</p>
+    <!-- MODAL: CONTATO (Center Popup) -->
+    <div id="contactModal" class="modal-backdrop center" onclick="if(event.target === this) closeModal('contactModal')">
+        <div class="popup-card" style="padding-bottom: 20px;">
+            <div style="padding:24px 24px 10px;">
+                <h3 class="modal-title">Fale Conosco</h3>
+                <p class="modal-sub" style="margin-bottom:16px;">Clique para chamar:</p>
+            </div>
             
-            <ul class="contact-list">
-                <li>
-                    <a href="tel:65996813588" class="contact-item">
-                        <i class="ph-phone"></i> (65) 99681-3588
-                    </a>
-                </li>
-                <li>
-                    <a href="https://wa.me/5565998150975" class="contact-item">
-                        <i class="ph-whatsapp-logo"></i> (65) 99815-0975
-                    </a>
-                </li>
-            </ul>
-            <div style="text-align: center; margin-top: 16px;">
-                <p style="font-size: 12px; color: #94A3B8;">Atendimento: Seg a Sáb das 08h às 12h</p>
+            <a href="tel:65996813588" class="contact-row">
+                <div class="contact-icon"><i class="ph-phone"></i></div>
+                <span>(65) 99681-3588</span>
+            </a>
+            <a href="https://wa.me/5565998150975" class="contact-row">
+                <div class="contact-icon" style="color:#16A34A; background:#DCFCE7;"><i class="ph-whatsapp-logo"></i></div>
+                <span>(65) 99815-0975</span>
+            </a>
+            
+            <div style="text-align: center; margin-top: 10px;">
+                <p style="font-size: 11px; color: var(--text-muted);">Seg a Sáb: 08:00 às 12:00</p>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATABASE ---
+        // --- DATA ---
         const BASKETS = {
             'ECONOMICA': {
                 name: 'Cesta Econômica',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif',
-                priceDisplay: 'R$ 85,00',
-                options: [{ label: 'Valor Único', price: 'R$ 85,00', value: '85,00', selected: true }],
+                displayPrice: 'R$ 85,00',
+                options: [{ id:'single', name:'Valor Único', price:'R$ 85,00', raw:85, selected:true }],
                 items: [
-                    { qtd: '1x', name: 'Arroz 5kg' }, { qtd: '1x', name: 'Açúcar 2kg' }, { qtd: '1x', name: 'Óleo 900ml' },
-                    { qtd: '1x', name: 'Feijão 1kg' }, { qtd: '1x', name: 'Café 250g' }, { qtd: '1x', name: 'Espaguete 400g' },
-                    { qtd: '1x', name: 'Trigo 1kg' }, { qtd: '1x', name: 'Farinha Mandioca 1kg' }, { qtd: '1x', name: 'Sal 1kg' },
-                    { qtd: '1x', name: 'Molho Tomate' }, { qtd: '1x', name: 'Milho Lata' }, { qtd: '1x', name: 'Bolacha Recheada' },
-                    { qtd: '1x', name: 'Miojo' }, { qtd: '1x', name: 'Suco Pó' }
+                    {q:1, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:1, n:'Óleo 900ml'},
+                    {q:1, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'Espaguete 400g'},
+                    {q:1, n:'Trigo 1kg'}, {q:1, n:'Farinha Mandioca 1kg'}, {q:1, n:'Sal 1kg'},
+                    {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'}, {q:1, n:'Bolacha Recheada'},
+                    {q:1, n:'Miojo'}, {q:1, n:'Suco Pó'}
                 ]
             },
             'MINI': {
                 name: 'Cesta Mini',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif',
-                priceDisplay: 'A partir de R$ 165,00',
+                displayPrice: 'A partir de R$ 165,00',
                 options: [
-                    { label: 'Com Arroz Tio Alvino', price: 'R$ 165,00', value: '165,00', selected: true },
-                    { label: 'Com Arroz Koblenz', price: 'R$ 170,00', value: '170,00' }
+                    { id:'alvino', name:'Com Arroz Tio Alvino', price:'R$ 165,00', raw:165, selected:true },
+                    { id:'koblenz', name:'Com Arroz Koblenz', price:'R$ 170,00', raw:170 }
                 ],
                 items: [
-                    { qtd: '1x', name: 'Arroz 5kg' }, { qtd: '1x', name: 'Açúcar 2kg' }, { qtd: '2x', name: 'Óleo 900ml' },
-                    { qtd: '2x', name: 'Feijão 1kg' }, { qtd: '1x', name: 'Café 250g' }, { qtd: '1x', name: 'Espaguete 500g' },
-                    { qtd: '1x', name: 'Sal 1kg' }, { qtd: '1x', name: 'Molho Tomate' }, { qtd: '1x', name: 'Milho Lata' },
-                    { qtd: '1x', name: 'Bolacha Recheada' }, { qtd: '1x', name: 'Miojo' }, { qtd: '2x', name: 'Suco Pó' },
-                    { qtd: '1x', name: 'Sabão Barra' }, { qtd: '1x', name: 'Creme Dental' }, { qtd: '1x', name: 'Papel Higiênico' },
-                    { qtd: '1x', name: 'Amaciante 2L' }, { qtd: '1x', name: 'Desinfetante 2L' }, { qtd: '1x', name: 'Sabão Pó OMO' },
-                    { qtd: '1x', name: 'Detergente' }, { qtd: '1x', name: 'Qboa 1L' }, { qtd: '2x', name: 'Sabonete' },
-                    { qtd: '1x', name: 'Esponja Aço' }, { qtd: '1x', name: 'Esponja Louça' }
+                    {q:1, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:2, n:'Óleo 900ml'},
+                    {q:2, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'Espaguete 500g'},
+                    {q:1, n:'Sal 1kg'}, {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Bolacha Recheada'}, {q:1, n:'Miojo'}, {q:2, n:'Suco Pó'},
+                    {q:1, n:'Sabão Barra'}, {q:1, n:'Creme Dental'}, {q:1, n:'Papel Higiênico'},
+                    {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'}, {q:1, n:'Sabão Pó OMO'},
+                    {q:1, n:'Detergente'}, {q:1, n:'Qboa 1L'}, {q:2, n:'Sabonete'},
+                    {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
                 ]
             },
             'PEQUENA': {
                 name: 'Cesta Pequena',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif',
-                priceDisplay: 'A partir de R$ 215,00',
+                displayPrice: 'A partir de R$ 215,00',
                 options: [
-                    { label: 'Com Arroz Tio Alvino', price: 'R$ 215,00', value: '215,00', selected: true },
-                    { label: 'Com Arroz Koblenz', price: 'R$ 220,00', value: '220,00' }
+                    { id:'alvino', name:'Com Arroz Tio Alvino', price:'R$ 215,00', raw:215, selected:true },
+                    { id:'koblenz', name:'Com Arroz Koblenz', price:'R$ 220,00', raw:220 }
                 ],
                 items: [
-                    { qtd: '2x', name: 'Arroz 5kg' }, { qtd: '1x', name: 'Açúcar 2kg' }, { qtd: '2x', name: 'Óleo 900ml' },
-                    { qtd: '2x', name: 'Feijão 1kg' }, { qtd: '1x', name: 'Café 250g' }, { qtd: '1x', name: '12 Ovos' },
-                    { qtd: '1x', name: 'Mistura Bolo' }, { qtd: '1x', name: 'Espaguete 500g' }, { qtd: '1x', name: 'Trigo 1kg' },
-                    { qtd: '1x', name: 'Sal 1kg' }, { qtd: '1x', name: 'Molho Tomate' }, { qtd: '1x', name: 'Milho Lata' },
-                    { qtd: '1x', name: 'Tempero' }, { qtd: '2x', name: 'Bolacha Recheada' }, { qtd: '2x', name: 'Miojo' },
-                    { qtd: '2x', name: 'Suco Pó' }, { qtd: '1x', name: 'Sabão Barra' }, { qtd: '1x', name: 'Creme Dental' },
-                    { qtd: '1x', name: 'Papel Higiênico' }, { qtd: '1x', name: 'Amaciante 2L' }, { qtd: '1x', name: 'Desinfetante 2L' },
-                    { qtd: '1x', name: 'Sabão Pó OMO' }, { qtd: '2x', name: 'Detergente' }, { qtd: '1x', name: 'Qboa 1L' },
-                    { qtd: '2x', name: 'Sabonete' }, { qtd: '1x', name: 'Esponja Aço' }, { qtd: '1x', name: 'Esponja Louça' }
+                    {q:2, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:2, n:'Óleo 900ml'},
+                    {q:2, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'12 Ovos'},
+                    {q:1, n:'Mistura Bolo'}, {q:1, n:'Espaguete 500g'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:2, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:1, n:'Creme Dental'},
+                    {q:1, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:2, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
                 ]
             },
             'MEDIA': {
                 name: 'Cesta Média',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif',
-                priceDisplay: 'A partir de R$ 320,00',
+                displayPrice: 'A partir de R$ 320,00',
                 options: [
-                    { label: 'Com Arroz Tio Alvino', price: 'R$ 320,00', value: '320,00', selected: true },
-                    { label: 'Com Arroz Koblenz', price: 'R$ 325,00', value: '325,00' }
+                    { id:'alvino', name:'Com Arroz Tio Alvino', price:'R$ 320,00', raw:320, selected:true },
+                    { id:'koblenz', name:'Com Arroz Koblenz', price:'R$ 325,00', raw:325 }
                 ],
                 items: [
-                    { qtd: '3x', name: 'Arroz 5kg' }, { qtd: '2x', name: 'Açúcar 2kg' }, { qtd: '3x', name: 'Óleo 900ml' },
-                    { qtd: '3x', name: 'Feijão 1kg' }, { qtd: '1x', name: 'Café 500g' }, { qtd: '1x', name: '12 Ovos' },
-                    { qtd: '1x', name: 'Mistura Bolo' }, { qtd: '2x', name: 'Espaguete 500g' }, { qtd: '1x', name: 'Trigo 1kg' },
-                    { qtd: '1x', name: 'Sal 1kg' }, { qtd: '2x', name: 'Molho Tomate' }, { qtd: '1x', name: 'Milho Lata' },
-                    { qtd: '1x', name: 'Tempero' }, { qtd: '2x', name: 'Bolacha Recheada' }, { qtd: '2x', name: 'Miojo' },
-                    { qtd: '3x', name: 'Suco Pó' }, { qtd: '1x', name: 'Sabão Barra' }, { qtd: '2x', name: 'Creme Dental' },
-                    { qtd: '2x', name: 'Papel Higiênico' }, { qtd: '1x', name: 'Amaciante 2L' }, { qtd: '1x', name: 'Desinfetante 2L' },
-                    { qtd: '1x', name: 'Sabão Pó OMO' }, { qtd: '2x', name: 'Detergente' }, { qtd: '1x', name: 'Qboa 1L' },
-                    { qtd: '3x', name: 'Sabonete' }, { qtd: '1x', name: 'Esponja Aço' }, { qtd: '1x', name: 'Esponja Louça' }
+                    {q:3, n:'Arroz 5kg'}, {q:2, n:'Açúcar 2kg'}, {q:3, n:'Óleo 900ml'},
+                    {q:3, n:'Feijão 1kg'}, {q:1, n:'Café 500g'}, {q:1, n:'12 Ovos'},
+                    {q:1, n:'Mistura Bolo'}, {q:2, n:'Espaguete 500g'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:2, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:3, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:2, n:'Creme Dental'},
+                    {q:2, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:3, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
                 ]
             },
             'GRANDE': {
                 name: 'Cesta Grande',
                 img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif',
-                priceDisplay: 'R$ 380,00',
+                displayPrice: 'R$ 380,00',
                 options: [
-                    { label: 'Com Arroz Tio Alvino', price: 'R$ 380,00', value: '380,00', selected: true }
+                    { id:'alvino', name:'Com Arroz Tio Alvino', price:'R$ 380,00', raw:380, selected:true }
                 ],
                 items: [
-                    { qtd: '4x', name: 'Arroz 5kg' }, { qtd: '3x', name: 'Açúcar 2kg' }, { qtd: '4x', name: 'Óleo 900ml' },
-                    { qtd: '4x', name: 'Feijão 1kg' }, { qtd: '1x', name: 'Café 500g' }, { qtd: '3x', name: 'Espaguete 500g' },
-                    { qtd: '1x', name: '12 Ovos' }, { qtd: '1x', name: 'Mistura Bolo' }, { qtd: '1x', name: 'Trigo 1kg' },
-                    { qtd: '1x', name: 'Sal 1kg' }, { qtd: '2x', name: 'Molho Tomate' }, { qtd: '1x', name: 'Milho Lata' },
-                    { qtd: '1x', name: 'Tempero' }, { qtd: '2x', name: 'Bolacha Recheada' }, { qtd: '2x', name: 'Miojo' },
-                    { qtd: '4x', name: 'Suco Pó' }, { qtd: '1x', name: 'Sabão Barra' }, { qtd: '2x', name: 'Creme Dental' },
-                    { qtd: '2x', name: 'Papel Higiênico' }, { qtd: '1x', name: 'Amaciante 2L' }, { qtd: '1x', name: 'Desinfetante 2L' },
-                    { qtd: '1x', name: 'Sabão Pó OMO' }, { qtd: '2x', name: 'Detergente' }, { qtd: '1x', name: 'Qboa 1L' },
-                    { qtd: '4x', name: 'Sabonete' }, { qtd: '1x', name: 'Esponja Aço' }, { qtd: '1x', name: 'Esponja Louça' }
+                    {q:4, n:'Arroz 5kg'}, {q:3, n:'Açúcar 2kg'}, {q:4, n:'Óleo 900ml'},
+                    {q:4, n:'Feijão 1kg'}, {q:1, n:'Café 500g'}, {q:3, n:'Espaguete 500g'},
+                    {q:1, n:'12 Ovos'}, {q:1, n:'Mistura Bolo'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:2, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:4, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:2, n:'Creme Dental'},
+                    {q:2, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:4, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
                 ]
             }
         };
 
-        // --- IMAGE MAPPER ---
-        function getProductImage(name) {
+        // --- IMAGE LOGIC ---
+        function getImageUrl(name) {
             const n = name.toLowerCase();
-            const foodPath = 'img/alimento/';
-            const cleanPath = 'img/limpeza/';
+            const f = 'img/alimento/';
+            const c = 'img/limpeza/';
             
-            if(n.includes('arroz')) return foodPath + 'Arroz Koblenz 5kg.webp';
-            if(n.includes('açúcar')) return foodPath + 'açucar doce dia 2 kg.webp';
-            if(n.includes('bolacha')) return foodPath + 'bolacha mybit.webp';
-            if(n.includes('bolo')) return foodPath + 'bolo apti chocolate.webp';
-            if(n.includes('café') && n.includes('500g')) return foodPath + 'cafe caboclo 500g.webp';
-            if(n.includes('café')) return foodPath + 'cafe caboclo 250g.webp';
-            if(n.includes('espaguete')) return foodPath + 'espaguete qdelicia.webp';
-            if(n.includes('farinha mandioca')) return foodPath + 'farinha de mandioca.webp';
-            if(n.includes('feijão')) return foodPath + 'feijão da casa.webp';
-            if(n.includes('milho')) return foodPath + 'milho verde predileta.webp';
-            if(n.includes('miojo')) return foodPath + 'miojo apti.webp';
-            if(n.includes('molho')) return foodPath + 'molho fugini.webp';
-            if(n.includes('óleo')) return foodPath + 'oleo de soja liza.webp';
-            if(n.includes('ovo')) return foodPath + 'ovo duzia.jpg';
-            if(n.includes('sal')) return foodPath + 'sal.webp';
-            if(n.includes('suco')) return foodPath + 'suco frisco.webp';
-            if(n.includes('tempero')) return foodPath + 'tempero tio jonas.jpg';
-            if(n.includes('trigo')) return foodPath + 'trigo vitoriosa.webp';
+            // Food
+            if(n.includes('arroz')) return f + 'Arroz Koblenz 5kg.webp';
+            if(n.includes('açúcar')) return f + 'açucar doce dia 2 kg.webp';
+            if(n.includes('bolacha')) return f + 'bolacha mybit.webp';
+            if(n.includes('bolo')) return f + 'bolo apti chocolate.webp';
+            if(n.includes('café') && n.includes('500g')) return f + 'cafe caboclo 500g.webp';
+            if(n.includes('café')) return f + 'cafe caboclo 250g.webp';
+            if(n.includes('espaguete')) return f + 'espaguete qdelicia.webp';
+            if(n.includes('feijão')) return f + 'feijão da casa.webp';
+            if(n.includes('milho')) return f + 'milho verde predileta.webp';
+            if(n.includes('miojo')) return f + 'miojo apti.webp';
+            if(n.includes('molho')) return f + 'molho fugini.webp';
+            if(n.includes('óleo')) return f + 'oleo de soja liza.webp';
+            if(n.includes('ovo')) return f + 'ovo duzia.jpg';
+            if(n.includes('sal')) return f + 'sal.webp';
+            if(n.includes('suco')) return f + 'suco frisco.webp';
+            if(n.includes('tempero')) return f + 'tempero tio jonas.jpg';
+            if(n.includes('trigo')) return f + 'trigo vitoriosa.webp';
+            if(n.includes('farinha')) return f + 'farinha de mandioca.webp';
 
-            if(n.includes('creme dental')) return cleanPath + 'Creme Dental Sorriso 70g.webp';
-            if(n.includes('desinfetante')) return cleanPath + 'Desinfetante Remmus 2L.webp';
-            if(n.includes('detergente')) return cleanPath + 'Detergente Ype 500ml.webp';
-            if(n.includes('qboa')) return cleanPath + 'Qboa 1 Litro.webp';
-            if(n.includes('amaciante')) return cleanPath + 'amaciante ype 2L.webp';
-            if(n.includes('esponja louça')) return cleanPath + 'esponja de lavar louça.webp';
-            if(n.includes('esponja aço')) return cleanPath + 'lã de aço assolan.webp';
-            if(n.includes('papel')) return cleanPath + 'papel higienico.webp';
-            if(n.includes('sabonete')) return cleanPath + 'sabonete palmolive 85g.webp';
-            if(n.includes('sabão barra')) return cleanPath + 'sabão barra ype 900g.webp';
-            if(n.includes('sabão pó') || n.includes('omo')) return cleanPath + 'sabão barra ype 900g.webp';
+            // Cleaning
+            if(n.includes('creme')) return c + 'Creme Dental Sorriso 70g.webp';
+            if(n.includes('desinfetante')) return c + 'Desinfetante Remmus 2L.webp';
+            if(n.includes('detergente')) return c + 'Detergente Ype 500ml.webp';
+            if(n.includes('qboa')) return c + 'Qboa 1 Litro.webp';
+            if(n.includes('amaciante')) return c + 'amaciante ype 2L.webp';
+            if(n.includes('louça')) return c + 'esponja de lavar louça.webp';
+            if(n.includes('aço')) return c + 'lã de aço assolan.webp';
+            if(n.includes('papel')) return c + 'papel higienico.webp';
+            if(n.includes('sabonete')) return c + 'sabonete palmolive 85g.webp';
+            if(n.includes('barra')) return c + 'sabão barra ype 900g.webp';
+            if(n.includes('omo')) return c + 'sabão barra ype 900g.webp'; // Fallback if no specific img
 
-            return `https://placehold.co/100x100/f1f5f9/334155?text=${encodeURIComponent(name.split(' ')[0])}`;
+            return `https://placehold.co/150x150/f1f5f9/94a3b8?text=${name.substr(0,3)}`;
         }
 
-        // --- CORE FUNCTIONS ---
+        // --- APP STATE ---
+        let currentBasket = 'ECONOMICA';
+
+        // --- RENDERERS ---
         function renderChips() {
-            const nav = document.getElementById('nav-chips');
-            nav.innerHTML = Object.keys(BASKETS).map(key => `
-                <button class="chip ${key === 'ECONOMICA' ? 'active' : ''}" 
-                        onclick="switchBasket('${key}', this)">
-                    ${key}
+            const container = document.getElementById('chips-container');
+            container.innerHTML = Object.keys(BASKETS).map(k => `
+                <button class="chip-item ${k === currentBasket ? 'active' : ''}" 
+                        onclick="switchBasket('${k}')">
+                    ${k}
                 </button>
             `).join('');
         }
 
         function renderBasket(key) {
-            const container = document.getElementById('catalog-container');
-            const data = BASKETS[key];
+            currentBasket = key;
+            renderChips(); // Update active state
             
-            const itemsHtml = data.items.map(item => {
-                const qtyNum = item.qtd.replace('x', '');
-                const qtyText = `${qtyNum} ${qtyNum === '1' ? 'unidade' : 'unidades'}`;
+            const data = BASKETS[key];
+            const mount = document.getElementById('catalog-mount');
+            
+            // Build Items Grid
+            const itemsHtml = data.items.map(i => {
+                const qtyText = i.q === 1 ? '1 unidade' : `${i.q} unidades`;
                 return `
-                <div class="mini-product-card">
-                    <img src="${getProductImage(item.name)}" class="mini-prod-img" loading="lazy" alt="${item.name}">
-                    <div class="mini-prod-badge">${qtyText}</div>
-                    <span class="mini-prod-name">${item.name}</span>
-                </div>
-            `}).join('');
+                <div class="item-mini">
+                    <img src="${getImageUrl(i.n)}" loading="lazy" class="item-img" alt="${i.n}">
+                    <div class="item-badge">${qtyText}</div>
+                    <div class="item-name">${i.n}</div>
+                </div>`;
+            }).join('');
 
-            const optionsHtml = data.options.map(opt => `
-                <div class="radio-arroz-option ${opt.selected ? 'selected' : ''}" 
-                     onclick="selectOption('${key}', '${opt.value}', '${opt.price}', '${opt.label}', this)">
-                    <div class="radio-arroz-info">
-                        <span class="radio-arroz-name">${opt.label}</span>
-                        <span class="radio-arroz-price">${opt.price}</span>
+            // Build Options
+            const optionsHtml = data.options.map((opt, idx) => `
+                <div class="option-card ${opt.selected ? 'selected' : ''}" 
+                     onclick="selectOption('${key}', ${idx})">
+                    <div class="option-info">
+                        <h4>${opt.name}</h4>
+                        <p>${opt.price}</p>
                     </div>
-                    <div class="radio-circle"></div>
+                    <div class="radio-check"></div>
                 </div>
             `).join('');
 
-            const defaultOpt = data.options.find(o => o.selected) || data.options[0];
+            const selectedOpt = data.options.find(o => o.selected) || data.options[0];
 
-            container.innerHTML = `
-                <div class="card-cesta-new">
-                    <div class="card-header-visual">
-                        <img src="${data.img}" class="card-img-side" alt="${data.name}">
-                        <div class="card-title-side">
-                            <h2>${data.name}</h2>
-                            <span class="price-badge">${data.priceDisplay}</span>
+            mount.innerHTML = `
+                <article class="product-card">
+                    <div class="p-card-image-box">
+                        <img src="${data.img}" class="p-card-image" alt="${data.name}">
+                        <div class="p-card-gradient"></div>
+                    </div>
+                    
+                    <div class="p-card-body">
+                        <div class="p-card-title-row">
+                            <h2 class="p-card-title">${data.name}</h2>
+                            <div class="p-card-price-tag">${data.displayPrice}</div>
+                        </div>
+
+                        <nav class="tabs-switch">
+                            <button class="tab-btn active" onclick="switchTab(this, 'tab-prod')">
+                                <i class="ph-bold ph-squares-four"></i> Produtos
+                            </button>
+                            <button class="tab-btn" onclick="switchTab(this, 'tab-vals')">
+                                <i class="ph-bold ph-currency-dollar"></i> Valor & Pedido
+                            </button>
+                        </nav>
+
+                        <div id="tab-prod" class="content-area active">
+                            <div class="items-grid">
+                                ${itemsHtml}
+                            </div>
+                        </div>
+
+                        <div id="tab-vals" class="content-area">
+                            <div style="margin-bottom:20px;">
+                                <p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:12px;">ESCOLHA UMA OPÇÃO:</p>
+                                ${optionsHtml}
+                            </div>
+                            <button class="btn-order-final" 
+                                    onclick="openLeadModal('${data.name} - ${selectedOpt.name} (${selectedOpt.price})')">
+                                <i class="ph-bold ph-whatsapp-logo"></i>
+                                Encomendar Agora
+                            </button>
                         </div>
                     </div>
-                    <div class="card-control-row">
-                        <button class="btn-card-toggle active" onclick="toggleTab('produtos')"><i class="fas fa-th-large"></i> Produtos</button>
-                        <button class="btn-card-toggle" onclick="toggleTab('valor')"><i class="fas fa-dollar-sign"></i> Valor & Pedido</button>
-                    </div>
-                    <div id="tab-produtos" class="card-expand-section active">
-                        <div class="products-grid">${itemsHtml}</div>
-                    </div>
-                    <div id="tab-valor" class="card-expand-section">
-                        <p style="margin-bottom: 12px; font-size: 13px; color:#64748B;">Selecione uma opção:</p>
-                        <div class="arroz-selection-container">${optionsHtml}</div>
-                        <button id="btn-final-order" class="btn-encomendar-card" 
-                                onclick="openLeadModal('${data.name} - ${defaultOpt.label} (${defaultOpt.price})')">
-                            <i class="fab fa-whatsapp"></i> Encomendar
-                        </button>
-                    </div>
-                </div>
+                </article>
             `;
         }
 
-        function switchBasket(key, btn) {
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
+        // --- ACTIONS ---
+        function switchBasket(key) {
+            // Scroll to top of card area slightly
+            const offset = document.getElementById('sticky-nav').offsetHeight + 80;
+            window.scrollTo({ top: offset, behavior: 'smooth' });
             renderBasket(key);
+            trackEvent('ViewContent', { content_name: key });
         }
 
-        function toggleTab(tabName) {
-            document.querySelectorAll('.btn-card-toggle').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            document.getElementById('tab-produtos').style.display = tabName === 'produtos' ? 'grid' : 'none';
-            document.getElementById('tab-valor').style.display = tabName === 'valor' ? 'block' : 'none';
+        function switchTab(btn, tabId) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const cardBody = parent.parentElement;
+            cardBody.querySelectorAll('.content-area').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
         }
 
-        function selectOption(basketKey, value, priceDisplay, label, element) {
-            document.querySelectorAll('.radio-arroz-option').forEach(e => e.classList.remove('selected'));
-            element.classList.add('selected');
-            const btn = document.getElementById('btn-final-order');
-            const basketName = BASKETS[basketKey].name;
-            btn.onclick = function() {
-                openLeadModal(`${basketName} - ${label} (${priceDisplay})`);
-            };
+        function selectOption(basketKey, optIndex) {
+            // Update Data State
+            BASKETS[basketKey].options.forEach((o, i) => o.selected = i === optIndex);
+            // Re-render only the card (or just options part for optimization, but full render is safer for sync)
+            renderBasket(basketKey);
+            // Switch to values tab immediately to show selection
+            setTimeout(() => {
+                const tabs = document.querySelectorAll('.tab-btn');
+                switchTab(tabs[1], 'tab-vals'); 
+            }, 50);
         }
 
-        // --- MODALS SYSTEM ---
+        // --- GLOBAL MODALS ---
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            trackEvent('OpenModal', { id: id });
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
         function openLeadModal(context) {
-            document.getElementById('leadModal').classList.add('active');
             document.getElementById('inputContext').value = context;
-            trackEvent('OpenLeadForm', { context: context });
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            trackEvent('OpenModal', { id: modalId });
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+            openModal('leadModal');
         }
 
         function submitLead() {
-            const name = document.getElementById('inputName').value.trim();
+            const name = document.getElementById('inputName').value;
             const city = document.getElementById('inputCity').value;
-            const bairro = document.getElementById('inputBairro').value.trim();
-            const interest = document.getElementById('inputContext').value;
+            const bairro = document.getElementById('inputBairro').value;
+            const item = document.getElementById('inputContext').value;
 
             if(!name || !bairro) {
-                alert('Preencha seu nome e bairro para continuar.');
+                alert("Por favor, preencha seu nome e bairro.");
                 return;
             }
 
-            const text = `Olá! Me chamo *${name}*, sou de *${city}* (Bairro: ${bairro}).\nTenho interesse em: *${interest}*.`;
-            const phone = "5565998150975";
-            const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
+            const msg = `Olá! Me chamo *${name}*, sou de *${city}* (Bairro: ${bairro}).\nTenho interesse em: *${item}*.\nGostaria de garantir meu desconto!`;
+            const link = `https://api.whatsapp.com/send?phone=5565998150975&text=${encodeURIComponent(msg)}`;
             
-            trackEvent('SubmitLead', { interest: interest });
-            window.location.href = url;
+            trackEvent('Lead', { value: 0, currency: 'BRL' });
+            window.location.href = link;
             closeModal('leadModal');
         }
 
-        // --- HEADER SCROLL LOGIC ---
-        let lastScrollY = window.scrollY;
+        // --- SCROLL EFFECTS ---
+        let lastScroll = 0;
+        const header = document.getElementById('main-header');
+        const nav = document.getElementById('sticky-nav');
+
         window.addEventListener('scroll', () => {
-            const header = document.getElementById('main-header');
-            const chips = document.getElementById('nav-chips');
+            const currentScroll = window.pageYOffset;
             
-            if (window.scrollY > lastScrollY && window.scrollY > 50) {
-                // Scroll Down -> Hide Header, Sticky Chips at Top
-                header.classList.add('hidden');
-                chips.style.top = '0px'; 
+            if (currentScroll > 50) {
+                if (currentScroll > lastScroll) {
+                    // Scrolling Down
+                    header.classList.add('hidden');
+                    nav.style.top = '0px';
+                } else {
+                    // Scrolling Up
+                    header.classList.remove('hidden');
+                    nav.style.top = '64px'; // Matches header height
+                }
             } else {
-                // Scroll Up -> Show Header, Sticky Chips below Header
                 header.classList.remove('hidden');
-                chips.style.top = '70px';
+                nav.style.top = '64px';
             }
-            lastScrollY = window.scrollY;
+            lastScroll = currentScroll;
         });
 
-        // INIT
-        window.onload = function() {
-            renderChips();
-            renderBasket('ECONOMICA');
-        };
+        // --- INIT ---
+        renderBasket('ECONOMICA');
 
     </script>
 </body>
