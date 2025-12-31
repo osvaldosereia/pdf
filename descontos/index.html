@@ -326,10 +326,6 @@
                     <option value="Várzea Grande">Várzea Grande</option>
                 </select>
             </div>
-            <div>
-                <label class="lbl">Bairro (Opcional)</label>
-                <input type="text" id="leadBairro" class="inp" placeholder="Ex: Pedra 90">
-            </div>
             <input type="hidden" id="leadContext">
             <button onclick="sendLead()" class="btn-buy-modal"><i class="ph-bold ph-whatsapp-logo"></i> Enviar Pedido</button>
         </div>
@@ -513,104 +509,114 @@
             return `https://placehold.co/150x150/f1f5f9/94a3b8?text=${n.substr(0,3)}`;
         }
 
+        // --- NEW: GENERATE INNER HTML HELPER (Refactored for targeted updates) ---
+        function generateBasketInnerHtml(key, index) {
+            const data = BASKETS[key];
+            const isRevealed = STATE.revealed[key] || false;
+            const selOpt = data.opts.find(o => o.sel) || data.opts[0];
+
+            // Setup loading attributes for initial render (index provided) or updates (index = 999)
+            // If updating (index 999), we can use eager as it's already in viewport, or keep lazy.
+            const isInitialHero = index === 0;
+            const imgLoading = isInitialHero ? 'eager' : 'lazy';
+            const fetchPriority = isInitialHero ? 'high' : 'auto';
+
+            const optionsHtml = data.opts.map((o, i) => `
+                <div class="option-row ${o.sel ? 'selected' : ''}" onclick="selectOption('${key}', ${i})">
+                    <div class="option-info">
+                        <span class="option-name">${o.n}</span>
+                        <div class="price-wrapper">
+                                <span class="price-normal" style="display: ${isRevealed ? 'none' : 'block'}">${o.norm}</span>
+                                <span class="price-old" style="display: ${isRevealed ? 'block' : 'none'}">${o.norm}</span>
+                                <span class="price-new" style="display: ${isRevealed ? 'block' : 'none'}">${o.desc}</span>
+                        </div>
+                    </div>
+                    <div class="radio-indicator"></div>
+                </div>
+            `).join('');
+
+            const totalItems = data.items.reduce((acc, item) => acc + item.q, 0);
+
+            const itemsHtml = data.items.map(i => {
+                const qtd = i.q === 1 ? '1 UN' : `${i.q} UN`;
+                return `
+                <div class="item-card">
+                    <img src="${getImg(i.n)}" class="item-img" loading="lazy" decoding="async">
+                    <div class="item-qty">${qtd}</div>
+                    <div class="item-name">${i.n}</div>
+                </div>`;
+            }).join('');
+
+            const btnText = isRevealed ? 
+                '<i class="ph-bold ph-star"></i> GARANTIR DESCONTO POR 30 DIAS' : 
+                '<i class="ph-bold ph-eye"></i> VER VALOR COM DESCONTO';
+
+            const btnClass = isRevealed ? 'btn-action-main revealed' : 'btn-action-main';
+
+            return `
+                <div class="p-header-block">
+                        <div class="p-title-row">
+                        <h2 class="p-title">${data.name}</h2>
+                        </div>
+                        
+                        <img src="${data.img}" 
+                            class="basket-hero-img" 
+                            alt="${data.name}"
+                            loading="${imgLoading}"
+                            fetchpriority="${fetchPriority}">
+
+                    <div class="p-options ${isRevealed ? 'revealed' : ''}">${optionsHtml}</div>
+                    
+                    <button class="${btnClass}" onclick="handleAction('${key}')">
+                        ${btnText}
+                    </button>
+                </div>
+                <div class="p-content-list">
+                    <div class="p-divider"><i class="ph-bold ph-basket"></i> ${totalItems} ITENS INCLUSOS</div>
+                    <div class="items-grid">${itemsHtml}</div>
+                </div>
+            `;
+        }
+
+        // --- RENDER LOGIC ---
         function renderAllProducts() {
             const container = document.getElementById('catalog-mount');
             const keys = ['GRANDE', 'MEDIA', 'PEQUENA', 'MINI', 'ECONOMICA'];
             
             let html = '';
-            
             keys.forEach((key, index) => {
-                const data = BASKETS[key];
-                const isRevealed = STATE.revealed[key] || false;
-                
-                // Get selected option
-                const selOpt = data.opts.find(o => o.sel) || data.opts[0];
-                
-                // PERFORMANCE LOGIC:
-                // First basket (Grande) is eager/high priority for fast LCP.
-                // Others are lazy/auto.
-                const imgLoading = index === 0 ? 'eager' : 'lazy';
-                const fetchPriority = index === 0 ? 'high' : 'auto';
-                
-                // Options HTML
-                const optionsHtml = data.opts.map((o, i) => `
-                    <div class="option-row ${o.sel ? 'selected' : ''}" onclick="selectOption('${key}', ${i})">
-                        <div class="option-info">
-                            <span class="option-name">${o.n}</span>
-                            <div class="price-wrapper">
-                                 <span class="price-normal" style="display: ${isRevealed ? 'none' : 'block'}">${o.norm}</span>
-                                 <span class="price-old" style="display: ${isRevealed ? 'block' : 'none'}">${o.norm}</span>
-                                 <span class="price-new" style="display: ${isRevealed ? 'block' : 'none'}">${o.desc}</span>
-                            </div>
-                        </div>
-                        <div class="radio-indicator"></div>
-                    </div>
-                `).join('');
-
-                const totalItems = data.items.reduce((acc, item) => acc + item.q, 0);
-
-                const itemsHtml = data.items.map(i => {
-                    const qtd = i.q === 1 ? '1 UN' : `${i.q} UN`;
-                    return `
-                    <div class="item-card">
-                        <img src="${getImg(i.n)}" class="item-img" loading="lazy" decoding="async">
-                        <div class="item-qty">${qtd}</div>
-                        <div class="item-name">${i.n}</div>
-                    </div>`;
-                }).join('');
-
-                const btnText = isRevealed ? 
-                    '<i class="ph-bold ph-star"></i> GARANTIR DESCONTO POR 30 DIAS' : 
-                    '<i class="ph-bold ph-eye"></i> VER VALOR COM DESCONTO';
-
-                const btnClass = isRevealed ? 'btn-action-main revealed' : 'btn-action-main';
-
                 html += `
                     <article class="product-section" id="basket-${key}">
-                        <div class="p-header-block">
-                             <div class="p-title-row">
-                                <h2 class="p-title">${data.name}</h2>
-                             </div>
-                             
-                             <img src="${data.img}" 
-                                  class="basket-hero-img" 
-                                  alt="${data.name}"
-                                  loading="${imgLoading}"
-                                  fetchpriority="${fetchPriority}">
-
-                            <div class="p-options ${isRevealed ? 'revealed' : ''}">${optionsHtml}</div>
-                            
-                            <button class="${btnClass}" onclick="handleAction('${key}')">
-                                ${btnText}
-                            </button>
-                        </div>
-                        <div class="p-content-list">
-                            <div class="p-divider"><i class="ph-bold ph-basket"></i> ${totalItems} ITENS INCLUSOS</div>
-                            <div class="items-grid">${itemsHtml}</div>
-                        </div>
+                        ${generateBasketInnerHtml(key, index)}
                     </article>
                 `;
-
-                // Add Separator if not last
                 if (index < keys.length - 1) {
                     html += `<div class="section-separator"><div class="separator-icon"><i class="ph-fill ph-circles-three-plus"></i></div></div>`;
                 }
             });
-
             container.innerHTML = html;
+        }
+
+        // --- NEW: TARGETED UPDATE FUNCTION (Fixes scroll jump) ---
+        function updateBasket(key) {
+            const basketEl = document.getElementById(`basket-${key}`);
+            if (basketEl) {
+                // We use index 999 to indicate update (not priority hero)
+                basketEl.innerHTML = generateBasketInnerHtml(key, 999);
+            }
         }
 
         // --- ACTIONS ---
         function selectOption(key, idx) {
             BASKETS[key].opts.forEach((o, i) => o.sel = i === idx);
-            renderAllProducts();
+            updateBasket(key); // Targeted update only
         }
 
         function handleAction(key) {
             const isRevealed = STATE.revealed[key];
             if (!isRevealed) {
                 STATE.revealed[key] = true;
-                renderAllProducts();
+                updateBasket(key); // Targeted update only
                 trackEvent('RevealDiscount', { basket: key });
             } else {
                 const data = BASKETS[key];
@@ -631,18 +637,17 @@
         function sendLead() {
             const name = document.getElementById('leadName').value;
             const city = document.getElementById('leadCity').value;
-            const bairro = document.getElementById('leadBairro').value || 'Não informado'; 
+            // Removed Bairro logic
             const ctx = document.getElementById('leadContext').value;
             if(!name) return alert('Por favor, informe seu nome.');
             
-            const msg = `Olá! Me chamo *${name}*, sou de *${city}* (${bairro}).\nTenho interesse em: *${ctx}*.\nGostaria de garantir meu desconto!`;
+            const msg = `Olá! Me chamo *${name}*, sou de *${city}*.\nTenho interesse em: *${ctx}*.\nGostaria de garantir meu desconto!`;
             window.location.href = `https://api.whatsapp.com/send?phone=5565998150975&text=${encodeURIComponent(msg)}`;
             trackEvent('Lead', { value: 0 });
             closeModal('lead');
         }
 
-        // --- INITIALIZATION (Optimized) ---
-        // Run immediately instead of waiting for window.onload (all resources)
+        // --- INITIALIZATION ---
         renderAllProducts();
 
     </script>
