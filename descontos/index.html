@@ -75,17 +75,15 @@
             padding-bottom: calc(var(--footer-h) + 10px); 
         }
 
-        /* --- SMART HEADER --- */
+        /* --- HEADER (NORMAL FLOW) --- */
         .app-header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            position: relative; /* Mudado de fixed para relative */
             height: var(--header-h);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: white;
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center; padding: 0 16px; gap: 12px;
-            transition: transform 0.3s ease;
+            z-index: 50;
         }
-        .app-header.hidden { transform: translateY(-100%); }
 
         .logo { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; }
         .brand h1 { font-size: 14px; font-weight: 700; line-height: 1.2; margin: 0; color: var(--text-main); }
@@ -94,20 +92,17 @@
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
         /* --- HERO --- */
-        .hero { margin-top: var(--header-h); padding: 20px 16px 10px; text-align: center; }
+        .hero { padding: 20px 16px 10px; text-align: center; }
         .hero h2 { font-size: 24px; font-weight: 800; margin: 0; letter-spacing: -0.5px; color: var(--text-main); }
         
-        /* --- STICKY BASKET SLIDER (VERTICAL NAV) --- */
+        /* --- NAV SLIDER (NORMAL FLOW - SCROLLS AWAY) --- */
         .nav-slider-container {
-            position: sticky; top: var(--header-h); z-index: 40;
-            background: rgba(248, 250, 252, 0.98);
-            backdrop-filter: blur(10px);
+            position: relative; /* Mudado de sticky para relative */
+            background: var(--background);
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
-            transition: transform 0.3s ease, top 0.3s ease;
+            z-index: 40;
         }
-        /* Quando hidden, sobe tudo para fora da tela (header height + slider height) */
-        .nav-slider-container.hidden { transform: translateY(-200px); } 
         
         .slider-wrapper {
             position: relative;
@@ -134,7 +129,7 @@
 
         /* NAV CARD */
         .nav-card {
-            flex: 0 0 28%; /* ~3.5 itens na tela mobile */
+            flex: 0 0 28%;
             scroll-snap-align: start;
             background: var(--surface);
             border: 2px solid transparent; 
@@ -148,10 +143,8 @@
         }
         
         .nav-card-img {
-            width: 100%; 
-            height: 110px;
-            object-fit: cover;
-            background: #f1f5f9;
+            width: 100%; height: 110px;
+            object-fit: cover; background: #f1f5f9;
         }
         .nav-card-body {
             padding: 6px 4px; text-align: center;
@@ -159,15 +152,12 @@
             display: flex; flex-direction: column; justify-content: center;
         }
         .nav-card-name {
-            font-size: 12px;
-            font-weight: 800; color: var(--text-main);
+            font-size: 12px; font-weight: 800; color: var(--text-main);
             text-transform: uppercase; line-height: 1.1;
         }
         
-        /* Active State */
         .nav-card.active {
-            border-color: var(--primary);
-            transform: translateY(-4px);
+            border-color: var(--primary); transform: translateY(-4px);
             box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.25);
         }
         .nav-card.active .nav-card-name { color: var(--primary); }
@@ -176,74 +166,83 @@
             position: absolute; top: 6px; right: 6px;
             background: var(--primary); color: white;
             width: 18px; height: 18px; border-radius: 50%;
-            display: none; align-items: center; justify-content: center;
-            font-size: 10px;
+            display: none; align-items: center; justify-content: center; font-size: 10px;
         }
         .nav-card.active .active-indicator { display: flex; }
 
 
         /* --- PRODUCT DETAILS AREA --- */
-        .catalog-area { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .catalog-area { padding: 0 16px; max-width: 600px; margin: 0 auto; }
         
         .product-card {
             background: var(--surface); border-radius: 24px;
             overflow: hidden; border: 1px solid var(--border);
             box-shadow: var(--shadow-card);
             animation: fadeIn 0.3s ease-out;
+            min-height: 100vh; /* Ensure full height */
         }
         @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
 
-        /* 2. Info & Compra */
-        .p-content { padding: 20px; }
-        
-        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        /* STICKY PRODUCT INFO CONTAINER */
+        .product-info-sticky {
+            position: sticky; top: 0; 
+            z-index: 45; /* Higher than content, lower than modals/footer */
+            background: white;
+            padding: 20px 20px 10px 20px;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 10px -4px rgba(0,0,0,0.05);
+        }
+
+        .p-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .p-title { font-size: 22px; font-weight: 800; color: var(--text-main); margin: 0; letter-spacing: -0.5px; }
         .p-price-tag { 
             background: var(--primary-light); color: var(--primary-dark);
             padding: 6px 12px; border-radius: 8px; font-weight: 700; font-size: 16px;
         }
 
-        /* Seletor de Opções */
-        .p-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .p-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
         .option-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 14px; border: 2px solid var(--border); border-radius: 12px;
+            padding: 12px; border: 2px solid var(--border); border-radius: 12px;
             cursor: pointer; transition: all 0.2s;
         }
         .option-row.selected { border-color: var(--primary); background: #F8FAFC; }
-        .option-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
-        .option-price { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .option-name { font-size: 12px; font-weight: 600; color: var(--text-main); }
+        .option-price { font-size: 13px; font-weight: 700; color: var(--primary); }
         .radio-indicator {
-            width: 20px; height: 20px; border-radius: 50%; border: 2px solid #CBD5E1;
+            width: 18px; height: 18px; border-radius: 50%; border: 2px solid #CBD5E1;
             position: relative;
         }
         .option-row.selected .radio-indicator { border-color: var(--primary); background: var(--primary); }
         .option-row.selected .radio-indicator::after {
             content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 8px; height: 8px; background: white; border-radius: 50%;
+            width: 6px; height: 6px; background: white; border-radius: 50%;
         }
 
         /* Botão de Compra - Interno */
         .btn-buy-main {
             width: 100%; background: var(--success); color: white;
-            padding: 16px; border: none; border-radius: 16px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
+            padding: 14px; border: none; border-radius: 16px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
             transition: transform 0.1s;
-            white-space: nowrap;
+            white-space: nowrap; margin-bottom: 5px;
         }
-        .btn-buy-main i { flex-shrink: 0; }
         .btn-buy-main:active { transform: scale(0.98); background: var(--success-dark); }
 
-        /* Divisor */
+        /* CONTENT BELOW STICKY */
+        .p-content-scrollable {
+            padding: 20px;
+        }
+
         .p-divider { 
-            display: flex; align-items: center; gap: 10px; margin: 24px 0 16px; 
+            display: flex; align-items: center; gap: 10px; margin: 0 0 16px; 
             color: var(--text-sec); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
         }
         .p-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-        /* Grid de Itens VERTICAL - AJUSTE HEIGHT */
+        /* Grid de Itens VERTICAL */
         .items-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .item-card {
             background: #FFFFFF; border: 1px solid var(--border); border-radius: 8px;
@@ -381,7 +380,7 @@
         <h2>Conheça as Cestas Básicas</h2>
     </section>
 
-    <!-- STICKY NAV SLIDER (Vertical Cards) -->
+    <!-- NAV SLIDER (Relative/Normal Flow) -->
     <nav id="app-nav" class="nav-slider-container">
         <div class="nav-slider-box">
             <div class="slider-wrapper">
@@ -646,21 +645,23 @@
 
             mount.innerHTML = `
                 <article class="product-card">
-                    <!-- FOTO GRANDE REMOVIDA -->
                     
-                    <div class="p-content">
-                        <div class="p-header">
+                    <!-- STICKY HEADER INSIDE CARD -->
+                    <div class="product-info-sticky">
+                         <div class="p-header">
                             <h2 class="p-title">${data.name.replace('<br>', ' ')}</h2>
                             <div class="p-price-tag">${selOpt.p}</div>
                         </div>
 
                         <div class="p-options">${optionsHtml}</div>
 
-                        <!-- Botão Interno -->
                         <button class="btn-buy-main" onclick="openLead('${data.name.replace('<br>', ' ')} - ${selOpt.n} (${selOpt.p})')">
                             <i class="ph-bold ph-whatsapp-logo"></i> ENCOMENDAR NO WHATS
                         </button>
+                    </div>
 
+                    <!-- SCROLLABLE CONTENT -->
+                    <div class="p-content-scrollable">
                         <div class="p-divider">
                             <i class="ph-bold ph-basket"></i> ${totalItems} ITENS INCLUSOS
                         </div>
@@ -711,30 +712,39 @@
             trackEvent('Lead', { value: 0 });
         }
 
-        // --- SCROLL LOGIC (REVERTED TO STANDARD: HIDE ON SCROLL DOWN) ---
+        // --- SCROLL LOGIC (NO JS NEEDED FOR STICKY CSS, JUST TOGGLING HEADER/NAV) ---
+        // Mas o pedido foi para esconder topbar e cards ao rolar pra baixo e mostrar ao rolar pra cima
+        // Então mantemos o JS apenas para o Topo e Nav, não para o Sticky dentro do card.
+        // O sticky do card é CSS puro.
+        
         let lastY = 0;
         window.addEventListener('scroll', () => {
             const currY = window.scrollY;
             const head = document.getElementById('app-header');
             const nav = document.getElementById('app-nav');
             
-            // Standard Logic: Scroll Down -> Hide / Scroll Up -> Show
-            if (currY > 50) {
-                if (currY > lastY) {
-                    // Scrolling Down -> HIDE both
-                    head.classList.add('hidden');
-                    nav.classList.add('hidden');
-                } else {
-                    // Scrolling Up -> SHOW both
-                    head.classList.remove('hidden');
-                    nav.classList.remove('hidden');
-                }
-            } else {
-                // Top -> Always Show
-                head.classList.remove('hidden');
-                nav.classList.remove('hidden');
+            // Standard Logic: Scroll Down -> Hide / Scroll Up -> Show (ONLY IF NOT AT TOP)
+            if (currY > 80) { // Slightly increased threshold
+                // Scroll Down -> Hide Header/Nav (Card Sticky takes over)
+                // O card sticky header vai aparecer porque o topo da pagina subiu
+                
+                // HIDE HEADER AND NAV SLIDER
+                // Note: We don't toggle classes here, we just rely on normal scroll flow to push them up.
+                // Wait, user asked "somem pra cima" - normal scroll does this.
+                // But user also asked "voltam a aparecer quando a rolagem chegar ate eles normalmente"
+                // This means NO sticky/fixed positioning on them at all? 
+                // "A topbar e os cards das cestas ficam normal sumindo e aparecendo na rolagem normal"
+                // YES -> POSITION RELATIVE (Done in CSS)
+                
+                // So actually, NO JS SCROLL LOGIC is needed for hiding them if they are relative.
+                // They just scroll out of view.
+                
+                // BUT wait, "Quando rolar ao conrario para voltar ao topo os cards das cestas e o top bar so voltam a aparecer quando a rolagem chegar ate eles normalmente, nao devem aparecer antecipamente."
+                // This confirms standard scrolling. 
+                // BUT "Mas na rolagem a parte do nome da cesta, valores e botao ficam fixos." -> This is the sticky part inside the card.
+                
+                // Conclusion: No JS needed for scroll effects on Header/Nav. CSS position: relative handles it.
             }
-            lastY = currY;
         });
 
         // INIT
