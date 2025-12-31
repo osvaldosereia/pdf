@@ -20,6 +20,24 @@
     <link rel="preconnect" href="https://unpkg.com">
     <link rel="dns-prefetch" href="https://donaantonia.com.br">
 
+    <!-- Meta Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '24820560480956684');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=24820560480956684&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <!-- PILLAR 3: SECURITY -->
     <script>
         (function() {
@@ -318,6 +336,11 @@
             <div>
                 <label class="lbl">Seu Nome</label>
                 <input type="text" id="leadName" class="inp" placeholder="Ex: Maria Silva">
+            </div>
+            <!-- NOVO CAMPO: WhatsApp -->
+            <div>
+                <label class="lbl">WhatsApp (com DDD)</label>
+                <input type="tel" id="leadPhone" class="inp" placeholder="(65) 99999-9999">
             </div>
             <div>
                 <label class="lbl">Cidade</label>
@@ -637,11 +660,12 @@
         function sendLead() {
             const name = document.getElementById('leadName').value;
             const city = document.getElementById('leadCity').value;
-            // Removed Bairro logic
+            const phone = document.getElementById('leadPhone').value;
             const ctx = document.getElementById('leadContext').value;
-            if(!name) return alert('Por favor, informe seu nome.');
             
-            const msg = `Olá! Me chamo *${name}*, sou de *${city}*.\nTenho interesse em: *${ctx}*.\nGostaria de garantir meu desconto!`;
+            if(!name || !phone) return alert('Por favor, informe seu nome e WhatsApp.');
+            
+            const msg = `Olá! Me chamo *${name}*, meu zap é *${phone}*, sou de *${city}*.\nTenho interesse em: *${ctx}*.\nGostaria de garantir meu desconto!`;
             window.location.href = `https://api.whatsapp.com/send?phone=5565998150975&text=${encodeURIComponent(msg)}`;
             trackEvent('Lead', { value: 0 });
             closeModal('lead');
