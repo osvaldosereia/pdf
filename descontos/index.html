@@ -285,8 +285,8 @@
             z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
         }
         .footer-label { 
-            font-size: 11px; font-weight: 800; color: var(--text-main);
-            text-align: center; text-transform: uppercase; margin-bottom: 0px; 
+            font-size: 12px; font-weight: 800; color: var(--text-main);
+            text-align: center; text-transform: uppercase; margin-bottom: 4px; 
         }
         
         .footer-actions-col {
@@ -365,6 +365,11 @@
 </head>
 <body>
 
+    <!-- STRATEGY 1: STICKY TRUST BAR -->
+    <div style="background:#059669; color:white; text-align:center; padding:8px; font-size:12px; font-weight:800; letter-spacing:0.5px;">
+        <i class="ph-bold ph-shield-check"></i> PAGAMENTO SOMENTE NA ENTREGA • SEM RISCO
+    </div>
+
     <!-- STATIC HEADER -->
     <header class="app-header">
         <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
@@ -384,12 +389,13 @@
 
     <!-- FIXED FOOTER -->
     <footer class="app-footer">
-        <div class="footer-label">CONHEÇA NOSSA EMPRESA</div>
+        <!-- STRATEGY 3: LTV HOOK LABEL -->
+        <div class="footer-label" style="color:#059669; font-weight:800;">QUER RECEBER PROMOÇÕES TODO MÊS?</div>
         
         <div class="footer-actions-col">
-            <!-- MAIN ACTION BUTTON -->
+            <!-- STRATEGY 3: LTV HOOK BUTTON -->
             <button onclick="sendDirectOffers()" class="btn-social btn-offers">
-                <i class="ph-bold ph-whatsapp-logo"></i> FALAR COM ATENDENTE
+                <i class="ph-bold ph-whatsapp-logo"></i> ENTRAR NA LISTA VIP DO ZAP
             </button>
 
             <!-- INSTAGRAM BUTTON (SECONDARY) -->
@@ -748,6 +754,15 @@
                 STATE.revealed[key] = true;
                 updateBasket(key); 
                 trackEvent('RevealProducts', { basket: key });
+
+                // STRATEGY 2: REMARKETING TECHNICAL (PIXEL VIEWCONTENT)
+                trackEvent('ViewContent', { 
+                    content_name: BASKETS[key].name,
+                    content_ids: [key],
+                    content_type: 'product',
+                    value: 50.00, // Valor simbólico de interesse
+                    currency: 'BRL'
+                });
             }
         }
 
