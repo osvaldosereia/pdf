@@ -3,23 +3,39 @@
 <head>
     <!-- 
         ================================================================
-        PILLAR 1: CORE WEB VITALS & SEO (HIGH PERFORMANCE)
+        PILLAR 1: CORE WEB VITALS & PERFORMANCE
+        (Order Matters: Preconnects first for fastest TLL)
         ================================================================
     -->
     <meta charset="UTF-8">
-    <!-- Acessibilidade: Zoom habilitado para melhor pontuação -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- 1. PRECONNECTS (IMMEDIATELY AFTER CHARSET/VIEWPORT) -->
+    <!-- Establishes connection to Font server while HTML is parsing -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- 2. CRITICAL CSS & FONTS (PRELOAD) -->
+    <!-- Preload the font stylesheet to discover font URLs faster -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    
+    <!-- Async Font Loading (Prevents Render Blocking) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    </noscript>
+
+    <!-- 3. OTHER PRECONNECTS -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://connect.facebook.net">
+    <link rel="dns-prefetch" href="https://donaantonia.com.br">
+
+    <!-- 4. METADATA -->
     <title>Catálogo Completo | Dona Antônia Cuiabá</title>
     <meta name="description" content="Confira todas as nossas Cestas Básicas: Econômica, Pequena, Média e Grande. Entrega em Cuiabá e Várzea Grande.">
     <meta name="theme-color" content="#ffffff">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.donaantonia.com.br/catalogo">
-
-    <!-- PERFORMANCE HINTS (MODERN RESOURCES) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com">
-    <link rel="dns-prefetch" href="https://donaantonia.com.br">
 
     <!-- Meta Pixel Code -->
     <script>
@@ -70,8 +86,6 @@
     <!-- LIBS -->
     <!-- 'defer' para não bloquear renderização -->
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
-    <!-- 'display=swap' para texto aparecer instantaneamente -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -116,7 +130,7 @@
         .intro-text {
             text-align: center;
             padding: 20px 16px 0;
-            font-size: 19px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--text-sec);
             line-height: 1.4;
@@ -167,7 +181,8 @@
         .option-row {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px; border: 2px solid var(--border); border-radius: 12px;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer; 
+            transition: border-color 0.2s, background-color 0.2s; /* Performance fix */
         }
         .option-row.selected { border-color: var(--primary); background: #F8FAFC; }
         
@@ -201,8 +216,10 @@
             font-size: 14px; font-weight: 800; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-            transition: all 0.3s; white-space: nowrap; text-transform: uppercase;
+            transition: transform 0.2s, box-shadow 0.2s; /* Performance fix: avoid 'all' */
         }
+        .btn-action-main:active { transform: scale(0.98); }
+        
         .btn-action-main.revealed {
             background: var(--green-strong);
             box-shadow: 0 4px 15px rgba(4, 120, 87, 0.4);
@@ -432,11 +449,7 @@
         <div class="modal-box" style="text-align:center; max-height: 85vh; overflow-y: auto;">
             <button class="close-btn" onclick="closeModal('info')" aria-label="Fechar Modal" style="top:10px; right:10px;"><i class="ph-bold ph-x"></i></button>
             <div class="company-header">
-                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
-                     class="company-logo-lg" 
-                     alt="Logo Dona Antônia"
-                     width="72" height="72"
-                     onerror="this.src='https://placehold.co/100x100'">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="company-logo-lg" onerror="this.src='https://placehold.co/100x100'" alt="Logo Empresa" width="72" height="72">
                 <h3 style="margin:0; font-size:18px; color:var(--text-main);">Dona Antônia</h3>
                 <p style="margin:4px 0 0; font-size:12px; color:var(--text-sec);">CNPJ: 51.385.335.0001-06</p>
             </div>
@@ -647,7 +660,7 @@
                 const qtd = i.q === 1 ? '1 unidade' : `${i.q} unidades`;
                 return `
                 <div class="item-card">
-                    <img src="${getImg(i.n)}" class="item-img" loading="lazy" decoding="async" width="100" height="90">
+                    <img src="${getImg(i.n)}" class="item-img" loading="lazy" decoding="async" width="100" height="90" alt="${i.n}">
                     <div class="item-qty">${qtd}</div>
                     <div class="item-name">${i.n}</div>
                 </div>`;
@@ -763,7 +776,7 @@
 
         // --- OFFERS ---
         function sendOffers() {
-            let msg = "Estou salvando as ofertas de janeiro.\n\n";
+            let msg = "Estou salvando as ofertas de janeiro. 📅\n\n";
             const keys = ['GRANDE', 'MEDIA', 'PEQUENA', 'MINI', 'ECONOMICA'];
             
             keys.forEach(k => {
