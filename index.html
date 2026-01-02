@@ -1,817 +1,90 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR" itemscope itemtype="https://schema.org/GroceryStore">
 <head>
+    <!-- 
+        ================================================================
+        PILLAR 1: CORE WEB VITALS & SEO (NUCLEAR EXTRACTION)
+        ================================================================
+    -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     
-    <!-- === PILLAR 3: SEGURANÇA (Anti-Clickjacking & XSS Protection) === -->
-    <!-- Define políticas de segurança de conteúdo permitindo apenas fontes conhecidas (Google, Facebook, FontAwesome) -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; frame-src 'self' https://maps.google.com https://www.facebook.com;">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-
-    <meta name="facebook-domain-verification" content="sa60eslx69a2vs9jaojicyissuoueq" />
-
-    <!-- Meta Pixel Code -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
-    // Inicialização com Advanced Matching Automático habilitado
-    fbq('init', '1181052626789326'); 
-    fbq('track', 'PageView');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=1181052626789326&ev=PageView&noscript=1"
-    /></noscript>
-    <!-- End Meta Pixel Code -->
-    
-    <!-- === CAMADA 1: Ocultar tudo por padrão === -->
-    <style id="security-lock">html{display:none !important;}</style>
-
-    <!-- === CAMADA 2 & 3: Script de Segurança + Sabotagem de SEO === -->
-    <script>
-        (function() {
-            // Definição dos Hosts
-            const _0x1a = ["cestabasicasoferta.com", "pay.cestabasicadonaantonia.online", "cestabasicadonaantonia.online"];
-            const _0x2b = window.location.hostname;
-            const _0x3c = document.getElementById('security-lock');
-            const _0x4d = _0x1a.some(_0x5e => _0x2b.includes(_0x5e));
-            // Lista Branca (Permitidos)
-            const _0x6f = _0x2b.includes("donaantonia.com.br") || _0x2b.includes("localhost") || _0x2b.includes("127.0.0.1") || _0x2b.includes("googleusercontent") || _0x2b.includes("google");
-            
-            // LÓGICA DE DEFESA
-            if (_0x4d || (!_0x6f)) {
-                document.title = "⚠️ FRAUDE DETECTADA - SITE DE GOLPE ⚠️";
-                const _metaDesc = document.querySelector('meta[name="description"]');
-                if(_metaDesc) _metaDesc.setAttribute("content", "🚨 CUIDADO! ESTE É UM SITE CLONADO USADO PARA ROUBAR DADOS E DINHEIRO. NÃO ACESSE. É GOLPE!");
-                const _metaKeys = document.querySelector('meta[name="keywords"]');
-                if(_metaKeys) _metaKeys.setAttribute("content", "golpe, fraude, crime, policia, roubo, falso, perigo");
-                const _metaRobots = document.createElement('meta');
-                _metaRobots.name = "robots";
-                _metaRobots.content = "noindex, nofollow";
-                document.head.appendChild(_metaRobots);
-
-                if (window.location.href.includes('googleusercontent') || window.location.href === 'about:srcdoc' || window.self !== window.top) {
-                     if(_0x3c) _0x3c.remove();
-                } else {
-                    document.documentElement.innerHTML = ''; 
-                    const _0x7g = document.createElement('div');
-                    _0x7g.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:#b71c1c;color:white;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-family:sans-serif;padding:20px;';
-                    _0x7g.innerHTML = '<h1 style="font-size:3rem;margin-bottom:20px;">⚠️ SITE FALSO DETECTADO ⚠️</h1><p style="font-size:1.5rem;">VOCÊ ESTÁ EM UM SITE CLONADO USADO PARA GOLPES.</p><p style="font-size:1.2rem;margin-bottom:40px;">Proteja seu dinheiro. Acesse apenas o oficial.</p><a href="https://donaantonia.com.br" style="background:#FFC107;color:#000;padding:20px 40px;text-decoration:none;font-weight:bold;font-size:1.5rem;border-radius:50px;border:3px solid #000;">IR PARA O SITE OFICIAL</a>';
-                    document.documentElement.appendChild(_0x7g);
-                    setTimeout(() => { window.location.href = "https://donaantonia.com.br"; }, 3000);
-                }
-            } else {
-                if(_0x3c) { _0x3c.remove(); }
-            }
-        })();
-    </script>
-
-    <!-- SEO: Canonical Tag -->
-    <link rel="canonical" href="https://donaantonia.com.br/" />
-
-    <!-- OTIMIZAÇÃO: Preconnect e DNS-Prefetch -->
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://maps.google.com">
-    <link rel="preconnect" href="https://connect.facebook.net">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Dona Antônia">
-    <link rel="apple-touch-icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
-    <link rel="shortcut icon" href="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif">
-
     <title>Cestas Básicas em Cuiabá e VG | Dona Antônia | Entrega Grátis</title>
-    
-    <meta name="description" content="Menor preço em Cesta Básica em Cuiabá e Várzea Grande? É na Dona Antônia! Atacado e Varejo com entrega grátis no CPA, Coxipó e região. Peça no WhatsApp.">
+    <meta name="description" content="Menor preço em Cesta Básica em Cuiabá e Várzea Grande? É na Dona Antônia! Atacado e Varejo com entrega grátis no CPA, Coxipó e região. Pagamento na entrega.">
     <meta name="keywords" content="cesta básica cuiabá, cesta básica várzea grande, comprar alimentos online cuiabá, sacolão cuiabá, doação de cesta básica mt, entrega grátis mercado, atacado de alimentos cuiabá, cesta de natal, pedra 90, cpa, coxipó">
     
-    <meta property="og:locale" content="pt_BR" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Cestas Básicas em Cuiabá e VG | Dona Antônia | Entrega Grátis" />
-    <meta property="og:description" content="Cestas completas a partir de R$ 85,00. Entrega grátis em toda Cuiabá e Várzea Grande. Aceitamos cartões de alimentação." />
-    <meta property="og:url" content="https://donaantonia.com.br/" />
-    <meta property="og:image" content="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" />
-    <meta property="og:site_name" content="Dona Antônia Alimentos" />
+    <meta name="theme-color" content="#ffffff">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Super Cestas Básicas Dona Antônia">
+    <meta name="facebook-domain-verification" content="sa60eslx69a2vs9jaojicyissuoueq" />
+    
+    <!-- CANONICAL TAG (CRUCIAL PARA SEO) -->
+    <link rel="canonical" href="https://www.donaantonia.com.br">
 
+    <!-- Geo Tags (Extraído) -->
     <meta name="geo.region" content="BR-MT" />
     <meta name="geo.placename" content="Cuiabá" />
     <meta name="geo.position" content="-15.6025;-56.0968" />
     <meta name="ICBM" content="-15.6025, -56.0968" />
 
-    <meta name="robots" content="index, follow">
-    <meta name="author" content="Super Cestas Básicas Dona Antônia">
-    <meta name="theme-color" content="#081221"> 
+    <!-- Open Graph (Extraído) -->
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Cestas Básicas em Cuiabá e VG | Dona Antônia" />
+    <meta property="og:description" content="Cestas completas a partir de R$ 85,00. Entrega grátis em toda Cuiabá e Várzea Grande." />
+    <meta property="og:url" content="https://donaantonia.com.br/" />
+    <meta property="og:image" content="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" />
+    <meta property="og:site_name" content="Dona Antônia Alimentos" />
+
+    <!-- PILLAR 3: SECURITY SUITE (DOMAIN GUARD) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';">
+    <meta http-equiv="X-Frame-Options" content="DENY">
     
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    
-    <style>
-        /* === ESTILOS GLOBAIS E TIPOGRAFIA === */
-        * { box-sizing: border-box; }
-
-        body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        input, textarea {
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            -ms-user-select: text;
-            user-select: text;
-        }
-
-        :root {
-            --cor-primaria: #0F2546; 
-            --cor-fundo-site: #081221; 
-            --cor-fundo-card: #0F2546; 
-            --cor-fundo-header: #0b182d; 
-            --cor-texto: #e0e0e0; 
-            --cor-texto-destaque: #ffffff; 
-            --cor-texto-secundario: #b0bec5; 
-            --cor-borda: #1c355e; 
-            --cor-destaque-vermelho: #ff5252; 
-            --cor-destaque-dourado: #ffb300; 
-            --cor-whatsapp: #25D366; 
-            --cor-telegram: #0088cc;
-            --cor-facebook: #1877F2; 
-            --cor-info: #64b5f6; 
-            --cor-entrega: #ff9800; 
+    <script>
+        // === PROJETO ESCUDO: PROTEÇÃO CONTRA CLONAGEM ===
+        (function() {
+            // Lista de domínios permitidos (Oficial + Localhost para testes)
+            // IMPORTANTE: Adicionei 'googleusercontent' para funcionar no Preview do Canvas
+            const whitelist = ["donaantonia.com.br", "www.donaantonia.com.br", "localhost", "127.0.0.1", "googleusercontent.com"];
+            const currentHost = window.location.hostname;
             
-            --altura-header: 80px; 
-            --altura-banner-top: 36px; /* Mais estreito */
-            --largura-logo: 85px; 
-        }
+            // Verifica se o host atual contém algum dos permitidos
+            const isAllowed = whitelist.some(domain => currentHost.includes(domain));
 
-        html { 
-            background-color: var(--cor-fundo-site);
-            scroll-behavior: smooth;
-            scroll-padding-top: calc(var(--altura-header) + var(--altura-banner-top) + 20px); 
-            font-size: 15px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+            if (!isAllowed) {
+                // AÇÃO DEFENSIVA: SE FOR CLONE
+                console.warn("⚠️ ALERTA DE SEGURANÇA: DOMÍNIO NÃO AUTORIZADO DETECTADO");
+                
+                // 1. Envenenamento de SEO (Diz pro Google ignorar o clone)
+                const metaRobots = document.createElement('meta');
+                metaRobots.name = "robots";
+                metaRobots.content = "noindex, nofollow";
+                document.head.appendChild(metaRobots);
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            background-color: var(--cor-fundo-site);
-            color: var(--cor-texto);
-            margin: 0; 
-            padding: 0;
-            padding-top: calc(var(--altura-header) + var(--altura-banner-top));
-            padding-bottom: 40px; 
-            min-height: 10vh;
-            position: relative; 
-            width: 100%;
-            line-height: 1.5; 
-        }
+                // 2. Alteração de Título e Descrição (Para estragar compartilhamento)
+                document.title = "⚠️ SITE FALSO - GOLPE DETECTADO";
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if(metaDesc) metaDesc.content = "CUIDADO! Site clonado detectado. Não faça pagamentos aqui.";
 
-        /* BANNER FIXO ROTATIVO */
-        .top-banner-fixed {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: var(--altura-banner-top);
-            background: linear-gradient(90deg, #1565C0 0%, #0D47A1 100%);
-            color: white;
-            z-index: 1005;
-            overflow: hidden; /* Importante para esconder o texto fora */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .banner-track {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            animation: slideVertical 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-
-        .banner-msg {
-            height: var(--altura-banner-top); /* Ocupa toda a altura do banner */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 0.95rem; /* AUMENTADO DE 0.85rem PARA 0.95rem */
-            line-height: 1;
-            flex-shrink: 0;
-            width: 100%;
-            padding: 0 10px;
-        }
-
-        .banner-msg strong {
-            color: #FFD700;
-            text-transform: uppercase;
-            margin-left: 5px;
-        }
-
-        @keyframes slideVertical {
-            0%, 45% { transform: translateY(0); } /* Mostra msg 1 */
-            50%, 95% { transform: translateY(-100%); } /* Mostra msg 2 */
-            100% { transform: translateY(0); } /* Volta pro começo */
-        }
-
-        header {
-            background-color: var(--cor-fundo-header);
-            height: var(--altura-header);
-            padding: 0;
-            display: flex;
-            flex-direction: row; 
-            position: fixed;
-            top: var(--altura-banner-top);
-            left: 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); 
-            width: 100%;
-            z-index: 1000;
-            contain: layout size; 
-            border-bottom: 1px solid var(--cor-borda);
-        }
-        
-        .header-top {
-            display: flex;
-            justify-content: flex-end; 
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            padding: 5px 15px;
-            position: relative;
-            z-index: 1002;
-            max-width: 480px; 
-            margin: 0 auto;
-        }
-
-        .logo-pequ { 
-            height: var(--largura-logo);
-            width: var(--largura-logo); 
-            object-fit: cover; 
-            border-radius: 50%; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
-            position: fixed;
-            top: calc(var(--altura-banner-top) + 5px);
-            left: 15px; 
-            z-index: 10001;
-            background-color: white; 
-            padding: 0; 
-            border: 2px solid var(--cor-borda);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            margin-left: auto;
-        }
-        
-        .btn-header-action {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--cor-borda);
-            color: var(--cor-texto-destaque);
-            padding: 8px 12px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            cursor: pointer;
-        }
-        .btn-header-action i { font-size: 1.1rem; }
-        
-        /* BOTÃO INSTAGRAM MAIS VISÍVEL */
-        .btn-header-insta { 
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
-            color: white; 
-            border: none;
-            box-shadow: 0 2px 8px rgba(220, 39, 67, 0.4);
-        }
-        
-        .btn-header-call { color: var(--cor-info); border-color: rgba(33, 150, 243, 0.3); }
-
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--cor-texto-destaque);
-            margin-top: 0;
-            line-height: 1.2;
-        }
-
-        .main-content-wrapper {
-            max-width: 480px; 
-            margin: 0 auto; 
-            background-color: var(--cor-fundo-site); 
-            box-shadow: none;
-            transition: max-width 0.3s ease; 
-        }
-        
-        .desktop-only { display: none !important; }
-
-        .seo-main-title {
-            text-align: center;
-            padding: 20px 15px 10px 15px;
-            background: var(--cor-fundo-card); 
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--cor-borda);
-        }
-        .seo-main-title h1 {
-            font-size: 1.35rem; 
-            font-weight: 800; 
-            margin: 0;
-            letter-spacing: -0.5px;
-            color: var(--cor-texto-destaque);
-            line-height: 1.3;
-        }
-        .seo-main-title p {
-            font-size: 0.95rem;
-            color: var(--cor-texto-secundario);
-            margin: 8px 0 0 0;
-            font-weight: 400;
-        }
-
-        .banner-diferenciais {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 0 15px;
-            margin-bottom: 20px;
-        }
-        .item-diferencial {
-            background: rgba(255, 179, 0, 0.1);
-            border: 1px solid var(--cor-destaque-dourado);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .item-diferencial i { font-size: 1.2rem; color: var(--cor-destaque-dourado); margin-bottom: 5px; }
-        .item-diferencial span { font-size: 0.8rem; color: var(--cor-texto-destaque); line-height: 1.2; font-weight: 600; }
-        .item-diferencial strong { display: block; color: var(--cor-destaque-dourado); }
-
-        .menu-ancoras-cestas { display: none !important; }
-
-        .chip-ancora {
-            background: var(--cor-fundo-card);
-            border: 1px solid var(--cor-borda);
-            padding: 6px 14px;
-            border-radius: 20px; 
-            font-size: 0.85rem;
-            text-decoration: none;
-            color: var(--cor-texto-destaque);
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-        .chip-ancora.active {
-            background-color: var(--cor-destaque-dourado);
-            color: var(--cor-primaria);
-            border-color: var(--cor-destaque-dourado);
-        }
-
-        @media (max-width: 380px) {
-            :root { --largura-logo: 80px; --altura-header: 80px; }
-            .logo-pequ { left: 10px; top: calc(var(--altura-banner-top) + 8px); }
-        }
-
-        .secao-conteudo { padding: 15px; }
-        
-        .card { 
-            background: var(--cor-fundo-card); 
-            border-radius: 12px;
-            padding: 15px; 
-            margin-bottom: 15px; 
-            border: 1px solid var(--cor-borda); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-            height: 100%; 
-            display: flex;
-            flex-direction: column;
-            color: var(--cor-texto);
-        }
-        .card h2 { 
-            font-size: 1.2rem; 
-            font-weight: 600;
-            letter-spacing: -0.3px;
-            margin-bottom: 10px;
-            color: var(--cor-texto-destaque);
-        }
-
-        /* === NOVOS ESTILOS PARA OS CARDS EXPANSÍVEIS === */
-        .card-cesta-new {
-            background: var(--cor-fundo-card);
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid var(--cor-borda);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        #cestaeconomica { border: 2px solid var(--cor-destaque-dourado); }
-
-        .card-header-visual {
-            display: flex;
-            position: relative;
-            background: #fff;
-            min-height: 140px;
-        }
-        .card-img-side {
-            width: 170px; /* AUMENTADO PARA O MOBILE (era 140px) */
-            min-width: 170px;
-            height: 100%;
-            object-fit: cover;
-        }
-        .card-title-side {
-            flex-grow: 1;
-            padding: 15px;
-            background: var(--cor-fundo-card);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .card-title-side h2 {
-            font-size: 1.4rem;
-            margin: 0;
-            color: var(--cor-texto-destaque);
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        /* Botoes de Controle Lado a Lado */
-        .card-control-row {
-            display: flex;
-            border-top: 1px solid var(--cor-borda);
-        }
-        .btn-card-toggle {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: none;
-            border-right: 1px solid var(--cor-borda);
-            color: var(--cor-texto);
-            padding: 15px 10px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-card-toggle:last-child { border-right: none; }
-        .btn-card-toggle.active {
-            background: rgba(33, 150, 243, 0.15);
-            color: #64B5F6;
-            box-shadow: inset 0 -3px 0 #64B5F6;
-        }
-        .btn-card-toggle.active-valor {
-            background: rgba(76, 175, 80, 0.15);
-            color: #81C784;
-            box-shadow: inset 0 -3px 0 #81C784;
-        }
-
-        /* Seções Expansíveis */
-        .card-expand-section {
-            display: none;
-            padding: 20px;
-            background: rgba(0,0,0,0.2);
-            border-top: 1px solid var(--cor-borda);
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Lista de Produtos */
-        .lista-itens-card {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .lista-itens-card li {
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-            font-size: 0.9rem;
-            color: var(--cor-texto-secundario);
-            display: flex;
-            align-items: flex-start;
-        }
-        .lista-itens-card li i {
-            color: #4CAF50;
-            margin-right: 10px;
-            margin-top: 4px;
-        }
-        .lista-itens-card li.grupo-titulo {
-            color: var(--cor-destaque-dourado);
-            font-weight: 700;
-            border-bottom: none;
-            padding-top: 15px;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-        .lista-itens-card li.grupo-titulo:first-child { padding-top: 0; }
-
-        /* Seção de Valores e Arroz */
-        .arroz-selection-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .radio-arroz-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px;
-            border: 2px solid var(--cor-borda);
-            border-radius: 8px;
-            cursor: pointer;
-            background: rgba(255,255,255,0.02);
-            transition: all 0.2s;
-        }
-        .radio-arroz-option.selected {
-            border-color: var(--cor-whatsapp);
-            background: rgba(37, 211, 102, 0.1);
-        }
-        .radio-arroz-info {
-            display: flex;
-            flex-direction: column;
-        }
-        .radio-arroz-name {
-            font-weight: 700;
-            color: var(--cor-texto-destaque);
-            font-size: 1rem;
-        }
-        .radio-arroz-price {
-            color: var(--cor-destaque-vermelho);
-            font-weight: 800;
-            font-size: 1.1rem;
-        }
-        .radio-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid #aaa;
-            position: relative;
-        }
-        .radio-arroz-option.selected .radio-circle {
-            border-color: var(--cor-whatsapp);
-            background: var(--cor-whatsapp);
-        }
-        .radio-arroz-option.selected .radio-circle::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 10px; height: 10px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .btn-encomendar-card {
-            width: 100%;
-            background-color: var(--cor-whatsapp);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            opacity: 0.6;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        .btn-encomendar-card.enabled {
-            opacity: 1;
-            pointer-events: auto;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-        }
-
-        .selo-destaque {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: linear-gradient(135deg, var(--cor-destaque-dourado), #FFB300);
-            color: var(--cor-primaria);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-
-        .lista-bairros-seo {
-            font-size: 0.85rem;
-            color: var(--cor-texto-secundario);
-            background: rgba(0,0,0,0.2); 
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: left;
-            border: 1px solid var(--cor-borda);
-        }
-        .lista-bairros-seo h4 {
-            color: var(--cor-destaque-dourado); 
-            margin: 15px 0 5px 0;
-            font-size: 0.9rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            border-bottom: 1px dashed var(--cor-borda);
-            padding-bottom: 3px;
-        }
-        .lista-bairros-seo h4:first-child { margin-top: 0; }
-        .lista-bairros-seo p { margin: 0; line-height: 1.5; color: var(--cor-texto); }
-
-        .section-icon-header { text-align: center; margin-bottom: 15px; }
-        .section-icon-header img {
-            width: 50px; height: 50px; object-fit: contain; background-color: white; 
-            border-radius: 50%; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .lista-pagamento li { padding: 12px 0; border-bottom: 1px solid var(--cor-borda); font-size: 0.95rem; display: flex; align-items: center; color: var(--cor-texto); }
-
-        .btn-vip-group {
-            background: transparent;
-            border: 2px solid var(--cor-whatsapp);
-            color: var(--cor-whatsapp);
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .btn-vip-group:hover {
-            background: var(--cor-whatsapp);
-            color: #fff;
-        }
-
-        /* Esconder botão flutuante antigo */
-        .floating-buttons-container { display: none !important; }
-        .vinheta-fundo-botoes { display: none !important; }
-
-        @media (min-width: 481px) {
-            .main-content-wrapper, header, .header-top { max-width: 1100px; } 
-            .secao-conteudo { padding: 25px 40px; }
-            html { font-size: 16px; } 
-            
-            .menu-ancoras-cestas {
-                gap: 15px; padding: 15px; flex-wrap: nowrap; display: flex !important;
-                overflow-x: auto; -webkit-overflow-scrolling: touch;
+                // 3. Redirecionamento (Opcional: Descomente para ativar redirecionamento forçado)
+                // window.location.href = "https://www.donaantonia.com.br";
             }
-            .top-banner-fixed { height: var(--altura-banner-top); } /* Mantem altura fixa */
-            
-            /* Ajuste de layout para Tablet/Desktop Pequeno: Grid de 2 Colunas */
-            .cesta-cards-grid { 
-                display: grid; 
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-                gap: 20px; 
-            }
+        })();
 
-            /* Estilo dos Cards no Tablet/Desktop */
-            .card-cesta-new { 
-                flex-direction: column; /* Manter vertical como mobile */
-                height: auto; /* Altura automática */
-            }
-            .card-header-visual { 
-                width: 100%; 
-                min-height: auto; /* Altura flexível */
-                height: 220px; /* Altura fixa para a imagem não estourar */
-                border-right: none; 
-            }
-            .card-img-side { 
-                width: 100%; 
-                height: 100%; 
-                object-fit: cover; /* Garante que a imagem preencha sem distorcer */
-            }
-            .card-title-side { 
-                display: flex; /* Mostrar título de volta no desktop */
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: linear-gradient(to top, rgba(15, 37, 70, 0.95), transparent);
-                padding: 20px 15px 10px;
-                text-align: left;
-                align-items: flex-end;
-                justify-content: flex-start;
-            }
-            .card-title-side h2 {
-                color: white;
-                text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-                font-size: 1.5rem;
-            }
-            
-            /* Controles e Expansão */
-            .card-control-row { 
-                width: 100%; 
-                flex-direction: row; 
-                border-top: 1px solid var(--cor-borda); 
-            }
-            .btn-card-toggle { 
-                height: auto; 
-                border-right: 1px solid var(--cor-borda); 
-                border-bottom: none;
-                padding: 18px 10px; /* Botões mais clicáveis */
-            }
-            .card-expand-section { 
-                width: 100%; 
-                order: initial; /* Resetar ordem */
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .main-content-wrapper, header, .header-top { max-width: 1200px; } 
-            body { padding-bottom: 20px; } 
-            .logo-pequ { display: none !important; }
-            .header-top { margin: 0 auto; justify-content: space-between; padding: 5px 20px; }
-            
-            .desktop-only { display: flex !important; }
-            .desktop-logo-wrapper { position: relative; width: 60px; }
-            .big-logo-desktop { width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 4px solid var(--cor-fundo-card); position: absolute; top: -25px; left: 0; z-index: 3000; transition: transform 0.3s ease; background-color: white; }
-            .big-logo-desktop:hover { transform: scale(1.05); }
-            
-            .desktop-nav { display: flex; gap: 30px; align-items: center; height: 100%; margin-left: 120px; }
-            .desktop-nav a { text-decoration: none; color: var(--cor-texto-destaque); font-weight: 700; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; padding: 5px 0; position: relative; transition: color 0.3s; }
-            .desktop-nav a:hover { color: var(--cor-destaque-vermelho); }
-            
-            .main-content-wrapper { 
-                display: grid; grid-template-columns: 270px 1fr; gap: 30px; padding: 30px 20px; 
-                background-color: transparent; box-shadow: none; align-items: start; 
-            }
-            .seo-text-block { grid-column: 1 / -1; margin-top: 40px; background: var(--cor-fundo-card); border-radius: 12px; padding: 30px; border: 1px solid var(--cor-borda); }
-            #pag-cestas { grid-column: 2; grid-row: 1; background: transparent; } 
-            
-            /* Ajuste específico para 3 colunas em telas grandes */
-            .cesta-cards-grid { 
-                grid-template-columns: repeat(3, 1fr); 
-            }
-            
-            .menu-ancoras-cestas { display: none !important; }
-            .secoes-extras-grid { 
-                grid-column: 1; grid-row: 1; display: flex !important; flex-direction: column; gap: 20px; padding: 0; width: 100%;
-            }
-            .secoes-extras-grid .secao-conteudo { padding: 0; margin-bottom: 0; }
-            .secoes-extras-grid .card { padding: 25px 20px; align-items: center; }
-        }
-        
-        .footer-map-container { width: 100%; height: 250px; border-radius: 12px; overflow: hidden; margin-top: 15px; border: 1px solid var(--cor-borda); }
-        .footer-links-seo { margin-top: 15px; font-size: 0.85rem; }
-        .footer-links-seo a { color: var(--cor-texto-secundario); text-decoration: none; margin: 0 5px; }
-        .footer-links-seo a:hover { text-decoration: underline; color: white; }
-        
-        /* Modal Zoom Styles (Mantidos pois ainda são úteis) */
-        #modalZoomImagem {
-            display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center;
-            flex-direction: column; /* <-- ADICIONADO PARA EMPILHAR A FOTO E O NOME */
-        }
-        .zoom-img-container { max-width: 100%; max-height: 85%; position: relative; display: flex; justify-content: center; align-items: center;}
-        .img-zoom-full { max-width: 95%; max-height: 80vh; object-fit: contain; }
-        .btn-fechar-zoom { position: absolute; top: 20px; right: 20px; background-color: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 8px 16px; border-radius: 20px; text-transform: uppercase; }
-        .zoom-caption { color: white; margin-top: 15px; font-size: 1.1rem; font-weight: 500; }
-    </style>
+        // Bloqueio de Clique Direito e Seleção (UX Anti-Cópia Simples)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('dragstart', event => event.preventDefault());
+    </script>
 
-    <!-- OTIMIZAÇÃO SEO LOCAL "NUCLEAR" (Schema.org mantido) -->
+    <!-- Schema Markup Robusto (GroceryStore) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "GroceryStore",
-      "name": "Super Cestas Básicas Dona Antônia",
+      "name": "Super Cestas Dona Antônia",
       "image": "https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif",
-      "description": "Distribuidora de Cestas Básicas e Sacolão com entrega grátis em Cuiabá e Várzea Grande. O melhor preço em atacado e varejo de alimentos no Jardim Nossa Sra. Aparecida.",
-      "telephone": "65998150975",
+      "description": "Distribuidora de Cestas Básicas e Sacolão com entrega grátis em Cuiabá e Várzea Grande.",
+      "telephone": "+5565998150975",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
@@ -821,693 +94,931 @@
         "postalCode": "78090-660",
         "addressCountry": "BR"
       },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -15.6025,
-        "longitude": -56.0968
+      "geo": { 
+        "@type": "GeoCoordinates", 
+        "latitude": -15.6025, 
+        "longitude": -56.0968 
       },
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
           "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "09:00",
+          "opens": "08:00",
           "closes": "18:00"
         }
       ],
-      "areaServed": ["Cuiabá", "Várzea Grande", "Jardim Nossa Sra. Aparecida", "Coxipó", "CPA", "Cristo Rei"],
-      "sameAs": ["https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/"],
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5.0",
-        "reviewCount": "23"
-      }
+      "areaServed": ["Cuiabá", "Várzea Grande", "CPA", "Coxipó"],
+      "sameAs": [
+        "https://www.facebook.com/super.cestas.cuiaba",
+        "https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/"
+      ]
     }
     </script>
+
+    <!-- PERFORMANCE HINTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://maps.google.com">
+
+    <!-- PILLAR 2: DATA LAYER & PIXEL -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '24820560480956684');
+        fbq('track', 'PageView');
+
+        window.dataLayer = window.dataLayer || [];
+        function trackEvent(eventName, params = {}) {
+            const eventData = { 'event': eventName, 'eventID': 'evt_' + Date.now(), ...params };
+            window.dataLayer.push(eventData);
+            if(typeof fbq === 'function') fbq('track', eventName, params, {eventID: eventData.eventID});
+        }
+    </script>
+
+    <!-- LIBS -->
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* PALETA DE CORES */
+            --primary: #2563EB;
+            --primary-gradient: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+            --success: #10B981;
+            --success-dark: #047857;
+            --success-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            --surface: #FFFFFF;
+            --background: #F3F4F6;
+            --text-main: #111827;
+            --text-sec: #6B7280;
+            --border-medium: #E5E7EB;
+            --header-h: 70px;
+            --footer-h: 80px;
+            
+            /* Shadows para profundidade */
+            --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: var(--background); 
+            color: var(--text-main);
+            padding-bottom: calc(var(--footer-h) + 30px);
+            -webkit-font-smoothing: antialiased;
+            /* Desabilitar seleção de texto via CSS também */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* HEADER MOBILE (Padrão) */
+        .app-header {
+            height: var(--header-h);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-medium);
+            display: flex; align-items: center; justify-content: center; /* Centralizado no Mobile */
+            padding: 0 16px; gap: 12px;
+            position: sticky; top: 0; z-index: 50;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            overflow: visible; 
+        }
+        
+        /* Container interno para Desktop */
+        .header-content-desktop {
+            display: none; /* Escondido no Mobile */
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left-mobile {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .logo-header { 
+            width: 80px; height: 80px; 
+            border-radius: 50%; object-fit: cover; 
+            border: 4px solid white; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            position: relative;
+            top: 15px; 
+            flex-shrink: 0; 
+            z-index: 60; 
+        }
+        .brand h1 { 
+            font-size: 16px; font-weight: 700; 
+            margin: 0; color: var(--text-main); 
+            letter-spacing: -0.3px;
+        }
+
+        /* --- DIDACTIC SLIDE (Compactado) --- */
+        .didactic-section {
+            padding: 16px 8px 8px 8px;
+            max-width: 600px; 
+            margin: 16px auto;
+        }
+
+        .didactic-slide {
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid #E5E7EB;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .didactic-slide::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, #2563EB, #10B981);
+        }
+
+        .ds-title {
+            font-size: 18px; font-weight: 800; color: #111827;
+            margin: 0 0 16px 0; line-height: 1.4; text-align: center;
+        }
+
+        .ds-list { display: flex; flex-direction: column; gap: 12px; }
+        .ds-item { display: flex; align-items: flex-start; gap: 12px; }
+
+        .ds-number {
+            background: #EFF6FF; color: #2563EB;
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 16px; flex-shrink: 0;
+            border: 1px solid #BFDBFE;
+        }
+
+        .ds-text { font-size: 15px; color: #374151; font-weight: 500; line-height: 1.5; }
+        .ds-strong { color: #111827; font-weight: 700; }
+
+        /* --- CATALOG CONTAINER --- */
+        .catalog-container { 
+            padding: 8px; max-width: 600px; margin: 0 auto; 
+        }
+        
+        /* --- PRODUCT CARD --- */
+        .product-section {
+            background: var(--surface); 
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .p-main-content { padding: 16px; position: relative; }
+
+        .p-title-row { 
+            display: flex; justify-content: space-between; align-items: flex-start; 
+            margin-bottom: 12px; 
+        }
+        .p-title { 
+            font-size: 20px; font-weight: 800; color: var(--text-main); 
+            margin: 0; letter-spacing: -0.5px; 
+        }
+        .p-badge {
+            background: #F3F4F6; color: var(--text-sec); 
+            padding: 4px 8px; border-radius: 6px; 
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+        }
+
+        .basket-hero-img {
+            width: 100%; height: auto; aspect-ratio: 1/1; 
+            border-radius: 16px; object-fit: cover; 
+            background: #f9fafb; margin-bottom: 16px;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+        }
+
+        /* OPÇÕES */
+        .p-options-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .opt-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; border-radius: 12px;
+            border: 1px solid var(--border-medium); background: white;
+            transition: all 0.2s;
+            cursor: pointer; 
+        }
+        .opt-row.selected {
+            border-color: var(--success); background: #F0FDF4;
+            box-shadow: 0 0 0 1px var(--success);
+        }
+        .opt-info { display: flex; flex-direction: column; }
+        .opt-name { font-size: 12px; font-weight: 600; color: var(--text-sec); margin-bottom: 2px; }
+        .opt-price { display: flex; align-items: center; gap: 8px; }
+        .price-new { font-size: 16px; font-weight: 800; color: var(--text-main); }
+        .opt-row.selected .price-new { color: var(--success-dark); }
+
+        /* BOTOES */
+        .btn-action-main {
+            width: 100%; background: var(--primary-gradient); color: white;
+            padding: 16px; border: none; border-radius: 16px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: transform 0.1s;
+        }
+        .btn-action-main:active { transform: scale(0.98); }
+        .btn-whatsapp { background: var(--success-gradient); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+
+        /* CONTEUDO EXPANSÍVEL */
+        .p-expand-content { background: #FAFAFA; border-top: 1px solid #F3F4F6; padding: 16px; }
+        
+        .items-grid { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; 
+        }
+        
+        .item-card {
+            background: white; border-radius: 12px; padding: 8px 4px;
+            text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+            border: 1px solid rgba(0,0,0,0.02);
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+        }
+        .item-img { 
+            width: 100%; aspect-ratio: 1/1; object-fit: contain; margin-bottom: 8px; 
+            mix-blend-mode: multiply; 
+        }
+        .item-qty { 
+            display: inline-block; background: #EFF6FF; color: #2563EB; 
+            font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 100px; 
+            margin-bottom: 6px;
+        }
+        .item-name { 
+            font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.3; 
+        }
+
+        /* --- EXTRAS: PAGAMENTO & ENTREGA & FOOTER (Mobile) --- */
+        .secoes-extras-grid {
+            padding: 8px; max-width: 600px; margin: 0 auto 30px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        
+        .card-info-extra {
+            background: white; border-radius: 20px; padding: 20px;
+            box-shadow: var(--shadow-card); border: 1px solid var(--border-medium);
+        }
+        
+        .cie-header { text-align: center; margin-bottom: 16px; }
+        .cie-icon { font-size: 32px; margin-bottom: 8px; display: block; }
+        .cie-title { font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0; }
+        
+        .lista-pagamento { list-style: none; padding: 0; margin: 0; }
+        .lista-pagamento li { 
+            padding: 10px 0; border-bottom: 1px solid #F3F4F6; 
+            font-size: 14px; color: #4B5563; display: flex; align-items: center; gap: 10px;
+        }
+        .emoji-icon { font-size: 18px; }
+
+        .lista-bairros {
+            font-size: 13px; color: #6B7280; background: #F9FAFB;
+            padding: 15px; border-radius: 12px; margin-top: 15px; text-align: left;
+        }
+        .lista-bairros h4 { 
+            color: var(--primary); margin: 10px 0 4px; font-size: 13px; font-weight: 700; text-transform: uppercase; 
+        }
+        .lista-bairros h4:first-child { margin-top: 0; }
+        .lista-bairros p { margin: 0; line-height: 1.4; }
+
+        .seo-footer {
+            background: #111827; color: #9CA3AF; text-align: center;
+            padding: 40px 20px 100px; font-size: 13px;
+        }
+        .footer-map {
+            width: 100%; height: 250px; border-radius: 16px; border: none; margin-top: 20px;
+        }
+
+        /* VINHETA DE FUNDO PARA OS BOTOES (Mobile) */
+        .footer-vignette {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 120px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: none; z-index: 90;
+        }
+
+        /* FOOTER FLUTUANTE (Mobile) */
+        .app-footer {
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 20px); max-width: 500px; 
+            z-index: 100;
+            display: flex; gap: 10px; 
+        }
+        .btn-footer-half {
+            flex: 1; background: #111827; color: white;
+            padding: 14px; border-radius: 50px; border: none;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); text-decoration: none; cursor: pointer;
+        }
+        .btn-instagram-footer {
+            background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+        }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+            z-index: 2000; display: flex; align-items: flex-end; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-card {
+            background: white; width: 100%; max-width: 500px;
+            border-radius: 24px 24px 0 0; max-height: 90vh; overflow-y: auto;
+            transform: translateY(100%); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding-bottom: 30px;
+        }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+        .modal-handle { width: 40px; height: 5px; background: #E5E7EB; border-radius: 100px; margin: 12px auto; }
+
+        /* MODAL DE PRODUTOS (DESKTOP) */
+        .modal-products-content { padding: 24px; }
+        .mp-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #E5E7EB;
+        }
+        .mp-title { font-size: 24px; font-weight: 800; color: var(--text-main); margin: 0; }
+        .mp-price { font-size: 20px; font-weight: 700; color: var(--success-dark); }
+        
+        .mp-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+            max-height: 60vh; overflow-y: auto; padding-right: 8px;
+        }
+        .mp-grid::-webkit-scrollbar { width: 6px; }
+        .mp-grid::-webkit-scrollbar-track { background: #f1f1f1; }
+        .mp-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .company-profile { padding: 0 24px 24px; text-align: center; }
+        .cp-logo { width: 80px; height: 80px; border-radius: 50%; margin-bottom: 12px; border: 4px solid white; box-shadow: var(--shadow-card); margin-top: -40px; background: white;}
+        .cp-bg { height: 100px; background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border-radius: 12px; margin: 10px 10px 0; }
+        
+        .contact-pill {
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px; background: white; border: 1px solid var(--border-medium);
+            border-radius: 16px; margin-bottom: 12px; text-decoration: none; color: var(--text-main);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: 0.2s;
+        }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .social-btn {
+            padding: 16px; border-radius: 16px; text-align: center; text-decoration: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid transparent;
+        }
+        .sb-fb { background: #EFF6FF; color: #1877F2; }
+        .sb-ig { background: #FFF1F2; color: #E1306C; }
+
+        /* --- OTIMIZAÇÃO DESKTOP (PREMIUM & CORRIGIDA) --- */
+        @media (min-width: 1024px) {
+            /* 1. Header Desktop - CORRIGIDO */
+            .app-header {
+                justify-content: center; 
+                padding: 0;
+            }
+            
+            /* Esconde elementos Mobile */
+            .header-left-mobile { display: none !important; }
+            .logo-header { display: none; } /* A logo flutuante original */
+
+            /* Mostra Container Desktop */
+            .header-content-desktop {
+                display: flex !important;
+                padding: 0 40px;
+                height: 100%;
+                width: 100%;
+                max-width: 1280px;
+                justify-content: space-between; /* Garante separação total (Esq/Dir) */
+                align-items: center;
+            }
+
+            /* Branding Desktop (Esquerda) */
+            .header-branding-d {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+            .header-branding-d img {
+                width: 60px; height: 60px; 
+                border-radius: 50%;
+                border: 2px solid #E5E7EB;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+            .header-branding-d h1 {
+                font-size: 26px; /* Fonte Aumentada */
+                margin: 0;
+                font-weight: 800;
+                color: #111827;
+                letter-spacing: -0.5px;
+            }
+
+            /* Botões do Header Desktop (Direita) */
+            .header-right-desktop {
+                display: flex; gap: 15px; align-items: center;
+            }
+            .btn-header-d {
+                padding: 12px 28px; 
+                border-radius: 50px; 
+                font-weight: 700; 
+                font-size: 15px;
+                text-decoration: none; 
+                display: flex; 
+                align-items: center; 
+                gap: 10px;
+                transition: all 0.2s;
+                border: none;
+                cursor: pointer;
+            }
+            .btn-header-d:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+            
+            .btn-hd-contact { 
+                background: #1F2937; 
+                color: white; 
+            }
+            .btn-hd-insta { 
+                background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+                color: white; 
+            }
+
+            /* 2. Grid Principal */
+            #catalog-mount {
+                max-width: 1280px;
+                display: grid;
+                grid-template-columns: 320px 1fr 1fr 1fr;
+                gap: 30px;
+                padding: 40px;
+                align-items: start;
+            }
+
+            /* Sidebar */
+            .didactic-section {
+                grid-column: 1; grid-row: 1 / span 3; order: -1; 
+                margin: 0; padding: 0; position: sticky; top: 100px;
+            }
+            .didactic-slide { min-height: 500px; }
+
+            /* Cards */
+            .product-section {
+                grid-column: span 1; height: 100%; display: flex; flex-direction: column;
+            }
+            .p-main-content { flex: 1; display: flex; flex-direction: column; }
+            .btn-action-main { margin-top: auto; }
+            .p-expand-content { display: none !important; }
+
+            /* 3. Extras Desktop */
+            .secoes-extras-grid {
+                max-width: 1280px;
+                display: grid; grid-template-columns: 1fr 1fr; gap: 30px;
+                padding: 0 40px 40px;
+            }
+            .card-info-extra { height: 100%; }
+
+            /* 4. Footer & Limpeza */
+            .app-footer { display: none !important; } /* Remove flutuante da base */
+            .footer-vignette { display: none !important; } /* Remove vinheta */
+            .seo-footer { padding-bottom: 40px; } /* Ajuste de padding */
+            
+            .modal-card { max-width: 800px; bottom: 20px; max-height: 85vh; }
+        }
+
+    </style>
 </head>
-<body oncontextmenu="return false">
-    
-    <div id="toast-container"></div> 
+<body>
 
-    <!-- NOVO BANNER FIXO COM SLIDE -->
-    <div class="top-banner-fixed">
-        <div class="banner-track">
-            <div class="banner-msg">Faça seu pedido pelo WhatsApp</div>
-            <div class="banner-msg">E PAGUE SÓ NA <strong>ENTREGA!</strong></div>
+    <!-- HEADER -->
+    <header class="app-header">
+        <!-- VERSÃO MOBILE (Esquerda: Logo+Nome) -->
+        <div class="header-left-mobile">
+            <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
+                 class="logo-header" alt="Logo Dona Antônia" onerror="this.src='https://placehold.co/50x50'">
+            <div class="brand"><h1>Super Cestas Dona Antônia</h1></div>
         </div>
-    </div>
 
-    <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" width="80" height="80" fetchpriority="high" id="logo-principal" onerror="this.src='https://placehold.co/80x80?text=LOGO'" alt="Logo Dona Antônia" class="logo-pequ">
-
-    <header>
-        <div class="header-top">
-            <div class="desktop-only desktop-logo-wrapper">
-                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="big-logo-desktop" width="120" height="120" alt="Logo Dona Antônia Grande" onerror="this.src='https://placehold.co/120x120?text=LOGO'">
+        <!-- VERSÃO DESKTOP (Container Completo) -->
+        <div class="header-content-desktop">
+            <div class="header-branding-d">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
+                     alt="Logo Dona Antônia" onerror="this.src='https://placehold.co/60x60'">
+                <h1>Super Cestas Dona Antônia</h1>
             </div>
-
-            <nav class="desktop-nav desktop-only">
-                <a href="#pag-cestas">Início</a>
-                <a href="#pag-pagamento">Pagamento</a>
-                <a href="#pag-entrega">Entrega</a>
-            </nav>
-
-            <!-- NOVOS BOTÕES NO HEADER -->
-            <div class="header-actions">
-                <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="btn-header-action btn-header-insta" rel="noopener noreferrer" onclick="trackMetaEvent('Contact', {content_name: 'Instagram Profile'})">
-                    <i class="fab fa-instagram"></i> Instagram
-                </a>
-                <a href="tel:65998150975" class="btn-header-action btn-header-call" onclick="trackMetaEvent('Contact', {content_name: 'Phone Call'})">
-                    <i class="fas fa-phone-alt"></i> Salvar Contato
+            
+            <div class="header-right-desktop">
+                <button onclick="openModal('company')" class="btn-header-d btn-hd-contact">
+                    <i class="ph-bold ph-buildings"></i> Contatos
+                </button>
+                <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="btn-header-d btn-hd-insta">
+                    <i class="ph-bold ph-instagram-logo" style="font-size:18px;"></i> Instagram
                 </a>
             </div>
         </div>
     </header>
 
-    <main class="main-content-wrapper">
-        <div id="pag-cestas">
-            <div class="seo-main-title">
-                <h1>Cestas Básicas em Cuiabá e VG - Dona Antônia</h1>
-                <p>O Melhor Preço em Cuiabá e Várzea Grande. Entrega Grátis.</p>
-            </div>
-
-            <!-- === DICA 2: BANNER DE DIFERENCIAIS === -->
-            <div class="banner-diferenciais">
-                <div class="item-diferencial">
-                    <i class="fas fa-shipping-fast"></i>
-                    <span><strong>Entrega Rápida</strong>Pediu até 10h, recebe hoje!</span>
-                </div>
-                <div class="item-diferencial">
-                    <i class="fas fa-sync-alt"></i>
-                    <span><strong>Personalize</strong>Troque itens que não usa.</span>
-                </div>
-            </div>
-
-            <div class="secao-conteudo">
-                <div class="menu-ancoras-cestas">
-                    <a href="#cestaeconomica" class="chip-ancora" onclick="ativarChip(this)">Econômica</a>
-                    <a href="#cestamini" class="chip-ancora" onclick="ativarChip(this)">Mini</a>
-                    <a href="#cestapequena" class="chip-ancora" onclick="ativarChip(this)">Pequena</a>
-                    <a href="#cestamedia" class="chip-ancora" onclick="ativarChip(this)">Média</a>
-                    <a href="#cestagrande" class="chip-ancora" onclick="ativarChip(this)">Grande</a>
-                </div>
-
-                <div class="cesta-cards-grid">
-                    
-                    <!-- CESTA ECONÔMICA -->
-                    <div class="card-cesta-new" id="cestaeconomica">
-                        <div class="card-header-visual">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif" class="card-img-side" alt="Cesta Econômica" onclick="abrirZoom(this.src, 'Cesta Econômica')">
-                            <div class="selo-destaque">Mais Vendida</div>
-                            <div class="card-title-side">
-                                <h2>Cesta Econômica</h2>
-                            </div>
-                        </div>
-                        <div class="card-control-row">
-                            <button class="btn-card-toggle" onclick="toggleSection('economica', 'produtos', this)">
-                                <i class="fas fa-list-ul"></i> Produtos
-                            </button>
-                            <button class="btn-card-toggle" onclick="toggleSection('economica', 'valor', this)">
-                                <i class="fas fa-dollar-sign"></i> Valor
-                            </button>
-                        </div>
-                        <!-- Lista Produtos -->
-                        <div id="produtos-economica" class="card-expand-section">
-                            <ul class="lista-itens-card">
-                                <li class="grupo-titulo">Alimentos</li>
-                                <li><i class="fas fa-check"></i> 1 Arroz de 5kg</li>
-                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
-                                <li><i class="fas fa-check"></i> 1 Óleo de Soja de 900ml</li>
-                                <li><i class="fas fa-check"></i> 1 Feijão Dona Dê de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Café 250g</li>
-                                <li><i class="fas fa-check"></i> 1 Espaguete de 400g</li>
-                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Farinha de Mandioca de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Molho Tomate 300g</li>
-                                <li><i class="fas fa-check"></i> 1 Milho Lata ou sachê</li>
-                                <li><i class="fas fa-check"></i> 1 Bolacha Recheada</li>
-                                <li><i class="fas fa-check"></i> 1 Miojo Apti</li>
-                                <li><i class="fas fa-check"></i> 1 Suco Pó</li>
-                            </ul>
-                        </div>
-                        <!-- Valor e Compra -->
-                        <div id="valor-economica" class="card-expand-section">
-                            <div class="arroz-selection-container">
-                                <!-- Opção Única (Econômica não tem escolha de arroz) -->
-                                <div class="radio-arroz-option selected" style="cursor: default;">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Valor Único</span>
-                                        <span class="radio-arroz-price">R$ 85,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                            </div>
-                            <!-- PILLAR 2: Enhanced Tracking -->
-                            <button class="btn-encomendar-card enabled" onclick="encomendarDireto('Cesta Econômica', '85,00', 'cesta_economica')">
-                                <i class="fab fa-whatsapp"></i> Encomendar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- CESTA MINI -->
-                    <div class="card-cesta-new" id="cestamini">
-                        <div class="card-header-visual">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif" class="card-img-side" alt="Cesta Mini" onclick="abrirZoom(this.src, 'Cesta Mini')">
-                            <div class="card-title-side">
-                                <h2>Cesta Mini</h2>
-                            </div>
-                        </div>
-                        <div class="card-control-row">
-                            <button class="btn-card-toggle" onclick="toggleSection('mini', 'produtos', this)">
-                                <i class="fas fa-list-ul"></i> Produtos
-                            </button>
-                            <button class="btn-card-toggle" onclick="toggleSection('mini', 'valor', this)">
-                                <i class="fas fa-dollar-sign"></i> Valor
-                            </button>
-                        </div>
-                        <!-- Lista Produtos -->
-                        <div id="produtos-mini" class="card-expand-section">
-                            <ul class="lista-itens-card">
-                                <li class="grupo-titulo">Alimentos</li>
-                                <li><i class="fas fa-check"></i> 1 Arroz de 5kg</li>
-                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
-                                <li><i class="fas fa-check"></i> 2 Óleo de Soja de 900ml</li>
-                                <li><i class="fas fa-check"></i> 2 Feijão Da Casa de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Café Caboclo de 250g</li>
-                                <li><i class="fas fa-check"></i> 1 Espaguete de 500g</li>
-                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Molho Tomate FUGINI</li>
-                                <li><i class="fas fa-check"></i> 1 Milho Lata de 250g</li>
-                                <li><i class="fas fa-check"></i> 1 Bolacha Recheada My Bit</li>
-                                <li><i class="fas fa-check"></i> 1 Miojo Apti</li>
-                                <li><i class="fas fa-check"></i> 2 Suco Pó</li>
-                                <li class="grupo-titulo">Limpeza e Higiene</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
-                                <li><i class="fas fa-check"></i> 1 Creme Dental Sorriso 70g</li>
-                                <li><i class="fas fa-check"></i> 1 Papel Higiênico c/ 4un</li>
-                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
-                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
-                                <li><i class="fas fa-check"></i> 1 Detergente Ype de 500ml</li>
-                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
-                                <li><i class="fas fa-check"></i> 2 Sabonete Palmolive 90g</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
-                            </ul>
-                        </div>
-                        <!-- Valor e Compra -->
-                        <div id="valor-mini" class="card-expand-section">
-                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
-                            <div class="arroz-selection-container">
-                                <div class="radio-arroz-option" onclick="selectArroz('mini', 'Alvino', '165,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
-                                        <span class="radio-arroz-price">R$ 165,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                                <div class="radio-arroz-option" onclick="selectArroz('mini', 'Koblenz', '170,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
-                                        <span class="radio-arroz-price">R$ 170,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                            </div>
-                            <button id="btn-pedir-mini" class="btn-encomendar-card" onclick="encomendarSelecionado('mini', 'Cesta Mini', 'cesta_mini')">
-                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- CESTA PEQUENA -->
-                    <div class="card-cesta-new" id="cestapequena">
-                        <div class="card-header-visual">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif" class="card-img-side" alt="Cesta Pequena" onclick="abrirZoom(this.src, 'Cesta Pequena')">
-                            <div class="card-title-side">
-                                <h2>Cesta Pequena</h2>
-                            </div>
-                        </div>
-                        <div class="card-control-row">
-                            <button class="btn-card-toggle" onclick="toggleSection('pequena', 'produtos', this)">
-                                <i class="fas fa-list-ul"></i> Produtos
-                            </button>
-                            <button class="btn-card-toggle" onclick="toggleSection('pequena', 'valor', this)">
-                                <i class="fas fa-dollar-sign"></i> Valor
-                            </button>
-                        </div>
-                        <div id="produtos-pequena" class="card-expand-section">
-                            <ul class="lista-itens-card">
-                                <li class="grupo-titulo">Alimentos</li>
-                                <li><i class="fas fa-check"></i> 2 Arroz de 5kg</li>
-                                <li><i class="fas fa-check"></i> 1 Açúcar Cristal de 2kg</li>
-                                <li><i class="fas fa-check"></i> 2 Óleo de Soja de 900ml</li>
-                                <li><i class="fas fa-check"></i> 2 Feijão Da Casa de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Café Caboclo de 250g</li>
-                                <li><i class="fas fa-check"></i> 12 Ovos</li>
-                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
-                                <li><i class="fas fa-check"></i> 1 Espaguete de 500g</li>
-                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Molho Tomate Fugini</li>
-                                <li><i class="fas fa-check"></i> 1 Milho Lata de 250g</li>
-                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
-                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
-                                <li><i class="fas fa-check"></i> 2 Miojo Yolle</li>
-                                <li><i class="fas fa-check"></i> 2 Suco Pó</li>
-                                <li class="grupo-titulo">Limpeza</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
-                                <li><i class="fas fa-check"></i> 1 Creme Dental Sorriso 70g</li>
-                                <li><i class="fas fa-check"></i> 1 Papel Higiênico c/ 4un</li>
-                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
-                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
-                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
-                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
-                                <li><i class="fas fa-check"></i> 2 Sabonete Palmolive 90g</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
-                                <li><i class="fas fa-check"></i> 1 Bucha de lavar louça</li>
-                            </ul>
-                        </div>
-                        <div id="valor-pequena" class="card-expand-section">
-                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
-                            <div class="arroz-selection-container">
-                                <div class="radio-arroz-option" onclick="selectArroz('pequena', 'Alvino', '215,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
-                                        <span class="radio-arroz-price">R$ 215,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                                <div class="radio-arroz-option" onclick="selectArroz('pequena', 'Koblenz', '220,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
-                                        <span class="radio-arroz-price">R$ 220,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                            </div>
-                            <button id="btn-pedir-pequena" class="btn-encomendar-card" onclick="encomendarSelecionado('pequena', 'Cesta Pequena', 'cesta_pequena')">
-                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- CESTA MÉDIA -->
-                    <div class="card-cesta-new" id="cestamedia">
-                        <div class="card-header-visual">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif" class="card-img-side" alt="Cesta Média" onclick="abrirZoom(this.src, 'Cesta Média')">
-                            <div class="card-title-side">
-                                <h2>Cesta Média</h2>
-                            </div>
-                        </div>
-                        <div class="card-control-row">
-                            <button class="btn-card-toggle" onclick="toggleSection('media', 'produtos', this)">
-                                <i class="fas fa-list-ul"></i> Produtos
-                            </button>
-                            <button class="btn-card-toggle" onclick="toggleSection('media', 'valor', this)">
-                                <i class="fas fa-dollar-sign"></i> Valor
-                            </button>
-                        </div>
-                        <div id="produtos-media" class="card-expand-section">
-                            <ul class="lista-itens-card">
-                                <li class="grupo-titulo">Alimentos</li>
-                                <li><i class="fas fa-check"></i> 3 Arroz de 5kg</li>
-                                <li><i class="fas fa-check"></i> 2 Açúcar Cristal de 2kg</li>
-                                <li><i class="fas fa-check"></i> 3 Óleo de Soja de 900ml</li>
-                                <li><i class="fas fa-check"></i> 3 Feijão Da Casa de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Café Caboclo 500g</li>
-                                <li><i class="fas fa-check"></i> 12 Ovos</li>
-                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
-                                <li><i class="fas fa-check"></i> 2 Espaguete de 500g</li>
-                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
-                                <li><i class="fas fa-check"></i> 2 Molho Tomate FUGINI 340g</li>
-                                <li><i class="fas fa-check"></i> 1 Milho Lata/sachê</li>
-                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
-                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
-                                <li><i class="fas fa-check"></i> 2 Miojo Apti</li>
-                                <li><i class="fas fa-check"></i> 3 Suco Pó</li>
-                                <li class="grupo-titulo">Limpeza</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
-                                <li><i class="fas fa-check"></i> 2 Creme Dental Sorriso 70g</li>
-                                <li><i class="fas fa-check"></i> 2 Papel Higiênico c/ 4un</li>
-                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
-                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
-                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
-                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
-                                <li><i class="fas fa-check"></i> 3 Sabonete Palmolive 90g</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
-                            </ul>
-                        </div>
-                        <div id="valor-media" class="card-expand-section">
-                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
-                            <div class="arroz-selection-container">
-                                <div class="radio-arroz-option" onclick="selectArroz('media', 'Alvino', '320,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
-                                        <span class="radio-arroz-price">R$ 320,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                                <div class="radio-arroz-option" onclick="selectArroz('media', 'Koblenz', '325,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
-                                        <span class="radio-arroz-price">R$ 325,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                            </div>
-                            <button id="btn-pedir-media" class="btn-encomendar-card" onclick="encomendarSelecionado('media', 'Cesta Média', 'cesta_media')">
-                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- CESTA GRANDE -->
-                    <div class="card-cesta-new" id="cestagrande">
-                        <div class="card-header-visual">
-                            <img src="https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif" class="card-img-side" alt="Cesta Grande" onclick="abrirZoom(this.src, 'Cesta Grande')">
-                            <div class="card-title-side">
-                                <h2>Cesta Grande</h2>
-                            </div>
-                        </div>
-                        <div class="card-control-row">
-                            <button class="btn-card-toggle" onclick="toggleSection('grande', 'produtos', this)">
-                                <i class="fas fa-list-ul"></i> Produtos
-                            </button>
-                            <button class="btn-card-toggle" onclick="toggleSection('grande', 'valor', this)">
-                                <i class="fas fa-dollar-sign"></i> Valor
-                            </button>
-                        </div>
-                        <div id="produtos-grande" class="card-expand-section">
-                            <ul class="lista-itens-card">
-                                <li class="grupo-titulo">Alimentos</li>
-                                <li><i class="fas fa-check"></i> 4 Arroz de 5kg</li>
-                                <li><i class="fas fa-check"></i> 3 Açúcar Cristal de 2kg</li>
-                                <li><i class="fas fa-check"></i> 4 Óleo de Soja de 900ml</li>
-                                <li><i class="fas fa-check"></i> 4 Feijão Da Casa de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Café Caboclo 500g</li>
-                                <li><i class="fas fa-check"></i> 3 Espaguetes de 500g</li>
-                                <li><i class="fas fa-check"></i> 12 Ovos</li>
-                                <li><i class="fas fa-check"></i> 1 Mistura para Bolo 400g</li>
-                                <li><i class="fas fa-check"></i> 1 Trigo de 1kg</li>
-                                <li><i class="fas fa-check"></i> 1 Sal de 1kg</li>
-                                <li><i class="fas fa-check"></i> 2 Molho Tomate FUGINI 340g</li>
-                                <li><i class="fas fa-check"></i> 1 Milho Lata ou sachê</li>
-                                <li><i class="fas fa-check"></i> 1 Tempero Pronto de 300g</li>
-                                <li><i class="fas fa-check"></i> 2 Bolacha Recheada My Bit</li>
-                                <li><i class="fas fa-check"></i> 2 Miojo Apti</li>
-                                <li><i class="fas fa-check"></i> 4 Suco Pó</li>
-                                <li class="grupo-titulo">Limpeza</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Barra YPE c/ 5 un</li>
-                                <li><i class="fas fa-check"></i> 2 Creme Dental Sorriso 70g</li>
-                                <li><i class="fas fa-check"></i> 2 Papel Higiênico c/ 4un</li>
-                                <li><i class="fas fa-check"></i> 1 Amaciante Ype de 2 Litros</li>
-                                <li><i class="fas fa-check"></i> 1 Desinfetante Remmus 2 L</li>
-                                <li><i class="fas fa-check"></i> 1 Sabão Pó OMO 800g</li>
-                                <li><i class="fas fa-check"></i> 2 Detergente Ype de 500ml</li>
-                                <li><i class="fas fa-check"></i> 1 Qboa de 1 Litro</li>
-                                <li><i class="fas fa-check"></i> 4 Sabonete Palmolive 90g</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Aço Assolan</li>
-                                <li><i class="fas fa-check"></i> 1 Esponja de Lavar Louça</li>
-                            </ul>
-                        </div>
-                        <div id="valor-grande" class="card-expand-section">
-                            <p style="margin-bottom: 10px; font-size: 0.9rem; color:#aaa;">Selecione uma opção para pedir:</p>
-                            <div class="arroz-selection-container">
-                                <div class="radio-arroz-option" onclick="selectArroz('grande', 'Alvino', '380,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Tio Alvino</span>
-                                        <span class="radio-arroz-price">R$ 380,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                                <div class="radio-arroz-option" onclick="selectArroz('grande', 'Koblenz', '390,00', this)">
-                                    <div class="radio-arroz-info">
-                                        <span class="radio-arroz-name">Com Arroz Koblenz</span>
-                                        <span class="radio-arroz-price">R$ 390,00</span>
-                                    </div>
-                                    <div class="radio-circle"></div>
-                                </div>
-                            </div>
-                            <button id="btn-pedir-grande" class="btn-encomendar-card" onclick="encomendarSelecionado('grande', 'Cesta Grande', 'cesta_grande')">
-                                <i class="fab fa-whatsapp"></i> Pedir no WhatsApp
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        
-        <div class="secoes-extras-grid">
-            <div id="pag-pagamento" class="secao-conteudo">
-                <div class="card">
-                    <div class="section-icon-header">
-                        <img src="https://donaantonia.com.br/img/pagamento.png" width="60" height="60" alt="Pagamento" onerror="this.src='https://placehold.co/60x60/2196F3/ffffff?text=P'">
-                    </div>
-                    <h2 style="text-align: center;">Formas de Pagamento</h2>
-                    <ul class="lista-pagamento">
-                        <li><span class="emoji-icon">💵</span> Dinheiro</li>
-                        <li><span class="emoji-icon">✨</span> Pix</li>
-                        <li><span class="emoji-icon">💳</span> Cartão de Débito e Crédito (até 3x)</li>
-                        <li><span class="emoji-icon">🥗</span> Alimentação: Alelo, Sodexo, Pluxee</li>
-                        <li><span class="emoji-icon">📱</span> Digitais: Ifood, Caju, Flash</li>
-                    </ul>
-                    <p style="color: var(--cor-destaque-vermelho); font-size: 0.9rem; text-align: center; margin-top: 15px; font-weight: 600;">⚠️ Não vendemos a prazo.</p>
-                </div>
-            </div>
-
-            <div id="pag-entrega" class="secao-conteudo">
-                <div class="card">
-                    <div class="section-icon-header">
-                        <img src="https://donaantonia.com.br/img/entrega.png" width="60" height="60" alt="Entrega" onerror="this.src='https://placehold.co/60x60/FF9800/ffffff?text=E'">
-                    </div>
-                    <h2 style="text-align: center; color: var(--cor-entrega);">Entrega Grátis</h2>
-                    <div style="text-align: center;">
-                        <p style="font-size: 0.95rem; color: var(--cor-texto);">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
-                        
-                        <div class="lista-bairros-seo">
-                            <h4>📍 Cuiabá - Região Norte (CPA):</h4>
-                            <p>CPA I, CPA II, CPA III e CPA IV, Morada da Serra, Três Barras, Jardim Ubirajara, Nova Conquista, 1º de Março, Jardim Vitória, Novo Paraíso.</p>
-
-                            <h4>📍 Cuiabá - Região Sul (Coxipó):</h4>
-                            <p>Grande Coxipó, Tijucal, Pedra 90, Osmar Cabral, São Gonçalo, Parque Cuiabá, Jardim Passaredo, Real Parque, Santa Terezinha, Itapajé.</p>
-                            
-                            <h4>📍 Cuiabá - Leste e Oeste:</h4>
-                            <p>Jardim Imperial, Recanto dos Pássaros, Belvedere, Jardim Itália, Boa Esperança, Santa Rosa, Goiabeiras, Verdão, Cidade Alta, Porto, Centro Norte e Sul.</p>
-
-                            <h4>📍 Várzea Grande (Todas as Regiões):</h4>
-                            <p>Grande Cristo Rei, Centro, Jardim Glória, Mapim, Manga, São Matheus, Ipase, Jardim dos Estados, Nova Várzea Grande, Parque do Lago, Marajoara.</p>
-                        </div>
-
-                        <hr style="border:0; border-top:1px dashed var(--cor-borda); margin: 15px 0;">
-                        <p style="background-color: rgba(255, 152, 0, 0.1); color: var(--cor-entrega); padding: 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 600;">
-                            <i class="fas fa-clock"></i> Pedindo até as 10h, recebe hoje!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- === DICA 5: BOTÃO GRUPO VIP === -->
-        <div style="padding: 0 15px;">
-            <a href="https://wa.me/65998150975?text=Quero%20entrar%20no%20grupo%20VIP%20de%20ofertas" target="_blank" class="btn-vip-group" rel="noopener noreferrer" onclick="trackMetaEvent('Contact', {content_name: 'VIP Group'})">
-                <i class="fas fa-star"></i> Entre no Grupo VIP de Ofertas
-            </a>
-        </div>
-
-        <footer class="seo-text-block" style="text-align: center; font-size: 0.85rem; color: var(--cor-texto-secundario); padding: 20px;">
-            <p><strong>Super Cestas Básicas Dona Antônia</strong></p>
-            <p style="margin-top: 5px;">R. Trinta, 105 - Jardim Nossa Sra. Aparecida, Cuiabá - MT, 78090-660</p>
-            <p style="margin-top: 5px;">Cuiabá - MT &bull; Várzea Grande - MT</p>
-            
-            <div class="footer-links-seo">
-                <a href="#cestas-basicas-cuiaba">Cestas Básicas em Cuiabá</a> | 
-                <a href="#cestas-basicas-varzea-grande">Cestas em Várzea Grande</a> | 
-                <a href="#doacao-cesta-basica">Cestas para Doação</a>
-            </div>
-
-            <div class="footer-map-container" style="margin-top: 20px;">
-                <iframe src="https://maps.google.com/maps?q=9W4X%2BGX%20Jardim%20Nossa%20Sra.%20Aparecida%2C%20Cuiabá%20-%20MT&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" title="Localização Dona Antônia"></iframe>
-            </div>
-        </footer>
+    <!-- CATALOG MOUNT POINT -->
+    <main id="catalog-mount" class="catalog-container">
+        <!-- JS INJECTION (BASKETS + DIDACTIC SECTION) -->
     </main>
 
-    <div class="vinheta-fundo-botoes"></div>
-
-    <div id="modalZoomImagem" onclick="if(event.target === this) fecharZoom()">
-        <button class="btn-fechar-zoom" onclick="fecharZoom()">Fechar</button>
-        <div class="zoom-img-container">
-            <img id="imgZoomTarget" class="img-zoom-full" src="" alt="Zoom">
+    <!-- SEÇÕES EXTRAS (PAGAMENTO E ENTREGA) -->
+    <section class="secoes-extras-grid">
+        <!-- Pagamento -->
+        <div class="card-info-extra">
+            <div class="cie-header">
+                <span class="cie-icon">💳</span>
+                <h3 class="cie-title">Formas de Pagamento</h3>
+            </div>
+            <ul class="lista-pagamento">
+                <li><span class="emoji-icon">💵</span> Dinheiro</li>
+                <li><span class="emoji-icon">✨</span> Pix</li>
+                <li><span class="emoji-icon">💳</span> Cartão de Débito e Crédito (até 3x)</li>
+                <li><span class="emoji-icon">🥗</span> Alimentação: Alelo, Sodexo, Pluxee</li>
+                <li><span class="emoji-icon">📱</span> Digitais: Ifood, Caju, Flash</li>
+            </ul>
+            <p style="color: #EF4444; font-size: 13px; text-align: center; margin-top: 15px; font-weight: 700;">⚠️ Não vendemos a prazo.</p>
         </div>
-        <div id="captionZoom" class="zoom-caption"></div>
+
+        <!-- Entrega -->
+        <div class="card-info-extra">
+            <div class="cie-header">
+                <span class="cie-icon">🚚</span>
+                <h3 class="cie-title" style="color: #F59E0B;">Entrega Grátis</h3>
+            </div>
+            <p style="font-size: 14px; color: #374151; text-align: center;">Atendemos toda área urbana de <strong>Cuiabá</strong> e <strong>Várzea Grande</strong>.</p>
+            
+            <div class="lista-bairros">
+                <h4>📍 Cuiabá (Norte/Sul/Leste/Oeste)</h4>
+                <p>CPA I-IV, Morada da Serra, Tijucal, Pedra 90, Coxipó, Imperial, Santa Rosa, Centro, Porto e muito mais.</p>
+                <h4>📍 Várzea Grande (Toda Região)</h4>
+                <p>Cristo Rei, Centro, Jardim Glória, Mapim, Manga, Ipase, Nova Várzea Grande e região.</p>
+            </div>
+            <p style="background: #FFFBEB; color: #D97706; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 700; text-align: center; margin-top: 15px;">
+                <i class="ph-bold ph-clock"></i> Pedindo até as 10h, recebe hoje!
+            </p>
+        </div>
+    </section>
+
+    <!-- FOOTER SEO (Endereço e Mapa) -->
+    <footer class="seo-footer">
+        <p style="font-weight: 700; color: white; font-size: 16px; margin-bottom: 8px;">Super Cestas Básicas Dona Antônia</p>
+        <p>R. Trinta, 105 - Jardim Nossa Sra. Aparecida, Cuiabá - MT, 78090-660</p>
+        <p>Cuiabá - MT • Várzea Grande - MT</p>
+        
+        <iframe class="footer-map" src="https://maps.google.com/maps?q=9W4X%2BGX%20Jardim%20Nossa%20Sra.%20Aparecida%2C%20Cuiabá%20-%20MT&t=&z=13&ie=UTF8&iwloc=&output=embed" allowfullscreen="" loading="lazy"></iframe>
+    </footer>
+
+    <!-- VINHETA DE FUNDO (Mobile Only) -->
+    <div class="footer-vignette"></div>
+
+    <!-- FOOTER FLUTUANTE (Mobile Only) -->
+    <footer class="app-footer">
+        <button onclick="openModal('company')" class="btn-footer-half">
+            <i class="ph-bold ph-buildings" style="font-size:18px;"></i> Contatos
+        </button>
+        <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="btn-footer-half btn-instagram-footer" onclick="trackEvent('ClickFooterSocial', {network: 'Instagram'})">
+            <i class="ph-bold ph-instagram-logo" style="font-size:18px;"></i> Instagram
+        </a>
+    </footer>
+
+    <!-- MODAL COMPANY -->
+    <div id="modal-company" class="modal-overlay" onclick="if(event.target===this) closeModal('company')">
+        <div class="modal-card">
+            <div class="modal-handle"></div>
+            <button onclick="closeModal('company')" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:24px; color:#9CA3AF; cursor:pointer;"><i class="ph-bold ph-x"></i></button>
+
+            <!-- Creative Profile Header -->
+            <div class="cp-bg"></div>
+            <div class="company-profile">
+                <img src="https://donaantonia.com.br/img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" class="cp-logo" onerror="this.src='https://placehold.co/80x80'">
+                <h2 style="font-size:20px; margin:0 0 4px; font-weight:800;">Dona Antônia</h2>
+                <p style="margin:0 0 12px; font-size:12px; color:#6B7280;">Super Cestas Básicas • Desde 2023</p>
+                
+                <p style="margin:0 0 24px; font-size:13px; color:#374151; display:flex; align-items:center; justify-content:center; gap:6px;">
+                    <i class="ph-fill ph-map-pin" style="color:#EF4444; font-size:18px;"></i>
+                    R. Trinta, 105 - Jardim Nossa Sra. Aparecida<br>Cuiabá - MT, 78090-660
+                </p>
+
+                <a href="https://api.whatsapp.com/send?phone=5565998150975&text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido." target="_blank" class="contact-pill" onclick="trackEvent('ClickWhatsApp', {number: '99815-0975'})" style="border-color:#10B981; background:#F0FDF4;">
+                    <i class="ph-fill ph-whatsapp-logo" style="font-size:24px; color:#10B981;"></i>
+                    <div style="text-align:left;">
+                        <span style="font-size:10px; font-weight:700; color:#059669; text-transform:uppercase;">Falar no WhatsApp</span>
+                        <div style="font-size:16px; font-weight:800; color:#047857;">(65) 99815-0975</div>
+                    </div>
+                </a>
+
+                <a href="https://g.page/r/CaIREJtO1L6WEBE/review" target="_blank" class="contact-pill" style="margin-top:12px; border-color:#EAB308; background:#FEFCE8;" onclick="trackEvent('ClickReview', {type: 'Google'})">
+                    <i class="ph-fill ph-star" style="font-size:24px; color:#EAB308;"></i>
+                    <div style="text-align:left;">
+                        <span style="font-size:10px; font-weight:700; color:#CA8A04; text-transform:uppercase;">Avalie-nos</span>
+                        <div style="font-size:14px; font-weight:700; color:#854D0E;">Dar 5 Estrelas no Google</div>
+                    </div>
+                </a>
+
+                <div class="social-grid">
+                    <a href="https://www.facebook.com/super.cestas.cuiaba" target="_blank" class="social-btn sb-fb" onclick="trackEvent('ClickSocial', {network: 'Facebook'})">
+                        <i class="ph-bold ph-facebook-logo" style="font-size:24px; margin-bottom:8px;"></i>
+                        <span style="font-size:11px; font-weight:700;">Facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/cestas.dona.antonia.cuiaba.vg/" target="_blank" class="social-btn sb-ig" onclick="trackEvent('ClickSocial', {network: 'Instagram'})">
+                        <i class="ph-bold ph-instagram-logo" style="font-size:24px; margin-bottom:8px;"></i>
+                        <span style="font-size:11px; font-weight:700;">Instagram</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        // === PILLAR 2: ADVANCED TRACKING LOGIC ===
-        
-        /**
-         * Dispara eventos para Meta Pixel e Data Layer simultaneamente
-         * @param {string} eventName - Nome do evento (Ex: 'AddToCart', 'ViewContent')
-         * @param {object} params - Parâmetros JSON do evento
-         */
-        function trackMetaEvent(eventName, params) {
-            // Meta Pixel Standard
-            if(typeof fbq !== 'undefined') {
-                fbq('track', eventName, params);
-            }
-            
-            // Data Layer Push (Padrão Google Tag Manager)
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                'event': eventName,
-                ...params
-            });
-            
-            console.log(`[TRACKING] ${eventName} fired`, params);
-        }
+    <!-- MODAL PRODUCTS (Desktop) -->
+    <div id="modal-products" class="modal-overlay" onclick="if(event.target===this) closeModal('products')">
+        <div class="modal-card">
+            <div class="modal-handle"></div>
+            <button onclick="closeModal('products')" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:24px; color:#9CA3AF; cursor:pointer;"><i class="ph-bold ph-x"></i></button>
+            <div id="modal-products-body" class="modal-products-content"></div>
+        </div>
+    </div>
 
-        // Estado das seleções por cesta
-        let selecoesCesta = {
-            'mini': { marca: null, preco: null },
-            'pequena': { marca: null, preco: null },
-            'media': { marca: null, preco: null },
-            'grande': { marca: null, preco: null }
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA ---
+        const BASKETS = {
+            'GRANDE': {
+                name: 'Cesta Grande',
+                img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-grande.avif',
+                opts: [
+                    { n: 'Com Arroz Tio Alvino', norm: 'R$ 380,00', desc: 'R$ 355,00', sel: true },
+                    { n: 'Com Arroz Koblenz', norm: 'R$ 390,00', desc: 'R$ 365,00' }
+                ],
+                items: [
+                    {q:4, n:'Arroz 5kg'}, {q:3, n:'Açúcar 2kg'}, {q:4, n:'Óleo 900ml'},
+                    {q:4, n:'Feijão 1kg'}, {q:1, n:'Café 500g'}, {q:3, n:'Espaguete 500g'},
+                    {q:1, n:'12 Ovos'}, {q:1, n:'Mistura Bolo'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:2, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:4, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:2, n:'Creme Dental'},
+                    {q:2, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:4, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
+                ]
+            },
+            'MEDIA': {
+                name: 'Cesta Média',
+                img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-media.avif',
+                opts: [
+                    { n: 'Com Arroz Tio Alvino', norm: 'R$ 320,00', desc: 'R$ 300,00', sel: true },
+                    { n: 'Com Arroz Koblenz', norm: 'R$ 325,00', desc: 'R$ 305,00' }
+                ],
+                items: [
+                    {q:3, n:'Arroz 5kg'}, {q:2, n:'Açúcar 2kg'}, {q:3, n:'Óleo 900ml'},
+                    {q:3, n:'Feijão 1kg'}, {q:1, n:'Café 500g'}, {q:1, n:'12 Ovos'},
+                    {q:1, n:'Mistura Bolo'}, {q:2, n:'Espaguete 500g'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:2, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:3, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:2, n:'Creme Dental'},
+                    {q:2, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:3, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
+                ]
+            },
+            'PEQUENA': {
+                name: 'Cesta Pequena',
+                img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-pequena.avif',
+                opts: [
+                    { n: 'Com Arroz Tio Alvino', norm: 'R$ 215,00', desc: 'R$ 200,00', sel: true },
+                    { n: 'Com Arroz Koblenz', norm: 'R$ 220,00', desc: 'R$ 205,00' }
+                ],
+                items: [
+                    {q:2, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:2, n:'Óleo 900ml'},
+                    {q:2, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'12 Ovos'},
+                    {q:1, n:'Mistura Bolo'}, {q:1, n:'Espaguete 500g'}, {q:1, n:'Trigo 1kg'},
+                    {q:1, n:'Sal 1kg'}, {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Tempero'}, {q:2, n:'Bolacha Recheada'}, {q:2, n:'Miojo'},
+                    {q:2, n:'Suco Pó'}, {q:1, n:'Sabão Barra'}, {q:1, n:'Creme Dental'},
+                    {q:1, n:'Papel Higiênico'}, {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'},
+                    {q:1, n:'Sabão Pó OMO'}, {q:2, n:'Detergente'}, {q:1, n:'Qboa 1L'},
+                    {q:2, n:'Sabonete'}, {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
+                ]
+            },
+            'MINI': {
+                name: 'Cesta Mini',
+                img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-mini.avif',
+                opts: [
+                    { n: 'Com Arroz Tio Alvino', norm: 'R$ 165,00', desc: 'R$ 155,00', sel: true },
+                    { n: 'Com Arroz Koblenz', norm: 'R$ 170,00', desc: 'R$ 160,00' }
+                ],
+                items: [
+                    {q:1, n:'Arroz 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:2, n:'Óleo 900ml'},
+                    {q:2, n:'Feijão 1kg'}, {q:1, n:'Café 250g'}, {q:1, n:'Espaguete 500g'},
+                    {q:1, n:'Sal 1kg'}, {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'},
+                    {q:1, n:'Bolacha Recheada'}, {q:1, n:'Miojo'}, {q:2, n:'Suco Pó'},
+                    {q:1, n:'Sabão Barra'}, {q:1, n:'Creme Dental'}, {q:1, n:'Papel Higiênico'},
+                    {q:1, n:'Amaciante 2L'}, {q:1, n:'Desinfetante 2L'}, {q:1, n:'Sabão Pó OMO'},
+                    {q:1, n:'Detergente'}, {q:1, n:'Qboa 1L'}, {q:2, n:'Sabonete'},
+                    {q:1, n:'Esponja Aço'}, {q:1, n:'Esponja Louça'}
+                ]
+            },
+            'ECONOMICA': {
+                name: 'Cesta Econômica',
+                img: 'https://donaantonia.com.br/img/cesta-basica-cuiaba-varzea-grande-economica.avif',
+                opts: [{ n: 'Valor Único', norm: 'R$ 85,00', desc: 'R$ 80,00', sel: true }],
+                items: [
+                    {q:1, n:'Arroz Tio Alvino 5kg'}, {q:1, n:'Açúcar 2kg'}, {q:1, n:'Óleo 900ml'},
+                    {q:1, n:'Feijão 1kg'}, {q:1, n:'Café Premiado 250g'}, {q:1, n:'Espaguete 400g'},
+                    {q:1, n:'Trigo 1kg'}, {q:1, n:'Farinha Mandioca'}, {q:1, n:'Sal 1kg'},
+                    {q:1, n:'Molho Tomate'}, {q:1, n:'Milho Lata'}, {q:1, n:'Bolacha Recheada'},
+                    {q:1, n:'Miojo'}, {q:1, n:'Suco Pó'}
+                ]
+            }
         };
 
-        function toggleSection(cestaId, tipo, btnElement) {
-            // IDs das seções
-            const idProdutos = `produtos-${cestaId}`;
-            const idValor = `valor-${cestaId}`;
-            
-            const sectionProdutos = document.getElementById(idProdutos);
-            const sectionValor = document.getElementById(idValor);
-            
-            // Encontrar os botões dentro do mesmo container
-            const container = btnElement.parentElement;
-            const btnProdutos = container.children[0];
-            const btnValor = container.children[1];
+        const STATE = { revealed: {} };
 
-            if (tipo === 'produtos') {
-                if (sectionProdutos.style.display === 'block') {
-                    // Fechar se já estiver aberto
-                    sectionProdutos.style.display = 'none';
-                    btnProdutos.classList.remove('active');
-                } else {
-                    // Abrir
-                    sectionProdutos.style.display = 'block';
-                    sectionValor.style.display = 'none';
-                    btnProdutos.classList.add('active');
-                    btnValor.classList.remove('active-valor');
-                    
-                    // TRACKING: ViewContent
-                    // Dispara quando o usuário se interessa pelos detalhes do produto
-                    trackMetaEvent('ViewContent', {
-                        content_ids: [`cesta_${cestaId}`],
-                        content_type: 'product',
-                        content_name: `Cesta ${cestaId.charAt(0).toUpperCase() + cestaId.slice(1)}`
-                    });
+        const DIDACTIC_SECTION_HTML = `
+        <section class="didactic-section">
+            <div class="didactic-slide">
+                <h2 class="ds-title">Tenho 6 informações que você precisa saber:</h2>
+                <div class="ds-list">
+                    <div class="ds-item"><div class="ds-number">1</div><div class="ds-text">Entregamos em <span class="ds-strong">Cuiabá e VG</span> (Consulte seu bairro).</div></div>
+                    <div class="ds-item"><div class="ds-number">2</div><div class="ds-text">Você só paga a sua cesta <span class="ds-strong">quando ela chega</span> na sua casa.</div></div>
+                    <div class="ds-item"><div class="ds-number">3</div><div class="ds-text">Não cobramos taxa de entrega. Encomende pela manhã que <span class="ds-strong">a cesta vai no mesmo dia.</span></div></div>
+                    <div class="ds-item"><div class="ds-number">4</div><div class="ds-text">Você pode <span class="ds-strong">personalizar a sua cesta</span> trocando os produtos que você não quer.</div></div>
+                    <div class="ds-item"><div class="ds-number">5</div><div class="ds-text">Só usamos <span class="ds-strong">marcas boas</span>. A nossa cesta compensa. Você economiza tempo e dinheiro.</div></div>
+                    <div class="ds-item"><div class="ds-number">6</div><div class="ds-text">Não vendemos pra 30 dias, mas <span class="ds-strong">parcelamos em 3x sem juros</span> no cartão de crédito e aceitamos cartões Alimentação e Refeição.</div></div>
+                </div>
+            </div>
+        </section>
+        `;
+
+        function getImg(n) {
+            const low = n.toLowerCase();
+            const f = 'img/alimento/';
+            const c = 'img/limpeza/';
+            
+            if(low.includes('arroz tio alvino')) return f + 'arroztioalvino.jpg';
+            if(low.includes('café premiado')) return f + 'cafepremiado.webp';
+            if(low.includes('arroz')) return f + 'Arroz Koblenz 5kg.webp';
+            if(low.includes('açúcar')) return f + 'açucar doce dia 2 kg.webp';
+            if(low.includes('bolacha')) return f + 'bolacha mybit.webp';
+            if(low.includes('bolo')) return f + 'bolo apti chocolate.webp';
+            if(low.includes('café') && low.includes('500')) return f + 'cafe caboclo 500g.webp';
+            if(low.includes('café')) return f + 'cafe caboclo 250g.webp';
+            if(low.includes('espaguete')) return f + 'espaguete qdelicia.webp';
+            if(low.includes('farinha')) return f + 'farinha de mandioca.webp';
+            if(low.includes('feijão')) return f + 'feijão da casa.webp';
+            if(low.includes('milho')) return f + 'milho verde predileta.webp';
+            if(low.includes('miojo')) return f + 'miojo apti.webp';
+            if(low.includes('molho')) return f + 'molho fugini.webp';
+            if(low.includes('óleo')) return f + 'oleo de soja liza.webp';
+            if(low.includes('ovo')) return f + 'ovo duzia.jpg';
+            if(low.includes('sal')) return f + 'sal.webp';
+            if(low.includes('suco')) return f + 'suco frisco.webp';
+            if(low.includes('tempero')) return f + 'tempero tio jonas.jpg';
+            if(low.includes('trigo')) return f + 'trigo vitoriosa.webp';
+            if(low.includes('creme')) return c + 'Creme Dental Sorriso 70g.webp';
+            if(low.includes('desinfetante')) return c + 'Desinfetante Remmus 2L.webp';
+            if(low.includes('detergente')) return c + 'Detergente Ype 500ml.webp';
+            if(low.includes('qboa')) return c + 'Qboa 1 Litro.webp';
+            if(low.includes('amaciante')) return c + 'amaciante ype 2L.webp';
+            if(low.includes('louça')) return c + 'esponja de lavar louça.webp';
+            if(low.includes('aço')) return c + 'lã de aço assolan.webp';
+            if(low.includes('papel')) return c + 'papel higienico.webp';
+            if(low.includes('sabonete')) return c + 'sabonete palmolive 85g.webp';
+            if(low.includes('barra')) return c + 'sabão barra ype 900g.webp';
+            if(low.includes('sabão pó') || low.includes('omo')) return c + 'sabão em pó omo 800g.webp';
+            
+            return `https://placehold.co/100x100/e2e8f0/64748b?text=${n.substring(0,3).toUpperCase()}`;
+        }
+
+        function renderAll() {
+            const container = document.getElementById('catalog-mount');
+            let html = '';
+            const keys = ['ECONOMICA', 'MINI', 'PEQUENA', 'MEDIA', 'GRANDE'];
+
+            keys.forEach((key) => {
+                const data = BASKETS[key];
+                const isRevealed = STATE.revealed[key];
+                
+                const optsHtml = data.opts.map((o, idx) => `
+                    <div class="opt-row ${o.sel ? 'selected' : ''}" onclick="selectOption('${key}', ${idx})">
+                        <div class="opt-info">
+                            <span class="opt-name">${o.n.replace('Com ','')}</span>
+                            <div class="opt-price"><span class="price-new">${o.norm}</span></div>
+                        </div>
+                        <i class="ph-fill ${o.sel ? 'ph-check-circle' : 'ph-circle'}" style="color:${o.sel?'var(--success)':'#D1D5DB'}; font-size:24px;"></i>
+                    </div>
+                `).join('');
+                
+                const itemsHtml = data.items.map(i => {
+                    const qtyText = i.q === 1 ? '1 un' : `${i.q} un`;
+                    let imgName = i.n;
+                    if(i.n.toLowerCase().includes('arroz')) {
+                        const sel = data.opts.find(o => o.sel);
+                        if(sel && sel.n.includes('Tio Alvino')) imgName = 'Arroz Tio Alvino';
+                        if(sel && sel.n.includes('Koblenz')) imgName = 'Arroz Koblenz';
+                    }
+                    return `
+                    <div class="item-card">
+                        <img src="${getImg(imgName)}" class="item-img" loading="lazy" alt="${i.n}">
+                        <span class="item-qty">${qtyText}</span>
+                        <div class="item-name">${i.n}</div>
+                    </div>
+                `}).join('');
+
+                const btnHtml = isRevealed 
+                    ? `<button onclick="handleDetails('${key}')" class="btn-action-main btn-whatsapp"><i class="ph-bold ph-whatsapp-logo" style="font-size:20px;"></i> PEDIR NO WHATSAPP</button>`
+                    : `<button onclick="handleDetails('${key}')" class="btn-action-main"><i class="ph-bold ph-caret-down" style="font-size:20px;"></i> VER TODOS OS ITENS</button>`;
+
+                html += `
+                    <section class="product-section" id="basket-${key}">
+                        <div class="p-main-content">
+                            <div class="p-title-row"><h2 class="p-title">${data.name}</h2><span class="p-badge">Entrega Grátis</span></div>
+                            <img src="${data.img}" class="basket-hero-img" alt="${data.name}" loading="lazy">
+                            <div class="p-options-list">${optsHtml}</div>
+                            ${btnHtml}
+                        </div>
+                        <div class="p-expand-content" style="display:${isRevealed ? 'block' : 'none'}">
+                            <div style="text-align:center; margin-bottom:16px; font-size:12px; font-weight:700; color:var(--text-sec); text-transform:uppercase; letter-spacing:1px;">Itens Inclusos</div>
+                            <div class="items-grid">${itemsHtml}</div>
+                        </div>
+                    </section>
+                `;
+
+                if (key === 'PEQUENA') { html += DIDACTIC_SECTION_HTML; }
+            });
+            container.innerHTML = html;
+        }
+
+        function selectOption(key, idx) {
+            BASKETS[key].opts.forEach((o, i) => o.sel = i === idx);
+            renderAll();
+        }
+
+        function handleDetails(key) {
+            if (window.innerWidth >= 1024) { openProductModal(key); } 
+            else { if (STATE.revealed[key]) { order(key); } else { reveal(key); } }
+        }
+
+        function reveal(key) {
+            STATE.revealed[key] = true;
+            renderAll(); 
+            trackEvent('ViewContent', { content_name: key });
+        }
+
+        function order(key) {
+            const data = BASKETS[key];
+            const opt = data.opts.find(o => o.sel); 
+            const msg = `Olá, gostaria de encomendar a ${data.name} (${opt.n}) por ${opt.norm}.`;
+            const url = `https://api.whatsapp.com/send?phone=5565998150975&text=${encodeURIComponent(msg)}`;
+            trackEvent('Lead', { value: parseFloat(opt.norm.replace('R$ ','').replace(',','.')), currency: 'BRL' });
+            window.location.href = url;
+        }
+
+        function openModal(id) {
+            document.getElementById(`modal-${id}`).classList.add('active');
+            trackEvent('OpenModal', { modal_id: id });
+        }
+        function closeModal(id) {
+            document.getElementById(`modal-${id}`).classList.remove('active');
+        }
+
+        function openProductModal(key) {
+            const data = BASKETS[key];
+            const opt = data.opts.find(o => o.sel);
+            const container = document.getElementById('modal-products-body');
+            
+            const itemsHtml = data.items.map(i => {
+                const qtyText = i.q === 1 ? '1 un' : `${i.q} un`;
+                let imgName = i.n;
+                if(i.n.toLowerCase().includes('arroz')) {
+                    if(opt.n.includes('Tio Alvino')) imgName = 'Arroz Tio Alvino';
+                    if(opt.n.includes('Koblenz')) imgName = 'Arroz Koblenz';
                 }
-            } else if (tipo === 'valor') {
-                if (sectionValor.style.display === 'block') {
-                    // Fechar se já estiver aberto
-                    sectionValor.style.display = 'none';
-                    btnValor.classList.remove('active-valor');
-                } else {
-                    // Abrir
-                    sectionValor.style.display = 'block';
-                    sectionProdutos.style.display = 'none';
-                    btnValor.classList.add('active-valor');
-                    btnProdutos.classList.remove('active');
-                }
-            }
+                return `<div class="item-card"><img src="${getImg(imgName)}" class="item-img" loading="lazy" alt="${i.n}"><span class="item-qty">${qtyText}</span><div class="item-name">${i.n}</div></div>`;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="mp-header">
+                    <div><h3 class="mp-title">${data.name}</h3><span style="font-size:14px; color:#6B7280;">${opt.n}</span></div>
+                    <div class="mp-price">${opt.norm}</div>
+                </div>
+                <div class="mp-grid">${itemsHtml}</div>
+                <button onclick="order('${key}')" class="btn-action-main btn-whatsapp" style="margin-top:24px;">
+                    <i class="ph-bold ph-whatsapp-logo" style="font-size:20px;"></i> PEDIR AGORA
+                </button>
+            `;
+            openModal('products');
         }
 
-        function selectArroz(cestaId, marca, preco, elementoOption) {
-            // Atualizar estado
-            selecoesCesta[cestaId] = { marca: marca, preco: preco };
-            
-            // Atualizar visual (Radio)
-            const container = elementoOption.parentElement;
-            const options = container.querySelectorAll('.radio-arroz-option');
-            options.forEach(opt => opt.classList.remove('selected'));
-            
-            elementoOption.classList.add('selected');
-            
-            // Habilitar botão
-            const btn = document.getElementById(`btn-pedir-${cestaId}`);
-            if(btn) btn.classList.add('enabled');
-        }
-
-        function encomendarSelecionado(cestaId, nomeCesta, productId) {
-            const selecao = selecoesCesta[cestaId];
-            if (!selecao.marca) return; 
-
-            // TRACKING: AddToCart
-            // Converter preço "165,00" para float 165.00
-            const valorFloat = parseFloat(selecao.preco.replace(',', '.'));
-            
-            trackMetaEvent('AddToCart', {
-                content_ids: [productId],
-                content_type: 'product',
-                value: valorFloat,
-                currency: 'BRL',
-                content_name: nomeCesta
-            });
-
-            const marcaNome = selecao.marca === 'Alvino' ? 'Arroz Tio Alvino' : 'Arroz Koblenz';
-            const texto = `Olá! Gostaria de encomendar a *${nomeCesta}* com *${marcaNome}* no valor de *R$ ${selecao.preco}*.`;
-            
-            // Pequeno delay para garantir disparo do pixel antes de sair da página
-            setTimeout(() => {
-                window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
-            }, 300);
-        }
-
-        function encomendarDireto(nome, preco, productId) {
-            // TRACKING: AddToCart
-            const valorFloat = parseFloat(preco.replace(',', '.'));
-            
-            trackMetaEvent('AddToCart', {
-                content_ids: [productId],
-                content_type: 'product',
-                value: valorFloat,
-                currency: 'BRL',
-                content_name: nome
-            });
-
-            const texto = `Olá! Gostaria de encomendar a *${nome}* no valor de *R$ ${preco}*.`;
-            
-            setTimeout(() => {
-                window.open(`https://wa.me/${getWhatsNumber()}?text=${encodeURIComponent(texto)}`, '_blank');
-            }, 300);
-        }
-
-        function getWhatsNumber() {
-            var p1 = "55"; var p2 = "65"; var p3 = "9981"; var p4 = "50975";
-            return p1 + p2 + p3 + p4;
-        }
-
-        function abrirZoom(src, alt) {
-            document.getElementById('imgZoomTarget').src = src;
-            document.getElementById('captionZoom').innerText = alt;
-            document.getElementById('modalZoomImagem').style.display = 'flex';
-            
-            // TRACKING: Visualizar Zoom também conta como interesse forte
-            trackMetaEvent('ViewContent', {
-                content_name: alt,
-                content_category: 'Zoom Image'
-            });
-        }
-        function fecharZoom() { document.getElementById('modalZoomImagem').style.display = 'none'; }
-        
-        function ativarChip(elemento) {
-             document.querySelectorAll('.chip-ancora').forEach(el => el.classList.remove('active'));
-             elemento.classList.add('active');
-        }
+        renderAll();
     </script>
 </body>
 </html>
