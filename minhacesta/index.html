@@ -11,7 +11,7 @@
     <title>Monte Sua Cesta | Super Cestas Dona Antônia</title>
     <meta name="description" content="Monte sua cesta básica personalizada em Cuiabá e VG. Escolha os itens e receba em casa.">
     <meta name="theme-color" content="#ffffff">
-    <meta name="robots" content="noindex, nofollow"> <!-- Página de checkout/ferramenta, geralmente noindex -->
+    <meta name="robots" content="noindex, nofollow">
     
     <!-- PILLAR 3: SECURITY -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; font-src 'self' https: data:;">
@@ -20,7 +20,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- ESTILOS ORIGINAIS (MANTIDOS DO SITE PRINCIPAL) -->
+    <!-- ESTILOS -->
     <style>
         :root {
             /* PALETA DE CORES */
@@ -35,8 +35,6 @@
             --text-sec: #6B7280;
             --border-medium: #E5E7EB;
             --header-h: 70px;
-            
-            /* Shadows para profundidade */
             --shadow-card: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
@@ -52,7 +50,7 @@
             -webkit-user-select: none; user-select: none; /* Anti-copy */
         }
 
-        /* HEADER (IGUAL AO SITE) */
+        /* HEADER */
         .app-header {
             height: var(--header-h);
             background: rgba(255, 255, 255, 0.95);
@@ -72,159 +70,98 @@
             position: relative; top: 15px; 
             flex-shrink: 0; z-index: 60; 
         }
-        .brand h1 { 
-            font-size: 16px; font-weight: 700; 
-            margin: 0; color: var(--text-main); 
-            letter-spacing: -0.3px;
-        }
+        .brand h1 { font-size: 16px; font-weight: 700; margin: 0; color: var(--text-main); letter-spacing: -0.3px; }
 
-        /* NAV CATEGORIAS (SIMPLIFICADO) */
+        /* NAV CATEGORIAS */
         .category-nav {
-            background: white;
-            padding: 12px 16px;
-            position: sticky;
-            top: var(--header-h);
-            z-index: 40;
-            display: flex;
-            gap: 10px;
-            border-bottom: 1px solid var(--border-medium);
-            overflow-x: auto;
+            background: white; padding: 12px 16px; position: sticky; top: var(--header-h);
+            z-index: 40; display: flex; gap: 10px; border-bottom: 1px solid var(--border-medium); overflow-x: auto;
         }
         .cat-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 50px;
-            border: 1px solid var(--border-medium);
-            background: white;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text-sec);
-            white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
+            flex: 1; padding: 10px; border-radius: 50px; border: 1px solid var(--border-medium);
+            background: white; font-weight: 600; font-size: 14px; color: var(--text-sec);
+            white-space: nowrap; cursor: pointer; transition: all 0.2s; text-align: center;
         }
         .cat-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background: var(--primary); color: white; border-color: var(--primary);
             box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
         }
 
-        /* GRID DE PRODUTOS */
-        .monte-container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 12px;
-        }
-
+        /* GRID */
+        .monte-container { max-width: 900px; margin: 20px auto; padding: 0 12px; }
         .section-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text-main);
-            margin: 24px 0 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 18px; font-weight: 800; color: var(--text-main);
+            margin: 24px 0 12px; display: flex; align-items: center; gap: 8px;
         }
-
         .items-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); /* Mobile: 2 colunas */
-            gap: 12px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
         }
-
-        @media (min-width: 768px) {
-            .items-grid { grid-template-columns: repeat(4, 1fr); } /* Desktop: 4 colunas */
-        }
+        @media (min-width: 768px) { .items-grid { grid-template-columns: repeat(4, 1fr); } }
         
         /* CARD DE PRODUTO */
         .item-card {
-            background: white; 
-            border-radius: 16px; 
-            padding: 12px; 
-            text-align: center; 
-            box-shadow: var(--shadow-card); 
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            position: relative;
+            background: white; border-radius: 16px; padding: 12px; text-align: center; 
+            box-shadow: var(--shadow-card); border: 2px solid transparent;
+            transition: all 0.2s; position: relative;
             display: flex; flex-direction: column; justify-content: space-between;
         }
-        .item-card.active {
-            border-color: var(--primary);
-            background: #EFF6FF;
-        }
-
-        .item-img { 
-            width: 100%; aspect-ratio: 1/1; object-fit: contain; margin-bottom: 8px; 
-            mix-blend-mode: multiply; 
-        }
-        
+        .item-card.active { border-color: var(--primary); background: #EFF6FF; }
+        .item-img { width: 100%; aspect-ratio: 1/1; object-fit: contain; margin-bottom: 8px; mix-blend-mode: multiply; }
         .item-name { 
-            font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.3; margin-bottom: 12px; min-height: 34px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.3; 
+            margin-bottom: 8px; min-height: 34px; display: flex; align-items: center; justify-content: center;
         }
 
-        /* CONTROLES DE QUANTIDADE */
+        /* BOTÃO DE OPÇÕES (SUBSTITUI QTY CONTROLS PARA VARIANTES) */
+        .btn-choose-options {
+            width: 100%; background: white; border: 1px solid var(--primary);
+            color: var(--primary); padding: 8px; border-radius: 8px;
+            font-weight: 700; font-size: 12px; cursor: pointer; margin-top: auto;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .btn-choose-options:active { background: #EFF6FF; transform: scale(0.98); }
+        .btn-choose-options.has-items { background: var(--primary); color: white; }
+
+        /* CONTROLES DE QUANTIDADE (PADRÃO) */
         .qty-controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--background);
-            border-radius: 8px;
-            padding: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--background); border-radius: 8px; padding: 4px; margin-top: auto;
         }
         .btn-qty {
-            width: 32px; height: 32px;
-            border-radius: 6px;
-            border: none;
+            width: 32px; height: 32px; border-radius: 6px; border: none;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 16px;
-            cursor: pointer;
+            font-weight: 700; font-size: 16px; cursor: pointer;
         }
         .btn-minus { background: white; color: var(--text-sec); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .btn-plus { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3); }
         .qty-val { font-weight: 700; font-size: 16px; color: var(--text-main); width: 30px; }
 
+        /* RESUMO DE VARIAÇÕES SELECIONADAS */
+        .selected-summary {
+            font-size: 11px; color: var(--text-sec); margin-top: 8px;
+            background: rgba(255,255,255,0.5); padding: 4px; border-radius: 4px;
+        }
+        .item-card.active .selected-summary { color: var(--primary); font-weight: 600; }
+
         /* BARRA FIXA INFERIOR */
         .fixed-action-bar {
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: white;
-            border-top: 1px solid var(--border-medium);
-            padding: 16px;
-            z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            background: white; border-top: 1px solid var(--border-medium);
+            padding: 16px; z-index: 90; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
         }
-        .bar-content {
-            max-width: 900px; margin: 0 auto;
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        
-        .status-row {
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: 14px; color: var(--text-sec);
-        }
+        .bar-content { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+        .status-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-sec); }
         .item-counter { font-weight: 700; color: var(--primary); font-size: 16px; }
         .min-warning { color: #EF4444; font-size: 12px; font-weight: 600; }
         .min-warning.hidden { display: none; }
-
         .btn-calc {
-            width: 100%;
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            background: #9CA3AF;
-            color: white;
-            font-weight: 700; font-size: 16px;
-            cursor: not-allowed;
-            transition: all 0.3s;
+            width: 100%; padding: 16px; border-radius: 12px; border: none;
+            background: #9CA3AF; color: white; font-weight: 700; font-size: 16px;
+            cursor: not-allowed; transition: all 0.3s;
         }
-        .btn-calc.ready {
-            background: var(--primary-gradient);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-            cursor: pointer;
-        }
+        .btn-calc.ready { background: var(--primary-gradient); cursor: pointer; }
 
-        /* MODAL RESUMO */
+        /* MODAL COMUM */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);
@@ -232,46 +169,52 @@
             opacity: 0; pointer-events: none; transition: 0.3s;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
         .modal-card {
             background: white; width: 100%; max-width: 500px;
-            border-radius: 24px 24px 0 0; max-height: 90vh; 
+            border-radius: 24px 24px 0 0; max-height: 85vh; 
             display: flex; flex-direction: column;
             transform: translateY(100%); transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         .modal-overlay.active .modal-card { transform: translateY(0); }
-        
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border-medium); display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-size: 18px; font-weight: 800; margin: 0; }
-        .modal-close { background: none; border: none; font-size: 24px; color: var(--text-sec); }
-        
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border-medium); display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 24px 24px 0 0; z-index: 10; }
+        .modal-title { font-size: 16px; font-weight: 800; margin: 0; }
+        .modal-close { background: none; border: none; font-size: 24px; color: var(--text-sec); cursor: pointer; }
         .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-        .summary-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F3F4F6; font-size: 14px; }
-        
         .modal-footer { padding: 20px; background: #F9FAFB; border-top: 1px solid var(--border-medium); }
-        .total-row { display: flex; justify-content: space-between; font-size: 20px; font-weight: 800; color: var(--primary); margin-bottom: 16px; }
-        
+
+        /* ESTILO ESPECÍFICO DO MODAL DE VARIAÇÕES */
+        .variant-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid #F3F4F6;
+        }
+        .v-info { display: flex; align-items: center; gap: 12px; }
+        .v-img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; background: #F3F4F6; }
+        .v-name { font-weight: 600; font-size: 14px; color: var(--text-main); }
+        .btn-confirm-selection {
+            width: 100%; padding: 14px; border-radius: 12px; border: none;
+            background: var(--primary); color: white; font-weight: 700; font-size: 16px;
+        }
+
+        /* RESUMO LISTA */
+        .summary-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F3F4F6; font-size: 14px; }
         .btn-whatsapp-final {
             width: 100%; padding: 16px; border-radius: 12px; border: none;
-            background: var(--success-gradient); color: white;
-            font-weight: 700; font-size: 16px;
+            background: var(--success-gradient); color: white; font-weight: 700; font-size: 16px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            cursor: pointer;
         }
 
     </style>
 </head>
 <body>
 
-    <!-- HEADER (ORIGINAL) -->
+    <!-- HEADER -->
     <header class="app-header">
         <img src="../img/logo-super-cesta-basica-dona-antonia-cuiaba-varzea-grande.avif" 
              class="logo-header" alt="Logo Dona Antônia" onerror="this.src='https://placehold.co/80x80'">
         <div class="brand"><h1>Monte Sua Cesta</h1></div>
     </header>
 
-    <!-- NAVEGAÇÃO RÁPIDA -->
+    <!-- NAV -->
     <nav class="category-nav">
         <button class="cat-btn active" onclick="scrollToId('sec-alimentos', this)">
             <i class="ph-bold ph-grains"></i> Alimentos
@@ -283,23 +226,16 @@
 
     <!-- CONTEÚDO -->
     <main class="monte-container">
-        
         <!-- SEÇÃO ALIMENTOS -->
         <div id="sec-alimentos">
             <h2 class="section-title"><i class="ph-fill ph-bowl-food" style="color:var(--primary)"></i> Alimentos</h2>
-            <div class="items-grid" id="grid-alimentos">
-                <!-- JS INJECT -->
-            </div>
+            <div class="items-grid" id="grid-alimentos"></div>
         </div>
-
         <!-- SEÇÃO LIMPEZA -->
         <div id="sec-limpeza">
             <h2 class="section-title"><i class="ph-fill ph-sparkle" style="color:var(--primary)"></i> Higiene e Limpeza</h2>
-            <div class="items-grid" id="grid-limpeza">
-                <!-- JS INJECT -->
-            </div>
+            <div class="items-grid" id="grid-limpeza"></div>
         </div>
-
     </main>
 
     <!-- BARRA FIXA INFERIOR -->
@@ -315,18 +251,31 @@
         </div>
     </div>
 
-    <!-- MODAL RESUMO -->
+    <!-- MODAL DE VARIAÇÕES (SABORES/FRAGRÂNCIAS) -->
+    <div id="modal-variants" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="mv-title">Escolha os Sabores</h3>
+                <button class="modal-close" onclick="closeVariantModal()"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="modal-body" id="mv-body">
+                <!-- LISTA DE SABORES INJETADA VIA JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-confirm-selection" onclick="closeVariantModal()">CONFIRMAR ESCOLHA</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RESUMO FINAL -->
     <div id="modal-summary" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
                 <h3 class="modal-title">Resumo da Cesta</h3>
-                <button class="modal-close" onclick="closeModal()"><i class="ph-bold ph-x"></i></button>
+                <button class="modal-close" onclick="closeSummaryModal()"><i class="ph-bold ph-x"></i></button>
             </div>
-            
             <div class="modal-body">
-                <ul id="summary-list" style="list-style:none; padding:0; margin:0;">
-                    <!-- JS INJECT -->
-                </ul>
+                <ul id="summary-list" style="list-style:none; padding:0; margin:0;"></ul>
                 <div style="margin-top:20px; padding-top:10px; border-top:2px dashed var(--border-medium);">
                     <div style="display:flex; justify-content:space-between; color:var(--text-sec); margin-bottom:5px;">
                         <span>Subtotal Produtos:</span>
@@ -341,7 +290,6 @@
                     </small>
                 </div>
             </div>
-
             <div class="modal-footer">
                 <div class="total-row">
                     <span>TOTAL:</span>
@@ -358,55 +306,49 @@
     </div>
 
     <script>
-        // --- BASE DE DADOS (Atualizada para mapear com as imagens) ---
+        // --- DADOS ---
         const PRODUCTS = [
             // ALIMENTOS
-            { id: 1, type: 'food', name: "Arroz Tio Alvino 5kg", price: 26.90 },
-            { id: 2, type: 'food', name: "Arroz Koblenz 5kg", price: 27.90 },
-            { id: 3, type: 'food', name: "Açúcar Doce Dia 2kg", price: 8.90 },
-            { id: 4, type: 'food', name: "Óleo de Soja Liza", price: 6.50 },
-            { id: 5, type: 'food', name: "Feijão da Casa 1kg", price: 7.90 },
-            { id: 6, type: 'food', name: "Café Caboclo 500g", price: 18.50 },
-            { id: 61, type: 'food', name: "Café Caboclo 250g", price: 9.50 },
-            { id: 7, type: 'food', name: "Espaguete Q'Delícia", price: 4.50 },
-            { id: 8, type: 'food', name: "Ovos (Dúzia)", price: 14.00 },
-            { id: 9, type: 'food', name: "Bolo Apti Chocolate", price: 5.50 },
-            { id: 10, type: 'food', name: "Trigo Vitoriosa 1kg", price: 4.90 },
-            { id: 11, type: 'food', name: "Sal 1kg", price: 2.00 },
+            { id: 1, type: 'food', name: "Arroz Tio Alvino 5kg", price: 15.90 },
+            { id: 2, type: 'food', name: "Arroz Koblenz 5kg", price: 17.90 },
+            { id: 3, type: 'food', name: "Açúcar Doce Dia 2kg", price: 6.90 },
+            { id: 4, type: 'food', name: "Óleo de Soja Liza", price: 8.90 },
+            { id: 5, type: 'food', name: "Feijão da Casa 1kg", price: 6.90 },
+            { id: 6, type: 'food', name: "Café Caboclo 500g", price: 29.50 },
+            { id: 61, type: 'food', name: "Café Caboclo 250g", price: 14.50 },
+            { id: 7, type: 'food', name: "Espaguete Q'Delícia", price: 4.50, variants: ["Espaguete", "Parafuso", "Padre Nosso"] },
+            { id: 8, type: 'food', name: "Ovos (Dúzia)", price: 10.00 },
+            { id: 9, type: 'food', name: "Bolo Apti Chocolate", price: 4.50, variants: ["Chocolate", "Festa", "Laranja", "Cenoura"] },
+            { id: 10, type: 'food', name: "Trigo Vitoriosa 1kg", price: 3.90 },
+            { id: 11, type: 'food', name: "Sal 1kg", price: 2.70 },
             { id: 12, type: 'food', name: "Molho Fugini", price: 2.50 },
-            { id: 13, type: 'food', name: "Milho Predileta", price: 3.50 },
-            { id: 14, type: 'food', name: "Tempero Tio Jonas", price: 3.00 },
-            { id: 15, type: 'food', name: "Bolacha MyBit", price: 2.50 },
-            { id: 16, type: 'food', name: "Miojo Apti", price: 1.50 },
-            { id: 17, type: 'food', name: "Suco Frisco", price: 1.20 },
+            { id: 13, type: 'food', name: "Milho Predileta", price: 3.60 },
+            { id: 14, type: 'food', name: "Tempero Tio Jonas", price: 3.00, variants: ["Completo", "Alho e Sal", "Pimenta"] },
+            { id: 15, type: 'food', name: "Bolacha MyBit", price: 2.50, variants: ["Recheada Chocolate", "Recheada Morango", "Maizena", "Cream Cracker"] },
+            { id: 16, type: 'food', name: "Miojo Apti", price: 1.70, variants: ["Galinha Caipira", "Carne", "Tomate"] },
+            { id: 17, type: 'food', name: "Suco Frisco", price: 1.20, variants: ["Laranja", "Uva", "Morango", "Abacaxi"] },
             { id: 18, type: 'food', name: "Farinha de Mandioca", price: 6.00 },
 
-            // LIMPEZA / HIGIENE
-            // Nota: Esponja Assolan estava na lista de 'alimento' no texto, 
-            // mas colocamos como limpeza logicamente. O caminho respeitará a lista.
+            // LIMPEZA
             { id: 59, type: 'clean', name: "Esponja Assolan", price: 2.50 },
-            
-            // Produtos sem imagem na lista fornecida (Placeholder ou genérico)
-            { id: 50, type: 'clean', name: "Sabão em Barra", price: 2.50 },
-            { id: 51, type: 'clean', name: "Creme Dental", price: 3.50 },
-            { id: 52, type: 'clean', name: "Papel Higiênico (4un)", price: 5.90 },
-            { id: 53, type: 'clean', name: "Amaciante 2L", price: 8.90 },
-            { id: 54, type: 'clean', name: "Desinfetante 2L", price: 7.90 },
-            { id: 55, type: 'clean', name: "Sabão Pó OMO 800g", price: 12.90 },
-            { id: 56, type: 'clean', name: "Detergente Líquido", price: 2.80 },
+            { id: 50, type: 'clean', name: "Sabão em Barra", price: 14.50 },
+            { id: 51, type: 'clean', name: "Creme Dental", price: 3.50, variants: ["Menta", "Hortelã", "Tripla Ação"] },
+            { id: 52, type: 'clean', name: "Papel Higiênico (4un)", price: 4.90 },
+            { id: 53, type: 'clean', name: "Amaciante 2L", price: 10.90, variants: ["Azul", "Rosa", "Lavanda"] },
+            { id: 54, type: 'clean', name: "Desinfetante 2L", price: 6.90, variants: ["Lavanda", "Pinho", "Floral"] },
+            { id: 55, type: 'clean', name: "Sabão Pó OMO 800g", price: 13.90 },
+            { id: 56, type: 'clean', name: "Detergente Líquido", price: 2.80, variants: ["Neutro", "Maçã", "Limão", "Coco"] },
             { id: 57, type: 'clean', name: "Qboa 1L", price: 4.50 },
-            { id: 58, type: 'clean', name: "Sabonete", price: 2.00 },
+            { id: 58, type: 'clean', name: "Sabonete", price: 2.50, variants: ["Flor de Laranjeira", "Aveia", "Erva Doce"] },
             { id: 60, type: 'clean', name: "Esponja de Louça", price: 1.50 }
         ];
 
-        // --- MAPA EXATO DE IMAGENS (CONFORME SUA LISTA E ESTRUTURA) ---
-        // Agora usando '../' para sair da pasta 'minhacesta' e acessar a raiz
+        // --- MAPA IMAGENS ---
         function getExactImgPath(productName) {
             const name = productName.toLowerCase();
             const f = '../descontos/img/alimento/';
             const c = '../descontos/img/limpeza/';
 
-            // Mapeamento direto baseado na sua lista de arquivos
             if (name.includes('tio alvino')) return f + 'arroztioalvino.jpg';
             if (name.includes('koblenz')) return f + 'Arroz Koblenz 5kg.webp';
             if (name.includes('açúcar') || name.includes('doce dia')) return f + 'açucar doce dia 2 kg.webp';
@@ -427,36 +369,57 @@
             if (name.includes('miojo')) return f + 'miojo apti.webp';
             if (name.includes('suco') || name.includes('frisco')) return f + 'suco frisco.webp';
             if (name.includes('mandioca')) return f + 'farinha de mandioca.webp';
-            
-            // Item de Limpeza que estava na lista de alimentos
             if (name.includes('assolan')) return f + 'esponja assolan.webp';
 
-            // Itens de limpeza (Tentar adivinhar ou usar placeholder se não fornecido)
-            if (name.includes('sabão pó') || name.includes('omo')) return 'https://placehold.co/150x150/e2e8f0/64748b?text=OMO';
+            if (name.includes('creme dental')) return c + 'Creme Dental Sorriso 70g.webp';
+            if (name.includes('desinfetante')) return c + 'Desinfetante Remmus 2L.webp';
+            if (name.includes('detergente')) return c + 'Detergente Ype 500ml.webp';
+            if (name.includes('qboa')) return c + 'Qboa 1 Litro.webp';
+            if (name.includes('amaciante')) return c + 'amaciante ype 2L.webp';
+            if (name.includes('louça')) return c + 'esponja de lavar louça.webp';
+            if (name.includes('papel higiênico')) return c + 'papel higienico.webp';
+            if (name.includes('sabonete')) return c + 'sabonete palmolive 85g.webp';
+            if (name.includes('sabão em barra') || name.includes('sabão barra')) return c + 'sabão barra ype 900g.webp';
+            if (name.includes('sabão pó') || name.includes('omo')) return c + 'sabão em pó omo 800g.webp';
             
             return `https://placehold.co/150x150/e2e8f0/64748b?text=${encodeURIComponent(productName.substring(0,4))}`;
         }
 
-        // --- ESTADO ---
-        let cart = {}; // { id: qtd }
+        let cart = {}; // { "id::variant": qty }
 
-        // --- RENDERIZAR PRODUTOS ---
         function render() {
             const gridFood = document.getElementById('grid-alimentos');
             const gridClean = document.getElementById('grid-limpeza');
             
             PRODUCTS.forEach(p => {
                 const imgPath = getExactImgPath(p.name);
+                let controlsHtml = '';
+                
+                // LÓGICA DE EXIBIÇÃO: SELETOR VS CONTROLE DIRETO
+                if(p.variants && p.variants.length > 0) {
+                    // Tem variantes -> Botão "Escolher Opções"
+                    controlsHtml = `
+                        <button class="btn-choose-options" id="btn-opt-${p.id}" onclick="openVariantModal(${p.id})">
+                            <i class="ph-bold ph-list-plus"></i> ESCOLHER OPÇÕES
+                        </button>
+                    `;
+                } else {
+                    // Sem variantes -> Controle direto +/-
+                    controlsHtml = `
+                        <div class="qty-controls">
+                            <button class="btn-qty btn-minus" onclick="updateQtySimple(${p.id}, -1)">-</button>
+                            <span class="qty-val" id="qty-${p.id}">0</span>
+                            <button class="btn-qty btn-plus" onclick="updateQtySimple(${p.id}, 1)">+</button>
+                        </div>
+                    `;
+                }
+
                 const html = `
                     <div class="item-card" id="card-${p.id}">
                         <img src="${imgPath}" class="item-img" alt="${p.name}" loading="lazy" onerror="this.src='https://placehold.co/150x150/png?text=Sem+Foto'">
                         <div class="item-name">${p.name}</div>
-                        
-                        <div class="qty-controls">
-                            <button class="btn-qty btn-minus" onclick="updateQty(${p.id}, -1)">-</button>
-                            <span class="qty-val" id="qty-${p.id}">0</span>
-                            <button class="btn-qty btn-plus" onclick="updateQty(${p.id}, 1)">+</button>
-                        </div>
+                        ${controlsHtml}
+                        <div id="summary-${p.id}" class="selected-summary" style="display:none;"></div>
                     </div>
                 `;
                 
@@ -465,29 +428,131 @@
             });
         }
 
-        // --- LÓGICA DO CARRINHO ---
-        function updateQty(id, delta) {
-            if(!cart[id]) cart[id] = 0;
-            const newVal = cart[id] + delta;
+        // --- LÓGICA DO MODAL DE VARIAÇÕES ---
+        let currentModalProductId = null;
+
+        function openVariantModal(id) {
+            currentModalProductId = id;
+            const p = PRODUCTS.find(x => x.id === id);
+            const mainImg = getExactImgPath(p.name);
+            
+            document.getElementById('mv-title').innerText = p.name;
+            const body = document.getElementById('mv-body');
+            body.innerHTML = '';
+
+            // Renderiza cada linha de variação
+            p.variants.forEach(variant => {
+                const key = `${id}::${variant}`;
+                const qty = cart[key] || 0;
+                
+                // Tenta achar foto da variação ou usa a principal
+                // (Para o futuro: lógica de getVariantImg aqui)
+                const varImg = mainImg; 
+
+                body.innerHTML += `
+                    <div class="variant-row">
+                        <div class="v-info">
+                            <img src="${varImg}" class="v-img">
+                            <span class="v-name">${variant}</span>
+                        </div>
+                        <div class="qty-controls" style="margin-top:0; width:110px;">
+                            <button class="btn-qty btn-minus" onclick="updateQtyVariant('${key}', -1, ${id})">-</button>
+                            <span class="qty-val" id="v-qty-${key.replace(/ /g,'-')}">${qty}</span>
+                            <button class="btn-qty btn-plus" onclick="updateQtyVariant('${key}', 1, ${id})">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modal-variants').classList.add('active');
+        }
+
+        function closeVariantModal() {
+            document.getElementById('modal-variants').classList.remove('active');
+            // Atualiza o resumo no card principal ao fechar
+            if(currentModalProductId) updateCardSummary(currentModalProductId);
+            checkStatus();
+        }
+
+        function updateQtyVariant(key, delta, productId) {
+            if(!cart[key]) cart[key] = 0;
+            const newVal = cart[key] + delta;
             
             if(newVal >= 0) {
-                cart[id] = newVal;
+                cart[key] = newVal;
+                if(newVal === 0) delete cart[key];
+                
+                // Atualiza o número no modal
+                const elId = `v-qty-${key.replace(/ /g,'-')}`;
+                if(document.getElementById(elId)) {
+                    document.getElementById(elId).innerText = newVal;
+                }
+            }
+        }
+
+        // --- LÓGICA SIMPLES (SEM VARIAÇÃO) ---
+        function updateQtySimple(id, delta) {
+            const key = `${id}::default`;
+            if(!cart[key]) cart[key] = 0;
+            const newVal = cart[key] + delta;
+            
+            if(newVal >= 0) {
+                cart[key] = newVal;
+                if(newVal === 0) delete cart[key];
+                
                 document.getElementById(`qty-${id}`).innerText = newVal;
                 
                 const card = document.getElementById(`card-${id}`);
                 if(newVal > 0) card.classList.add('active');
-                else {
-                    card.classList.remove('active');
-                    delete cart[id];
-                }
+                else card.classList.remove('active');
                 
                 checkStatus();
             }
         }
 
+        // --- ATUALIZAÇÃO VISUAL DO CARD PRINCIPAL ---
+        function updateCardSummary(id) {
+            const summaryEl = document.getElementById(`summary-${id}`);
+            const btnEl = document.getElementById(`btn-opt-${id}`);
+            const card = document.getElementById(`card-${id}`);
+            
+            const entries = Object.keys(cart).filter(k => k.startsWith(`${id}::`));
+            
+            let total = 0;
+            let text = [];
+            
+            entries.forEach(k => {
+                const qty = cart[k];
+                const variant = k.split('::')[1];
+                if(qty > 0) {
+                    total += qty;
+                    text.push(`${qty}x ${variant}`);
+                }
+            });
+
+            if(total > 0) {
+                card.classList.add('active');
+                btnEl.classList.add('has-items');
+                btnEl.innerHTML = `<i class="ph-bold ph-check"></i> ${total} SELECIONADO(S)`;
+                
+                summaryEl.style.display = 'block';
+                summaryEl.innerText = text.join(', ');
+            } else {
+                card.classList.remove('active');
+                btnEl.classList.remove('has-items');
+                btnEl.innerHTML = `<i class="ph-bold ph-list-plus"></i> ESCOLHER OPÇÕES`;
+                summaryEl.style.display = 'none';
+            }
+        }
+
+        // --- STATUS GERAL ---
         function checkStatus() {
-            // Conta itens únicos
-            const uniqueItems = Object.keys(cart).length;
+            // Conta produtos diferentes (independente de variação, conta o ID base)
+            const productIds = new Set();
+            Object.keys(cart).forEach(k => productIds.add(k.split('::')[0]));
+            
+            const uniqueItems = productIds.size;
+            
             const btn = document.getElementById('btn-calc');
             const counter = document.getElementById('item-count');
             const warning = document.getElementById('min-msg');
@@ -497,7 +562,7 @@
             if(uniqueItems >= 10) {
                 btn.removeAttribute('disabled');
                 btn.classList.add('ready');
-                btn.innerText = "CALCULAR AGORA";
+                btn.innerText = "CALCULAR VALOR";
                 warning.classList.add('hidden');
                 counter.style.color = 'var(--success)';
             } else {
@@ -509,23 +574,30 @@
             }
         }
 
-        // --- CÁLCULO E MODAL ---
+        // --- CÁLCULO FINAL ---
         function calculate() {
             let subtotal = 0;
-            let itemsListHtml = '';
+            let html = '';
             
-            Object.keys(cart).forEach(idStr => {
+            // Agrupa por produto para ficar bonito no resumo
+            const keys = Object.keys(cart).sort();
+            
+            keys.forEach(key => {
+                const [idStr, variant] = key.split('::');
                 const id = parseInt(idStr);
-                const qty = cart[id];
                 const p = PRODUCTS.find(x => x.id === id);
+                const qty = cart[key];
                 
                 const totalItem = p.price * qty;
                 subtotal += totalItem;
                 
-                itemsListHtml += `
+                let name = p.name;
+                if(variant !== 'default') name += ` (${variant})`;
+
+                html += `
                     <li class="summary-item">
-                        <span><b style="color:var(--primary)">${qty}x</b> ${p.name}</span>
-                        <span style="color:var(--text-main); font-weight:600;">R$ ${totalItem.toFixed(2).replace('.',',')}</span>
+                        <span><b style="color:var(--primary)">${qty}x</b> ${name}</span>
+                        <span>R$ ${totalItem.toFixed(2).replace('.',',')}</span>
                     </li>
                 `;
             });
@@ -533,8 +605,7 @@
             const delivery = subtotal < 85 ? 10 : 0;
             const total = subtotal + delivery;
 
-            // Preencher Modal
-            document.getElementById('summary-list').innerHTML = itemsListHtml;
+            document.getElementById('summary-list').innerHTML = html;
             document.getElementById('summ-subtotal').innerText = `R$ ${subtotal.toFixed(2).replace('.',',')}`;
             document.getElementById('summ-delivery').innerText = delivery === 0 ? 'GRÁTIS' : 'R$ 10,00';
             document.getElementById('summ-total').innerText = `R$ ${total.toFixed(2).replace('.',',')}`;
@@ -551,23 +622,28 @@
                 freteMsg.innerText = `Falta R$ ${(85 - subtotal).toFixed(2).replace('.',',')} para frete grátis`;
             }
 
-            // Abrir Modal
             document.getElementById('modal-summary').classList.add('active');
         }
 
-        function closeModal() {
+        function closeSummaryModal() {
             document.getElementById('modal-summary').classList.remove('active');
         }
 
         function sendWhatsapp() {
             let msg = "*NOVA ENCOMENDA - CESTA PERSONALIZADA*\n--------------------------------\n";
             let subtotal = 0;
+            const keys = Object.keys(cart).sort();
 
-            Object.keys(cart).forEach(idStr => {
+            keys.forEach(key => {
+                const [idStr, variant] = key.split('::');
                 const id = parseInt(idStr);
-                const qty = cart[id];
                 const p = PRODUCTS.find(x => x.id === id);
-                msg += `[ ${qty}x ] ${p.name}\n`;
+                const qty = cart[key];
+                
+                let name = p.name;
+                if(variant !== 'default') name += ` (${variant})`;
+
+                msg += `[ ${qty}x ] ${name}\n`;
                 subtotal += (p.price * qty);
             });
 
@@ -579,29 +655,23 @@
             msg += delivery === 0 ? "_(Frete Grátis)_\n" : "_(Com Taxa de Entrega)_\n";
             msg += "\n📍 *Vim pelo site, aguardo confirmação.*";
 
-            const phone = "5565998150975"; // Numero oficial Dona Antonia
+            const phone = "5565998150975"; 
             window.location.href = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(msg)}`;
         }
 
-        // --- SCROLL NAV ---
         function scrollToId(id, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
             const el = document.getElementById(id);
             const offset = 140; 
             const bodyRect = document.body.getBoundingClientRect().top;
             const elementRect = el.getBoundingClientRect().top;
             const elementPosition = elementRect - bodyRect;
             const offsetPosition = elementPosition - offset;
-
             window.scrollTo({ top: offsetPosition, behavior: "smooth" });
         }
 
-        // Init
         render();
-
-        // Anti-Right Click (Security)
         document.addEventListener('contextmenu', event => event.preventDefault());
 
     </script>
