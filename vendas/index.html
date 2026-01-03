@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V2.2 - Expedição & Etiquetas</title>
+    <title>Sistema V2.3 - Expedição & Etiquetas (Clean)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -72,18 +72,30 @@
             .label-header { text-align: center; border-bottom: 2px solid black; padding-bottom: 5px; margin-bottom: 5px; }
             .label-date { font-size: 12px; font-weight: normal; }
             
-            .label-client-name { font-size: 28px; font-weight: 900; line-height: 1; text-transform: uppercase; margin-bottom: 5px; }
-            .label-client-id { font-size: 14px; background: black; color: white; padding: 2px 6px; display: inline-block; border-radius: 4px; }
+            .label-client-name { font-size: 24px; font-weight: 900; line-height: 1; text-transform: uppercase; margin-bottom: 2px; }
+            .label-client-phone { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+            .label-client-address { font-size: 11px; line-height: 1.1; margin-bottom: 5px; text-transform: uppercase; }
             
-            .label-rota { font-size: 40px; font-weight: 900; text-align: center; border: 3px solid black; padding: 5px; margin: 10px 0; text-transform: uppercase; }
+            /* Código Cliente Unificado */
+            .label-client-code-box { 
+                background: black; 
+                color: white; 
+                padding: 4px; 
+                font-size: 16px; 
+                font-weight: bold; 
+                text-align: center; 
+                border-radius: 4px;
+                margin: 5px 0;
+            }
             
-            .label-order-code { font-size: 18px; text-align: center; margin: 5px 0; font-family: 'Courier New', monospace; font-weight: bold;}
+            .label-rota { font-size: 40px; font-weight: 900; text-align: center; border: 3px solid black; padding: 5px; margin: 5px 0; text-transform: uppercase; }
             
-            .label-basket { font-size: 20px; font-weight: bold; text-transform: uppercase; border-top: 2px solid black; padding-top: 5px; }
-            .label-basket-detail { font-size: 12px; font-weight: normal; }
+            .label-order-code { font-size: 22px; text-align: center; margin: 5px 0; font-family: 'Courier New', monospace; font-weight: 900; letter-spacing: 2px;}
+            
+            .label-basket { font-size: 20px; font-weight: bold; text-transform: uppercase; border-top: 2px solid black; padding-top: 5px; text-align: center; }
             
             .label-footer { text-align: center; font-size: 10px; margin-top: auto; }
-            .volume-counter { font-size: 16px; font-weight: bold; text-align: right; margin-top: 5px; }
+            .volume-counter { font-size: 18px; font-weight: 900; text-align: right; margin-top: 5px; }
 
             .no-print { display: none !important; }
         }
@@ -349,9 +361,6 @@
         };
 
         // --- CATÁLOGO DE PRODUTOS UNIFICADO (MASTER DATA) ---
-        // Estrutura: Chave = Código Interno (ID)
-        // Valor = Objeto { nome, ean }
-        // EDITE ESTA LISTA PARA ALTERAR OS PRODUTOS DO SISTEMA
         const CATALOGO_PRODUTOS = {
             // === ALIMENTOS ===
             '001': { nome: 'Arroz de 5kg', ean: '7891234560010' },
@@ -906,7 +915,7 @@
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
             const desc = parseFloat(document.getElementById('desconto').value);
 
-            // GERAÇÃO DE CÓDIGO DIÁRIO (DD-MM-SEQ)
+            // GERAÇÃO DE CÓDIGO DIÁRIO (DDMMSQ - SEM SEPARADOR)
             const now = new Date();
             const dia = String(now.getDate()).padStart(2, '0');
             const mes = String(now.getMonth() + 1).padStart(2, '0');
@@ -917,12 +926,12 @@
             const countHoje = pedidos.filter(p => p.data.startsWith(dataHojeStr)).length + 1;
             const seq = String(countHoje).padStart(2, '0');
             
-            // Formato: DD-MM-SQ (Ex: 02-01-01)
-            const codigoVisual = `${dia}-${mes}-${seq}`;
+            // Formato: DDMMSQ (Ex: 020101)
+            const codigoVisual = `${dia}${mes}${seq}`;
 
             const novoPedido = {
                 id: Date.now().toString(), // ID Único do Sistema (Timestamp)
-                codigoVisual: codigoVisual, // Código para Etiqueta (DD-MM-SQ)
+                codigoVisual: codigoVisual, // Código para Etiqueta (DDMMSQ)
                 data: new Date().toISOString(),
                 ordem: Date.now(), 
                 cliente: clienteDados, 
@@ -977,6 +986,28 @@
             alternarTab('padrao');
             
             calcularTotalFinal(0);
+        }
+
+        // --- FUNÇÃO AUXILIAR: GERAR CÓDIGO CLIENTE VISUAL ---
+        function gerarCodigoClienteVisual(cliente, rotaPedido) {
+            // 1. Cidade (CBA ou VG)
+            let cid = 'CBA';
+            const cidadeRaw = (cliente.cidade || '').toLowerCase();
+            if (cidadeRaw.includes('varzea') || cidadeRaw.includes('várzea') || cidadeRaw.includes('vg')) {
+                cid = 'VG';
+            }
+
+            // 2. Rota (Remove espaços e caracteres especiais se desejar, ou mantém como está se for simples)
+            // O prompt diz "A ROTA" - vamos assumir o nome da rota do pedido limpo
+            const rotaLimpa = rotaPedido.replace(/[^a-zA-Z0-9]/g, '');
+
+            // 3. Telefone (4 últimos dígitos)
+            const telRaw = cliente.telefone || '';
+            const telNumeros = telRaw.replace(/\D/g, '');
+            const telFinal = telNumeros.length >= 4 ? telNumeros.slice(-4) : '0000';
+
+            // Formato: CIDADE + ROTA + FINAL_TEL (Tudo junto)
+            return `${cid}${rotaLimpa}${telFinal}`;
         }
 
         // --- VISUALIZAÇÃO E FILTROS ---
@@ -1095,6 +1126,9 @@
                 const isPago = p.pagamento.status === 'pago';
                 const borderClass = isPago ? 'border-green-500' : 'border-yellow-400';
                 
+                // Gera o Código do Cliente para exibição no card
+                const codClienteVisual = gerarCodigoClienteVisual(p.cliente, p.rota);
+
                 card.setAttribute('draggable', 'true');
                 card.dataset.id = p.id;
                 card.className = "draggable-card bg-white border-l-4 " + borderClass + " shadow-sm rounded-r mb-2 transition-all-300 flex";
@@ -1160,9 +1194,12 @@
                                 <span class="text-[9px] font-black uppercase bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded border border-gray-200 block">${p.rota.substring(0,3).toUpperCase()}</span>
                             </div>
                             <div class="flex-1 min-w-0 flex flex-col justify-center">
-                                <div class="font-bold text-gray-800 text-sm truncate leading-tight">${p.cliente.nome}</div>
+                                <div class="font-bold text-gray-800 text-sm truncate leading-tight flex items-center gap-1">
+                                    ${p.cliente.nome}
+                                    <span class="text-[9px] bg-black text-white px-1 rounded ml-1 font-mono">${codClienteVisual}</span>
+                                </div>
                                 <div class="text-[10px] text-gray-500 truncate flex items-center">
-                                    <span class="bg-gray-100 text-gray-600 px-1 rounded mr-1 font-mono font-bold">${p.codigoVisual || '---'}</span>
+                                    <span class="bg-gray-100 text-gray-600 px-1 rounded mr-1 font-mono font-bold">#${p.codigoVisual || '---'}</span>
                                     <i class="fa-solid fa-location-dot text-[9px] text-gray-400 mr-1"></i> ${localizacao}
                                     ${btnMapHTML} ${btnFotoHTML}
                                 </div>
@@ -1229,8 +1266,12 @@
             const entregador = ENTREGADORES[keyEntregador];
             if(!p || !entregador) return;
 
+            // Gera código para o zap também
+            const codCliente = gerarCodigoClienteVisual(p.cliente, p.rota);
+
             let msg = `*PEDIDO #${p.id.slice(-4)}*\n`;
-            msg += `*Cód:* ${p.codigoVisual || 'N/A'}\n`;
+            msg += `*Cód Pedido:* ${p.codigoVisual || 'N/A'}\n`;
+            msg += `*Cód Cliente:* ${codCliente}\n`;
             msg += `*Cliente:* ${p.cliente.nome}\n`;
             if(p.cliente.apelido) msg += `*Apelido:* ${p.cliente.apelido}\n`;
             msg += `*Telefone:* ${p.cliente.telefone}\n`;
@@ -1314,9 +1355,16 @@
             const horaF = dataObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
             
             const primeiroNome = p.cliente.nome.split(' ')[0].toUpperCase();
-            const idCliente = p.cliente.id || 'N/A';
+            
+            // GERAÇÃO DO CÓDIGO DO CLIENTE (Função Auxiliar)
+            const idCliente = gerarCodigoClienteVisual(p.cliente, p.rota);
+            
             const rota = p.rota.toUpperCase();
             const codVisual = p.codigoVisual || 'SEM COD';
+            
+            // Novos Dados
+            const telefone = p.cliente.telefone || 'Sem Tel';
+            const enderecoFull = `${p.cliente.endereco}, ${p.cliente.bairro || ''} - ${p.cliente.cidade || ''}`;
 
             let todasEtiquetasHtml = '';
 
@@ -1344,22 +1392,8 @@
                 // Renderiza N etiquetas para este item
                 for (let i = 1; i <= qtdEtiquetas; i++) {
                     
-                    let conteudoCentral = '';
-                    
-                    // Se for Alterada ou Personalizada, mostra itens
-                    if (item.modo === 'alterada') {
-                        const lista = item.conteudo.map(subItem => 
-                            `<div>${subItem.cod} | ${subItem.ean || ''} | <b>QTD: ${subItem.qtd}</b></div>`
-                        ).join('');
-                        
-                        conteudoCentral = `
-                            <div class="label-basket-detail" style="margin-top:5px; border:1px solid #000; padding:2px;">
-                                ${lista}
-                            </div>
-                        `;
-                    } else {
-                        conteudoCentral = `<div style="text-align:center; font-size:12px; margin-top:5px;">(CESTA PADRÃO)</div>`;
-                    }
+                    // SEM LISTA DE PRODUTOS
+                    let conteudoCentral = `<div style="text-align:center; font-size:12px; margin-top:5px;">*** ${nomeCestaDisplay} ***</div>`;
 
                     todasEtiquetasHtml += `
                         <div class="label-container">
@@ -1367,12 +1401,16 @@
                                 <div class="label-header">
                                     <span class="label-date">${dataF} ${horaF}</span>
                                 </div>
+                                
                                 <div class="label-client-name">${primeiroNome}</div>
-                                <div><span class="label-client-id">CLIENTE: ${idCliente}</span></div>
+                                <div class="label-client-phone">${telefone}</div>
+                                <div class="label-client-address">${enderecoFull}</div>
+                                
+                                <div class="label-client-code-box">${idCliente}</div>
                                 
                                 <div class="label-rota">${rota}</div>
                                 
-                                <div class="label-order-code">PEDIDO: ${codVisual}</div>
+                                <div class="label-order-code">PED: ${codVisual}</div>
                             </div>
 
                             <div>
