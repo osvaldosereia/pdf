@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V1 - Gestão de Vendas (Rota Organizada)</title>
+    <title>Sistema V2.1 - Gestão de Vendas (SKU + EAN)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -69,9 +69,9 @@
         <header class="bg-white shadow-sm rounded-lg p-3 mb-3 flex justify-between items-center border border-gray-200">
             <div class="flex items-center gap-4">
                 <div class="bg-indigo-600 text-white p-2 rounded">
-                    <i class="fa-solid fa-cart-shopping"></i>
+                    <i class="fa-solid fa-barcode"></i>
                 </div>
-                <h1 class="font-bold text-lg text-gray-700">Módulo 2: Vendas & Rota</h1>
+                <h1 class="font-bold text-lg text-gray-700">Módulo 2: Vendas & Rota (SKU + EAN)</h1>
             </div>
             
             <!-- Links -->
@@ -110,97 +110,72 @@
 
                 <div class="p-4 overflow-y-auto flex-1 custom-scroll">
                     
-                    <!-- 1. Seleção de Cliente (ATUALIZADO COM BUSCA) -->
+                    <!-- 1. Seleção de Cliente -->
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-600 mb-1">1. Selecionar Cliente</label>
-                        
-                        <!-- Novo Campo de Busca -->
                         <input type="text" id="inputBuscaCliente" onkeyup="filtrarClientes()" placeholder="🔎 Digite nome ou bairro..." class="w-full border border-indigo-200 bg-indigo-50 rounded px-2 py-1.5 mb-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 placeholder-gray-400">
-
                         <div class="flex gap-2">
-                            <select id="selCliente" onchange="verificarCuponsCliente()" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-indigo-500 bg-white">
+                            <select id="selCliente" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:border-indigo-500 bg-white">
                                 <option value="">Carregando clientes...</option>
                             </select>
                             <button onclick="carregarClientes()" class="bg-gray-200 px-3 rounded hover:bg-gray-300" title="Atualizar lista"><i class="fa-solid fa-sync text-xs"></i></button>
                         </div>
                     </div>
                     
-                    <!-- AREA DE CUPONS (ATUALIZADA) -->
-                    <div id="areaCupons" class="mb-4 hidden bg-yellow-50 border border-yellow-200 rounded p-2">
-                        <label class="block text-xs font-bold text-yellow-800 mb-2 flex items-center border-b border-yellow-200 pb-1">
-                            <i class="fa-solid fa-ticket mr-1"></i> Aplicar Desconto (Venda Atual)
-                        </label>
-                        
-                        <!-- Select Cupons Pessoais (Automático) -->
-                        <div id="divCuponsPessoais" class="hidden mb-3">
-                            <span class="text-[10px] text-gray-500 block mb-1">Cupons PRÓPRIOS deste cliente:</span>
-                            <select id="selCupomPessoal" onchange="aplicarCupom('pessoal')" class="w-full border border-yellow-300 rounded compact-input text-sm bg-white">
-                                <option value="">-- Selecione para usar --</option>
-                            </select>
-                        </div>
-
-                        <!-- Opção Cupom Amigo (Simplificada) -->
-                        <div class="flex items-center justify-between bg-white p-2 rounded border border-yellow-200">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="chkUsarCupomAmigo" onchange="toggleCupomAmigo()" class="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500">
-                                <label for="chkUsarCupomAmigo" class="ml-2 block text-xs font-bold text-gray-700">
-                                    Usar Cupom Amigo?
-                                </label>
-                            </div>
-                            <div id="divValorCupomAmigo" class="hidden">
-                                <select id="selValorCupomAmigo" onchange="aplicarCupom('amigo')" class="border border-yellow-300 rounded compact-input text-sm bg-yellow-50 font-bold text-yellow-800">
-                                    <option value="0">-- Valor --</option>
-                                    <option value="5">R$ 5,00</option>
-                                    <option value="10">R$ 10,00</option>
-                                    <option value="15">R$ 15,00</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Feedback do Cupom Aplicado -->
-                        <div id="msgCupomAplicado" class="hidden mt-2 text-green-700 text-xs font-bold bg-green-100 p-1.5 rounded border border-green-200 flex justify-between items-center">
-                            <span>Desconto aplicado: R$ <span id="valorDescontoCupom">0,00</span></span>
-                            <button onclick="removerCupom()" class="text-red-500 hover:underline ml-2">Remover</button>
-                        </div>
-                    </div>
-
                     <hr class="border-dashed border-gray-200 my-3">
 
                     <!-- 2. Adicionar Itens (Cestas) -->
                     <div class="bg-gray-50 p-3 rounded border border-gray-200 mb-4">
                         <label class="block text-xs font-bold text-gray-600 mb-2">2. Adicionar Produto ao Pedido</label>
                         
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <select id="selTipoCesta" onchange="atualizarOpcoesPreco()" class="col-span-1 border border-gray-300 rounded compact-input">
-                                <option value="economica">Cesta Econômica</option>
-                                <option value="mini">Cesta Mini</option>
-                                <option value="pequena">Cesta Pequena</option>
-                                <option value="media">Cesta Média</option>
-                                <option value="grande">Cesta Grande</option>
-                            </select>
-                            <select id="selMarcaPreco" class="col-span-1 border border-gray-300 rounded compact-input">
-                                <!-- Preenchido via JS -->
-                            </select>
+                        <!-- Tabs de Modo de Entrada -->
+                        <div class="flex border-b border-gray-300 mb-3 text-xs">
+                            <button class="flex-1 py-1 font-bold text-indigo-700 border-b-2 border-indigo-600" id="tabPadrao" onclick="alternarTab('padrao')">Cesta Padrão</button>
+                            <button class="flex-1 py-1 font-bold text-gray-500 hover:text-indigo-600" id="tabImportar" onclick="alternarTab('importar')">Importar (Colar)</button>
                         </div>
 
-                        <!-- Modo: Normal vs Alterada -->
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center gap-4">
-                                <label class="flex items-center text-sm cursor-pointer">
-                                    <input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal
-                                </label>
-                                <label class="flex items-center text-sm cursor-pointer">
-                                    <input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alterada
-                                </label>
+                        <!-- MODO PADRÃO -->
+                        <div id="areaModoPadrao">
+                            <div class="grid grid-cols-2 gap-2 mb-2">
+                                <select id="selTipoCesta" onchange="atualizarOpcoesPreco()" class="col-span-1 border border-gray-300 rounded compact-input">
+                                    <option value="economica">Cesta Econômica</option>
+                                    <option value="mini">Cesta Mini</option>
+                                    <option value="pequena">Cesta Pequena</option>
+                                    <option value="media">Cesta Média</option>
+                                    <option value="grande">Cesta Grande</option>
+                                </select>
+                                <select id="selMarcaPreco" class="col-span-1 border border-gray-300 rounded compact-input">
+                                    <!-- Preenchido via JS -->
+                                </select>
                             </div>
-                            
-                            <!-- Input Código Identificação (aparece se Alterada) -->
-                            <div id="divCodigoCesta" class="hidden">
-                                <input type="number" id="inputCodigoCesta" placeholder="Cód. Identificação" class="border border-yellow-400 bg-yellow-50 rounded px-2 py-1 text-xs w-32 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+
+                            <!-- Modo: Normal vs Alterada -->
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center gap-4">
+                                    <label class="flex items-center text-sm cursor-pointer">
+                                        <input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal
+                                    </label>
+                                    <label class="flex items-center text-sm cursor-pointer">
+                                        <input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alterada
+                                    </label>
+                                </div>
+                                
+                                <div id="divCodigoCesta" class="hidden">
+                                    <input type="number" id="inputCodigoCesta" placeholder="Cód. Identificação" class="border border-yellow-400 bg-yellow-50 rounded px-2 py-1 text-xs w-32 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Área de Itens (Aparece se Alterada) -->
+                        <!-- MODO IMPORTAR -->
+                        <div id="areaModoImportar" class="hidden mb-3">
+                            <label class="block text-[10px] text-gray-500 mb-1">Cole a lista abaixo (Formato: CÓDIGO - QUANTIDADE)</label>
+                            <textarea id="txtImportar" rows="4" class="w-full border border-gray-300 rounded text-xs p-2 font-mono bg-white" placeholder="001 - 3&#10;030 - 1&#10;043 - 2"></textarea>
+                            <button onclick="processarImportacao()" class="mt-1 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded border border-gray-300 w-full font-bold">
+                                <i class="fa-solid fa-bolt mr-1"></i> Carregar Lista Editável
+                            </button>
+                        </div>
+
+                        <!-- Área de Itens (Aparece se Alterada ou Importada) -->
                         <div id="areaItensCesta" class="hidden bg-white border border-gray-300 rounded p-2 mb-2 max-h-40 overflow-y-auto text-xs">
                             <!-- Lista de inputs gerada via JS -->
                         </div>
@@ -281,16 +256,6 @@
                                 <option value="CPA">CPA</option>
                             </select>
                         </div>
-                        <!-- NOVO CAMPO: SELETOR DE GERAÇÃO DE CUPOM -->
-                        <div>
-                            <label class="block text-[10px] font-bold text-blue-600 uppercase">Gerar Cupom (Futuro)</label>
-                            <select id="selGerarCupomValor" class="w-full border border-blue-300 rounded compact-input font-bold text-blue-800">
-                                <option value="0">Não gerar</option>
-                                <option value="5">R$ 5,00</option>
-                                <option value="10">R$ 10,00</option>
-                                <option value="15">R$ 15,00</option>
-                            </select>
-                        </div>
                         <div class="col-span-2">
                             <label class="block text-[10px] font-bold text-gray-500 uppercase">Observação</label>
                             <input type="text" id="obs" class="w-full border border-gray-300 rounded compact-input" placeholder="Ex: Entregar após as 14h...">
@@ -330,9 +295,6 @@
                             <i class="fa-brands fa-whatsapp"></i> Rota no Zap
                         </button>
                     </div>
-                    <div class="text-[10px] text-gray-500 mt-2 italic flex items-center bg-yellow-50 p-1 rounded border border-yellow-200">
-                        <i class="fa-solid fa-hand-pointer mr-2 text-yellow-600"></i> Dica: <b>Arraste e solte</b> os pedidos para organizar a rota rapidamente.
-                    </div>
                 </div>
 
                 <!-- LISTA DE PEDIDOS COM DRAG AND DROP -->
@@ -357,26 +319,98 @@
             'Jose': { nome: 'Jose', num: '5565981756150' }
         };
 
+        // --- CATÁLOGO DE PRODUTOS UNIFICADO (MASTER DATA) ---
+        // Estrutura: Chave = Código Interno (ID)
+        // Valor = Objeto { nome, ean }
+        // EDITE ESTA LISTA PARA ALTERAR OS PRODUTOS DO SISTEMA
+        const CATALOGO_PRODUTOS = {
+            // === ALIMENTOS ===
+            '001': { nome: 'Arroz de 5kg', ean: '7891234560010' },
+            '002': { nome: 'Açúcar Cristal de 2kg', ean: '7891234560027' },
+            '003': { nome: 'Óleo de Soja de 900ml', ean: '7891234560034' },
+            '004': { nome: 'Feijão 1kg', ean: '7891234560041' },
+            '005': { nome: 'Café 250g', ean: '7891234560058' },
+            '005b': { nome: 'Café 500g', ean: '7891234560553' }, 
+            '006': { nome: 'Espaguete de 400g/500g', ean: '7891234560065' },
+            '007': { nome: 'Trigo de 1kg', ean: '7891234560072' },
+            '008': { nome: 'Farinha de Mandioca 1kg', ean: '7891234560089' },
+            '009': { nome: 'Sal de 1kg', ean: '7891234560096' },
+            '010': { nome: 'Molho Tomate Sachê', ean: '7891234560102' },
+            '011': { nome: 'Milho Lata/Sachê', ean: '7891234560119' },
+            '012': { nome: 'Bolacha Recheada', ean: '7891234560126' },
+            '013': { nome: 'Miojo', ean: '7891234560133' },
+            '014': { nome: 'Suco em Pó', ean: '7891234560140' },
+            '015': { nome: '12 Ovos', ean: '7891234560157' },
+            '016': { nome: 'Mistura para Bolo 400g', ean: '7891234560164' },
+            '017': { nome: 'Tempero Pronto', ean: '7891234560171' },
+            
+            // === LIMPEZA E HIGIENE ===
+            '030': { nome: 'Sabão Barra (pct)', ean: '7891234560300' },
+            '031': { nome: 'Creme Dental 70g', ean: '7891234560317' },
+            '032': { nome: 'Papel Higiênico (4un)', ean: '7891234560324' },
+            '033': { nome: 'Amaciante 2 Litros', ean: '7891234560331' },
+            '034': { nome: 'Desinfetante 2 Litros', ean: '7891234560348' },
+            '035': { nome: 'Sabão em Pó 800g', ean: '7891234560355' },
+            '036': { nome: 'Detergente 500ml', ean: '7891234560362' },
+            '037': { nome: 'Qboa 1 Litro', ean: '7891234560379' },
+            '038': { nome: 'Sabonete 90g', ean: '7891234560386' },
+            '039': { nome: 'Esponja de Aço', ean: '7891234560393' },
+            '040': { nome: 'Esponja de Louça', ean: '7891234560409' }
+        };
+
         const DADOS_CESTAS = {
             'economica': {
                 titulo: 'Cesta Econômica',
-                itens: ['<b>Alimentos:</b>', '1 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '1 Óleo de Soja de 900ml', '1 Feijão Dona Dê de 1kg', '1 Café 250g', '1 Espaguete de 400g', '1 Trigo de 1kg', '1 Farinha de Mandioca de 1kg', '1 Sal de 1kg', '1 Molho Tomate 300g', '1 Milho Lata ou sachê de 250g', '1 Bolacha Recheada', '1 Miojo Apti', '1 Suco Pó']
+                // Formato: [QTD, CODIGO]
+                itensCod: [
+                    [1, '001'], [1, '002'], [1, '003'], [1, '004'], [1, '005'], 
+                    [1, '006'], [1, '007'], [1, '008'], [1, '009'], [1, '010'], 
+                    [1, '011'], [1, '012'], [1, '013'], [1, '014']
+                ]
             },
             'mini': {
                 titulo: 'Cesta Mini',
-                itens: ['<b>Alimentos:</b>', '1 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '2 Óleo de Soja de 900ml', '2 Feijão Da Casa de 1kg', '1 Café Caboclo de 250g', '1 Espaguete de 500g', '1 Sal de 1kg', '1 Molho Tomate FUGINI', '1 Milho Lata de 250g', '1 Bolacha Recheada My Bit', '1 Miojo Apti', '2 Suco Pó', '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '1 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '2 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça']
+                itensCod: [
+                    [1, '001'], [1, '002'], [2, '003'], [2, '004'], [1, '005'],
+                    [1, '006'], [1, '009'], [1, '010'], [1, '011'], [1, '012'],
+                    [1, '013'], [2, '014'],
+                    // Limpeza
+                    [1, '030'], [1, '031'], [1, '032'], [1, '033'], [1, '034'],
+                    [1, '035'], [1, '036'], [1, '037'], [2, '038'], [1, '039'], [1, '040']
+                ]
             },
             'pequena': {
                 titulo: 'Cesta Pequena',
-                itens: ['<b>Alimentos:</b>', '2 Arroz de 5kg', '1 Açúcar Cristal de 2kg', '2 Óleo de Soja de 900ml', '2 Feijão Da Casa de 1kg', '1 Café Caboclo de 250g', '12 Ovos', '1 Mistura para Bolo 400g', '1 Espaguete de 500g', '1 Trigo de 1kg', '1 Sal de 1kg', '1 Molho Tomate Fugini', '1 Milho Lata de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Yolle', '2 Suco Pó', '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '1 Creme Dental Sorriso 70g', '1 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '2 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Bucha de lavar louça']
+                itensCod: [
+                    [2, '001'], [1, '002'], [2, '003'], [2, '004'], [1, '005'],
+                    [1, '015'], [1, '016'], [1, '006'], [1, '007'], [1, '009'],
+                    [1, '010'], [1, '011'], [1, '017'], [2, '012'], [2, '013'], [2, '014'],
+                    // Limpeza
+                    [1, '030'], [1, '031'], [1, '032'], [1, '033'], [1, '034'],
+                    [1, '035'], [2, '036'], [1, '037'], [2, '038'], [1, '039'], [1, '040']
+                ]
             },
             'media': {
                 titulo: 'Cesta Média',
-                itens: ['<b>Alimentos:</b>', '3 Arroz de 5kg', '2 Açúcar Cristal de 2kg', '3 Óleo de Soja de 900ml', '3 Feijão Da Casa de 1kg', '1 Café Caboclo 500g', '12 Ovos', '1 Mistura para Bolo 400g', '2 Espaguete de 500g', '1 Trigo de 1kg', '1 Sal de 1kg', '2 Molho Tomate FUGINI 340g', '1 Milho Lata/sachê de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Apti', '3 Suco Pó', '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '3 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça']
+                itensCod: [
+                    [3, '001'], [2, '002'], [3, '003'], [3, '004'], [1, '005b'],
+                    [1, '015'], [1, '016'], [2, '006'], [1, '007'], [1, '009'],
+                    [2, '010'], [1, '011'], [1, '017'], [2, '012'], [2, '013'], [3, '014'],
+                    // Limpeza
+                    [1, '030'], [2, '031'], [2, '032'], [1, '033'], [1, '034'],
+                    [1, '035'], [2, '036'], [1, '037'], [3, '038'], [1, '039'], [1, '040']
+                ]
             },
             'grande': {
                 titulo: 'Cesta Grande',
-                itens: ['<b>Alimentos:</b>', '4 Arroz de 5kg', '3 Açúcar Cristal de 2kg', '4 Óleo de Soja de 900ml', '4 Feijão Da Casa de 1kg', '1 Café Caboclo 500g', '3 Espaguetes de 500g', '12 Ovos', '1 Mistura para Bolo 400g', '1 Trigo de 1kg', '1 Sal de 1kg', '2 Molho Tomate FUGINI 340g', '1 Milho Lata ou sachê de 250g', '1 Tempero Pronto de 300g', '2 Bolacha Recheada My Bit', '2 Miojo Apti', '4 Suco Pó', '<b>Limpeza e Higiene:</b>', '1 Sabão Barra YPE c/ 5 un', '2 Creme Dental Sorriso 70g', '2 Papel Higiênico c/ 4un', '1 Amaciante Ype de 2 Litros', '1 Desinfetante Remmus 2 L', '1 Sabão Pó OMO 800g', '2 Detergente Ype de 500ml', '1 Qboa de 1 Litro', '4 Sabonete Palmolive 90g', '1 Esponja de Aço Assolan', '1 Esponja de Lavar Louça']
+                itensCod: [
+                    [4, '001'], [3, '002'], [4, '003'], [4, '004'], [1, '005b'],
+                    [3, '006'], [1, '015'], [1, '016'], [1, '007'], [1, '009'],
+                    [2, '010'], [1, '011'], [1, '017'], [2, '012'], [2, '013'], [4, '014'],
+                    // Limpeza
+                    [1, '030'], [2, '031'], [2, '032'], [1, '033'], [1, '034'],
+                    [1, '035'], [2, '036'], [1, '037'], [4, '038'], [1, '039'], [1, '040']
+                ]
             }
         };
 
@@ -391,22 +425,18 @@
         // --- ESTADO GLOBAL ---
         let carrinho = []; 
         let pedidos = []; 
-        let cupons = []; 
-        let cupomSelecionado = null; 
-        let listaClientesCache = []; // Cache para facilitar a busca sem recarregar localStorage
+        let listaClientesCache = []; 
 
         let filtroRotaAtual = 'todos'; 
         let dragSrcEl = null; 
         
         const KEY_CLIENTES = 'sistema_empresarial_clientes';
         const KEY_PEDIDOS = 'sistema_empresarial_vendas';
-        const KEY_CUPONS = 'sistema_empresarial_cupons';
 
         // --- INICIALIZAÇÃO ---
         window.onload = () => {
             carregarClientes();
             carregarPedidosLocais();
-            carregarCuponsLocais();
             atualizarOpcoesPreco();
             
             document.getElementById('filtroData').valueAsDate = new Date();
@@ -414,30 +444,23 @@
         };
 
         // --- FUNÇÕES DE NAVEGAÇÃO / DADOS ---
-        
-        // 1. Carrega do localStorage e salva no cache global
         function carregarClientes() {
             const clientesRaw = localStorage.getItem(KEY_CLIENTES);
-            
             if (clientesRaw) {
                 listaClientesCache = JSON.parse(clientesRaw);
                 listaClientesCache.sort((a, b) => a.nome.localeCompare(b.nome));
             } else {
                 listaClientesCache = [];
             }
-            // Renderiza usando o cache
             renderizarOpcoesClientes(listaClientesCache);
         }
 
-        // 2. Renderiza as opções no Select (usada na carga inicial e no filtro)
         function renderizarOpcoesClientes(lista) {
             const select = document.getElementById('selCliente');
-            const valorAtual = select.value; // Tenta manter seleção se possível
-            
+            const valorAtual = select.value; 
             select.innerHTML = '<option value="">-- Selecione o Cliente --</option>';
 
             if (lista.length === 0) {
-                // Mensagem muda se for "banco vazio" ou "filtro sem resultado"
                 if (listaClientesCache.length === 0) {
                     select.innerHTML = '<option value="">Nenhum cliente cadastrado</option>';
                 } else {
@@ -455,148 +478,83 @@
                 select.appendChild(option);
             });
 
-            // Se o item selecionado ainda existir na lista filtrada, mantém selecionado
-            if (valorAtual) {
-                // Pequena verificação se o ID ainda está nas opções geradas
-                // (O browser faria isso, mas se o valor não existir mais nas options, ele reseta)
-                select.value = valorAtual;
-            }
+            if (valorAtual) select.value = valorAtual;
         }
 
-        // 3. Função chamada ao digitar no input de busca
         function filtrarClientes() {
             const termo = document.getElementById('inputBuscaCliente').value.toLowerCase();
-            
             const filtrados = listaClientesCache.filter(c => {
                 const nome = c.nome.toLowerCase();
                 const apelido = (c.apelido || '').toLowerCase();
                 const bairro = (c.bairro || '').toLowerCase();
-                
                 return nome.includes(termo) || apelido.includes(termo) || bairro.includes(termo);
             });
-            
             renderizarOpcoesClientes(filtrados);
         }
 
-        function carregarCuponsLocais() {
-            const dados = localStorage.getItem(KEY_CUPONS);
-            if (dados) cupons = JSON.parse(dados);
-        }
+        // --- LÓGICA DE INTERFACE DE TABS ---
+        function alternarTab(tab) {
+            const btnPadrao = document.getElementById('tabPadrao');
+            const btnImportar = document.getElementById('tabImportar');
+            const areaPadrao = document.getElementById('areaModoPadrao');
+            const areaImportar = document.getElementById('areaModoImportar');
+            const areaItens = document.getElementById('areaItensCesta');
 
-        function salvarCuponsLocais() {
-            localStorage.setItem(KEY_CUPONS, JSON.stringify(cupons));
-        }
-
-        // --- GESTÃO DE CUPONS ---
-        function verificarCuponsCliente() {
-            const idCliente = document.getElementById('selCliente').value;
-            const divArea = document.getElementById('areaCupons');
-            const divPessoais = document.getElementById('divCuponsPessoais');
-            const selectPessoais = document.getElementById('selCupomPessoal');
-            
-            removerCupom();
-            selectPessoais.innerHTML = '<option value="">-- Selecione para usar --</option>';
-            
-            if (!idCliente) {
-                divArea.classList.add('hidden');
-                return;
-            }
-
-            divArea.classList.remove('hidden');
-
-            const hoje = new Date().setHours(0,0,0,0);
-            const cuponsValidos = cupons.filter(c => 
-                c.idCliente === idCliente && 
-                c.tipo === 'pessoal' && 
-                !c.usado && 
-                new Date(c.validade) >= hoje
-            );
-
-            if (cuponsValidos.length > 0) {
-                divPessoais.classList.remove('hidden');
-                cuponsValidos.forEach(c => {
-                    const dataVal = new Date(c.validade).toLocaleDateString('pt-BR');
-                    const opt = document.createElement('option');
-                    opt.value = c.codigo;
-                    opt.text = `R$ ${c.valor},00 - ${c.cestaAlvo} (Vence: ${dataVal})`;
-                    opt.dataset.json = JSON.stringify(c);
-                    selectPessoais.appendChild(opt);
-                });
+            if(tab === 'padrao') {
+                btnPadrao.className = "flex-1 py-1 font-bold text-indigo-700 border-b-2 border-indigo-600";
+                btnImportar.className = "flex-1 py-1 font-bold text-gray-500 hover:text-indigo-600";
+                areaPadrao.classList.remove('hidden');
+                areaImportar.classList.add('hidden');
+                
+                // Reset para modo normal
+                document.querySelector('input[name="modoCesta"][value="normal"]').checked = true;
+                toggleModoCesta();
             } else {
-                divPessoais.classList.add('hidden');
+                btnImportar.className = "flex-1 py-1 font-bold text-indigo-700 border-b-2 border-indigo-600";
+                btnPadrao.className = "flex-1 py-1 font-bold text-gray-500 hover:text-indigo-600";
+                areaImportar.classList.remove('hidden');
+                areaPadrao.classList.add('hidden');
+                
+                // Prepara para exibir lista editavel
+                areaItens.classList.remove('hidden');
+                areaItens.innerHTML = '<div class="text-center text-gray-400 p-2">Cole os códigos e clique em carregar.</div>';
+                
+                // Força visualmente modo "Alterada"
+                document.querySelector('input[name="modoCesta"][value="alterada"]').checked = true;
+                // Exibe campo código
+                document.getElementById('divCodigoCesta').classList.remove('hidden');
             }
         }
 
-        function toggleCupomAmigo() {
-            const chk = document.getElementById('chkUsarCupomAmigo');
-            const divValor = document.getElementById('divValorCupomAmigo');
-            
-            if (chk.checked) {
-                divValor.classList.remove('hidden');
-                document.getElementById('selValorCupomAmigo').focus();
-            } else {
-                divValor.classList.add('hidden');
-                document.getElementById('selValorCupomAmigo').value = '0';
-                if (cupomSelecionado && cupomSelecionado.tipo === 'amigo_manual') {
-                    removerCupom();
+        function processarImportacao() {
+            const texto = document.getElementById('txtImportar').value;
+            if(!texto.trim()) return alert("Cole a lista primeiro!");
+
+            const linhas = texto.split('\n');
+            const listaParaRenderizar = [];
+
+            linhas.forEach(linha => {
+                if(!linha.trim()) return;
+                // Tenta dividir por "-" ou espaço
+                let parts = linha.includes('-') ? linha.split('-') : linha.split(' ');
+                
+                // Limpeza básica
+                parts = parts.map(p => p.trim()).filter(p => p !== "");
+                
+                if(parts.length >= 2) {
+                    const codigo = parts[0];
+                    const qtd = parseInt(parts[1]);
+                    
+                    if(CATALOGO_PRODUTOS[codigo]) {
+                        // Adiciona no formato que o gerador de lista entende: [qtd, codigo]
+                        listaParaRenderizar.push([qtd, codigo]);
+                    }
                 }
-            }
-        }
+            });
 
-        function aplicarCupom(origem) {
-            let valor = 0;
-            let tipo = '';
-            let codigo = '';
+            if(listaParaRenderizar.length === 0) return alert("Nenhum código válido encontrado (Formato: 001 - 3)");
 
-            if (origem === 'pessoal') {
-                document.getElementById('chkUsarCupomAmigo').checked = false;
-                toggleCupomAmigo();
-                
-                const select = document.getElementById('selCupomPessoal');
-                if (select.value) {
-                    const dados = JSON.parse(select.options[select.selectedIndex].dataset.json);
-                    valor = dados.valor;
-                    tipo = 'pessoal_sistema';
-                    codigo = dados.codigo;
-                }
-            } else if (origem === 'amigo') {
-                document.getElementById('selCupomPessoal').value = ''; 
-                
-                const selValor = document.getElementById('selValorCupomAmigo');
-                valor = parseFloat(selValor.value);
-                tipo = 'amigo_manual';
-                codigo = 'MANUAL';
-            }
-
-            if (valor > 0) {
-                cupomSelecionado = {
-                    valor: valor,
-                    tipo: tipo,
-                    codigo: codigo
-                };
-                
-                document.getElementById('msgCupomAplicado').classList.remove('hidden');
-                document.getElementById('valorDescontoCupom').innerText = valor.toFixed(2).replace('.', ',');
-                
-                document.getElementById('desconto').disabled = true;
-                document.getElementById('desconto').value = 0;
-                
-                calcularTotalFinal();
-            } else {
-                removerCupom();
-            }
-        }
-
-        function removerCupom() {
-            cupomSelecionado = null;
-            document.getElementById('selCupomPessoal').value = "";
-            document.getElementById('chkUsarCupomAmigo').checked = false;
-            document.getElementById('selValorCupomAmigo').value = "0";
-            document.getElementById('divValorCupomAmigo').classList.add('hidden');
-            
-            document.getElementById('msgCupomAplicado').classList.add('hidden');
-            document.getElementById('desconto').disabled = false;
-            calcularTotalFinal();
+            renderizarListaEditavelGenerica(listaParaRenderizar);
         }
 
         // --- LÓGICA DE PRODUTOS/PREÇOS ---
@@ -619,7 +577,11 @@
                 opt2.setAttribute('data-marca', 'Koblenz');
                 selectMarca.add(opt2);
             }
-            gerarListaItensEditavel();
+            // Se estiver no modo alterada, atualiza a lista
+            if(document.querySelector('input[name="modoCesta"]:checked').value === 'alterada') {
+                const listaOriginal = DADOS_CESTAS[tipo].itensCod;
+                renderizarListaEditavelGenerica(listaOriginal);
+            }
         }
 
         function toggleModoCesta() {
@@ -629,7 +591,10 @@
             const inputCodigo = document.getElementById('inputCodigoCesta');
             
             if (modo === 'alterada') {
-                gerarListaItensEditavel();
+                const tipo = document.getElementById('selTipoCesta').value;
+                const listaOriginal = DADOS_CESTAS[tipo].itensCod;
+                renderizarListaEditavelGenerica(listaOriginal);
+
                 area.classList.remove('hidden');
                 divCodigo.classList.remove('hidden');
                 inputCodigo.focus();
@@ -640,39 +605,44 @@
             }
         }
 
-        function gerarListaItensEditavel() {
-            const tipo = document.getElementById('selTipoCesta').value;
+        function renderizarListaEditavelGenerica(listaItensCod) {
             const area = document.getElementById('areaItensCesta');
-            const listaOriginal = DADOS_CESTAS[tipo].itens;
-            
             area.innerHTML = '';
 
-            listaOriginal.forEach((itemStr) => {
-                if (itemStr.startsWith('<b>')) {
-                    const titulo = document.createElement('div');
-                    titulo.className = "font-bold text-gray-500 mt-2 mb-1 border-b border-gray-100";
-                    titulo.innerHTML = itemStr.replace(/<\/?b>/g, '');
-                    area.appendChild(titulo);
-                    return;
-                }
-
-                const match = itemStr.match(/^(\d+)\s+(.+)$/);
-                let qtd = 1;
-                let desc = itemStr;
-
-                if (match) {
-                    qtd = match[1];
-                    desc = match[2];
-                }
+            // 1. Gera Itens da Lista
+            listaItensCod.forEach((item) => {
+                const qtd = item[0];
+                const cod = item[1];
+                // Busca no Objeto de Produtos
+                const produto = CATALOGO_PRODUTOS[cod];
+                const nome = produto ? produto.nome : 'Item Desconhecido';
 
                 const row = document.createElement('div');
                 row.className = "flex items-center gap-2 mb-1";
                 row.innerHTML = `
-                    <input type="number" min="0" value="${qtd}" class="w-12 border border-gray-300 rounded text-center px-1 item-qtd">
-                    <input type="text" value="${desc}" class="flex-1 border border-gray-300 rounded px-1 item-desc">
+                    <input type="number" min="0" value="${qtd}" class="w-12 border border-gray-300 rounded text-center px-1 item-qtd text-gray-700 font-bold">
+                    <div class="flex-1 flex items-center gap-1">
+                        <span class="text-[10px] bg-gray-200 text-gray-600 px-1 rounded font-mono">${cod}</span>
+                        <input type="text" value="${nome}" class="flex-1 border border-gray-300 rounded px-1 item-desc text-xs" readonly>
+                    </div>
                 `;
                 area.appendChild(row);
             });
+
+            // 2. Cria Datalist para autocomplete (Apenas 1x é suficiente, mas vamos recriar para garantir update)
+            // Para performance, verificamos se já existe
+            let dataList = document.getElementById('listProdutosCatalogo');
+            if(!dataList) {
+                dataList = document.createElement('datalist');
+                dataList.id = 'listProdutosCatalogo';
+                // Popula com catálogo
+                Object.keys(CATALOGO_PRODUTOS).forEach(key => {
+                    const opt = document.createElement('option');
+                    opt.value = `${key} - ${CATALOGO_PRODUTOS[key].nome}`;
+                    dataList.appendChild(opt);
+                });
+                document.body.appendChild(dataList); // Anexa ao body para ser acessível globalmente
+            }
 
             // --- Divisor para área de extras ---
             const divDivisor = document.createElement('div');
@@ -680,17 +650,19 @@
             divDivisor.className = "border-t border-dashed border-gray-300 my-2 pt-1";
             area.appendChild(divDivisor);
 
-            // --- Área de Input Manual (Fixo no final) ---
+            // --- Área de Input Manual (BUSCA POR CÓDIGO) ---
             const labelManual = document.createElement('div');
             labelManual.className = "text-[10px] font-bold text-blue-600 mb-1";
-            labelManual.innerText = "Adicionar Item Extra/Manual:";
+            labelManual.innerText = "Adicionar Produto Extra (Buscar no Catálogo):";
             area.appendChild(labelManual);
 
             const rowManual = document.createElement('div');
             rowManual.className = "flex items-center gap-2 mb-1";
+            
+            // Input modificado com DATALIST e Placeholder de CÓDIGO
             rowManual.innerHTML = `
                 <input type="number" id="qtdExtraInput" min="1" value="1" class="w-12 border border-blue-300 bg-blue-50 rounded text-center px-1 font-bold text-blue-800">
-                <input type="text" id="nomeExtraInput" placeholder="Nome do produto extra..." class="flex-1 border border-blue-300 bg-blue-50 rounded px-1 text-blue-800 placeholder-blue-300 text-xs">
+                <input type="text" id="codExtraInput" list="listProdutosCatalogo" placeholder="Cód. Produto (ex: 001)..." class="flex-1 border border-blue-300 bg-blue-50 rounded px-1 text-blue-800 placeholder-blue-300 text-xs">
                 <button onclick="adicionarExtraVisualmente()" class="bg-blue-600 text-white w-7 h-7 rounded hover:bg-blue-700 flex items-center justify-center shadow-sm" title="Adicionar Item"><i class="fa-solid fa-plus text-xs"></i></button>
             `;
             area.appendChild(rowManual);
@@ -698,64 +670,50 @@
 
         function adicionarExtraVisualmente() {
             const qtdInput = document.getElementById('qtdExtraInput');
-            const nomeInput = document.getElementById('nomeExtraInput');
+            const codInput = document.getElementById('codExtraInput');
             const area = document.getElementById('areaItensCesta');
             const divisor = document.getElementById('divisorExtras');
 
-            const qtd = qtdInput.value;
-            const nome = nomeInput.value.trim();
+            const qtd = parseInt(qtdInput.value);
+            let rawValue = codInput.value.trim();
 
-            if(!nome) {
-                alert('Digite o nome do produto extra.');
-                nomeInput.focus();
+            if(!rawValue) {
+                alert('Digite o código do produto.');
+                codInput.focus();
                 return;
             }
             if(qtd <= 0) return alert('Quantidade deve ser maior que 0.');
 
-            // Verifica se já existe o título "Produtos Extras"
-            let tituloExtra = document.getElementById('tituloExtras');
-            if(!tituloExtra) {
-                tituloExtra = document.createElement('div');
-                tituloExtra.id = 'tituloExtras';
-                tituloExtra.className = "font-bold text-blue-600 mt-3 mb-1 border-b border-blue-100 bg-blue-50 px-1 rounded text-xs";
-                tituloExtra.innerHTML = "PRODUTOS EXTRAS";
-                area.insertBefore(tituloExtra, divisor);
+            // Parser Inteligente: Aceita "001" ou "001 - Arroz" (vindo do datalist)
+            let codigo = rawValue.split(' - ')[0].trim();
+
+            // Validação no Master Data (Catálogo)
+            const produto = CATALOGO_PRODUTOS[codigo];
+            if(!produto) {
+                alert(`Produto com código "${codigo}" não encontrado no catálogo!\nVerifique se o código está correto.`);
+                codInput.value = '';
+                codInput.focus();
+                return;
             }
 
             const row = document.createElement('div');
             row.className = "flex items-center gap-2 mb-1 row-extra animate-pulse"; 
             setTimeout(() => row.classList.remove('animate-pulse'), 500);
 
+            // Renderiza usando os dados reais do catálogo (Nome correto)
             row.innerHTML = `
                 <input type="number" min="0" value="${qtd}" class="w-12 border border-blue-200 rounded text-center px-1 item-qtd text-blue-800 font-bold bg-blue-50">
                 <div class="flex-1 flex gap-1 items-center">
-                     <input type="text" value="${nome}" class="flex-1 border border-blue-200 rounded px-1 item-desc text-blue-800 bg-blue-50 text-xs">
-                     <button onclick="this.closest('.row-extra').remove(); verificarTituloExtraVazio()" class="text-red-400 hover:text-red-600 px-1" title="Remover"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                     <span class="text-[10px] bg-blue-100 text-blue-600 px-1 rounded font-mono">${codigo}</span>
+                     <input type="text" value="${produto.nome}" class="flex-1 border border-blue-200 rounded px-1 item-desc text-blue-800 bg-blue-50 text-xs" readonly>
+                     <button onclick="this.closest('.row-extra').remove()" class="text-red-400 hover:text-red-600 px-1" title="Remover"><i class="fa-solid fa-trash-can text-xs"></i></button>
                 </div>
             `;
-            
             area.insertBefore(row, divisor);
 
-            // Limpa e foca
             qtdInput.value = 1;
-            nomeInput.value = '';
-            nomeInput.focus();
-        }
-
-        function verificarTituloExtraVazio() {
-             const titulo = document.getElementById('tituloExtras');
-             const divisor = document.getElementById('divisorExtras');
-             
-             if(titulo && divisor) {
-                 // Verifica se tem elementos entre titulo e divisor
-                 let current = titulo.nextElementSibling;
-                 let hasItem = false;
-                 while(current && current !== divisor) {
-                     if(current.tagName === 'DIV') hasItem = true;
-                     current = current.nextElementSibling;
-                 }
-                 if(!hasItem) titulo.remove();
-             }
+            codInput.value = '';
+            codInput.focus();
         }
 
         // --- CARRINHO ---
@@ -765,41 +723,66 @@
             const selMarca = document.getElementById('selMarcaPreco');
             const marcaNome = selMarca.options[selMarca.selectedIndex].getAttribute('data-marca') || 'Padrão';
             
-            const modo = document.querySelector('input[name="modoCesta"]:checked').value;
+            // Verifica qual modo está ativo (radio ou pela Tab de Importar que força o visual alterada)
+            const isImportTab = !document.getElementById('areaModoImportar').classList.contains('hidden');
+            const isRadioAlterada = document.querySelector('input[name="modoCesta"][value="alterada"]').checked;
+            
+            let modo = (isImportTab || isRadioAlterada) ? 'alterada' : 'normal';
             let itensFinais = [];
             let identificacao = null; 
+            let nomeCestaDisplay = isImportTab ? 'Cesta Personalizada (Importada)' : DADOS_CESTAS[tipoKey].titulo;
 
             if (modo === 'normal') {
-                itensFinais = DADOS_CESTAS[tipoKey].itens;
+                // Modo Normal: Gera a string formatada a partir dos códigos
+                const listaCod = DADOS_CESTAS[tipoKey].itensCod;
+                listaCod.forEach(item => {
+                   const produto = CATALOGO_PRODUTOS[item[1]];
+                   if(produto) {
+                       // Guardamos o objeto completo (nome, ean, código, qtd)
+                       // Para exibição na tela e impressão
+                       itensFinais.push({
+                           cod: item[1],
+                           qtd: item[0],
+                           nome: produto.nome,
+                           ean: produto.ean
+                       });
+                   }
+                });
             } else {
+                // Modo Alterada/Importada
                 const codInput = document.getElementById('inputCodigoCesta').value;
                 if(!codInput) {
-                    alert('Por favor, informe o CÓDIGO para a cesta alterada.');
+                    alert('Por favor, informe o CÓDIGO de identificação (Número do Pedido/Cesta).');
+                    document.getElementById('inputCodigoCesta').focus();
                     return;
                 }
                 identificacao = codInput;
 
-                // --- Lógica Alterada para capturar cabeçalhos (Alimentos, Higiene) ---
                 const container = document.getElementById('areaItensCesta');
-                let headerPendente = null;
-
+                
                 Array.from(container.children).forEach(child => {
-                    // Se for um título (DIV com font-bold)
-                    if (child.tagName === 'DIV' && child.classList.contains('font-bold')) {
-                        headerPendente = child.innerText; // Ex: "Alimentos"
-                    } 
-                    // Se for linha de item
-                    else if (child.classList.contains('flex')) {
-                        const q = child.querySelector('.item-qtd') ? child.querySelector('.item-qtd').value : 0;
-                        const d = child.querySelector('.item-desc') ? child.querySelector('.item-desc').value : '';
+                    if (child.classList.contains('flex')) {
+                        const qInput = child.querySelector('.item-qtd');
+                        const dInput = child.querySelector('.item-desc');
                         
+                        // Tenta pegar o código se existir no span
+                        const spanCod = child.querySelector('span.font-mono');
+                        const codigo = spanCod ? spanCod.innerText : 'EXT';
+
+                        const q = qInput ? qInput.value : 0;
+                        const d = dInput ? dInput.value : '';
+                        
+                        // Busca o EAN se existir no catálogo
+                        let ean = '';
+                        if(CATALOGO_PRODUTOS[codigo]) ean = CATALOGO_PRODUTOS[codigo].ean;
+
                         if (q > 0 && d) {
-                            // Se existe um cabeçalho pendente, adiciona ele primeiro
-                            if (headerPendente) {
-                                itensFinais.push(`<b>${headerPendente}:</b>`);
-                                headerPendente = null; // Já adicionou este cabeçalho
-                            }
-                            itensFinais.push(`${q} ${d}`);
+                            itensFinais.push({
+                                cod: codigo,
+                                qtd: q,
+                                nome: d, // Nome pode ter sido editado (raro, mas possivel se for extra)
+                                ean: ean
+                            });
                         }
                     }
                 });
@@ -807,16 +790,23 @@
 
             const itemCarrinho = {
                 id: Date.now(),
-                tipo: DADOS_CESTAS[tipoKey].titulo,
+                tipo: nomeCestaDisplay,
                 marca: marcaNome,
                 preco: precoVal,
                 modo: modo,
                 identificacao: identificacao, 
-                conteudo: itensFinais
+                conteudo: itensFinais // Agora é um array de objetos, não de strings
             };
 
             carrinho.push(itemCarrinho);
             renderizarCarrinho();
+
+            // Limpa após adicionar se for importação
+            if(isImportTab) {
+                document.getElementById('txtImportar').value = '';
+                document.getElementById('areaItensCesta').innerHTML = '';
+                document.getElementById('inputCodigoCesta').value = '';
+            }
         }
 
         function removerDoCarrinho(id) {
@@ -870,13 +860,7 @@
                  sub = parseFloat(txt);
             }
             
-            let desc = 0;
-            if (cupomSelecionado) {
-                desc = cupomSelecionado.valor;
-            } else {
-                desc = parseFloat(document.getElementById('desconto').value) || 0;
-            }
-
+            let desc = parseFloat(document.getElementById('desconto').value) || 0;
             const final = Math.max(0, sub - desc);
             document.getElementById('lblTotalFinal').innerText = final.toFixed(2).replace('.', ',');
         }
@@ -891,79 +875,7 @@
             
             const subtotalText = document.getElementById('lblSubtotal').innerText.replace(',', '.');
             const totalText = document.getElementById('lblTotalFinal').innerText.replace(',', '.');
-            
-            let descontoFinal = 0;
-            if (cupomSelecionado) {
-                descontoFinal = cupomSelecionado.valor;
-                
-                if (cupomSelecionado.tipo === 'pessoal_sistema') {
-                    const cupomIdx = cupons.findIndex(c => c.codigo === cupomSelecionado.codigo);
-                    if (cupomIdx > -1) {
-                        cupons[cupomIdx].usado = true;
-                        salvarCuponsLocais();
-                    }
-                }
-            } else {
-                descontoFinal = parseFloat(document.getElementById('desconto').value);
-            }
-
-            const valGerar = parseInt(document.getElementById('selGerarCupomValor').value);
-            
-            let codPessoal = null;
-            let codAmigo = null;
-            let valorNovoDesc = 0;
-            let nomeCestaNovoDesc = "Cesta Básica"; 
-
-            if (valGerar > 0) {
-                valorNovoDesc = valGerar;
-
-                let maiorPeso = 0;
-                carrinho.forEach(item => {
-                    const nome = item.tipo.toLowerCase();
-                    let peso = 1; let nomeC = "Cesta Econômica";
-                    if(nome.includes('grande')) { peso = 5; nomeC = "Cesta Grande"; }
-                    else if(nome.includes('média')) { peso = 4; nomeC = "Cesta Média"; }
-                    else if(nome.includes('pequena')) { peso = 3; nomeC = "Cesta Pequena"; }
-                    else if(nome.includes('mini')) { peso = 2; nomeC = "Cesta Mini"; }
-                    
-                    if(peso > maiorPeso) { maiorPeso = peso; nomeCestaNovoDesc = nomeC; }
-                });
-
-                const dataVal = new Date();
-                dataVal.setDate(dataVal.getDate() + 35);
-                const dataValISO = dataVal.toISOString();
-
-                codPessoal = `DESC-${Date.now().toString().slice(-6)}`;
-                codAmigo = `AMIGO-${Date.now().toString().slice(-6)}`;
-
-                const novosCupons = [
-                    {
-                        codigo: codPessoal,
-                        tipo: 'pessoal',
-                        idCliente: clienteDados.id,
-                        valor: valorNovoDesc,
-                        cestaAlvo: nomeCestaNovoDesc,
-                        validade: dataValISO,
-                        usado: false,
-                        criadoEm: new Date().toISOString()
-                    },
-                    {
-                        codigo: codAmigo,
-                        tipo: 'amigo',
-                        idCliente: null, 
-                        origemIdCliente: clienteDados.id, 
-                        origemNomeCliente: clienteDados.nome,
-                        valor: valorNovoDesc,
-                        cestaAlvo: nomeCestaNovoDesc,
-                        validade: dataValISO,
-                        usado: false,
-                        criadoEm: new Date().toISOString()
-                    }
-                ];
-
-                cupons.push(...novosCupons);
-                salvarCuponsLocais();
-            }
+            const desc = parseFloat(document.getElementById('desconto').value);
 
             const novoPedido = {
                 id: Date.now().toString(),
@@ -977,16 +889,9 @@
                 },
                 financeiro: {
                     subtotal: parseFloat(subtotalText),
-                    desconto: descontoFinal,
-                    total: parseFloat(totalText),
-                    cupomUtilizado: cupomSelecionado ? cupomSelecionado.codigo : null
+                    desconto: desc,
+                    total: parseFloat(totalText)
                 },
-                cuponsGerados: valGerar > 0 ? {
-                    pessoal: codPessoal,
-                    amigo: codAmigo,
-                    valor: valorNovoDesc,
-                    cestaNome: nomeCestaNovoDesc
-                } : null,
                 brinde: document.getElementById('brinde').value,
                 obs: document.getElementById('obs').value,
                 itens: carrinho
@@ -1015,22 +920,17 @@
             carrinho = [];
             renderizarCarrinho();
             
-            removerCupom(); 
-
             document.getElementById('selCliente').value = "";
-            document.getElementById('inputBuscaCliente').value = ""; // Limpa a busca
-            carregarClientes(); // Reseta o filtro
-
-            document.getElementById('areaCupons').classList.add('hidden'); 
+            document.getElementById('inputBuscaCliente').value = ""; 
+            carregarClientes(); 
             
             document.getElementById('obs').value = "";
             document.getElementById('pagStatus').value = "pendente";
             document.getElementById('desconto').value = "0";
             document.getElementById('brinde').value = "Nenhum";
-            document.getElementById('selGerarCupomValor').value = "0"; 
             
-            document.querySelector('input[name="modoCesta"][value="normal"]').checked = true;
-            toggleModoCesta();
+            // Reseta tabs
+            alternarTab('padrao');
             
             calcularTotalFinal(0);
         }
@@ -1074,32 +974,22 @@
         function getPedidosVisiveis() {
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
-            
-            if (filtroRotaAtual !== 'todos') {
-                lista = lista.filter(p => p.rota === filtroRotaAtual);
-            }
-
+            if (filtroRotaAtual !== 'todos') lista = lista.filter(p => p.rota === filtroRotaAtual);
             lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
             return lista;
         }
 
         function moverPedido(id, direcao) {
             const listaAtual = getPedidosVisiveis();
-            
-            listaAtual.forEach((p, index) => {
-                p.ordem = index * 10;
-            });
-
+            listaAtual.forEach((p, index) => { p.ordem = index * 10; });
             const indexAtual = listaAtual.findIndex(p => p.id === id);
             if (indexAtual === -1) return;
-
             const indexAlvo = indexAtual + direcao;
 
             if (indexAlvo >= 0 && indexAlvo < listaAtual.length) {
                 const ordemTemp = listaAtual[indexAtual].ordem;
                 listaAtual[indexAtual].ordem = listaAtual[indexAlvo].ordem;
                 listaAtual[indexAlvo].ordem = ordemTemp;
-
                 salvarPedidosLocais();
                 renderizarListaPedidos();
             }
@@ -1112,63 +1002,32 @@
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', this.dataset.id);
         }
-
-        function handleDragOver(e) {
-            if (e.preventDefault) {
-                e.preventDefault(); 
-            }
-            e.dataTransfer.dropEffect = 'move';
-            return false;
-        }
-
-        function handleDragEnter(e) {
-            this.classList.add('border-indigo-500', 'bg-indigo-50'); 
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('border-indigo-500', 'bg-indigo-50');
-        }
-
+        function handleDragOver(e) { if (e.preventDefault) e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
+        function handleDragEnter(e) { this.classList.add('border-indigo-500', 'bg-indigo-50'); }
+        function handleDragLeave(e) { this.classList.remove('border-indigo-500', 'bg-indigo-50'); }
         function handleDrop(e) {
-            if (e.stopPropagation) {
-                e.stopPropagation(); 
-            }
-            
-            document.querySelectorAll('.draggable-card').forEach(col => {
-                col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50');
-            });
-
+            if (e.stopPropagation) e.stopPropagation(); 
+            document.querySelectorAll('.draggable-card').forEach(col => col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50'));
             const idOrigem = dragSrcEl.dataset.id;
             const idDestino = this.dataset.id;
-
             if (dragSrcEl !== this) {
                 const listaAtual = getPedidosVisiveis();
-                
                 listaAtual.forEach((p, index) => { p.ordem = index * 10; });
-
                 const idxOrigem = listaAtual.findIndex(p => p.id === idOrigem);
                 const idxDestino = listaAtual.findIndex(p => p.id === idDestino);
-
                 if (idxOrigem > -1 && idxDestino > -1) {
                     const [itemMovido] = listaAtual.splice(idxOrigem, 1);
                     listaAtual.splice(idxDestino, 0, itemMovido);
-
                     listaAtual.forEach((p, index) => { p.ordem = index * 10; });
-
                     salvarPedidosLocais();
                     renderizarListaPedidos();
                 }
             }
             return false;
         }
+        function handleDragEnd(e) { document.querySelectorAll('.draggable-card').forEach(col => col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50')); }
 
-        function handleDragEnd(e) {
-            document.querySelectorAll('.draggable-card').forEach(col => {
-                col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50');
-            });
-        }
-
-        // --- RENDERIZAÇÃO (CARD COMPACTO ATUALIZADO) ---
+        // --- RENDERIZAÇÃO ---
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
             const pedidosFiltrados = getPedidosVisiveis();
@@ -1182,7 +1041,6 @@
             ).join('');
             
             container.innerHTML = '';
-
             if (pedidosFiltrados.length === 0) {
                 container.innerHTML = '<div class="text-center text-gray-400 mt-10">Nenhum pedido encontrado.</div>';
                 return;
@@ -1214,24 +1072,21 @@
                 ).join('');
 
                 const detalhesItens = p.itens.map(i => {
+                    // Detalhes compactos não precisam do EAN, só visualização rápida
+                    const resumo = i.conteudo.map(item => `${item.qtd}x ${item.nome}`).join(', ');
                     const isAlt = i.modo === 'alterada';
                     return `
                         <div class="flex justify-between border-b border-gray-100 py-0.5 last:border-0 text-[10px]">
-                            <span>${i.tipo} <small class="text-gray-500">(${i.marca})</small></span>
+                            <span class="truncate pr-2" title="${resumo}">${i.tipo} <small class="text-gray-500">(${i.marca})</small></span>
                             ${isAlt ? `<span class="bg-red-100 text-red-800 px-1 rounded border border-red-200">COD: ${i.identificacao}</span>` : ''}
                         </div>
                     `;
                 }).join('');
 
                 const localizacao = `${p.cliente.endereco || ''}, ${p.cliente.bairro || ''}`;
-
-                // --- NOVO: LÓGICA DE BOTÕES MAPA E FOTO (DESATIVADOS SE NÃO TIVER LINK) ---
                 const linkMap = p.cliente.maps ? p.cliente.maps : '';
                 const linkFoto = p.cliente.foto ? p.cliente.foto : ''; 
                 
-                // Botões Mini (Usam stopPropagation para não abrir o card inteiro)
-                // Se existir o link: colorido e clicável. 
-                // Se NÃO existir: cinza e cursor 'não permitido'.
                 const btnMapHTML = linkMap ? 
                     `<button onclick="event.stopPropagation(); window.open('${linkMap}', '_blank')" class="ml-2 text-orange-500 hover:text-orange-600 transition" title="Abrir Mapa"><i class="fa-solid fa-map-location-dot"></i></button>` : 
                     `<button onclick="event.stopPropagation();" class="ml-2 text-gray-300 cursor-not-allowed" title="Sem Mapa"><i class="fa-solid fa-map-location-dot"></i></button>`;
@@ -1239,8 +1094,6 @@
                 const btnFotoHTML = linkFoto ? 
                     `<button onclick="event.stopPropagation(); window.open('${linkFoto}', '_blank')" class="ml-1 text-purple-500 hover:text-purple-600 transition" title="Ver Foto"><i class="fa-solid fa-image"></i></button>` : 
                     `<button onclick="event.stopPropagation();" class="ml-1 text-gray-300 cursor-not-allowed" title="Sem Foto"><i class="fa-solid fa-image"></i></button>`;
-                
-                // ------------------------------------------
                 
                 const botoesOrdem = pedidosFiltrados.length > 1 ? `
                     <div class="flex flex-col gap-1 mr-2 justify-center pl-1">
@@ -1254,12 +1107,9 @@
                     </div>
                 ` : '<div class="pl-2"></div>';
 
-                // -- NOVO LAYOUT COMPACTO NA AREA DE DETALHES --
                 card.innerHTML = `
                     ${botoesOrdem}
-
                     <div class="flex-1">
-                        <!-- HEADER (Mantido Limpo) -->
                         <div class="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-50 transition" onclick="toggleDetalhes('${p.id}')">
                             <div class="min-w-[50px] text-center flex flex-col gap-1">
                                 <span class="bg-indigo-600 text-white text-[10px] font-bold px-1 rounded shadow-sm">${index + 1}º</span>
@@ -1269,8 +1119,7 @@
                                 <div class="font-bold text-gray-800 text-sm truncate leading-tight">${p.cliente.nome}</div>
                                 <div class="text-[10px] text-gray-500 truncate flex items-center">
                                     <i class="fa-solid fa-location-dot text-[9px] text-gray-400 mr-1"></i> ${localizacao}
-                                    ${btnMapHTML}
-                                    ${btnFotoHTML}
+                                    ${btnMapHTML} ${btnFotoHTML}
                                 </div>
                             </div>
                             <div class="hidden sm:block w-1/3 px-2">
@@ -1284,30 +1133,18 @@
                             </div>
                         </div>
 
-                        <!-- DETALHES COMPACTOS (Grade densa) -->
                         <div id="detalhes_${p.id}" class="hidden bg-gray-50 border-t border-gray-200 text-[11px] text-gray-700">
                             <div class="p-1.5">
-                                <!-- Linha 1: Lista de Itens (Compacta) -->
-                                <div class="bg-white p-1 rounded border border-gray-200 mb-1">
-                                    ${detalhesItens}
-                                </div>
-                                
-                                <!-- Linha 2: Grid 4 Colunas (Obs, Brinde, Pagto, Ações) Compacto -->
+                                <div class="bg-white p-1 rounded border border-gray-200 mb-1">${detalhesItens}</div>
                                 <div class="grid grid-cols-4 gap-1 items-stretch">
-                                    
-                                    <!-- Obs -->
                                     <div class="col-span-1 bg-white p-1 rounded border border-gray-200 flex flex-col justify-center">
                                         <div class="text-[9px] font-bold text-gray-400 uppercase leading-none mb-0.5">Obs</div>
                                         <div class="leading-tight truncate" title="${p.obs || ''}">${p.obs || '-'}</div>
                                     </div>
-
-                                    <!-- Brinde/Pagto -->
                                     <div class="col-span-1 bg-white p-1 rounded border border-gray-200 flex flex-col justify-center text-center">
                                         ${p.brinde !== 'Nenhum' ? `<div class="text-green-700 font-bold text-[10px] leading-none mb-0.5">🎁 ${p.brinde}</div>` : ''}
                                         <div class="leading-tight font-medium">${p.pagamento.metodo.toUpperCase()}</div>
                                     </div>
-
-                                    <!-- Entregador e Zap -->
                                     <div class="col-span-2 bg-white p-1 rounded border border-gray-200 flex items-center justify-between gap-1">
                                         <div class="flex items-center gap-1 flex-1">
                                             <select id="selEntregador_${p.id}" class="w-full text-[10px] border border-gray-300 rounded py-0.5 pl-1 bg-gray-50 focus:ring-0 h-6">
@@ -1329,7 +1166,7 @@
             });
         }
 
-        // --- MANIPULAÇÃO DE DADOS E WHATSAPP ---
+        // --- EXPORTAR / WHATSAPP / IMPRESSÃO ---
         function excluirPedido(id) {
             if(confirm('Confirmar exclusão deste pedido?')) {
                 pedidos = pedidos.filter(p => p.id !== id);
@@ -1342,7 +1179,6 @@
             const p = pedidos.find(item => item.id === id);
             const keyEntregador = document.getElementById(`selEntregador_${id}`).value;
             const entregador = ENTREGADORES[keyEntregador];
-            
             if(!p || !entregador) return;
 
             let msg = `*PEDIDO #${p.id.slice(-4)}*\n`;
@@ -1357,9 +1193,9 @@
             msg += `*Obs:* ${p.obs || '-'}\n\n`;
             msg += `*ITENS DO PEDIDO:* \n`;
             p.itens.forEach(i => {
-                let detalhe = `${i.tipo} (${i.marca})`;
-                if(i.modo === 'alterada') detalhe += ` [⚠️ ALTERADA - CÓD: ${i.identificacao}]`;
-                msg += `- ${detalhe}\n`;
+                i.conteudo.forEach(item => {
+                    msg += `- ${item.qtd}x ${item.nome}\n`;
+                });
             });
             if(p.brinde !== 'Nenhum') msg += `\n🎁 *Brinde:* ${p.brinde}\n`;
             msg += `\n*Pagamento:* ${p.pagamento.metodo.toUpperCase()}\n`;
@@ -1372,45 +1208,30 @@
         function enviarListaRotaWhatsapp() {
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
-            
-            if (filtroRotaAtual !== 'todos') {
-                lista = lista.filter(p => p.rota === filtroRotaAtual);
-            }
+            if (filtroRotaAtual !== 'todos') lista = lista.filter(p => p.rota === filtroRotaAtual);
 
             if (lista.length === 0) return alert('Nenhum pedido listado para enviar.');
 
             const resumoPorRota = {};
-
             lista.forEach(p => {
                 const rota = p.rota;
-                if (!resumoPorRota[rota]) {
-                    resumoPorRota[rota] = {};
-                }
-
+                if (!resumoPorRota[rota]) resumoPorRota[rota] = {};
                 p.itens.forEach(item => {
-                    let nomeItem = `${item.tipo} ${item.marca}`;
-                    if (item.modo === 'alterada') {
-                        nomeItem += ` - Cód ${item.identificacao}`;
-                    }
-
-                    if (!resumoPorRota[rota][nomeItem]) {
-                        resumoPorRota[rota][nomeItem] = 0;
-                    }
-                    resumoPorRota[rota][nomeItem]++;
+                    item.conteudo.forEach(subItem => {
+                         // Agrupa por "Código + Nome"
+                         const key = `[${subItem.cod}] ${subItem.nome}`;
+                         if(!resumoPorRota[rota][key]) resumoPorRota[rota][key] = 0;
+                         resumoPorRota[rota][key] += subItem.qtd;
+                    });
                 });
             });
 
             const dataFormatada = filtroData.split('-').reverse().join('/');
             let msg = `*RESUMO DE CARGA - ${dataFormatada}*\n`;
-
-            const rotas = Object.keys(resumoPorRota).sort();
-
-            rotas.forEach(r => {
+            Object.keys(resumoPorRota).sort().forEach(r => {
                 msg += `\n*Rota: ${r}*\n`;
-                const itens = Object.keys(resumoPorRota[r]).sort();
-                itens.forEach(itemKey => {
-                    const qtd = resumoPorRota[r][itemKey];
-                    msg += `${qtd}x ${itemKey}\n`;
+                Object.keys(resumoPorRota[r]).sort().forEach(itemKey => {
+                    msg += `${resumoPorRota[r][itemKey]}x ${itemKey}\n`;
                 });
                 msg += `-----\n`;
             });
@@ -1422,15 +1243,8 @@
         function exportarPedidosJson() {
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
-            
-            if (lista.length === 0) return alert('Nada para exportar na data selecionada.');
-
-            if (filtroRotaAtual !== 'todos') {
-                lista = lista.filter(p => p.rota === filtroRotaAtual);
-            }
-
+            if (filtroRotaAtual !== 'todos') lista = lista.filter(p => p.rota === filtroRotaAtual);
             lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
-
             const dataStr = JSON.stringify(lista, null, 2);
             const blob = new Blob([dataStr], {type: "application/json"});
             const url = URL.createObjectURL(blob);
@@ -1440,7 +1254,6 @@
             a.click();
         }
 
-        // --- IMPRESSÃO (MODIFICADO COM SEPARAÇÃO DE CATEGORIAS E CUPOM SEM CODIGO) ---
         function imprimirPedido(id) {
             const p = pedidos.find(item => item.id === id);
             if (!p) return;
@@ -1449,49 +1262,22 @@
             const dataF = new Date(p.data).toLocaleDateString('pt-BR');
             const horaF = new Date(p.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-            let codPessoal = null;
-            let codAmigo = null;
-            let valorDesconto = 0;
-            let nomeCestaDesconto = "Cesta Básica";
-            let gerarCuponsImpressao = false;
-
-            if (p.cuponsGerados && p.cuponsGerados.valor > 0) {
-                gerarCuponsImpressao = true;
-                codPessoal = p.cuponsGerados.pessoal;
-                codAmigo = p.cuponsGerados.amigo;
-                valorDesconto = p.cuponsGerados.valor;
-                nomeCestaDesconto = p.cuponsGerados.cestaNome;
-            }
-
             let htmlItens = '';
             p.itens.forEach(item => {
                 let tituloShow = item.tipo;
-                if(item.modo === 'alterada' && item.identificacao) {
-                    tituloShow += ` <b>(${item.identificacao})</b>`;
-                }
-
-                // Lógica de Renderização do Conteúdo (Suportando Títulos)
-                let conteudoFormatado = '';
-                if (item.modo === 'alterada') {
-                    const linhasConteudo = item.conteudo.map(linha => {
-                        // Se a linha começa com <b>, é um Título de Categoria
-                        if (linha.startsWith('<b>')) {
-                            // Remove tags HTML para limpar, mas mantem negrito e quebra
-                            return `<br>${linha}`; 
-                        } else {
-                            // Item normal
-                            return `- ${linha}`;
-                        }
-                    });
-                    
-                    conteudoFormatado = `<br><span style="font-size:10px; margin-left: 5px; display:block; white-space: pre-wrap;">${linhasConteudo.join('<br>')}</span>`;
-                }
+                if(item.modo === 'alterada' && item.identificacao) tituloShow += ` <b>(${item.identificacao})</b>`;
+                
+                // Formata linhas com EAN pequeno se existir
+                const linhasConteudo = item.conteudo.map(subItem => {
+                    const eanShow = subItem.ean ? `<span style="font-size:8px;">(EAN:${subItem.ean})</span>` : '';
+                    return `- <b>${subItem.qtd}x</b> ${subItem.nome} ${eanShow}`;
+                }).join('<br>');
                 
                 htmlItens += `
                     <div style="margin-bottom: 5px; border-bottom: 1px dashed #ccc; padding-bottom: 2px;">
                         <b>${tituloShow}</b> (${item.marca})
                         <div style="float:right;">R$ ${item.preco},00</div>
-                        ${conteudoFormatado}
+                        <br><span style="font-size:10px; margin-left: 5px; display:block;">${linhasConteudo}</span>
                     </div>
                 `;
             });
@@ -1499,80 +1285,28 @@
             const obsBlock = p.obs ? `<div style="margin-top:5px; font-weight:bold; border: 1px solid #000; padding: 2px;">OBS: ${p.obs}</div>` : '';
             const brindeBlock = p.brinde !== 'Nenhum' ? `<div style="margin-top:5px;">🎁 BRINDE: <b>${p.brinde}</b></div>` : '';
 
-            const dataPedido = new Date(p.data);
-            dataPedido.setDate(dataPedido.getDate() + 35);
-            const validadeStr = dataPedido.toLocaleDateString('pt-BR');
-
-            // Cupons HTML (SEM CÓDIGO)
-            let cuponsHtml = '';
-            if (gerarCuponsImpressao) {
-                cuponsHtml = `
-                    <div style="margin-top: 30px; border-top: 1px dashed #000; padding-top: 20px;">
-                        <!-- Espaço de Respiro -->
-                    </div>
-                    
-                    <!-- Cupom 1 - PESSOAL -->
-                    <div style="border: 2px dashed #000; border-radius: 8px; padding: 10px; text-align: center; margin-bottom: 20px;">
-                        <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">CUPOM DE DESCONTO</div>
-                        <div style="font-size: 11px;">Olá <b>${p.cliente.nome}</b>, obrigado pela preferência!</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Ganhe <b>R$ ${valorDesconto},00</b> de desconto na compra da <b>${nomeCestaDesconto}</b></div>
-                        <div style="font-size: 10px; margin-top: 5px;">Válido até: <b>${validadeStr}</b></div>
-                        <div style="font-size: 11px; font-weight:bold; margin-top: 5px;">⚠️ SOMENTE 1 CUPOM POR CESTA BÁSICA</div>
-                        <div style="font-size: 9px;">(Válido p/ sua próxima compra)</div>
-                    </div>
-
-                    <!-- Cupom 2 - PRESENTE AMIGO -->
-                    <div style="border: 2px dashed #000; border-radius: 8px; padding: 10px; text-align: center;">
-                        <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">PRESENTE PARA UM AMIGO</div>
-                        <div style="font-size: 11px;">Um presente especial de <b>${p.cliente.nome}</b> para você!</div>
-                        <div style="font-size: 12px; margin-top: 5px;">Use este cupom para ganhar <b>R$ ${valorDesconto},00</b> de desconto na <b>${nomeCestaDesconto}</b></div>
-                        <div style="font-size: 10px; margin-top: 5px;">Válido até: <b>${validadeStr}</b></div>
-                        <div style="font-size: 11px; font-weight:bold; margin-top: 5px;">⚠️ SOMENTE 1 CUPOM POR CESTA BÁSICA</div>
-                        <div style="font-size: 9px;">(Entregue para um parente ou amigo)</div>
-                    </div>
-                    
-                    <div style="text-align: center; font-size: 9px; margin-top: 10px;">Recorte os cupons acima</div>
-                `;
-            }
-
             area.innerHTML = `
                 <div style="text-align:center; font-weight:bold; margin-bottom: 5px;">
-                    PEDIDO DE VENDA<br>
-                    ${dataF} às ${horaF}
+                    PEDIDO DE VENDA<br>${dataF} às ${horaF}
                 </div>
                 <div style="border-bottom: 1px solid #000; margin-bottom: 5px;"></div>
-                
                 <div><b>CLIENTE:</b> ${p.cliente.nome}</div>
                 <div><b>TEL:</b> ${p.cliente.telefone}</div>
                 <div style="margin-top:3px;"><b>ROTA:</b> ${p.rota}</div>
-                <div style="font-size: 11px; margin-top:2px;">
-                    ${p.cliente.endereco}, ${p.cliente.bairro || ''} - ${p.cliente.cidade || ''}
-                </div>
-
+                <div style="font-size: 11px; margin-top:2px;">${p.cliente.endereco}, ${p.cliente.bairro || ''}</div>
                 <div style="border-bottom: 1px solid #000; margin: 10px 0;"></div>
-                
                 ${htmlItens}
-
                 <div style="margin-top: 10px; text-align:right;">
                     Subtotal: R$ ${p.financeiro.subtotal.toFixed(2)}<br>
                     Desconto: - R$ ${p.financeiro.desconto.toFixed(2)}<br>
                     <b style="font-size: 14px;">TOTAL: R$ ${p.financeiro.total.toFixed(2)}</b>
                 </div>
-
                 <div style="margin-top: 5px; font-size: 11px;">
                     Pagamento: <b>${p.pagamento.metodo.toUpperCase()}</b> (${p.pagamento.status.toUpperCase()})
                 </div>
-
-                ${brindeBlock}
-                ${obsBlock}
-                
-                <div style="margin-top: 15px; text-align:center; font-size: 10px;">
-                    *** FIM DO PEDIDO ***
-                </div>
-
-                ${cuponsHtml}
+                ${brindeBlock} ${obsBlock}
+                <div style="margin-top: 15px; text-align:center; font-size: 10px;">*** FIM DO PEDIDO ***</div>
             `;
-
             window.print();
         }
     </script>
