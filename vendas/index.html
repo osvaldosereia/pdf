@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V2.4 - Dashboard Logístico</title>
+    <title>Sistema V2.7 - Dashboard Logístico (Fixed)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -139,7 +139,8 @@
                                     <option value="media">Média</option>
                                     <option value="grande">Grande</option>
                                 </select>
-                                <select id="selMarcaPreco" class="w-full border border-gray-300 rounded compact-input">
+                                <!-- Seletor de Marca/Preço -->
+                                <select id="selMarcaPreco" onchange="recarregarListaSeAlterada()" class="w-full border border-gray-300 rounded compact-input hidden">
                                     <!-- Preenchido via JS -->
                                 </select>
                             </div>
@@ -266,8 +267,6 @@
                         <button onclick="filtrarRota('VG')" id="btnRotaVG" class="flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent">VG</button>
                         <button onclick="filtrarRota('Cuiabá')" id="btnRotaCuiaba" class="flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent">CBA</button>
                         <button onclick="filtrarRota('CPA')" id="btnRotaCPA" class="flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent">CPA</button>
-                        
-                        <button onclick="enviarListaRotaWhatsapp()" class="ml-1 bg-green-500 text-white w-6 h-6 rounded flex items-center justify-center shadow-sm" title="Zap"><i class="fa-brands fa-whatsapp text-xs"></i></button>
                     </div>
                 </div>
 
@@ -363,7 +362,7 @@
         window.onload = () => {
             carregarClientes();
             carregarPedidosLocais();
-            atualizarOpcoesPreco();
+            atualizarOpcoesPreco(); // Corrigido aqui
             document.getElementById('filtroData').valueAsDate = new Date();
             renderizarListaPedidos();
         };
@@ -447,11 +446,14 @@
             renderizarListaEditavelGenerica(listaParaRenderizar);
         }
 
-        function actualizarOpcoesPreco() {
+        // Função corrigida e renomeada
+        function atualizarOpcoesPreco() {
             const tipo = document.getElementById('selTipoCesta').value;
             const selectMarca = document.getElementById('selMarcaPreco');
             selectMarca.innerHTML = '';
             const opcoes = PRECOS[tipo];
+            
+            // Popula opções
             if (tipo === 'economica') {
                 const opt = new Option(`Padrão - R$ ${opcoes.padrao}`, opcoes.padrao);
                 selectMarca.add(opt);
@@ -463,7 +465,24 @@
                 opt2.setAttribute('data-marca', 'Koblenz');
                 selectMarca.add(opt2);
             }
+
+            // AUTO-HIDE LOGIC
+            if (selectMarca.options.length <= 1) {
+                selectMarca.classList.add('hidden');
+            } else {
+                selectMarca.classList.remove('hidden');
+            }
+
+            // Atualiza a lista se estiver no modo Alterada
             if(document.querySelector('input[name="modoCesta"]:checked').value === 'alterada') {
+                const listaOriginal = DADOS_CESTAS[tipo].itensCod;
+                renderizarListaEditavelGenerica(listaOriginal);
+            }
+        }
+
+        function recarregarListaSeAlterada() {
+            if(document.querySelector('input[name="modoCesta"]:checked').value === 'alterada') {
+                const tipo = document.getElementById('selTipoCesta').value;
                 const listaOriginal = DADOS_CESTAS[tipo].itensCod;
                 renderizarListaEditavelGenerica(listaOriginal);
             }
@@ -488,11 +507,27 @@
         function renderizarListaEditavelGenerica(listaItensCod) {
             const area = document.getElementById('areaItensCesta');
             area.innerHTML = '';
+            
+            // Verifica se há marca selecionada para o Arroz
+            const selMarca = document.getElementById('selMarcaPreco');
+            let marcaExtra = "";
+            if (selMarca && !selMarca.classList.contains('hidden') && selMarca.selectedIndex >= 0) {
+                 const opt = selMarca.options[selMarca.selectedIndex];
+                 const nomeMarca = opt.getAttribute('data-marca');
+                 if(nomeMarca && nomeMarca !== 'Pad') marcaExtra = ` (${nomeMarca})`;
+            }
+
             listaItensCod.forEach((item) => {
                 const qtd = item[0];
                 const cod = item[1];
                 const produto = CATALOGO_PRODUTOS[cod];
-                const nome = produto ? produto.nome.substring(0,25) : 'Desc';
+                let nome = produto ? produto.nome.substring(0,25) : 'Desc';
+                
+                // Adiciona marca ao Arroz (001)
+                if(cod === '001' && marcaExtra) {
+                    nome += marcaExtra;
+                }
+
                 const row = document.createElement('div');
                 row.className = "flex items-center gap-1 mb-1";
                 row.innerHTML = `
@@ -506,9 +541,11 @@
 
         function adicionarItemAoCarrinho() {
             const tipoKey = document.getElementById('selTipoCesta').value;
-            const precoVal = parseFloat(document.getElementById('selMarcaPreco').value);
+            const precoVal = parseFloat(document.getElementById('selMarcaPreco').value) || 0;
             const selMarca = document.getElementById('selMarcaPreco');
-            const marcaNome = selMarca.options[selMarca.selectedIndex].getAttribute('data-marca') || 'Pad';
+            const marcaNome = selMarca.options[selMarca.selectedIndex] 
+                              ? (selMarca.options[selMarca.selectedIndex].getAttribute('data-marca') || 'Pad') 
+                              : 'Pad';
             
             const isImportTab = !document.getElementById('areaModoImportar').classList.contains('hidden');
             const isRadioAlterada = document.querySelector('input[name="modoCesta"][value="alterada"]').checked;
@@ -518,6 +555,7 @@
             let identificacao = null; 
             let nomeCestaDisplay = isImportTab ? 'Importada' : DADOS_CESTAS[tipoKey].titulo;
 
+            // Lógica de Montagem da Lista de Itens
             if (modo === 'normal') {
                 const listaCod = DADOS_CESTAS[tipoKey].itensCod;
                 listaCod.forEach(item => {
@@ -526,20 +564,33 @@
                 });
             } else {
                 const codInput = document.getElementById('inputCodigoCesta').value;
-                if(!codInput) return alert('Informe o CÓDIGO.');
+                if(!codInput) return alert('Por favor, informe o CÓDIGO de identificação para cesta alterada/importada.');
                 identificacao = codInput;
                 const container = document.getElementById('areaItensCesta');
+                
+                // Raspa os dados visuais se for alterada
                 Array.from(container.children).forEach(child => {
                     const qInput = child.querySelector('.item-qtd');
                     const spanCod = child.querySelector('span.font-mono');
-                    const codigo = spanCod ? spanCod.innerText : 'EXT';
-                    const q = qInput ? qInput.value : 0;
-                    if (q > 0) {
-                        let ean = CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].ean : '';
-                        let nome = CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].nome : 'Extra';
-                        itensFinais.push({ cod: codigo, qtd: q, nome: nome, ean: ean });
+                    
+                    if(qInput && spanCod) {
+                        const codigo = spanCod.innerText;
+                        const q = parseInt(qInput.value) || 0;
+                        if (q > 0) {
+                            let ean = CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].ean : '';
+                            
+                            // Tenta pegar o nome exibido (que já tem a marca se for arroz)
+                            const descInput = child.querySelector('.item-desc');
+                            let nome = descInput ? descInput.value : (CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].nome : 'Extra');
+                            
+                            itensFinais.push({ cod: codigo, qtd: q, nome: nome, ean: ean });
+                        }
                     }
                 });
+            }
+
+            if(itensFinais.length === 0) {
+                return alert("Erro: Não foi possível identificar os itens da cesta. Verifique se o cadastro está correto.");
             }
 
             carrinho.push({
@@ -772,7 +823,7 @@
 
                 const itensHtml = `<div class="bg-gray-50 border border-gray-100 rounded p-1 mb-1">${resumoItens}</div>`;
 
-                // --- LINHA 3: Ações ---
+                // --- LINHA 3: Ações (REMOVIDO ZAP) ---
                 const acoesHtml = `
                     <div class="flex items-center justify-between gap-1 mt-auto">
                         <div class="flex items-center gap-1">
@@ -786,7 +837,6 @@
                             </select>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="enviarPedidoZap('${p.id}')" class="bg-green-100 text-green-700 w-5 h-5 rounded flex items-center justify-center hover:bg-green-200" title="Zap"><i class="fa-brands fa-whatsapp text-[10px]"></i></button>
                             <button onclick="imprimirEtiquetaPedido('${p.id}')" class="bg-gray-800 text-white w-5 h-5 rounded flex items-center justify-center hover:bg-gray-600" title="Etiqueta"><i class="fa-solid fa-tag text-[10px]"></i></button>
                             <button onclick="excluirPedido('${p.id}')" class="text-red-300 hover:text-red-500 w-4"><i class="fa-solid fa-trash text-[10px]"></i></button>
                         </div>
@@ -801,29 +851,6 @@
         // Funções de Ação (Mantidas iguais, mas compactadas)
         function excluirPedido(id) { if(confirm('Del?')) { pedidos = pedidos.filter(p => p.id !== id); salvarPedidosLocais(); renderizarListaPedidos(); } }
         
-        function enviarPedidoZap(id) {
-            const p = pedidos.find(item => item.id === id);
-            const ent = ENTREGADORES[document.getElementById(`selEntregador_${id}`).value];
-            if(!p || !ent) return alert('Selecione Entregador');
-            const codCli = gerarCodigoClienteVisual(p.cliente, p.rota);
-            let msg = `*PEDIDO #${p.codigoVisual}*\n*Cli:* ${p.cliente.nome} (${codCli})\n*End:* ${p.cliente.endereco}, ${p.cliente.bairro}\n*Map:* ${p.cliente.maps||''}\n*Obs:* ${p.obs||''}\n`;
-            p.itens.forEach(i => i.conteudo.forEach(it => msg += `${it.qtd}x ${it.nome}\n`));
-            msg += `*Total:* R$ ${p.financeiro.total.toFixed(2)}`;
-            window.open(`https://wa.me/${ent.num}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function enviarListaRotaWhatsapp() {
-            const filtroData = document.getElementById('filtroData').value;
-            let lista = pedidos.filter(p => p.data.startsWith(filtroData));
-            if (filtroRotaAtual !== 'todos') lista = lista.filter(p => p.rota === filtroRotaAtual);
-            if (lista.length === 0) return alert('Vazio');
-            const resumo = {};
-            lista.forEach(p => p.itens.forEach(i => i.conteudo.forEach(s => { const k = `[${s.cod}] ${s.nome}`; resumo[k] = (resumo[k]||0) + s.qtd; })));
-            let msg = `*CARGA ${filtroData} - ${filtroRotaAtual.toUpperCase()}*\n`;
-            Object.keys(resumo).sort().forEach(k => msg += `${resumo[k]}x ${k}\n`);
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
         function exportarPedidosJson() {
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
