@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema V2.7 - Dashboard Logístico (Fixed)</title>
+    <title>Sistema V2.8 - Centro de Comando Logístico</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,15 +26,12 @@
         /* Utilitários Extras */
         .transition-all-300 { transition: all 0.3s ease-in-out; }
         .bg-pattern { background-image: radial-gradient(#d1d5db 1px, transparent 1px); background-size: 20px 20px; }
+        .selected-card { border-left-color: #4f46e5 !important; background-color: #eef2ff !important; border-width: 2px !important; border-color: #4f46e5 !important; }
 
         /* --- Drag and Drop Visual --- */
         .draggable-card { cursor: grab; user-select: none; }
         .draggable-card:active { cursor: grabbing; }
-        .dragging { 
-            opacity: 0.5; 
-            border: 2px dashed #4f46e5 !important;
-            background-color: #eef2ff !important;
-        }
+        .dragging { opacity: 0.5; border: 2px dashed #4f46e5 !important; background-color: #eef2ff !important; }
 
         /* --- Estilo de Impressão (Etiqueta 73mm x 150mm) --- */
         @media print {
@@ -46,11 +43,8 @@
                 background: white; color: black; font-family: 'Arial Black', 'Arial', sans-serif;
                 display: block !important; overflow: visible;
             }
-            .label-container {
-                width: 100%; height: 148mm; display: flex; flex-direction: column;
-                justify-content: space-between; padding: 2mm;
-                border: 1px dashed #ccc; page-break-after: always; box-sizing: border-box;
-            }
+            /* Classes de Etiqueta */
+            .label-container { width: 100%; height: 148mm; display: flex; flex-direction: column; justify-content: space-between; padding: 2mm; border: 1px dashed #ccc; page-break-after: always; box-sizing: border-box; }
             .label-header { text-align: center; border-bottom: 2px solid black; padding-bottom: 5px; margin-bottom: 5px; }
             .label-date { font-size: 12px; font-weight: normal; }
             .label-client-name { font-size: 24px; font-weight: 900; line-height: 1; text-transform: uppercase; margin-bottom: 2px; }
@@ -62,6 +56,13 @@
             .label-basket { font-size: 20px; font-weight: bold; text-transform: uppercase; border-top: 2px solid black; padding-top: 5px; text-align: center; }
             .label-footer { text-align: center; font-size: 10px; margin-top: auto; }
             .volume-counter { font-size: 18px; font-weight: 900; text-align: right; margin-top: 5px; }
+            
+            /* Classes de Montagem (A4 Simplificada ou Bobina Continua) */
+            .montagem-item { border-bottom: 1px dashed #000; padding: 5px 0; font-family: 'Arial', sans-serif; }
+            .montagem-header { font-size: 18px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px; }
+            .montagem-prod { font-size: 14px; font-weight: bold; }
+            .montagem-meta { font-size: 16px; font-family: 'Courier New', monospace; }
+
             .no-print { display: none !important; }
         }
         #areaImpressao { display: none; }
@@ -77,7 +78,7 @@
                 <div class="bg-indigo-600 text-white p-1.5 rounded">
                     <i class="fa-solid fa-truck-fast text-sm"></i>
                 </div>
-                <h1 class="font-bold text-base text-gray-700">Módulo 2: Expedição</h1>
+                <h1 class="font-bold text-base text-gray-700">Módulo 2: Expedição V2.8</h1>
             </div>
             
             <nav class="flex gap-2">
@@ -98,7 +99,7 @@
         <!-- Layout Principal: 3 Colunas -->
         <div class="flex flex-1 gap-2 overflow-hidden">
             
-            <!-- COLUNA 1: Criador de Pedidos (Super Compacto - 25%) -->
+            <!-- COLUNA 1: Criador de Pedidos (25%) -->
             <div class="w-3/12 bg-white rounded shadow-sm border border-gray-300 flex flex-col overflow-hidden">
                 <div class="p-2 bg-indigo-50 border-b border-indigo-100 flex justify-between items-center">
                     <h2 class="font-bold text-indigo-800 text-xs uppercase"><i class="fa-solid fa-plus mr-1"></i>Novo</h2>
@@ -106,7 +107,6 @@
                 </div>
 
                 <div class="p-2 overflow-y-auto flex-1 custom-scroll">
-                    
                     <!-- Cliente -->
                     <div class="mb-2">
                         <label class="compact-label">Cliente</label>
@@ -118,17 +118,13 @@
                             <button onclick="carregarClientes()" class="bg-gray-200 px-2 rounded hover:bg-gray-300"><i class="fa-solid fa-sync text-[10px]"></i></button>
                         </div>
                     </div>
-                    
                     <hr class="border-dashed border-gray-200 my-2">
-
                     <!-- Produtos -->
                     <div class="bg-gray-50 p-2 rounded border border-gray-200 mb-2">
                         <div class="flex border-b border-gray-300 mb-2 text-[10px]">
                             <button class="flex-1 py-0.5 font-bold text-indigo-700 border-b-2 border-indigo-600" id="tabPadrao" onclick="alternarTab('padrao')">Padrão</button>
                             <button class="flex-1 py-0.5 font-bold text-gray-500 hover:text-indigo-600" id="tabImportar" onclick="alternarTab('importar')">Colar</button>
                         </div>
-
-                        <!-- MODO PADRÃO -->
                         <div id="areaModoPadrao">
                             <div class="mb-1">
                                 <label class="compact-label">Cesta</label>
@@ -139,43 +135,25 @@
                                     <option value="media">Média</option>
                                     <option value="grande">Grande</option>
                                 </select>
-                                <!-- Seletor de Marca/Preço -->
-                                <select id="selMarcaPreco" onchange="recarregarListaSeAlterada()" class="w-full border border-gray-300 rounded compact-input hidden">
-                                    <!-- Preenchido via JS -->
-                                </select>
+                                <select id="selMarcaPreco" onchange="recarregarListaSeAlterada()" class="w-full border border-gray-300 rounded compact-input hidden"></select>
                             </div>
-
                             <div class="flex items-center justify-between mb-1">
                                 <div class="flex items-center gap-2">
-                                    <label class="flex items-center text-[10px] cursor-pointer">
-                                        <input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal
-                                    </label>
-                                    <label class="flex items-center text-[10px] cursor-pointer">
-                                        <input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alt
-                                    </label>
+                                    <label class="flex items-center text-[10px] cursor-pointer"><input type="radio" name="modoCesta" value="normal" checked onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Normal</label>
+                                    <label class="flex items-center text-[10px] cursor-pointer"><input type="radio" name="modoCesta" value="alterada" onchange="toggleModoCesta()" class="mr-1 text-indigo-600"> Alt</label>
                                 </div>
                                 <div id="divCodigoCesta" class="hidden">
                                     <input type="number" id="inputCodigoCesta" placeholder="Cód." class="border border-yellow-400 bg-yellow-50 rounded px-1 py-0.5 text-[10px] w-16 text-center">
                                 </div>
                             </div>
                         </div>
-
-                        <!-- MODO IMPORTAR -->
                         <div id="areaModoImportar" class="hidden mb-2">
                             <textarea id="txtImportar" rows="3" class="w-full border border-gray-300 rounded text-[10px] p-1 font-mono bg-white" placeholder="001 - 3"></textarea>
-                            <button onclick="processarImportacao()" class="mt-1 bg-gray-200 hover:bg-gray-300 text-gray-700 text-[10px] px-2 py-0.5 rounded border border-gray-300 w-full font-bold">
-                                Carregar
-                            </button>
+                            <button onclick="processarImportacao()" class="mt-1 bg-gray-200 hover:bg-gray-300 text-gray-700 text-[10px] px-2 py-0.5 rounded border border-gray-300 w-full font-bold">Carregar</button>
                         </div>
-
-                        <!-- Área de Itens -->
                         <div id="areaItensCesta" class="hidden bg-white border border-gray-300 rounded p-1 mb-2 max-h-32 overflow-y-auto text-[10px]"></div>
-
-                        <button onclick="adicionarItemAoCarrinho()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1 rounded text-xs font-bold shadow-sm">
-                            <i class="fa-solid fa-plus mr-1"></i> Add
-                        </button>
+                        <button onclick="adicionarItemAoCarrinho()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-1 rounded text-xs font-bold shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Add</button>
                     </div>
-
                     <!-- Carrinho -->
                     <div class="mb-2 border border-gray-200 rounded bg-white min-h-[40px]">
                         <table class="w-full text-left text-[10px]">
@@ -183,84 +161,46 @@
                         </table>
                         <div id="carrinhoVazio" class="text-center text-gray-400 py-2 text-[10px] italic">Vazio</div>
                     </div>
-                    <div class="text-right mb-2 font-bold text-indigo-700 text-xs">
-                        Sub: R$ <span id="lblSubtotal">0,00</span>
-                    </div>
-
+                    <div class="text-right mb-2 font-bold text-indigo-700 text-xs">Sub: R$ <span id="lblSubtotal">0,00</span></div>
                     <hr class="border-gray-300 mb-2">
-
-                    <!-- Fechamento Grid -->
+                    <!-- Fechamento -->
                     <div class="grid grid-cols-2 gap-1 mb-2">
                         <div>
                             <label class="compact-label">Pagto</label>
-                            <select id="pagMetodo" class="w-full border border-gray-300 rounded compact-input">
-                                <option value="dinheiro">Dinheiro</option>
-                                <option value="pix">Pix</option>
-                                <option value="cartao">Cartão</option>
-                                <option value="fiado">Fiado</option>
-                            </select>
+                            <select id="pagMetodo" class="w-full border border-gray-300 rounded compact-input"><option value="dinheiro">Dinheiro</option><option value="pix">Pix</option><option value="cartao">Cartão</option><option value="fiado">Fiado</option></select>
                         </div>
                         <div>
                             <label class="compact-label">Status</label>
-                            <select id="pagStatus" class="w-full border border-gray-300 rounded compact-input bg-yellow-50 text-yellow-800">
-                                <option value="pendente">Aberto</option>
-                                <option value="pago">Pago</option>
-                            </select>
+                            <select id="pagStatus" class="w-full border border-gray-300 rounded compact-input bg-yellow-50 text-yellow-800"><option value="pendente">Aberto</option><option value="pago">Pago</option></select>
                         </div>
                         <div>
                             <label class="compact-label">Desc.</label>
-                            <select id="desconto" onchange="calcularTotalFinal()" class="w-full border border-gray-300 rounded compact-input">
-                                <option value="0">0</option>
-                                <option value="5">-5</option>
-                                <option value="10">-10</option>
-                                <option value="15">-15</option>
-                                <option value="20">-20</option>
-                            </select>
+                            <select id="desconto" onchange="calcularTotalFinal()" class="w-full border border-gray-300 rounded compact-input"><option value="0">0</option><option value="5">-5</option><option value="10">-10</option><option value="15">-15</option><option value="20">-20</option></select>
                         </div>
                         <div>
                             <label class="compact-label">Brinde</label>
-                            <select id="brinde" class="w-full border border-gray-300 rounded compact-input text-green-700">
-                                <option value="Nenhum">-</option>
-                                <option value="Amaciante">Amaciante</option>
-                                <option value="Cafe">Café</option>
-                                <option value="Sabao Po">Sabão Pó</option>
-                                <option value="Ovo">Ovo</option>
-                            </select>
+                            <select id="brinde" class="w-full border border-gray-300 rounded compact-input text-green-700"><option value="Nenhum">-</option><option value="Amaciante">Amaciante</option><option value="Cafe">Café</option><option value="Sabao Po">Sabão Pó</option><option value="Ovo">Ovo</option></select>
                         </div>
                         <div class="col-span-2">
                             <label class="compact-label">Rota</label>
-                            <select id="rota" class="w-full border border-gray-300 rounded compact-input font-bold">
-                                <option value="Coxipó">Coxipó</option>
-                                <option value="VG">VG</option>
-                                <option value="Cuiabá">Cuiabá</option>
-                                <option value="CPA">CPA</option>
-                            </select>
+                            <select id="rota" class="w-full border border-gray-300 rounded compact-input font-bold"><option value="Coxipó">Coxipó</option><option value="VG">VG</option><option value="Cuiabá">Cuiabá</option><option value="CPA">CPA</option></select>
                         </div>
-                        <div class="col-span-2">
-                            <input type="text" id="obs" class="w-full border border-gray-300 rounded compact-input" placeholder="Obs...">
-                        </div>
+                        <div class="col-span-2"><input type="text" id="obs" class="w-full border border-gray-300 rounded compact-input" placeholder="Obs..."></div>
                     </div>
-
                     <div class="bg-gray-800 text-white p-1.5 rounded text-center mb-2">
-                        <span class="text-xs text-gray-400 mr-1">TOTAL:</span>
-                        <span class="text-lg font-bold">R$ <span id="lblTotalFinal">0,00</span></span>
+                        <span class="text-xs text-gray-400 mr-1">TOTAL:</span><span class="text-lg font-bold">R$ <span id="lblTotalFinal">0,00</span></span>
                     </div>
-
-                    <button onclick="finalizarPedido()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded shadow text-sm">
-                        <i class="fa-solid fa-check mr-1"></i> SALVAR
-                    </button>
-
+                    <button onclick="finalizarPedido()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded shadow text-sm"><i class="fa-solid fa-check mr-1"></i> SALVAR</button>
                 </div>
             </div>
 
-            <!-- COLUNA 2: Lista de Pedidos (35% - Otimizada) -->
+            <!-- COLUNA 2: Lista de Pedidos / Rota (35%) -->
             <div class="w-5/12 bg-white rounded shadow-sm border border-gray-300 flex flex-col">
                 <div class="p-2 border-b border-gray-200 bg-gray-50 rounded-t">
                     <div class="flex justify-between items-center mb-1">
-                        <h2 class="font-bold text-gray-700 text-xs uppercase"><i class="fa-solid fa-list mr-1"></i>Rota</h2>
+                        <h2 class="font-bold text-gray-700 text-xs uppercase"><i class="fa-solid fa-list mr-1"></i>Organização</h2>
                         <div id="resumoRotas" class="text-[9px] flex gap-1"></div>
                     </div>
-                    
                     <div class="flex gap-1 items-center">
                         <button onclick="filtrarRota('todos')" id="btnRotaTodos" class="flex-1 btn-rota bg-white shadow text-gray-800 text-[10px] py-1 rounded font-bold border border-gray-200">Todos</button>
                         <button onclick="filtrarRota('Coxipó')" id="btnRotaCoxipo" class="flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent">Coxipó</button>
@@ -269,7 +209,6 @@
                         <button onclick="filtrarRota('CPA')" id="btnRotaCPA" class="flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent">CPA</button>
                     </div>
                 </div>
-
                 <div class="flex-1 overflow-auto bg-gray-100 p-2 custom-scroll">
                     <div id="listaPedidos" class="space-y-2 pb-10">
                         <!-- Cards Renderizados Aqui -->
@@ -277,11 +216,16 @@
                 </div>
             </div>
 
-            <!-- COLUNA 3: Nova Área (40% - Placeholder) -->
-            <div class="w-4/12 bg-white rounded shadow-sm border border-gray-300 flex flex-col items-center justify-center text-gray-300">
-                <i class="fa-solid fa-map-location-dot text-4xl mb-2"></i>
-                <span class="text-xs font-bold uppercase">Área de Mapa / Expedição</span>
-                <span class="text-[9px]">(Reservado para futura atualização)</span>
+            <!-- COLUNA 3: Centro de Comando do Pedido (40%) -->
+            <div class="w-4/12 bg-white rounded shadow-sm border border-gray-300 flex flex-col overflow-hidden">
+                <div class="p-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center h-10">
+                    <h2 class="font-bold text-gray-700 text-xs uppercase"><i class="fa-solid fa-eye mr-1"></i>Detalhes do Pedido</h2>
+                </div>
+                
+                <div id="painelDetalhes" class="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-center text-gray-400">
+                    <i class="fa-solid fa-hand-pointer text-4xl mb-2 text-gray-300"></i>
+                    <span class="text-xs">Selecione um pedido na rota</span>
+                </div>
             </div>
 
         </div>
@@ -291,33 +235,26 @@
     <div id="areaImpressao"></div>
 
     <script>
-        // --- DADOS E CONFIGURAÇÕES ---
-        const ENTREGADORES = {
-            'osvaldo': { nome: 'Osvaldo', num: '556598150975' }, 
-            'andre': { nome: 'André', num: '5565993367403' },
-            'claudio': { nome: 'Claudio', num: '5565996884599' },
-            'Jose': { nome: 'Jose', num: '5565981756150' }
-        };
-
-        // --- CATÁLOGO DE PRODUTOS ---
+        // --- CONFIG ---
         const CATALOGO_PRODUTOS = {
-            '001': { nome: 'Arroz de 5kg', ean: '7891234560010' },
-            '002': { nome: 'Açúcar Cristal de 2kg', ean: '7891234560027' },
-            '003': { nome: 'Óleo de Soja de 900ml', ean: '7891234560034' },
+            '001': { nome: 'Arroz Tio Alvino 5kg', ean: '7891234560010' },
+            '001b': { nome: 'Arroz Koblenz 5kg', ean: '7891234560011' }, // CÓDIGO DIFERENTE PARA KOBLENZ
+            '002': { nome: 'Açúcar Cristal 2kg', ean: '7891234560027' },
+            '003': { nome: 'Óleo de Soja 900ml', ean: '7891234560034' },
             '004': { nome: 'Feijão 1kg', ean: '7891234560041' },
             '005': { nome: 'Café 250g', ean: '7891234560058' },
             '005b': { nome: 'Café 500g', ean: '7891234560553' }, 
-            '006': { nome: 'Espaguete de 400g/500g', ean: '7891234560065' },
-            '007': { nome: 'Trigo de 1kg', ean: '7891234560072' },
-            '008': { nome: 'Farinha de Mandioca 1kg', ean: '7891234560089' },
-            '009': { nome: 'Sal de 1kg', ean: '7891234560096' },
+            '006': { nome: 'Espaguete 400g/500g', ean: '7891234560065' },
+            '007': { nome: 'Trigo 1kg', ean: '7891234560072' },
+            '008': { nome: 'Farinha Mandioca 1kg', ean: '7891234560089' },
+            '009': { nome: 'Sal 1kg', ean: '7891234560096' },
             '010': { nome: 'Molho Tomate Sachê', ean: '7891234560102' },
             '011': { nome: 'Milho Lata/Sachê', ean: '7891234560119' },
             '012': { nome: 'Bolacha Recheada', ean: '7891234560126' },
             '013': { nome: 'Miojo', ean: '7891234560133' },
             '014': { nome: 'Suco em Pó', ean: '7891234560140' },
             '015': { nome: '12 Ovos', ean: '7891234560157' },
-            '016': { nome: 'Mistura para Bolo 400g', ean: '7891234560164' },
+            '016': { nome: 'Mistura Bolo 400g', ean: '7891234560164' },
             '017': { nome: 'Tempero Pronto', ean: '7891234560171' },
             '030': { nome: 'Sabão Barra (pct)', ean: '7891234560300' },
             '031': { nome: 'Creme Dental 70g', ean: '7891234560317' },
@@ -348,35 +285,30 @@
             'grande': { 'alvino': 380, 'koblenz': 390 }
         };
 
-        // --- ESTADO GLOBAL ---
         let carrinho = []; 
         let pedidos = []; 
         let listaClientesCache = []; 
         let filtroRotaAtual = 'todos'; 
         let dragSrcEl = null; 
+        let pedidoSelecionadoId = null;
         
         const KEY_CLIENTES = 'sistema_empresarial_clientes';
         const KEY_PEDIDOS = 'sistema_empresarial_vendas';
 
-        // --- INICIALIZAÇÃO ---
         window.onload = () => {
             carregarClientes();
             carregarPedidosLocais();
-            atualizarOpcoesPreco(); // Corrigido aqui
+            atualizarOpcoesPreco(); 
             document.getElementById('filtroData').valueAsDate = new Date();
             renderizarListaPedidos();
         };
 
-        // --- FUNÇÕES DE DADOS ---
+        // --- FUNÇÕES BASICAS ---
         function carregarClientes() {
             const clientesRaw = localStorage.getItem(KEY_CLIENTES);
-            if (clientesRaw) {
-                listaClientesCache = JSON.parse(clientesRaw);
-                listaClientesCache.sort((a, b) => a.nome.localeCompare(b.nome));
-            } else listaClientesCache = [];
+            listaClientesCache = clientesRaw ? JSON.parse(clientesRaw).sort((a, b) => a.nome.localeCompare(b.nome)) : [];
             renderizarOpcoesClientes(listaClientesCache);
         }
-
         function renderizarOpcoesClientes(lista) {
             const select = document.getElementById('selCliente');
             const valorAtual = select.value; 
@@ -384,42 +316,36 @@
             lista.forEach(c => {
                 const option = document.createElement('option');
                 option.value = c.id;
-                option.innerText = `${c.nome.substring(0,20)}...`;
+                option.innerText = `${c.nome.substring(0,25)}`;
                 option.dataset.json = JSON.stringify(c); 
                 select.appendChild(option);
             });
             if (valorAtual) select.value = valorAtual;
         }
-
         function filtrarClientes() {
             const termo = document.getElementById('inputBuscaCliente').value.toLowerCase();
-            const filtrados = listaClientesCache.filter(c => {
-                const nome = c.nome.toLowerCase();
-                return nome.includes(termo);
-            });
-            renderizarOpcoesClientes(filtrados);
+            renderizarOpcoesClientes(listaClientesCache.filter(c => c.nome.toLowerCase().includes(termo)));
+        }
+        function salvarPedidosLocais() { localStorage.setItem(KEY_PEDIDOS, JSON.stringify(pedidos)); }
+        function carregarPedidosLocais() { 
+            const dados = localStorage.getItem(KEY_PEDIDOS);
+            if (dados) pedidos = JSON.parse(dados);
         }
 
-        // --- INTERFACE DE TABS E PRODUTOS ---
+        // --- INTERFACE DE PRODUTOS ---
         function alternarTab(tab) {
-            const btnPadrao = document.getElementById('tabPadrao');
-            const btnImportar = document.getElementById('tabImportar');
             const areaPadrao = document.getElementById('areaModoPadrao');
             const areaImportar = document.getElementById('areaModoImportar');
             const areaItens = document.getElementById('areaItensCesta');
-
+            document.getElementById('tabPadrao').className = tab === 'padrao' ? "flex-1 py-0.5 font-bold text-indigo-700 border-b-2 border-indigo-600" : "flex-1 py-0.5 font-bold text-gray-500 hover:text-indigo-600";
+            document.getElementById('tabImportar').className = tab === 'importar' ? "flex-1 py-0.5 font-bold text-indigo-700 border-b-2 border-indigo-600" : "flex-1 py-0.5 font-bold text-gray-500 hover:text-indigo-600";
+            
             if(tab === 'padrao') {
-                btnPadrao.className = "flex-1 py-0.5 font-bold text-indigo-700 border-b-2 border-indigo-600";
-                btnImportar.className = "flex-1 py-0.5 font-bold text-gray-500 hover:text-indigo-600";
-                areaPadrao.classList.remove('hidden');
-                areaImportar.classList.add('hidden');
+                areaPadrao.classList.remove('hidden'); areaImportar.classList.add('hidden');
                 document.querySelector('input[name="modoCesta"][value="normal"]').checked = true;
                 toggleModoCesta();
             } else {
-                btnImportar.className = "flex-1 py-0.5 font-bold text-indigo-700 border-b-2 border-indigo-600";
-                btnPadrao.className = "flex-1 py-0.5 font-bold text-gray-500 hover:text-indigo-600";
-                areaImportar.classList.remove('hidden');
-                areaPadrao.classList.add('hidden');
+                areaImportar.classList.remove('hidden'); areaPadrao.classList.add('hidden');
                 areaItens.classList.remove('hidden');
                 areaItens.innerHTML = '<div class="text-center text-gray-400 p-2">Cole os códigos...</div>';
                 document.querySelector('input[name="modoCesta"][value="alterada"]').checked = true;
@@ -446,34 +372,18 @@
             renderizarListaEditavelGenerica(listaParaRenderizar);
         }
 
-        // Função corrigida e renomeada
         function atualizarOpcoesPreco() {
             const tipo = document.getElementById('selTipoCesta').value;
             const selectMarca = document.getElementById('selMarcaPreco');
             selectMarca.innerHTML = '';
             const opcoes = PRECOS[tipo];
-            
-            // Popula opções
             if (tipo === 'economica') {
-                const opt = new Option(`Padrão - R$ ${opcoes.padrao}`, opcoes.padrao);
-                selectMarca.add(opt);
+                selectMarca.add(new Option(`Padrão - R$ ${opcoes.padrao}`, opcoes.padrao));
             } else {
-                const opt1 = new Option(`Alvino - R$ ${opcoes.alvino}`, opcoes.alvino);
-                opt1.setAttribute('data-marca', 'Alvino');
-                selectMarca.add(opt1);
-                const opt2 = new Option(`Koblenz - R$ ${opcoes.koblenz}`, opcoes.koblenz);
-                opt2.setAttribute('data-marca', 'Koblenz');
-                selectMarca.add(opt2);
+                const opt1 = new Option(`Alvino - R$ ${opcoes.alvino}`, opcoes.alvino); opt1.setAttribute('data-marca', 'Alvino'); selectMarca.add(opt1);
+                const opt2 = new Option(`Koblenz - R$ ${opcoes.koblenz}`, opcoes.koblenz); opt2.setAttribute('data-marca', 'Koblenz'); selectMarca.add(opt2);
             }
-
-            // AUTO-HIDE LOGIC
-            if (selectMarca.options.length <= 1) {
-                selectMarca.classList.add('hidden');
-            } else {
-                selectMarca.classList.remove('hidden');
-            }
-
-            // Atualiza a lista se estiver no modo Alterada
+            if (selectMarca.options.length <= 1) selectMarca.classList.add('hidden'); else selectMarca.classList.remove('hidden');
             if(document.querySelector('input[name="modoCesta"]:checked').value === 'alterada') {
                 const listaOriginal = DADOS_CESTAS[tipo].itensCod;
                 renderizarListaEditavelGenerica(listaOriginal);
@@ -492,15 +402,12 @@
             const modo = document.querySelector('input[name="modoCesta"]:checked').value;
             const area = document.getElementById('areaItensCesta');
             const divCodigo = document.getElementById('divCodigoCesta');
-            
             if (modo === 'alterada') {
                 const tipo = document.getElementById('selTipoCesta').value;
                 renderizarListaEditavelGenerica(DADOS_CESTAS[tipo].itensCod);
-                area.classList.remove('hidden');
-                divCodigo.classList.remove('hidden');
+                area.classList.remove('hidden'); divCodigo.classList.remove('hidden');
             } else {
-                area.classList.add('hidden');
-                divCodigo.classList.add('hidden');
+                area.classList.add('hidden'); divCodigo.classList.add('hidden');
             }
         }
 
@@ -508,32 +415,33 @@
             const area = document.getElementById('areaItensCesta');
             area.innerHTML = '';
             
-            // Verifica se há marca selecionada para o Arroz
+            // Verifica marca do arroz
             const selMarca = document.getElementById('selMarcaPreco');
-            let marcaExtra = "";
+            let isKoblenz = false;
             if (selMarca && !selMarca.classList.contains('hidden') && selMarca.selectedIndex >= 0) {
                  const opt = selMarca.options[selMarca.selectedIndex];
-                 const nomeMarca = opt.getAttribute('data-marca');
-                 if(nomeMarca && nomeMarca !== 'Pad') marcaExtra = ` (${nomeMarca})`;
+                 if(opt.getAttribute('data-marca') === 'Koblenz') isKoblenz = true;
             }
 
             listaItensCod.forEach((item) => {
                 const qtd = item[0];
-                const cod = item[1];
-                const produto = CATALOGO_PRODUTOS[cod];
-                let nome = produto ? produto.nome.substring(0,25) : 'Desc';
+                let cod = item[1];
                 
-                // Adiciona marca ao Arroz (001)
-                if(cod === '001' && marcaExtra) {
-                    nome += marcaExtra;
+                // --- TROCA DE CÓDIGO DO ARROZ ---
+                // Se o item for arroz (001) e a marca selecionada for Koblenz, troca para 001b
+                if (cod === '001' && isKoblenz) {
+                    cod = '001b';
                 }
 
+                const produto = CATALOGO_PRODUTOS[cod];
+                const nome = produto ? produto.nome.substring(0,30) : 'Desc';
+                
                 const row = document.createElement('div');
                 row.className = "flex items-center gap-1 mb-1";
                 row.innerHTML = `
                     <input type="number" min="0" value="${qtd}" class="w-8 border border-gray-300 rounded text-center px-0.5 item-qtd font-bold">
                     <span class="text-[9px] bg-gray-200 px-1 rounded font-mono">${cod}</span>
-                    <input type="text" value="${nome}" class="flex-1 border border-gray-300 rounded px-1 item-desc bg-gray-50" readonly>
+                    <input type="text" value="${nome}" class="flex-1 border border-gray-300 rounded px-1 item-desc bg-gray-50 text-[10px]" readonly>
                 `;
                 area.appendChild(row);
             });
@@ -543,9 +451,7 @@
             const tipoKey = document.getElementById('selTipoCesta').value;
             const precoVal = parseFloat(document.getElementById('selMarcaPreco').value) || 0;
             const selMarca = document.getElementById('selMarcaPreco');
-            const marcaNome = selMarca.options[selMarca.selectedIndex] 
-                              ? (selMarca.options[selMarca.selectedIndex].getAttribute('data-marca') || 'Pad') 
-                              : 'Pad';
+            const marcaNome = selMarca.options[selMarca.selectedIndex] ? (selMarca.options[selMarca.selectedIndex].getAttribute('data-marca') || 'Pad') : 'Pad';
             
             const isImportTab = !document.getElementById('areaModoImportar').classList.contains('hidden');
             const isRadioAlterada = document.querySelector('input[name="modoCesta"][value="alterada"]').checked;
@@ -555,87 +461,56 @@
             let identificacao = null; 
             let nomeCestaDisplay = isImportTab ? 'Importada' : DADOS_CESTAS[tipoKey].titulo;
 
-            // Lógica de Montagem da Lista de Itens
+            // Logica de Arroz (Alvino/Koblenz)
+            let isKoblenz = (marcaNome === 'Koblenz');
+
             if (modo === 'normal') {
                 const listaCod = DADOS_CESTAS[tipoKey].itensCod;
                 listaCod.forEach(item => {
-                   const produto = CATALOGO_PRODUTOS[item[1]];
-                   if(produto) itensFinais.push({ cod: item[1], qtd: item[0], nome: produto.nome, ean: produto.ean });
+                   let cod = item[1];
+                   if(cod === '001' && isKoblenz) cod = '001b'; // Troca SKU
+                   
+                   const produto = CATALOGO_PRODUTOS[cod];
+                   if(produto) itensFinais.push({ cod: cod, qtd: item[0], nome: produto.nome, ean: produto.ean });
                 });
             } else {
                 const codInput = document.getElementById('inputCodigoCesta').value;
-                if(!codInput) return alert('Por favor, informe o CÓDIGO de identificação para cesta alterada/importada.');
+                if(!codInput) return alert('Informe o CÓDIGO de identificação.');
                 identificacao = codInput;
                 const container = document.getElementById('areaItensCesta');
                 
-                // Raspa os dados visuais se for alterada
                 Array.from(container.children).forEach(child => {
                     const qInput = child.querySelector('.item-qtd');
                     const spanCod = child.querySelector('span.font-mono');
-                    
                     if(qInput && spanCod) {
                         const codigo = spanCod.innerText;
                         const q = parseInt(qInput.value) || 0;
                         if (q > 0) {
                             let ean = CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].ean : '';
-                            
-                            // Tenta pegar o nome exibido (que já tem a marca se for arroz)
-                            const descInput = child.querySelector('.item-desc');
-                            let nome = descInput ? descInput.value : (CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].nome : 'Extra');
-                            
+                            let nome = CATALOGO_PRODUTOS[codigo] ? CATALOGO_PRODUTOS[codigo].nome : 'Extra';
                             itensFinais.push({ cod: codigo, qtd: q, nome: nome, ean: ean });
                         }
                     }
                 });
             }
 
-            if(itensFinais.length === 0) {
-                return alert("Erro: Não foi possível identificar os itens da cesta. Verifique se o cadastro está correto.");
-            }
+            if(itensFinais.length === 0) return alert("Erro ao identificar itens.");
 
-            carrinho.push({
-                id: Date.now(),
-                tipo: nomeCestaDisplay,
-                marca: marcaNome,
-                preco: precoVal,
-                modo: modo,
-                identificacao: identificacao, 
-                conteudo: itensFinais
-            });
+            carrinho.push({ id: Date.now(), tipo: nomeCestaDisplay, marca: marcaNome, preco: precoVal, modo: modo, identificacao: identificacao, conteudo: itensFinais });
             renderizarCarrinho();
         }
 
-        function removerDoCarrinho(id) {
-            carrinho = carrinho.filter(i => i.id !== id);
-            renderizarCarrinho();
-        }
-
+        function removerDoCarrinho(id) { carrinho = carrinho.filter(i => i.id !== id); renderizarCarrinho(); }
         function renderizarCarrinho() {
-            const tbody = document.getElementById('tabelaCarrinho');
-            const divVazio = document.getElementById('carrinhoVazio');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById('tabelaCarrinho'); tbody.innerHTML = '';
             let subtotal = 0;
-
-            if (carrinho.length === 0) {
-                divVazio.style.display = 'block';
-            } else {
-                divVazio.style.display = 'none';
-                carrinho.forEach(item => {
-                    subtotal += item.preco;
-                    const tr = document.createElement('tr');
-                    tr.className = "border-t border-gray-100";
-                    let label = item.modo === 'alterada' ? `<span class="bg-yellow-200 px-1 rounded ml-1 text-[9px]">COD:${item.identificacao}</span>` : '';
-                    tr.innerHTML = `
-                        <td class="p-1">
-                            <div class="font-bold">${item.tipo} ${label}</div>
-                            <div class="text-[9px] text-gray-500">${item.marca}</div>
-                        </td>
-                        <td class="p-1 text-right">R$ ${item.preco}</td>
-                        <td class="p-1 text-center"><button onclick="removerDoCarrinho(${item.id})" class="text-red-500 font-bold">X</button></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
+            carrinho.forEach(item => {
+                subtotal += item.preco;
+                const tr = document.createElement('tr'); tr.className = "border-t border-gray-100";
+                let label = item.modo === 'alterada' ? `<span class="bg-yellow-200 px-1 rounded ml-1 text-[9px]">COD:${item.identificacao}</span>` : '';
+                tr.innerHTML = `<td class="p-1"><div class="font-bold">${item.tipo} ${label}</div><div class="text-[9px] text-gray-500">${item.marca}</div></td><td class="p-1 text-right">R$ ${item.preco}</td><td class="p-1 text-center"><button onclick="removerDoCarrinho(${item.id})" class="text-red-500 font-bold">X</button></td>`;
+                tbody.appendChild(tr);
+            });
             document.getElementById('lblSubtotal').innerText = subtotal.toFixed(2).replace('.', ',');
             calcularTotalFinal(subtotal);
         }
@@ -644,6 +519,16 @@
             let sub = subtotalOverride !== undefined ? subtotalOverride : parseFloat(document.getElementById('lblSubtotal').innerText.replace(',', '.'));
             let desc = parseFloat(document.getElementById('desconto').value) || 0;
             document.getElementById('lblTotalFinal').innerText = Math.max(0, sub - desc).toFixed(2).replace('.', ',');
+        }
+
+        function limparPedidoAtual() {
+            carrinho = []; renderizarCarrinho();
+            document.getElementById('selCliente').value = "";
+            document.getElementById('inputBuscaCliente').value = ""; 
+            document.getElementById('obs').value = "";
+            document.getElementById('pagStatus').value = "pendente";
+            document.getElementById('desconto').value = "0";
+            alternarTab('padrao'); calcularTotalFinal(0);
         }
 
         function finalizarPedido() {
@@ -657,21 +542,11 @@
             const codigoVisual = `${String(now.getDate()).padStart(2,'0')}${String(now.getMonth()+1).padStart(2,'0')}${String(countHoje).padStart(2,'0')}`;
 
             pedidos.push({
-                id: Date.now().toString(),
-                codigoVisual: codigoVisual,
-                data: new Date().toISOString(),
-                ordem: Date.now(), 
-                cliente: clienteDados, 
-                rota: document.getElementById('rota').value,
+                id: Date.now().toString(), codigoVisual: codigoVisual, data: new Date().toISOString(), ordem: Date.now(), 
+                cliente: clienteDados, rota: document.getElementById('rota').value,
                 pagamento: { metodo: document.getElementById('pagMetodo').value, status: document.getElementById('pagStatus').value },
-                financeiro: {
-                    subtotal: parseFloat(document.getElementById('lblSubtotal').innerText.replace(',', '.')),
-                    desconto: parseFloat(document.getElementById('desconto').value),
-                    total: parseFloat(document.getElementById('lblTotalFinal').innerText.replace(',', '.'))
-                },
-                brinde: document.getElementById('brinde').value,
-                obs: document.getElementById('obs').value,
-                itens: carrinho
+                financeiro: { subtotal: parseFloat(document.getElementById('lblSubtotal').innerText.replace(',', '.')), desconto: parseFloat(document.getElementById('desconto').value), total: parseFloat(document.getElementById('lblTotalFinal').innerText.replace(',', '.')) },
+                brinde: document.getElementById('brinde').value, obs: document.getElementById('obs').value, itens: carrinho
             });
             salvarPedidosLocais();
             alert(`Salvo: ${codigoVisual}`);
@@ -680,36 +555,10 @@
             renderizarListaPedidos();
         }
 
-        function salvarPedidosLocais() { localStorage.setItem(KEY_PEDIDOS, JSON.stringify(pedidos)); }
-        function carregarPedidosLocais() { 
-            const dados = localStorage.getItem(KEY_PEDIDOS);
-            if (dados) pedidos = JSON.parse(dados);
-        }
-
-        function limparPedidoAtual() {
-            carrinho = [];
-            renderizarCarrinho();
-            document.getElementById('selCliente').value = "";
-            document.getElementById('inputBuscaCliente').value = ""; 
-            document.getElementById('obs').value = "";
-            document.getElementById('pagStatus').value = "pendente";
-            document.getElementById('desconto').value = "0";
-            alternarTab('padrao');
-            calcularTotalFinal(0);
-        }
-
-        function gerarCodigoClienteVisual(cliente, rotaPedido) {
-            let cid = (cliente.cidade || '').toLowerCase().includes('vg') ? 'VG' : 'CBA';
-            const rotaLimpa = rotaPedido.replace(/[^a-zA-Z0-9]/g, '');
-            const telFinal = (cliente.telefone || '').replace(/\D/g, '').slice(-4).padStart(4,'0');
-            return `${cid}${rotaLimpa}${telFinal}`;
-        }
-
+        // --- ORGANIZAÇÃO E VISUALIZAÇÃO ---
         function filtrarRota(rota) {
             filtroRotaAtual = rota;
-            document.querySelectorAll('.btn-rota').forEach(btn => {
-                btn.className = 'flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent';
-            });
+            document.querySelectorAll('.btn-rota').forEach(btn => btn.className = 'flex-1 btn-rota text-gray-500 hover:bg-white text-[10px] py-1 rounded border border-transparent');
             const btnAtivo = document.getElementById('btnRota' + (rota === 'todos' ? 'Todos' : rota.replace(/\s+/g, '')));
             if(btnAtivo) btnAtivo.className = 'flex-1 btn-rota bg-white shadow text-gray-800 text-[10px] py-1 rounded font-bold border border-gray-200';
             renderizarListaPedidos();
@@ -719,150 +568,215 @@
             const filtroData = document.getElementById('filtroData').value;
             let lista = pedidos.filter(p => p.data.startsWith(filtroData));
             if (filtroRotaAtual !== 'todos') lista = lista.filter(p => p.rota === filtroRotaAtual);
-            lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
-            return lista;
+            return lista.sort((a, b) => (a.ordem || 0) - (b.ordem || 0));
         }
 
         function moverPedido(id, direcao) {
-            const listaAtual = getPedidosVisiveis();
-            listaAtual.forEach((p, index) => p.ordem = index * 10);
-            const indexAtual = listaAtual.findIndex(p => p.id === id);
-            if (indexAtual === -1) return;
-            const indexAlvo = indexAtual + direcao;
-            if (indexAlvo >= 0 && indexAlvo < listaAtual.length) {
-                const ordemTemp = listaAtual[indexAtual].ordem;
-                listaAtual[indexAtual].ordem = listaAtual[indexAlvo].ordem;
-                listaAtual[indexAlvo].ordem = ordemTemp;
-                salvarPedidosLocais();
-                renderizarListaPedidos();
+            const lista = getPedidosVisiveis();
+            lista.forEach((p, idx) => p.ordem = idx * 10);
+            const idx = lista.findIndex(p => p.id === id);
+            if (idx === -1) return;
+            const alvo = idx + direcao;
+            if (alvo >= 0 && alvo < lista.length) {
+                const temp = lista[idx].ordem; lista[idx].ordem = lista[alvo].ordem; lista[alvo].ordem = temp;
+                salvarPedidosLocais(); renderizarListaPedidos();
             }
         }
-
-        function handleDragStart(e) {
-            this.classList.add('dragging');
-            dragSrcEl = this;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.dataset.id);
-        }
-        function handleDragOver(e) { if (e.preventDefault) e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
-        function handleDragEnter(e) { this.classList.add('border-indigo-500', 'bg-indigo-50'); }
-        function handleDragLeave(e) { this.classList.remove('border-indigo-500', 'bg-indigo-50'); }
-        function handleDrop(e) {
-            if (e.stopPropagation) e.stopPropagation(); 
-            document.querySelectorAll('.draggable-card').forEach(col => col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50'));
-            const idOrigem = dragSrcEl.dataset.id;
-            const idDestino = this.dataset.id;
-            if (dragSrcEl !== this) {
-                const listaAtual = getPedidosVisiveis();
-                listaAtual.forEach((p, index) => p.ordem = index * 10);
-                const idxOrigem = listaAtual.findIndex(p => p.id === idOrigem);
-                const idxDestino = listaAtual.findIndex(p => p.id === idDestino);
-                if (idxOrigem > -1 && idxDestino > -1) {
-                    const [itemMovido] = listaAtual.splice(idxOrigem, 1);
-                    listaAtual.splice(idxDestino, 0, itemMovido);
-                    listaAtual.forEach((p, index) => p.ordem = index * 10);
-                    salvarPedidosLocais();
-                    renderizarListaPedidos();
-                }
-            }
-            return false;
-        }
-        function handleDragEnd(e) { document.querySelectorAll('.draggable-card').forEach(col => col.classList.remove('dragging', 'border-indigo-500', 'bg-indigo-50')); }
 
         function renderizarListaPedidos() {
             const container = document.getElementById('listaPedidos');
-            const pedidosFiltrados = getPedidosVisiveis();
-            const resumo = {};
-            pedidosFiltrados.forEach(p => { resumo[p.rota] = (resumo[p.rota] || 0) + 1; });
-            document.getElementById('resumoRotas').innerHTML = Object.entries(resumo).map(([rota, qtd]) => `<span class="bg-blue-100 text-blue-800 px-1 rounded">${rota.substring(0,3)}:${qtd}</span>`).join('');
+            const lista = getPedidosVisiveis();
+            
+            // Resumo topo
+            const resumo = {}; lista.forEach(p => { resumo[p.rota] = (resumo[p.rota] || 0) + 1; });
+            document.getElementById('resumoRotas').innerHTML = Object.entries(resumo).map(([r, q]) => `<span class="bg-blue-100 text-blue-800 px-1 rounded">${r.substring(0,3)}:${q}</span>`).join('');
             
             container.innerHTML = '';
-            if (pedidosFiltrados.length === 0) return container.innerHTML = '<div class="text-center text-gray-400 mt-10 text-xs">Vazio</div>';
+            if (lista.length === 0) return container.innerHTML = '<div class="text-center text-gray-400 mt-10 text-xs">Vazio</div>';
 
-            pedidosFiltrados.forEach((p, index) => {
+            lista.forEach((p, index) => {
                 const card = document.createElement('div');
-                const isPago = p.pagamento.status === 'pago';
-                const borderClass = isPago ? 'border-green-500' : 'border-yellow-400';
-                const codClienteVisual = gerarCodigoClienteVisual(p.cliente, p.rota);
-                const nomeCurto = p.cliente.nome.substring(0, 10).toUpperCase();
+                const isSelected = p.id === pedidoSelecionadoId;
+                
+                // Formatação Nome (Nome + 1 Sobrenome)
+                const nomeParts = p.cliente.nome.split(' ');
+                const nomeFormatado = nomeParts.slice(0, 2).join(' ').toUpperCase();
 
                 card.setAttribute('draggable', 'true');
                 card.dataset.id = p.id;
-                card.className = "draggable-card bg-white border-l-4 " + borderClass + " shadow-sm rounded-r mb-2 flex flex-col p-1.5";
+                card.className = `draggable-card bg-white border border-gray-200 shadow-sm rounded mb-1 p-1.5 flex gap-2 items-center cursor-pointer transition-colors ${isSelected ? 'selected-card' : 'hover:bg-gray-50'}`;
+                card.onclick = () => selecionarPedido(p.id);
                 
-                card.addEventListener('dragstart', handleDragStart);
-                card.addEventListener('dragenter', handleDragEnter);
-                card.addEventListener('dragover', handleDragOver);
-                card.addEventListener('dragleave', handleDragLeave);
-                card.addEventListener('drop', handleDrop);
-                card.addEventListener('dragend', handleDragEnd);
+                // Drag Events
+                card.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/plain', p.id); e.target.classList.add('dragging'); dragSrcEl = e.target; });
+                card.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+                card.addEventListener('dragenter', (e) => e.target.classList.add('bg-indigo-50'));
+                card.addEventListener('dragleave', (e) => e.target.classList.remove('bg-indigo-50'));
+                card.addEventListener('drop', (e) => { 
+                    e.preventDefault(); 
+                    if(dragSrcEl !== e.target) {
+                        // Lógica simples de troca na lista filtrada
+                        const idOrigem = dragSrcEl.dataset.id;
+                        const idDestino = p.id;
+                        const listaAtual = getPedidosVisiveis();
+                        // Re-indexa
+                        listaAtual.forEach((item, i) => item.ordem = i*10);
+                        const idxOrigem = listaAtual.findIndex(i => i.id === idOrigem);
+                        const idxDestino = listaAtual.findIndex(i => i.id === idDestino);
+                        if(idxOrigem > -1 && idxDestino > -1) {
+                            const [moved] = listaAtual.splice(idxOrigem, 1);
+                            listaAtual.splice(idxDestino, 0, moved);
+                            listaAtual.forEach((item, i) => item.ordem = i*10);
+                            salvarPedidosLocais();
+                            renderizarListaPedidos();
+                        }
+                    }
+                });
+                card.addEventListener('dragend', (e) => { 
+                    document.querySelectorAll('.draggable-card').forEach(c => c.classList.remove('dragging', 'bg-indigo-50')); 
+                });
 
-                const opcoesEntregadores = Object.keys(ENTREGADORES).map(k => `<option value="${k}">${ENTREGADORES[k].nome}</option>`).join('');
+                // Conteúdo do Card (LIMPO)
+                // CÓDIGO PEDIDO | NOME E 1 SOBRENOME
+                // NOME DA CESTA SEM ABREVIAR | VALOR | PADRAO/ALTERADA | LIXEIRA
                 
-                // --- LINHA 1: Cabeçalho ---
-                const headerHtml = `
-                    <div class="flex justify-between items-center mb-1">
-                        <div class="flex items-center gap-1">
-                            <span class="bg-gray-800 text-white text-[10px] font-mono px-1 rounded font-bold">${p.codigoVisual || '--'}</span>
-                            <span class="font-bold text-gray-800 text-xs" title="${p.cliente.nome}">${nomeCurto}</span>
-                            <span class="text-[9px] bg-gray-100 text-gray-500 px-1 rounded font-mono">${codClienteVisual}</span>
+                let infoCestas = p.itens.map(i => {
+                    const status = i.modo === 'alterada' ? '<span class="text-red-600 font-bold">[ALT]</span>' : '<span class="text-green-600 font-bold">[PAD]</span>';
+                    return `${i.tipo} | R$${i.preco} | ${status}`;
+                }).join('<br>');
+
+                card.innerHTML = `
+                    <div class="flex flex-col gap-1 items-center justify-center border-r border-gray-200 pr-1">
+                        <button onclick="event.stopPropagation(); moverPedido('${p.id}', -1)" class="text-gray-400 hover:text-indigo-600"><i class="fa-solid fa-caret-up"></i></button>
+                        <button onclick="event.stopPropagation(); moverPedido('${p.id}', 1)" class="text-gray-400 hover:text-indigo-600"><i class="fa-solid fa-caret-down"></i></button>
+                    </div>
+                    <div class="flex-1 overflow-hidden">
+                        <div class="text-xs font-black text-gray-800 truncate border-b border-gray-100 pb-0.5 mb-0.5">
+                            <span class="bg-gray-800 text-white px-1 rounded font-mono mr-1">${p.codigoVisual}</span> ${nomeFormatado}
                         </div>
-                        <div class="flex items-center gap-1">
-                            ${p.cliente.maps ? '<i class="fa-solid fa-map-location-dot text-orange-500 text-[10px]"></i>' : ''}
-                            <span class="font-bold text-indigo-700 text-xs">R$${p.financeiro.total.toFixed(0)}</span>
+                        <div class="text-[10px] text-gray-600 leading-tight">
+                            ${infoCestas}
                         </div>
                     </div>
+                    <button onclick="event.stopPropagation(); excluirPedido('${p.id}')" class="text-red-300 hover:text-red-500 px-2 py-2 hover:bg-red-50 rounded transition">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
                 `;
-
-                // --- LINHA 2: Resumo Itens ---
-                const resumoItens = p.itens.map(i => {
-                    const tipo = i.tipo.replace('Cesta ', '');
-                    const labelAlt = i.modo === 'alterada' ? `<span class="bg-red-100 text-red-800 px-0.5 rounded text-[8px] font-bold">ALT</span>` : '';
-                    return `<div class="flex justify-between text-[10px] leading-tight text-gray-600"><span>${tipo} (${i.marca.substring(0,3)})</span> ${labelAlt}</div>`;
-                }).join('');
-
-                const itensHtml = `<div class="bg-gray-50 border border-gray-100 rounded p-1 mb-1">${resumoItens}</div>`;
-
-                // --- LINHA 3: Ações (REMOVIDO ZAP) ---
-                const acoesHtml = `
-                    <div class="flex items-center justify-between gap-1 mt-auto">
-                        <div class="flex items-center gap-1">
-                            <button onclick="moverPedido('${p.id}', -1)" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-caret-up"></i></button>
-                            <button onclick="moverPedido('${p.id}', 1)" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-caret-down"></i></button>
-                        </div>
-                        <div class="flex-1 px-1">
-                            <select id="selEntregador_${p.id}" class="w-full text-[9px] border border-gray-300 rounded py-0 bg-white h-5">
-                                <option value="">Entregador...</option>
-                                ${opcoesEntregadores}
-                            </select>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="imprimirEtiquetaPedido('${p.id}')" class="bg-gray-800 text-white w-5 h-5 rounded flex items-center justify-center hover:bg-gray-600" title="Etiqueta"><i class="fa-solid fa-tag text-[10px]"></i></button>
-                            <button onclick="excluirPedido('${p.id}')" class="text-red-300 hover:text-red-500 w-4"><i class="fa-solid fa-trash text-[10px]"></i></button>
-                        </div>
-                    </div>
-                `;
-
-                card.innerHTML = headerHtml + itensHtml + acoesHtml;
                 container.appendChild(card);
             });
         }
 
-        // Funções de Ação (Mantidas iguais, mas compactadas)
-        function excluirPedido(id) { if(confirm('Del?')) { pedidos = pedidos.filter(p => p.id !== id); salvarPedidosLocais(); renderizarListaPedidos(); } }
-        
-        function exportarPedidosJson() {
-            const filtroData = document.getElementById('filtroData').value;
-            let lista = pedidos.filter(p => p.data.startsWith(filtroData));
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([JSON.stringify(lista)], {type: "application/json"}));
-            a.download = `backup_${filtroData}.json`;
-            a.click();
+        function selecionarPedido(id) {
+            pedidoSelecionadoId = id;
+            renderizarListaPedidos(); // Re-renderiza para atualizar destaque
+            renderizarDetalhesPedido(id);
         }
 
-        function imprimirEtiquetaPedido(id) {
+        function renderizarDetalhesPedido(id) {
+            const painel = document.getElementById('painelDetalhes');
             const p = pedidos.find(item => item.id === id);
-            if (!p) return;
+            
+            if(!p) {
+                painel.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-gray-400"><i class="fa-solid fa-hand-pointer text-4xl mb-2 text-gray-300"></i><span class="text-xs">Selecione um pedido</span></div>';
+                return;
+            }
+
+            const codCli = gerarCodigoClienteVisual(p.cliente, p.rota);
+            const endereco = `${p.cliente.endereco}, ${p.cliente.bairro} - ${p.cliente.cidade || ''}`;
+            
+            // Gera lista de itens detalhada
+            let htmlItens = '';
+            p.itens.forEach(item => {
+                const labelModo = item.modo === 'alterada' ? `<span class="bg-red-100 text-red-800 px-1 rounded text-[10px] ml-2">ALTERADA - ${item.identificacao}</span>` : '';
+                
+                let listaProdutos = '';
+                item.conteudo.forEach(prod => {
+                    listaProdutos += `
+                        <div class="flex justify-between border-b border-dashed border-gray-200 py-1 text-xs">
+                            <span class="flex-1"><b class="bg-gray-100 px-1 rounded mr-1">${prod.cod}</b> ${prod.nome}</span>
+                            <span class="font-bold w-12 text-right">${prod.qtd}x</span>
+                        </div>
+                    `;
+                });
+
+                htmlItens += `
+                    <div class="bg-white border border-gray-200 rounded mb-2 shadow-sm">
+                        <div class="bg-gray-100 p-2 font-bold text-sm border-b border-gray-200 flex justify-between">
+                            <span>${item.tipo} (${item.marca})</span>
+                            ${labelModo}
+                        </div>
+                        <div class="p-2 bg-white">
+                            ${listaProdutos}
+                        </div>
+                        <div class="p-1 bg-gray-50 text-right text-xs font-bold text-indigo-700">
+                            Valor Cesta: R$ ${item.preco.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            painel.innerHTML = `
+                <div class="w-full h-full flex flex-col">
+                    <div class="p-4 bg-white border-b border-gray-200">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <div class="text-xl font-black text-gray-800 leading-none">${p.cliente.nome}</div>
+                                <div class="text-sm text-gray-500 font-mono mt-1 bg-gray-100 inline-block px-1 rounded">${codCli}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-indigo-600">PED: ${p.codigoVisual}</div>
+                                <div class="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full mt-1">${p.rota}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-location-dot w-4 text-center"></i> ${endereco}</div>
+                        <div class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-phone w-4 text-center"></i> ${p.cliente.telefone || '-'}</div>
+                        ${p.obs ? `<div class="mt-2 text-xs bg-yellow-50 text-yellow-800 p-2 rounded border border-yellow-200"><b>OBS:</b> ${p.obs}</div>` : ''}
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-4 bg-gray-50 custom-scroll">
+                        ${htmlItens}
+                    </div>
+
+                    <div class="p-4 bg-white border-t border-gray-200">
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-xs text-gray-500">
+                                <div>Pagamento: <b>${p.pagamento.metodo.toUpperCase()}</b></div>
+                                <div>Status: <b>${p.pagamento.status.toUpperCase()}</b></div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-gray-400">Total Final</div>
+                                <div class="text-2xl font-black text-gray-800">R$ ${p.financeiro.total.toFixed(2)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="imprimirEtiquetaPedido('${p.id}')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 rounded shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-tag"></i> IMPRIMIR ETIQUETA
+                            </button>
+                            <button onclick="imprimirMontagem('${p.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded shadow flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-boxes-packing"></i> IMPRIMIR MONTAGEM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function excluirPedido(id) { if(confirm('Excluir este pedido?')) { pedidos = pedidos.filter(p => p.id !== id); salvarPedidosLocais(); if(pedidoSelecionadoId===id) pedidoSelecionadoId=null; renderizarListaPedidos(); renderizarDetalhesPedido(pedidoSelecionadoId); } }
+        function gerarCodigoClienteVisual(c, r) {
+            let cid = (c.cidade || '').toLowerCase().includes('vg') ? 'VG' : 'CBA';
+            return `${cid}${r.replace(/[^a-zA-Z0-9]/g, '')}${(c.telefone || '').replace(/\D/g, '').slice(-4).padStart(4,'0')}`;
+        }
+        function exportarPedidosJson() {
+            const f = document.getElementById('filtroData').value;
+            const l = pedidos.filter(p => p.data.startsWith(f));
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(l)], {type: "application/json"})); a.download = `bkp_${f}.json`; a.click();
+        }
+
+        // --- IMPRESSÃO ETIQUETA ---
+        function imprimirEtiquetaPedido(id) {
+            const p = pedidos.find(item => item.id === id); if (!p) return;
             const area = document.getElementById('areaImpressao');
             const codCli = gerarCodigoClienteVisual(p.cliente, p.rota);
             let html = '';
@@ -886,7 +800,49 @@
                         </div>`;
                 }
             });
-            area.innerHTML = html;
+            area.innerHTML = html; setTimeout(() => window.print(), 300);
+        }
+
+        // --- IMPRESSÃO MONTAGEM (SEM CÓDIGO DE BARRAS) ---
+        function imprimirMontagem(id) {
+            const p = pedidos.find(item => item.id === id); if (!p) return;
+            const area = document.getElementById('areaImpressao');
+            const dataF = new Date(p.data).toLocaleDateString('pt-BR');
+            const horaF = new Date(p.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            
+            let htmlConteudo = '';
+            p.itens.forEach(item => {
+                let titulo = item.tipo.toUpperCase();
+                let listaItensHtml = '';
+
+                // Se for Alterada, lista os produtos (SEM BARCODE, SÓ TEXTO)
+                if (item.modo === 'alterada') {
+                    titulo += ` (COD: ${item.identificacao})`;
+                    listaItensHtml = item.conteudo.map(subItem => `
+                        <div class="montagem-item">
+                            <div class="montagem-prod">${subItem.nome.toUpperCase()}</div>
+                            <div class="montagem-meta">COD: ${subItem.cod} | <b>QTD: ${subItem.qtd}</b></div>
+                        </div>
+                    `).join('');
+                } else {
+                    listaItensHtml = '<div style="text-align:center; padding:10px;">(ITENS PADRÃO DA CESTA)</div>';
+                }
+
+                htmlConteudo += `
+                    <div style="margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px;">
+                        <div class="montagem-header">${titulo}</div>
+                        ${listaItensHtml}
+                    </div>
+                `;
+            });
+
+            area.innerHTML = `
+                <div class="print-big" style="text-align:center; margin-bottom:10px;"><b>MONTAGEM</b><br>${dataF} ${horaF}</div>
+                <div class="print-huge">${p.cliente.nome.split(' ')[0]} | #${p.codigoVisual}</div>
+                <div class="print-line" style="border-bottom-width: 4px !important;"></div>
+                <div style="margin-top: 10px;">${htmlConteudo}</div>
+                ${p.obs ? `<div style="font-size:16px; font-weight:bold; border: 2px solid black; padding: 5px; margin-top: 10px;">OBS: ${p.obs.toUpperCase()}</div>` : ''}
+            `;
             setTimeout(() => window.print(), 300);
         }
     </script>
