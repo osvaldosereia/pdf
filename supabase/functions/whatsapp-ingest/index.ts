@@ -41,7 +41,6 @@ function validUuid(v: unknown): boolean {
 }
 
 function normalizeInbound(raw: any) {
-  // Aceita o payload nativo do módulo WhatsApp Business Cloud e o payload plano do Make v4.
   if (raw?.phone_number_id && raw?.message_id && raw?.from) {
     const type = clean(raw.message_type || "other", 30).toLowerCase();
     const mediaId = clean(raw.media_id || raw.audio_id || raw.image_id || raw.video_id || raw.document_id, 200) || null;
@@ -188,6 +187,21 @@ Deno.serve(async (req: Request) => {
   if (error) return jsonResponse({ok:false,error:"database_ingest_failed",detail:error.message},500);
 
   const result:any = data || {};
+  if (result?.ignored === true) {
+    return jsonResponse({
+      ok:result?.ok===true,
+      ignored:true,
+      stale_ignored:result?.stale_ignored===true,
+      reason:result?.reason||"ignored",
+      should_reply:false,
+      reply_type:"none",
+      media_kind:null,
+      media_id:null,
+      conversation_id:null,
+      message_row_id:null,
+    },200);
+  }
+
   const kind = result?.reply?.kind || "none";
   const out:any = {
     ok:result?.ok===true,duplicate:result?.duplicate===true,should_reply:result?.should_reply===true,
