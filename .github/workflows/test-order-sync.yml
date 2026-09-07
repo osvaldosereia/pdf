@@ -8,6 +8,8 @@ on:
       - '.github/workflows/bling-order-writer-v1.yml'
       - '.github/workflows/test-order-sync.yml'
       - 'supabase/migrations/*order_sync*'
+      - 'supabase/migrations/*outbound*'
+      - 'supabase/migrations/*customer_resolution*'
   workflow_dispatch:
 
 permissions:
@@ -27,12 +29,19 @@ jobs:
       - name: Garantias de segurança
         shell: bash
         run: |
+          set -euo pipefail
           grep -q "const APPLY=process.argv.includes('--apply')" scripts/bling-order-writer-v1.mjs
           grep -q "class AmbiguousError" scripts/bling-order-writer-v1.mjs
           grep -q "enable-jwt.*1" scripts/bling-order-writer-v1.mjs
           grep -q "outrasDespesas" scripts/bling-order-writer-v1.mjs
           grep -q "Pagamento somente na entrega" scripts/bling-order-writer-v1.mjs
+          grep -q "findContactByDocument" scripts/bling-order-writer-v1.mjs
+          grep -q "createContact" scripts/bling-order-writer-v1.mjs
+          grep -q "bind_bling_contact_id" scripts/bling-order-writer-v1.mjs
+          grep -q "Falha de rede após iniciar criação do contato" scripts/bling-order-writer-v1.mjs
           grep -q "default: dry-run" .github/workflows/bling-order-writer-v1.yml
           grep -q "concurrency:" .github/workflows/bling-order-writer-v1.yml
           grep -q "review_bling" supabase/migrations/20260907161000_order_sync_queue_v1.sql
+          grep -q "customer_document_required" supabase/migrations/20260907160650_order_customer_resolution_and_outbound_queue.sql
+          grep -q "bind_bling_contact_id" supabase/migrations/20260907160650_order_customer_resolution_and_outbound_queue.sql
           ! grep -E "service_role.*sb_|BLING_CLIENT_SECRET=.*[^}]$" scripts/bling-order-writer-v1.mjs
