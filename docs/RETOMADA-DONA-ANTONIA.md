@@ -1,8 +1,41 @@
 # RETOMADA — Projeto Dona Antônia
 
-Atualizado em **2026-09-07 13:25 (America/Campo_Grande)**.
+Atualizado em **2026-09-07 — rodada de Conversation Worker e evolução comercial**.
 
 Este arquivo é a referência principal para retomar o projeto em uma nova conversa. Ele está mais atualizado que `docs/ARQUITETURA-DONA-ANTONIA-V2.md`, que contém decisões anteriores e deve ser usado apenas como contexto complementar.
+
+## Rodada de 07/09/2026 — worker, cadastro e evolução comercial
+
+**Leia esta atualização antes do ponto técnico anterior.** Código preparado na branch
+`codex/dona-antonia-conversation-crm-20260907`; a aplicação das migrations no Supabase real foi rejeitada pela revisão automática por exigir autorização explícita de alteração do schema. **Nada deste bloco foi aplicado ao banco ou às Edge Functions de produção.** Não incorporar o frontend antes das migrations e funções.
+
+Documentos novos:
+
+- `docs/CONVERSATION-WORKER-V1.md`: componentes, testes, limitações e ordem de implantação.
+- `docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`: requisitos completos e pesquisa de recompra, aniversário, relatórios, validade, editor de regras, orientação da IA e Meta Ads.
+
+Estado real consultado nesta rodada (não presumir que permaneça igual):
+
+- 99 produtos, todos fisicamente verificados; fila `ai_jobs` vazia na consulta.
+- `automation_enabled=true`, `outbound_enabled=true`, **`ai_enabled=false`**. Diferente do estado inicial descrito abaixo. As flags foram preservadas.
+- Make 6779824, TESTE WhatsApp 1018: `isActive=false`, `status=error`.
+- Make 7274337, TESTE Saída 1018: `isActive=true`, `trigger=on-demand`.
+- Edge Functions: `shopping-room-v1` versão 3 e `admin-ops-v1` versão 2.
+
+Código preparado:
+
+- Worker manual de transcrição/visão/classificação, lib modular, gate próprio desligado, uso por evento e conclusão atômica; sem Meta/Bling/TTS nesta rodada.
+- Polling leve de mensagens, estados/transcrição e preservação do player de áudio.
+- Correção de MIME com codec no upload e da variável `document` que atrapalhava o endereço no checkout.
+- Aniversário opcional (dia/mês), consentimento explícito separado e trilha de consentimentos.
+- Filtros de produtos por validade, categoria, marca, gôndola/prateleira e ordenação; busca paginada e proteção contra respostas antigas.
+- Simulador de regra de validade: 31–60 dias = 20%; 0–30 = 30%; vencido sem preço sugerido. **Descontos ainda não aplicados ao carrinho/produção.**
+
+Validação: 13 testes do worker aprovados; migrations e invariantes testados em PostgreSQL isolado; teste de DOM da Sala aprovado; sintaxe JS/TS aprovada. `deno check` completo precisa do CI, pois o registro JSR ficou inacessível localmente. Não houve teste pago com OpenAI nem mensagens/pedidos reais.
+
+**Próximo ponto exato:** obter autorização explícita para aplicar as duas migrations desta branch, publicar as funções correspondentes e só depois incorporar o frontend, preservando `conversation_worker_enabled=false`. Seguir a ordem em `CONVERSATION-WORKER-V1.md`. Após isso: homologar uma mensagem de teste, integrar `plan_next_sales_move` e eventos de oferta à Sala, concluir TTS e ponte inbound/outbound conforme prioridades já descritas. Não liberar jobs retidos em massa.
+
+As novas ideias comerciais são requisitos de evolução, não campanhas já ativadas. A estratégia inicial usa cadência de 15 dias configurável, relevância individual, opt-in/template marketing, benefício mensal de aniversário e regras determinísticas. Antes de descontos automáticos universais, resolver lotes e preço consistente em todos os canais/checkout/Bling.
 
 ## Como retomar em um novo chat
 
