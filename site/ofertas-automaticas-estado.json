@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T06:53:12.616Z",
+  "ultima_execucao": "2026-09-07T07:39:52.079Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -240,6 +240,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1775965599400-1788747163548-42wrv"
+    },
+    {
+      "produto_key": "1775965599401",
+      "codigo": "776409O",
+      "nome": "Johnson’s Sabonete Roma 80g",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.89,
+      "preco_oferta": 2.72,
+      "desconto_percentual": 5.88,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1775965599401-1788766792079-9dinv"
     },
     {
       "produto_key": "1775965599402",
@@ -1096,6 +1110,20 @@
       "historico_id": "oferta-1776084825876-1788686833409-ls01b"
     },
     {
+      "produto_key": "1776225763353",
+      "codigo": "214439Q",
+      "nome": "Nadir Jogo 6 Copos Oca 300ml",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 28.9,
+      "preco_oferta": 26.01,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776225763353-1788766792079-xu144"
+    },
+    {
       "produto_key": "1776225962294",
       "codigo": "999599U",
       "nome": "Copo Copos de Vidro - Vidro Reforçado 400ml",
@@ -1374,6 +1402,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338123519-1788676688128-manc9"
+    },
+    {
+      "produto_key": "1776338123521",
+      "codigo": "638358K",
+      "nome": "Comfort Perfume em Cristais para Roupas Boom Unidade",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.58,
+      "desconto_percentual": 6.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338123521-1788766792079-67jjg"
     },
     {
       "produto_key": "1776338123554",
@@ -2342,6 +2384,20 @@
       "historico_id": "oferta-1776338125268-1788317519029-2oocq"
     },
     {
+      "produto_key": "1776338125289",
+      "codigo": "P361",
+      "nome": "Necessaire de PVC Transparente Color 23X11Cm",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.4,
+      "preco_oferta": 3.06,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338125289-1788766792079-twpvw"
+    },
+    {
       "produto_key": "1776338125296",
       "codigo": "P359",
       "nome": "Supla de Plástico Retangular 30X45Cm",
@@ -2508,6 +2564,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338125528-1788733469901-oxuxa"
+    },
+    {
+      "produto_key": "1776338125578",
+      "codigo": "56785566",
+      "nome": "Cepêra Maionese 500g",
+      "categoria": "MOLHOS E CONDIMENTOS",
+      "regra_id": "regra-1785205132287",
+      "origem": "campanha_automatica",
+      "preco_normal": 11.9,
+      "preco_oferta": 10.95,
+      "desconto_percentual": 7.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338125578-1788766792079-hnqi3"
     },
     {
       "produto_key": "1776338125650",
@@ -3152,6 +3222,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338126994-1788683476639-w5c0h"
+    },
+    {
+      "produto_key": "1776338127005",
+      "codigo": "90677467",
+      "nome": "Closeup Creme Dental Close-Up - Menta 70g",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.49,
+      "preco_oferta": 3.21,
+      "desconto_percentual": 8.02,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338127005-1788766792079-mtbok"
     },
     {
       "produto_key": "1776338127006",
@@ -3894,6 +3978,20 @@
       "inicio": "2026-09-02",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338128457-1788369933327-boik9"
+    },
+    {
+      "produto_key": "1776338128466",
+      "codigo": "135442S",
+      "nome": "Cor&Ton Tintura 6.1 Louro Escuro Acinz 1un",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.21,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-14T23:59:59-04:00",
+      "historico_id": "oferta-1776338128466-1787700434615-5h2uz"
     },
     {
       "produto_key": "1776338128496",
@@ -7998,6 +8096,20 @@
       "historico_id": "oferta-177850826754510894362-1788611592552-4f1nd"
     },
     {
+      "produto_key": "177850826754510923010",
+      "codigo": "301104O",
+      "nome": "Skala Shampoo Skalinha Bebê Glicerinado Sálvia 200ml",
+      "categoria": "BEBÊ",
+      "regra_id": "regra-1785202788822",
+      "origem": "campanha_automatica",
+      "preco_normal": 10.9,
+      "preco_oferta": 10.17,
+      "desconto_percentual": 6.7,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177850826754510923010-1788766792079-d0li8"
+    },
+    {
       "produto_key": "177850826754511147251",
       "codigo": "P0314",
       "nome": "Baruel Tenys Pe Talco Pó Canforado 100g",
@@ -8066,6 +8178,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-17785082675457328812-1788658666785-8i4bh"
+    },
+    {
+      "produto_key": "177850826754575748",
+      "codigo": "P0145",
+      "nome": "Esponja de Banho Saboneteira Color Unidade",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 1.99,
+      "preco_oferta": 1.87,
+      "desconto_percentual": 6.03,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177850826754575748-1788766792079-ycwkb"
     },
     {
       "produto_key": "17785082675458368508",
@@ -8752,6 +8878,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-17793038038960702-1788679611513-me6lv"
+    },
+    {
+      "produto_key": "177930406475609972",
+      "codigo": "P-624T",
+      "nome": "Molho de Tomate Mastroiani Passata Di Tradicional Pomodori 680g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 19.9,
+      "preco_oferta": 17.91,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177930406475609972-1788766792079-nko48"
     },
     {
       "produto_key": "177930406475627422",
@@ -9650,6 +9790,20 @@
       "historico_id": "oferta-177998116662398548-1788701064815-ij049"
     },
     {
+      "produto_key": "177998407102889911",
+      "codigo": "0710280190",
+      "nome": "Nadir Jogo 6 Copos Ligts 300ml",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 24.9,
+      "preco_oferta": 22.41,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177998407102889911-1788766792079-1c1d9"
+    },
+    {
       "produto_key": "177998435043410010",
       "codigo": "3504340214",
       "nome": "Nadir Jogo 6 Copos Amazon 300ml",
@@ -10194,6 +10348,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-178050212748636364-1788603176110-d9zn2"
+    },
+    {
+      "produto_key": "178155183815725474",
+      "codigo": "8381570778",
+      "nome": "NIVEA Desodorante Roll-On Feminino Black & White Cl 50ml",
+      "categoria": "DESODORANTE",
+      "regra_id": "regra-1785205065492",
+      "origem": "campanha_automatica",
+      "preco_normal": 11.9,
+      "preco_oferta": 11.19,
+      "desconto_percentual": 5.97,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178155183815725474-1788766792079-1dj89"
     },
     {
       "produto_key": "178155209483570776",
@@ -11988,6 +12156,20 @@
       "historico_id": "oferta-178740672877006dc-1788763992616-w465l"
     },
     {
+      "produto_key": "1787406918979_96d4",
+      "codigo": "7898921667968",
+      "nome": "Amanda Bolacha Recheada sabor Morango Recheado 100g",
+      "categoria": "BOLACHAS E BISCOITOS",
+      "regra_id": "regra-1785205001908",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.19,
+      "preco_oferta": 2.06,
+      "desconto_percentual": 5.94,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178740691897996d4-1788766792079-rjt2k"
+    },
+    {
       "produto_key": "1787577556304_e50e",
       "codigo": "7896003741681",
       "nome": "Biscoito Wafer Bulnez Chocolate 60 g",
@@ -12182,6 +12364,20 @@
       "inicio": "2026-09-04",
       "fim": "2026-09-07T23:59:59-04:00",
       "historico_id": "oferta-7897517925642-1788532039964-gcn4d"
+    },
+    {
+      "produto_key": "7898215152439",
+      "codigo": "piracanjuba.pointegral.400",
+      "nome": "Leite em Pó Integral Piracanjuba Instantâneo 400g",
+      "categoria": "CAFÉ DA MANHÃ",
+      "regra_id": "regra-1785205019989",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.84,
+      "desconto_percentual": 5.61,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-7898215152439-1788766792079-jxj38"
     },
     {
       "produto_key": "7898581089285",
@@ -12546,6 +12742,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-produto1784140220379-1788763992616-ondfr"
+    },
+    {
+      "produto_key": "produto_1784140698837",
+      "codigo": "7533927fffd",
+      "nome": "Kit Shampoo Pantene Hidratação Cabelo Longo e Forte 350ml + Condicionador 175ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 34.9,
+      "preco_oferta": 32.46,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-produto1784140698837-1788766792079-he15q"
     },
     {
       "produto_key": "produto_1784744100785",
@@ -13112,7 +13322,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338125578": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205132287"
     },
     "177946298799667781": {
@@ -13724,7 +13934,7 @@
       "regra_id": "regra-1785205096285"
     },
     "1776338123521": {
-      "ultima_oferta_em": "2026-09-03T06:42:58.912Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205096285"
     },
     "1778007253673": {
@@ -13884,7 +14094,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1776338128466": {
-      "ultima_oferta_em": "2026-08-25T23:27:14.615Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785202557027"
     },
     "178015918388953476": {
@@ -14172,7 +14382,7 @@
       "regra_id": "regra-1785205105033"
     },
     "177850826754575748": {
-      "ultima_oferta_em": "2026-09-02T13:28:49.700Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205105033"
     },
     "1776338129623": {
@@ -14700,7 +14910,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338127005": {
-      "ultima_oferta_em": "2026-09-03T06:42:58.912Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205082552"
     },
     "1776338123864": {
@@ -14812,7 +15022,7 @@
       "regra_id": "regra-1785205192100"
     },
     "produto_1784140698837": {
-      "ultima_oferta_em": "2026-09-02T17:25:33.327Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205192100"
     },
     "1776975979255": {
@@ -15032,7 +15242,7 @@
       "regra_id": "regra-1785205132287"
     },
     "177930406475609972": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205113340"
     },
     "1776959339673": {
@@ -15672,15 +15882,15 @@
       "regra_id": "regra-1785205206545"
     },
     "177998407102889911": {
-      "ultima_oferta_em": "2026-09-03T06:42:58.912Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205206545"
     },
     "1776225763353": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205206545"
     },
     "1776338125289": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205206545"
     },
     "1776338130861": {
@@ -15872,7 +16082,7 @@
       "regra_id": "regra-1785205065492"
     },
     "178155183815725474": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205065492"
     },
     "1776338123516": {
@@ -16096,7 +16306,7 @@
       "regra_id": "regra-1785205206545"
     },
     "177850826754510923010": {
-      "ultima_oferta_em": "2026-09-03T06:42:58.912Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785202788822"
     },
     "177973132575167948": {
@@ -16172,7 +16382,7 @@
       "regra_id": "regra-1785205019989"
     },
     "7898215152439": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205019989"
     },
     "1776338131507": {
@@ -17540,7 +17750,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1775965599401": {
-      "ultima_oferta_em": "2026-09-03T06:42:58.912Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205164829"
     },
     "1775965599398": {
@@ -18420,7 +18630,7 @@
       "regra_id": "regra-1785205132287"
     },
     "1787406918979_96d4": {
-      "ultima_oferta_em": "2026-09-03T07:30:32.296Z",
+      "ultima_oferta_em": "2026-09-07T07:39:52.079Z",
       "regra_id": "regra-1785205001908"
     },
     "1787577556304_e50e": {
@@ -18461,23 +18671,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788085456399",
-      "executado_em": "2026-08-30T10:24:16.851Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 13,
-        "ofertas_nao_criadas": 10,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788088955084",
       "executado_em": "2026-08-30T11:22:35.575Z",
@@ -21853,6 +22046,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 16,
         "ofertas_nao_criadas": 7,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788766791298",
+      "executado_em": "2026-09-07T07:39:52.079Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 15,
+        "ofertas_nao_criadas": 8,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
