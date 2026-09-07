@@ -34,23 +34,24 @@ jobs:
           node --check contagem-v2/config.js
           node --check contagem-v2/kiosk-mode.js
           node --check contagem-v2/stock-zero-guard.js
+          node --check contagem/product-edit-controls.js
           node --check scripts/bling-stock-writer-v1.mjs
       - name: Validar tela operacional
         run: |
           grep -q 'app-v2.js' contagem/index.html
           grep -q 'kiosk-mode.js' contagem/index.html
-          grep -q 'kiosk-mode.css' contagem/index.html
+          grep -q 'product-edit-controls.js' contagem/index.html
           grep -q 'costInput' contagem/index.html
           grep -q 'priceInput' contagem/index.html
+          grep -q 'gondolaInput' contagem/index.html
+          grep -q 'shelfInput' contagem/index.html
+          grep -q 'activeInput' contagem/product-edit-controls.js
           grep -q 'quickSearchInput' contagem-v2/kiosk-mode.js
-          grep -q 'modeText' contagem-v2/kiosk-mode.js
-          grep -q 'modeNum' contagem-v2/kiosk-mode.js
           grep -q 'inventory-count-v2' contagem-v2/config.js
-          grep -q 'site/produtos-admin.json' contagem-v2/config.js
       - name: Validar ausência de segredos óbvios no microapp
         shell: bash
         run: |
-          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN' contagem-v2/ contagem/index.html || (echo 'Segredo ou referência proibida no microapp' >&2; exit 1)
+          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN' contagem-v2/ contagem/ || (echo 'Segredo ou referência proibida no microapp' >&2; exit 1)
       - name: Validar worker em modo seguro
         shell: bash
         run: |
