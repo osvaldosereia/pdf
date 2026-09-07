@@ -141,6 +141,6 @@ grant execute on function public.close_whatsapp_homologation_v1() to service_rol
 grant execute on function public.expire_whatsapp_homologation_v1() to service_role;
 
 -- Deploy/migration nunca deixa uma homologação aberta.
-perform public.close_whatsapp_homologation_v1();
+select public.close_whatsapp_homologation_v1();
 
 commit;
