@@ -6,144 +6,173 @@ Atualizado em 2026-09-07.
 
 O sistema novo não importa automaticamente todo o catálogo legado. O catálogo operacional é construído progressivamente com produtos realmente encontrados e conferidos fisicamente.
 
-Fluxo principal de produto:
-
 ```text
 Prateleira -> celular lê EAN -> Firebase legado localiza cadastro
           -> operador informa estoque + validade reais
-          -> Supabase grava produto verificado + histórico da contagem
+          -> Supabase grava produto verificado + histórico
           -> fila bling_commands
-          -> GitHub Action em lote
-          -> Bling recebe BALANÇO de estoque
+          -> GitHub Actions em lote
+          -> Bling recebe estoque/produto
 ```
 
-O GitHub armazena código e automações. Estoque, validade e demais dados operacionais não são gravados em commits.
+O GitHub armazena código, migrations e automações. Estoque, validade, clientes e demais dados operacionais não são gravados em commits.
 
 ## Autoridades por domínio
 
-- Supabase: cérebro operacional, catálogo adotado, contagens, conversas, carrinhos, pedidos em construção e filas.
-- Bling: ERP oficial, produto ERP, estoque oficial, contato fiscal e pedido oficial.
-- Firebase: fonte legada temporária de enriquecimento para produtos existentes; será retirado depois da adoção do catálogo real.
-- GitHub Actions: processamento em lote e integrações de manutenção.
-- Make: ponte fina/transacional onde ainda for vantajoso; não é banco nem backend principal.
-- Meta WhatsApp: canal oficial de atendimento.
-- OpenAI: interpretação de linguagem, áudio, imagem e geração de respostas quando regras determinísticas não bastarem.
+- **Supabase:** cérebro operacional, catálogo adotado, contagens, cestas, conversas, carrinhos, pedidos em construção, filas e auditoria.
+- **Bling:** ERP oficial, produto ERP, estoque oficial, contato fiscal e pedido oficial.
+- **Firebase:** fonte legada temporária para localizar/enriquecer produtos durante a conferência física; será retirado depois da adoção do catálogo real.
+- **GitHub Actions:** processamento em lote e escrita assíncrona no Bling.
+- **Make:** ponte fina/transacional onde ainda for vantajoso; não é banco nem backend principal.
+- **Meta WhatsApp:** canal oficial de atendimento.
+- **OpenAI:** interpretação de linguagem, áudio, imagem e geração de respostas somente quando regras determinísticas não bastarem.
 
 ## Regra de cesta básica no Bling
 
-No pedido oficial, os componentes da cesta são enviados individualmente. O preço comercial da cesta é independente da soma dos componentes. A diferença positiva entre o valor comercial final e a soma das linhas dos produtos é enviada ao Bling como `Outras despesas`. Se houver cenário em que o total comercial seja menor que a soma das linhas, a diferença deverá ser tratada por regra de desconto, não por despesa negativa.
+No pedido oficial, os componentes da cesta são enviados individualmente. O preço comercial da cesta é independente da soma dos componentes. A diferença positiva entre o valor comercial final e a soma das linhas dos produtos é enviada ao Bling como **Outras despesas**. Se houver cenário em que o total comercial seja menor que a soma das linhas, a diferença será tratada por regra de desconto, nunca por despesa negativa.
+
+A composição comercial é administrada em `basket_templates` e `basket_template_items`. Contar preços individuais não redefine o `base_price` da cesta.
 
 ## Contagem física v2
 
 Aplicação: `contagem-v2/`.
 
-Características:
-
-- login Supabase Auth;
-- autorização adicional por `admin_users`;
-- leitura EAN pela câmera quando o navegador oferece `BarcodeDetector`;
-- entrada manual de EAN/código como fallback;
-- busca direta por chave Firebase e fallback no catálogo administrativo derivado do Firebase;
-- tentativa de abrir novamente o registro fresco no Firebase pelo `firebase_key`;
+- login Supabase Auth + autorização adicional em `admin_users`;
+- câmera/EAN, entrada manual e fallback por catálogo administrativo;
+- busca no Firebase somente para localizar o legado;
 - operador confirma estoque, validade, gôndola e prateleira;
-- produto só entra no catálogo operacional depois de conferido;
-- produtos novos da contagem entram com `is_whatsapp_active=false`; contar não significa publicar;
-- cada gravação gera histórico em `inventory_count_items`;
-- cada gravação gera comando `set_stock` para o Bling;
-- contagens repetidas do mesmo produto substituem comandos pendentes antigos, mantendo o dado físico mais recente;
-- fila offline local no celular para perda temporária de internet;
+- só entra no catálogo operacional depois da conferência;
+- contar não publica: produto novo entra fora do WhatsApp;
+- histórico imutável em `inventory_count_items`;
+- comando `set_stock` para o Bling;
+- contagem mais nova substitui comando de estoque pendente antigo;
+- fila offline no celular;
 - sessão de contagem com início/fim e resumo.
 
-## Estruturas Supabase de inventário
+## Admin v3
 
-### products
+Aplicação: `admin-v3/`.
 
-Somente catálogo operacional/adotado. Campos relevantes adicionados: `firebase_key`, `brand`, categorias, embalagem, fornecedor, validade, gôndola, prateleira, `source_system`, `sync_status`, `last_counted_at`, `firebase_snapshot`, `physically_verified`, `physically_verified_at`, `physically_verified_by`, `sync_error`.
+Já implementado:
 
-### inventory_counts
+- dashboard operacional;
+- produtos fisicamente conferidos;
+- busca e filtros por WhatsApp, oferta, upsell, sem estoque, inativos e sincronização;
+- editor completo de produto: nome, SKU, EAN, NCM, preço, custo, marca, unidade, categorias, embalagem, validade, localização, imagem, descrições, tags e flags comerciais;
+- estoque deliberadamente fora do editor comum: ajuste físico deve passar pela contagem;
+- ativação/inativação gera comando assíncrono para o Bling;
+- alteração de campos ERP gera `update_product`;
+- criação no Bling é explícita, nunca automática apenas por não haver vínculo;
+- histórico de contagens, mudanças administrativas e comandos Bling;
+- gestão de cestas com preço comercial independente;
+- composição da cesta usa somente produtos fisicamente verificados;
+- quantidade, remoção e edição de quantidade por item;
+- sessões de contagem e fila Bling com retry.
 
-Sessões de contagem. Guarda operador, dispositivo, início, encerramento, quantidade de itens e pendências de sincronização.
+### Primeiro owner
 
-### inventory_count_items
+Aplicação: `setup-admin/`.
 
-Registro imutável da conferência: estoque anterior, estoque contado, validade anterior, validade conferida, EAN, snapshot de origem e status de sincronização.
+Existe um bootstrap de uso único. O usuário cria/entra em uma conta Supabase Auth e apresenta um código temporário. A Edge Function `bootstrap-owner-v1` promove somente o primeiro usuário para `owner`; depois desativa automaticamente o segredo de bootstrap. O código não fica no repositório.
 
-### bling_commands
+## Gestão de produtos e auditoria
 
-Fila de integração. O worker reclama lotes com `FOR UPDATE SKIP LOCKED`, possui tentativas, lock, retry e resultado. Um comando `set_stock` mais novo cancela um comando `set_stock` ainda pendente para o mesmo produto.
+`products` contém somente catálogo operacional/adotado. Além dos dados trazidos da conferência, há campos de marketing, descrição, tags, estoque mínimo, upsell, status desejado no Bling e auditoria de edição.
 
-## Worker GitHub -> Bling
+`product_changes` registra alterações do Admin sem jogar o snapshot completo do Firebase em logs públicos.
 
-Arquivos:
+`bling_commands` separa estado local da escrita no ERP. Comandos mais novos de `update_product`, status e estoque substituem comandos pendentes obsoletos do mesmo tipo.
+
+## Workers GitHub -> Bling
+
+### Estoque
 
 - `scripts/bling-stock-writer-v1.mjs`
 - `.github/workflows/bling-stock-writer-v1.yml`
 
-A primeira versão é manual e abre em `dry-run` por padrão. O modo `apply` deve ser usado somente depois do dry-run.
+Usa operação de balanço `B`, encontra produto por GTIN quando necessário, identifica depósito, respeita pacing/retry e inicia em `dry-run`.
 
-Funcionamento:
+### Produtos
 
-1. lê/reclama comandos pendentes no Supabase;
-2. renova OAuth/JWT do Bling com `enable-jwt: 1`;
-3. persiste o refresh token rotacionado de volta em GitHub Secrets;
-4. identifica depósito padrão (ou usa `BLING_DEPOSIT_ID` explícito);
-5. quando o produto ainda não tem `bling_product_id`, procura por GTIN/EAN no Bling;
-6. grava estoque com operação de balanço `B`, usando a quantidade física final;
-7. marca comando, item da contagem e produto como sincronizados;
-8. falhas transitórias voltam para a fila com retry; após o limite ficam em erro.
+- `scripts/bling-product-writer-v1.mjs`
+- `.github/workflows/bling-product-writer-v1.yml`
 
-O worker usa intervalo mínimo deliberadamente abaixo do limite oficial de 3 requisições/s da conta Bling.
+Trata `create_product`, `update_product`, `activate_product` e `inactivate_product`. Para update/status sem Bling ID, tenta vincular por GTIN antes de qualquer criação. Criar produto exige comando explícito do Admin. O `PUT` preserva a estrutura atual do produto obtida do Bling e mescla os campos desejados; NCM é enviado dentro de `tributacao`.
 
-### Secrets requeridos pelo workflow
+Ambos usam `enable-jwt: 1`, rotação do refresh token e `concurrency: bling-api-global`, impedindo dois writers Bling simultâneos.
+
+### Separação das filas
+
+`claim_bling_commands_by_types()` permite cada worker reclamar somente os comandos que sabe executar. O claim legado do worker de estoque foi restringido a `set_stock`, evitando que um writer capture comandos de outro.
+
+## Cestas
+
+Backend: `admin-baskets-v1`.
+
+Estruturas:
+
+- `basket_templates`: nome, SKU, foto, descrição, preço comercial, status, WhatsApp, destaque e regras;
+- `basket_template_items`: produto, quantidade, removível, quantidade editável, limites e grupo de substituição;
+- `basket_changes`: auditoria administrativa.
+
+Somente produtos `physically_verified=true` podem ser adicionados pela interface atual.
+
+## Segurança
+
+- RLS habilitado nas tabelas operacionais;
+- anon/authenticated sem acesso direto às tabelas server-only;
+- navegador recebe apenas publishable key;
+- Edge Functions administrativas exigem JWT e validam `admin_users`;
+- bootstrap do primeiro owner exige JWT + segredo temporário de uso único;
+- service role, credenciais Bling, Meta/OpenAI e PII nunca entram no JavaScript público;
+- repositório público armazena código, não estoque/validade/clientes;
+- Advisor de segurança pode mostrar `RLS enabled no policy` para tabelas fechadas ao browser; isso é proposital enquanto o acesso ocorre por Edge Functions autenticadas.
+
+## Make legado
+
+O cenário `6567836 — Disparar sincronizacao Firebase para Bling`, que ainda estava ativo/agendado, foi **desativado em 2026-09-07**. O cenário antigo grande de pedidos/Firebase está em estado de erro e não é a base do novo desenho.
+
+## Proteção contra importação massiva
+
+`bling-products-ingest` exige uma janela temporária de importação. Fora dela retorna `bulk_product_import_disabled`. A carga temporária de 1.800 produtos foi removida após confirmar que não havia cestas, carrinhos ou pedidos dependentes dela.
+
+## Edge Functions ativas do núcleo novo
+
+- `inventory-count-v2` — JWT obrigatório;
+- `admin-ops-v1` — JWT obrigatório;
+- `admin-baskets-v1` — JWT obrigatório;
+- `bootstrap-owner-v1` — JWT obrigatório e bootstrap de uso único;
+- `bling-products-ingest` — legado protegido por gate;
+- `whatsapp-ingest` — ponte de homologação já existente.
+
+## Secrets requeridos nos Actions Bling
 
 - `BLING_CLIENT_ID`
 - `BLING_CLIENT_SECRET`
 - `BLING_REFRESH_TOKEN`
 - `GH_SECRETS_TOKEN`
-- `SUPABASE_SERVICE_ROLE_KEY` (ainda precisa ser configurada no repositório)
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-Nenhuma dessas chaves pode ser exposta em JavaScript público.
+O último ainda precisa ser configurado no repositório antes de executar os writers com acesso ao Supabase.
 
-## Proteção contra importação massiva
+## Estado atual
 
-A Edge Function `bling-products-ingest` foi endurecida. Importações em massa exigem uma janela temporária explícita via `claim_bling_import_gate()`. Fora dessa janela, retorna `bulk_product_import_disabled`.
+- catálogo operacional Supabase começa vazio para adoção física;
+- contagem mobile, backend e fila estão implementados;
+- Admin v3 de produtos e cestas está implementado;
+- writers de estoque e produtos estão implementados e continuam `dry-run` por padrão;
+- bootstrap seguro do primeiro owner está implementado;
+- importação massiva está bloqueada por padrão;
+- sincronizador legado Firebase -> Bling no Make foi desligado;
+- testes automáticos validam Admin, contagem e sintaxe dos workers;
+- ainda é necessário ativar o primeiro usuário owner e configurar `SUPABASE_SERVICE_ROLE_KEY` no GitHub para o primeiro teste ponta a ponta.
 
-Mesmo quando uma importação manual é temporariamente permitida, seus produtos entram como `imported_unverified` e não são publicados no WhatsApp.
+## Próximos passos operacionais
 
-## Edge Functions versionadas
-
-- `supabase/functions/inventory-count-v2/index.ts`
-- `supabase/functions/bling-products-ingest/index.ts`
-
-A versão ativa de `inventory-count-v2` exige JWT e depois valida a existência de um usuário ativo em `admin_users`.
-
-## Segurança
-
-- tabelas operacionais usam RLS;
-- anon/authenticated não recebem acesso direto às tabelas server-only;
-- funções privilegiadas de inventário são executáveis somente por `service_role`;
-- navegador recebe apenas publishable key;
-- `inventory-count-v2` exige JWT e valida a role do operador;
-- repositório público não deve receber PII, service role, credenciais Bling ou tokens Meta/OpenAI;
-- o Advisor de segurança atualmente informa apenas `RLS enabled no policy` nas tabelas fechadas ao browser; isso é intencional enquanto o acesso ocorre por Edge Functions autenticadas.
-
-## Estado atual em 2026-09-07
-
-- carga temporária de 1.800 produtos do Bling foi removida depois de confirmado que não havia carrinhos, pedidos ou itens referenciando esses registros;
-- `products` começa vazio para a adoção física real;
-- `inventory-count-v2` está implantada;
-- `contagem-v2/` está programada e versionada;
-- fila do Bling e worker em GitHub Actions estão programados;
-- importação massiva Bling está bloqueada por padrão;
-- ainda não há usuários em Supabase Auth e `admin_users`, portanto o primeiro acesso precisa ser criado/autorizado antes do teste humano da microaplicação;
-- o workflow do Bling precisa do secret `SUPABASE_SERVICE_ROLE_KEY` antes do primeiro dry-run.
-
-## Próximos blocos
-
-1. Criar primeiro usuário Auth e vinculá-lo como `owner` em `admin_users`.
-2. Fazer 2–3 contagens reais no celular sem aplicar no Bling.
-3. Configurar `SUPABASE_SERVICE_ROLE_KEY` no GitHub e executar workflow em `dry-run`.
-4. Conferir depósito e matching GTIN; depois executar `apply` para poucos itens.
-5. Construir o novo módulo Produtos/Admin sobre o catálogo fisicamente verificado.
-6. Adicionar criação/edição/ativação/inativação de produto pela fila do Bling.
-7. Só depois conectar esse catálogo confiável ao atendimento WhatsApp e às cestas.
+1. Ativar o primeiro `owner` por `setup-admin/`.
+2. Fazer 2–3 contagens físicas reais pelo celular.
+3. Configurar `SUPABASE_SERVICE_ROLE_KEY` em GitHub Secrets.
+4. Executar writer de estoque em `dry-run` e validar produto/depósito.
+5. Executar `apply` somente para poucos itens conferidos.
+6. Começar a montar as cestas reais usando somente produtos verificados.
+7. Depois conectar o catálogo confiável ao Conversation Engine/WhatsApp e ao fechamento de pedido Bling.
