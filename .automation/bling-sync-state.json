@@ -2280,9 +2280,9 @@
       "hash": "26f00a4b039dca6d61f986c9fcb8cc2cb1f0d14e733c16112bf4f4bdaf108eac",
       "blingId": 16623897725,
       "codigo": "187916A",
-      "syncedAt": "2026-08-12T16:47:00.410Z",
+      "syncedAt": "2026-09-07T12:41:59.397Z",
       "version": 3,
-      "fingerprint": "3dcc88a8e81120511cad0a18d23ffd46ff92f27dc62a00513cea1ca51490f9da",
+      "fingerprint": "941482e7ecfe7394c83e3c03c13bac8f390e7e4087f8d86ab5633094d149599e",
       "localStatus": "present",
       "blingStatus": "A",
       "deletedAt": null
@@ -19149,12 +19149,12 @@
     },
     "1787318147554_baa3": {
       "version": 3,
-      "fingerprint": "0b9647f835077ae1b0686efa2b06bcf0c15dc786483200d341afb824f9618654",
+      "fingerprint": "9028907b3c5d13ad1236626e0b5fc78258ae832f1ea2825f95984a1a3e717171",
       "blingId": 16695290597,
       "codigo": "7891000347942",
       "localStatus": "present",
       "blingStatus": "I",
-      "syncedAt": "2026-08-21T14:18:31.552Z",
+      "syncedAt": "2026-09-07T12:42:00.179Z",
       "deletedAt": null
     },
     "1787318279377_ad16": {
