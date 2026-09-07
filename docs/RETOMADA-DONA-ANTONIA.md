@@ -1,19 +1,21 @@
 # RETOMADA — Projeto Dona Antônia
 
-Atualizado em **07/09/2026 — WhatsApp real: texto, áudio e imagem homologados ponta a ponta**.
+Atualizado em **07/09/2026 — Worker V2 automático homologado em WhatsApp real**.
 
 Este é o arquivo **autoritativo** para retomar o projeto. Não planejar do zero. Antes de alterar qualquer gate, auditar o estado real no GitHub, Supabase e Make.
 
 ## Documentos principais
 
-- `docs/HOMOLOGACAO-WHATSAPP-IMAGEM-FINAL-20260907.md` — fonte final da imagem real;
-- `docs/HOMOLOGACAO-WHATSAPP-AUDIO-FINAL-20260907.md` — fonte final do áudio real;
-- `docs/HOMOLOGACAO-WHATSAPP-AUDIO-20260907.md` — histórico do bug pós-transcrição e correção;
+- `docs/HOMOLOGACAO-WORKER-V2-20260907.md` — Worker V2 event-driven, provider Vault e prova real WhatsApp;
+- `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md` — release gradual, canary, budgets, handoff e emergency stop;
+- `docs/HOMOLOGACAO-WHATSAPP-IMAGEM-FINAL-20260907.md` — imagem real;
+- `docs/HOMOLOGACAO-WHATSAPP-AUDIO-FINAL-20260907.md` — áudio real final;
+- `docs/HOMOLOGACAO-WHATSAPP-AUDIO-20260907.md` — histórico/correção da cadeia transcrição → interpretação;
 - `docs/HOMOLOGACAO-WHATSAPP-REAL-20260907.md` — menu, interativos, texto real e outbound Meta;
 - `docs/WHATSAPP-BRIDGE-V3.md` — ponte event-driven;
 - `docs/HOMOLOGACAO-OPENAI-20260907.md` — texto/transcrição/visão sintéticos;
 - `docs/SALA-COMPRA-MOTOR-COMERCIAL-V1.md`;
-- `docs/CONVERSATION-WORKER-V1.md`;
+- `docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md` — futuro Gestor/Roteirista de Inteligência;
 - `docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`.
 
 ---
@@ -29,106 +31,222 @@ Este é o arquivo **autoritativo** para retomar o projeto. Não planejar do zero
 5. entrada real allowlisted;
 6. menu e botões interativos reais;
 7. IA real em texto ponta a ponta;
-8. outbound Meta real com receipt metadata;
-9. áudio real ponta a ponta — **HOMOLOGADO**;
-10. imagem real ponta a ponta — **HOMOLOGADA**;
-11. gates fechados e filas zeradas depois das homologações;
-12. zero efeito em pedido/Bling durante texto, áudio e imagem.
+8. áudio real ponta a ponta — **HOMOLOGADO**;
+9. imagem real ponta a ponta — **HOMOLOGADA**;
+10. outbound Meta real com receipt metadata;
+11. `Conversation Worker V2` event-driven — **HOMOLOGADO SINTÉTICO E REAL**;
+12. provider OpenAI do Worker V2 no Supabase Vault;
+13. release gradual/canary/budgets/fallback humano/emergency stop implementados;
+14. área Admin `Atendimento IA` preparada para observabilidade/handoff;
+15. zero efeito em pedido/Bling durante todas as homologações WhatsApp/Worker V2.
 
-## Próxima etapa
+## Próxima etapa exata
 
-**Preparar liberação gradual/controlada do atendimento real antes de qualquer `whatsapp_release_mode=live`.**
+**Validar o modo `observe` e o fallback humano antes de qualquer `whatsapp_release_mode=live`.**
 
-Objetivos imediatos:
+Ordem recomendada:
 
-1. transformar o Conversation Worker manual/one-shot em worker operacional seguro;
-2. definir cadência/trigger sem polling agressivo e com custo baixo;
-3. manter idempotência, budgets e `review_required`;
-4. observabilidade/admin para jobs, falhas, consumo e conversas;
-5. fallback humano e emergency stop;
-6. testar uma pequena janela real allowlisted/observe com worker operacional;
-7. só depois considerar `live`;
-8. depois homologar **um pedido real controlado no Bling**;
-9. confirmação final do pedido no WhatsApp;
+1. revisar o Admin `Atendimento IA` e confirmar métricas/gates/handoffs;
+2. testar `observe`: entrada real pode ser registrada, mas sem auto-resposta IA;
+3. confirmar que atendimento fora do canary/observe cai em controle humano, não é descartado;
+4. testar assumir/resolver handoff e retomada de IA;
+5. testar emergency stop pelo caminho administrativo;
+6. auditar budgets/limites de volume/tokens e recovery;
+7. somente depois preparar um canary `live` mínimo, explicitamente confirmado e com rollback imediato;
+8. manter Bling fora até o canary do atendimento estar comprovado;
+9. depois homologar **um único pedido real controlado no Bling**;
 10. depois migrar `/cadastro/` e avançar CRM/relatórios/recompra/aniversário.
 
-**Não ativar atendimento geral nem Bling indiscriminadamente ainda.**
+**Não ativar atendimento geral nem Bling indiscriminadamente.**
 
 ---
 
-# HOMOLOGAÇÃO REAL DE IMAGEM — CONCLUÍDA
+# WORKER V2 — ESTADO OFICIAL
 
-Foto real enviada pelo WhatsApp e recuperada com segurança do webhook Make que estava inativo.
+Arquitetura:
 
-Havia backlog no Make. Foi usado anti-backlog com corte imediatamente anterior ao evento da foto, evitando processar mensagens antigas.
+```text
+ai_jobs pending
+→ trigger ai_job_event_dispatch_v2
+→ dispatch_conversation_worker_job_v2
+→ pg_net
+→ conversation-worker-v2
+→ claim_conversation_job_v2(job exato)
+→ OpenAI
+→ finish_conversation_job
+→ outbound_jobs quando canal WhatsApp e gates permitem
+```
 
-Mensagem real:
+Produção:
 
-`71438d3e-c412-4407-ba85-23b85ed26f1f`
+```text
+conversation-worker-v2 version = 2
+verify_jwt = false
+custom auth = x-da-worker-key
+provider = OpenAI via Vault/service-role
+```
 
-Mídia:
+Segurança:
 
-- tipo `image`;
-- MIME `image/jpeg`;
-- `151860` bytes;
-- Storage privado `shopping-room-media`;
-- caminho isolado `sessions/<session>/image/whatsapp/...jpg`.
+- dispatcher nasce fechado;
+- job é reclamado por ID exato;
+- lease expirado após possível chamada externa não volta cegamente para pending;
+- erro/limite inseguro cai em handoff humano;
+- provider OpenAI guardado no Supabase Vault;
+- healthcheck expõe apenas `provider_configured=true/false`;
+- instalador one-shot do provider removido;
+- fechamento/expiração de homologação desligam também o dispatcher.
+
+PRs principais:
+
+- #160 — operação gradual, Worker V2, canary, fallback e Admin;
+- #161 — provider Vault;
+- #162 — correção `extensions.digest` em SECURITY DEFINER.
+
+## Prova sintética automática
+
+Passou usando o trigger real, sem chamada manual ao Worker:
+
+```text
+intent = baskets
+status = done
+attempts = 1
+worker_dispatch_attempts = 1
+model = gpt-4o-mini
+input_tokens = 195
+output_tokens = 31
+HTTP = 200
+```
+
+Dados sintéticos removidos depois.
+
+## Prova WhatsApp real allowlisted
+
+Mensagem:
+
+`Quero uma cesta básica e também preciso de arroz`
+
+Inbound Make:
+
+`6779824 — Dona Antônia - WhatsApp Inbound Controlado v1`
 
 AI job:
 
-`bda1dc33-94ab-4e0f-b2d4-79e87021cbf8`
+`c86a7476-312f-4865-ac70-ad9a437676b2`
 
 Resultado:
 
 ```text
-job_type = vision
 status = done
 attempts = 1
-intent = search
-query = amido de milho
+worker_dispatch_attempts = 1
+intent = baskets
+model = gpt-4o-mini
+input_tokens = 194
+output_tokens = 29
 ```
 
-Interpretação OpenAI:
+Resposta:
 
-`Pacote de amido de milho Kimimo, 200g.`
-
-Resposta determinística:
-
-`Vou procurar amido de milho para você.`
-
-OpenAI:
-
-- modelo `gpt-4o-mini`;
-- request `req_b85f0f96b3d54d7d8ba811b2c55b4fb1`;
-- input tokens `3026`;
-- output tokens `36`;
-- attempts `1`.
+`Claro. Posso te mostrar as cestas disponíveis e ajudar a personalizar os itens.`
 
 Outbound job:
 
-`8bd12fed-a16c-43d9-9e48-52b3ea729150`
+`240adb9b-ede8-4ed1-bfc6-ecffa0139c63`
 
 Resultado:
 
 ```text
 status = sent
+attempts = 1
 delivery_mode = text
 dispatch_response_status = 200
 provider_message_id = presente
-review_required = 0
+last_error = null
 ```
 
-GitHub Actions:
+Make outbound:
 
-- run `34162273559`;
-- job `101866359410`;
-- conclusão `success`.
+`7290488 — Dona Antônia - WhatsApp Outbound Event-Driven v3`
 
-O workflow one-shot de imagem foi removido após a homologação.
+Execução real:
 
-Documento detalhado:
+`82b0a21a195a43799b3bd5322a37717f`
 
-`docs/HOMOLOGACAO-WHATSAPP-IMAGEM-FINAL-20260907.md`
+Sem erros.
+
+Auditoria do teste:
+
+```text
+active_ai_jobs = 0
+active_outbound = 0
+orders = 0
+order_sync_jobs = 0
+bling_commands = 0
+```
+
+---
+
+# ESTADO SEGURO APÓS A PROVA REAL
+
+Confirmado depois do fechamento:
+
+```text
+whatsapp_release_mode = off
+whatsapp_inbound_enabled = false
+whatsapp_auto_reply_enabled = false
+ai_enabled = false
+conversation_worker_enabled = false
+conversation_worker_dispatch_enabled = false
+active_ai_jobs = 0
+active_outbound = 0
+orders do teste = 0
+order_sync_jobs do teste = 0
+bling_commands do teste = 0
+```
+
+Make inbound `6779824`: **inativo** quando não há teste.
+
+Make outbound `7290488`: pode permanecer ativo; ele só processa jobs legítimos e não cria atendimento sozinho.
+
+Supabase projeto:
+
+`ssbesxgaijknwsjbsbcz`
+
+---
+
+# RELEASE GRADUAL / SEGURANÇA
+
+Modos:
+
+- `off` — fechado;
+- `observe` — registrar/controlar sem auto-resposta IA;
+- `homologation` — allowlist temporária;
+- `live` — somente com confirmação server-side e canary.
+
+Campos principais:
+
+- `whatsapp_release_mode`;
+- `whatsapp_inbound_enabled`;
+- `whatsapp_auto_reply_enabled`;
+- `whatsapp_inbound_since`;
+- `ai_enabled`;
+- `conversation_worker_enabled`;
+- `conversation_worker_dispatch_enabled`;
+- `whatsapp_live_canary_percent`;
+- `automation_enabled`;
+- `outbound_enabled`.
+
+Regras obrigatórias:
+
+- canary inicial 0%;
+- não-canary deve ir para controle humano, nunca ser descartado silenciosamente;
+- budgets por volume/tokens;
+- `review_required`/handoff para estados externos incertos;
+- emergency stop desliga inbound, auto-reply, IA, worker e dispatcher;
+- anti-backlog obrigatório;
+- nunca retry cego se uma chamada externa puder ter ocorrido;
+- nunca versionar telefone real, service role, Meta/OpenAI/Bling keys ou webhook secreto.
 
 ---
 
@@ -150,27 +268,26 @@ Arquitetura oficial:
    → se inbound foi áudio e preferred_reply=auto: Marin B
 ```
 
-Nunca voltar ao desenho antigo de transcrição → `deterministicIntent` → resposta direta.
+Nunca voltar ao desenho antigo de transcrição → resposta direta.
 
-Migration principal:
+Voz oficial:
 
-`20260907204500_audio_transcription_chain_v1.sql`
+`dona_antonia_marin_b_v1`
 
-PR estrutural:
-
-`#152`, merge `dccf1a78f129f5c0852ac911e0ff317d70615f2d`.
-
-Áudio final fresco homologado no run `34161624075`.
+- `gpt-4o-mini-tts`;
+- `marin`;
+- speed 1.0;
+- PT-BR natural, mulher adulta, calorosa e próxima;
+- sem voz de locutora/URA;
+- disclosure apropriado de voz gerada por IA em produção.
 
 ---
 
-# WHATSAPP BRIDGE V3
+# WHATSAPP BRIDGE
 
 Inbound oficial:
 
 `6779824 — Dona Antônia - WhatsApp Inbound Controlado v1`
-
-Estado quando não há teste ativo: **inativo**.
 
 Suporta:
 
@@ -183,10 +300,10 @@ Suporta:
 - customer/conversation/session;
 - jobs IA condicionais.
 
-Edge:
+Edge inbound:
 
-- `whatsapp-ingest` v3;
-- `whatsapp-ingest-make-v1` v2.
+- `whatsapp-ingest`;
+- `whatsapp-ingest-make-v1`.
 
 Outbound oficial:
 
@@ -196,16 +313,14 @@ Fluxo:
 
 ```text
 outbound_jobs
-→ Postgres / pg_net
-→ webhook Make
+→ pg_net
+→ Make
 → texto OU TTS Marin B
 → Meta
 → Webhook Response
 → reconciliação Postgres
 → sent/provider_message_id/receipt metadata
 ```
-
-Nunca retry cego se um envio externo puder ter ocorrido.
 
 Legado:
 
@@ -215,97 +330,11 @@ Manter inativo.
 
 ---
 
-# ESTADO SEGURO ATUAL
-
-Confirmado após a imagem real:
-
-```text
-whatsapp_release_mode = off
-whatsapp_inbound_enabled = false
-whatsapp_auto_reply_enabled = false
-ai_enabled = false
-conversation_worker_enabled = false
-allowlist ativa = 0
-ai_jobs pending = 0
-ai_jobs processing = 0
-ai_jobs error = 0
-outbound pending = 0
-outbound processing = 0
-outbound review_required = 0
-orders última hora = 0
-order_sync_jobs última hora = 0
-bling_commands última hora = 0
-```
-
-Make inbound `6779824`: **inativo**.
-
-Make outbound `7290488`: pode permanecer ativo para jobs legítimos; com inbound/IA fechados não existe atendimento geral.
-
-Supabase projeto:
-
-`ssbesxgaijknwsjbsbcz`
-
----
-
-# RELEASE GATES / SEGURANÇA
-
-Campos principais:
-
-- `whatsapp_release_mode`;
-- `whatsapp_inbound_enabled`;
-- `whatsapp_auto_reply_enabled`;
-- `whatsapp_inbound_since`;
-- `ai_enabled`;
-- `conversation_worker_enabled`;
-- `automation_enabled`;
-- `outbound_enabled`.
-
-Modes:
-
-- `off` — fechado;
-- `observe` — observação/controlado;
-- `homologation` — allowlist temporária;
-- `live` — geral, ainda sujeito aos demais gates.
-
-RPCs:
-
-- `get_whatsapp_bridge_health_v1()`;
-- `whatsapp_bridge_emergency_stop_v1(reason)`;
-- `whatsapp_release_decision(...)`;
-- `arm_whatsapp_homologation_v1(...)`;
-- `close_whatsapp_homologation_v1()`;
-- `expire_whatsapp_homologation_v1()`;
-- `reconcile_whatsapp_outbound_responses_v3()`;
-- `recover_whatsapp_outbound_dispatch()`.
-
-Anti-backlog é obrigatório. Nunca versionar telefone real, keys, service role, Meta/OpenAI/Bling secrets ou webhook secreto.
-
----
-
-# VOZ OFICIAL
-
-`dona_antonia_marin_b_v1`
-
-- `gpt-4o-mini-tts`;
-- voz `marin`;
-- speed `1.0`;
-- PT-BR natural;
-- mulher adulta;
-- calorosa, próxima e tranquila;
-- sem voz de locutora/URA/telemarketing;
-- disclosure apropriado de voz gerada por IA em produção.
-
----
-
 # SALA / MOTOR COMERCIAL
 
 Sala oficial:
 
 `/comprar/`
-
-Edge:
-
-`shopping-room-sales-v1`
 
 Regras:
 
@@ -316,9 +345,8 @@ Regras:
 - máximo inicial de 2 iniciativas proativas;
 - “não quero”/“só a cesta” zera pressão;
 - pressa → checkout;
-- sem recomendação relevante → não oferecer.
-
-Motor comercial é determinístico e não chama OpenAI/Meta/Bling.
+- sem recomendação relevante → não oferecer;
+- motor comercial determinístico não chama OpenAI/Meta/Bling.
 
 ---
 
@@ -338,13 +366,50 @@ Operação: **somente entrega**.
 
 ---
 
+# ADMIN DE INTELIGÊNCIA — FUTURO APROVADO, NÃO IMPLEMENTAR AGORA
+
+Documento:
+
+`docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md`
+
+Princípio central:
+
+**A IA entende e conversa; o sistema controla fatos críticos, regras comerciais e ações.**
+
+Planejado:
+
+- conhecimento da empresa;
+- FAQs canônicas;
+- orientações/guidance;
+- procedimentos semiflexíveis;
+- regras rígidas;
+- mídias oficiais;
+- entrega/pagamento/horários;
+- simulador antes de publicar;
+- versionamento/publicação;
+- custos/tokens/qualidade;
+- IA auxiliando o próprio administrador a transformar instruções em conhecimento, orientação, procedimento ou regra determinística.
+
+Não transformar tudo em árvore rígida nem tudo em prompt gigante. Usar arquitetura híbrida e recuperação somente do conhecimento relevante para reduzir tokens.
+
+---
+
 # BLING
 
-Ainda fora da homologação WhatsApp.
+Ainda fora da liberação WhatsApp.
 
-Não executar writers amplamente ainda.
+Não executar writers amplamente.
 
-Próximo passo Bling: depois da preparação de release gradual do WhatsApp, homologar **um único pedido real controlado**, conferir componentes da cesta, diferença fiscal, contato, estoque e confirmação final no WhatsApp.
+Somente depois de `observe` + canary de atendimento concluídos:
+
+1. homologar **um único pedido real controlado**;
+2. conferir contato;
+3. componentes individualizados da cesta;
+4. diferença fiscal;
+5. estoque;
+6. idempotência;
+7. confirmação final no WhatsApp;
+8. depois ampliar gradualmente.
 
 Workers existentes:
 
@@ -356,7 +421,7 @@ Workers existentes:
 
 # CRM / EVOLUÇÃO FUTURA
 
-Planejado, não ativar em massa agora:
+Depois da base operacional/pedido real:
 
 - histórico completo de pedidos;
 - relatórios admin;
@@ -366,10 +431,6 @@ Planejado, não ativar em massa agora:
 - aniversário opcional;
 - recomendações por perfil/histórico;
 - expansão estratégica do carrinho sem insistência.
-
-Documento:
-
-`docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`
 
 ---
 
@@ -384,8 +445,9 @@ Preferências do usuário:
 - baixo custo;
 - Make como ponte fina;
 - integrações perigosas só em homologação controlada;
-- atualizar sempre a retomada no GitHub.
+- atualizar sempre esta retomada no GitHub;
+- minimizar passos manuais quando puderem ser executados com segurança pelas ferramentas.
 
 ## Instrução para novo chat
 
-> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/HOMOLOGACAO-WHATSAPP-IMAGEM-FINAL-20260907.md`, `docs/HOMOLOGACAO-WHATSAPP-AUDIO-FINAL-20260907.md` e `docs/HOMOLOGACAO-WHATSAPP-REAL-20260907.md`. Consulte o estado real no Supabase e Make antes de alterar gates. Continue pela preparação de **liberação gradual/controlada do atendimento real**; não ative `live` nem Bling indiscriminadamente.
+> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/HOMOLOGACAO-WORKER-V2-20260907.md` e `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md`. Consulte o estado real no Supabase e Make antes de alterar gates. Continue pela validação de **observe + fallback humano/Admin**; não ative `live` nem Bling indiscriminadamente.
