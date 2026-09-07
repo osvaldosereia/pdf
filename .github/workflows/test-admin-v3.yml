@@ -1,0 +1,42 @@
+name: Testar Admin Dona Antônia v3
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin-v3/**'
+      - 'supabase/functions/admin-ops-v1/**'
+      - '.github/workflows/test-admin-v3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-admin-v3-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validar JavaScript público
+        run: |
+          node --check admin-v3/app.js
+          node --check admin-v3/config.js
+      - name: Validar rotas essenciais
+        run: |
+          grep -q 'data-route="dashboard"' admin-v3/index.html
+          grep -q 'data-route="products"' admin-v3/index.html
+          grep -q 'data-route="counts"' admin-v3/index.html
+          grep -q 'data-route="queue"' admin-v3/index.html
+          grep -q 'admin-ops-v1' admin-v3/config.js
+      - name: Bloquear segredos no navegador
+        shell: bash
+        run: |
+          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' admin-v3/ || (echo 'Referência de segredo detectada no Admin público' >&2; exit 1)
