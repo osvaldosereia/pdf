@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <title>Dona Antônia · Sala de Compra</title>
-  <link rel="stylesheet" href="./style.css?v=20260907-01">
+  <link rel="stylesheet" href="./style.css?v=20260907-02">
 </head>
 <body>
   <div class="app-shell">
@@ -25,6 +25,8 @@
         <button data-home="offers" type="button">🏷️ Ofertas</button>
         <button data-home="mercearia" type="button">🛒 Mercearia</button>
         <button data-home="limpeza_lavanderia" type="button">🧼 Limpeza</button>
+        <button data-home="higiene_beleza" type="button">🧴 Higiene</button>
+        <button data-home="casa_pet" type="button">🏠 Casa e Pet</button>
       </section>
 
       <section class="workspace">
@@ -43,9 +45,16 @@
       <button id="reviewButton" type="button">Conferir pedido</button>
     </div>
 
+    <div id="recordingBar" class="recording-bar hidden" aria-live="polite">
+      <span class="record-dot"></span><strong id="recordingTime">0:00</strong><span>Gravando áudio</span><button id="cancelRecording" type="button">Cancelar</button>
+    </div>
+
     <form id="composer" class="composer">
+      <button id="attachButton" class="composer-soft" type="button" aria-label="Enviar foto">＋</button>
+      <input id="photoInput" class="hidden" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="environment">
       <input id="messageInput" type="text" maxlength="500" autocomplete="off" placeholder="Escreva o que você precisa...">
-      <button id="sendButton" type="submit" aria-label="Enviar">➤</button>
+      <button id="micButton" class="composer-mic" type="button" aria-label="Gravar áudio">🎤</button>
+      <button id="sendButton" class="composer-send" type="submit" aria-label="Enviar">➤</button>
     </form>
   </div>
 
@@ -61,7 +70,7 @@
   </template>
 
   <div id="toast" class="toast" aria-live="polite"></div>
-  <script src="./config.js?v=20260907-01"></script>
-  <script src="./app.js?v=20260907-01"></script>
+  <script src="./config.js?v=20260907-02"></script>
+  <script src="./app.js?v=20260907-02"></script>
 </body>
 </html>
