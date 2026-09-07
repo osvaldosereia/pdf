@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T02:12:43.548Z",
+  "ultima_execucao": "2026-09-07T02:37:43.701Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -5968,6 +5968,20 @@
       "historico_id": "oferta-1776338130624-1788711968702-c7cv1"
     },
     {
+      "produto_key": "1776338130637",
+      "codigo": "P36",
+      "nome": "Condor Escova de Cabelo Redonda Amarelo Belle 1un",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 13.9,
+      "preco_oferta": 12.51,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-13T23:59:59-04:00",
+      "historico_id": "oferta-1776338130637-1788748663701-rybal"
+    },
+    {
       "produto_key": "1776338130648",
       "codigo": "P389",
       "nome": "Livro de Colorir Carregue-Me Dinossauros Unidade",
@@ -10224,6 +10238,20 @@
       "historico_id": "oferta-177884423879136830-1788190098013-1d7oa"
     },
     {
+      "produto_key": "177884555767618385",
+      "codigo": "5576760391",
+      "nome": "Kit Shampoo e Condicionador TRESemmé Blindagem Antiumidade 350ml + 175ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 31.9,
+      "preco_oferta": 29.67,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-09T23:59:59-04:00",
+      "historico_id": "oferta-177884555767618385-1788748663701-uzibp"
+    },
+    {
       "produto_key": "177885134238805873",
       "codigo": "P-QJTF",
       "nome": "Geleia de Laranja - (classica) - Forno Velho 420g",
@@ -13906,6 +13934,20 @@
       "historico_id": "oferta-17866292971784ab5-1788445831445-pu2s3"
     },
     {
+      "produto_key": "1786629931372_99bd",
+      "codigo": "7891055112502",
+      "nome": "Rodo Condor com Cabo 40cm",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.89,
+      "desconto_percentual": 5.98,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-09T23:59:59-04:00",
+      "historico_id": "oferta-178662993137299bd-1788748663701-qltdd"
+    },
+    {
       "produto_key": "1786713091784_f2b9",
       "codigo": "7896025534612",
       "nome": "Escova Raquete Desembaraçante Glitter Verde Marco Boni",
@@ -16448,7 +16490,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1776338130637": {
-      "ultima_oferta_em": "2026-08-25T19:29:27.323Z",
+      "ultima_oferta_em": "2026-09-07T02:37:43.701Z",
       "regra_id": "regra-1785202557027"
     },
     "1775964830980": {
@@ -17636,7 +17678,7 @@
       "regra_id": "regra-1785205192100"
     },
     "177884555767618385": {
-      "ultima_oferta_em": "2026-09-02T13:28:49.700Z",
+      "ultima_oferta_em": "2026-09-07T02:37:43.701Z",
       "regra_id": "regra-1785205192100"
     },
     "177884572579581869": {
@@ -21116,7 +21158,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1786629931372_99bd": {
-      "ultima_oferta_em": "2026-09-02T08:35:49.475Z",
+      "ultima_oferta_em": "2026-09-07T02:37:43.701Z",
       "regra_id": "regra-1785205105033"
     },
     "1786629297178_4ab5": {
@@ -21457,23 +21499,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788071863870",
-      "executado_em": "2026-08-30T06:37:44.269Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 14,
-        "ofertas_nao_criadas": 9,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788074779532",
       "executado_em": "2026-08-30T07:26:20.109Z",
@@ -24849,6 +24874,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 13,
         "ofertas_nao_criadas": 10,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788748662765",
+      "executado_em": "2026-09-07T02:37:43.701Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 3,
+        "ofertas_nao_criadas": 20,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
