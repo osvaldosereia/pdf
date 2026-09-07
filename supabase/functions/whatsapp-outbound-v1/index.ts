@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const WORKER = "make-whatsapp-outbound-v1";
+const WORKER = "make-whatsapp-outbound-webhook-v2";
 const HEADERS = {
   "Content-Type": "application/json",
   "Cache-Control": "no-store",
@@ -40,7 +40,9 @@ Deno.serve(async(req:Request)=>{
   const action=clean(query.get("action")||body?.action,30).toLowerCase();
 
   if(action==="claim"){
-    const {data,error}=await sb.rpc("claim_whatsapp_conversation_outbound",{p_worker:WORKER});
+    const jobId=clean(query.get("job_id")||body?.job_id,80);
+    if(!validUuid(jobId))return json({ok:false,error:"invalid_job_id"},400);
+    const {data,error}=await sb.rpc("claim_whatsapp_conversation_outbound_by_id",{p_worker:WORKER,p_job_id:jobId});
     if(error)return json({ok:false,error:"claim_failed"},500);
     if(!data)return json({ok:true,job:null});
     if(data?.skipped)return json({ok:true,job:null,skipped:data.reason||"unavailable"});
