@@ -32,7 +32,7 @@ Deno.serve(async (req: Request) => {
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
   const openaiKey = Deno.env.get("OPENAI_API_KEY") || "";
-  if (!supabaseUrl || !serviceKey || !openaiKey) return json({ ok: false, error: "server_config" }, 500);
+  if (!supabaseUrl || !serviceKey) return json({ ok: false, error: "server_config" }, 500);
   const parsed = new URL(supabaseUrl);
   if (parsed.protocol !== "https:" || parsed.hostname !== PROJECT_HOST) return json({ ok: false, error: "unexpected_supabase_project" }, 500);
 
@@ -89,6 +89,7 @@ Deno.serve(async (req: Request) => {
     if (nowCfgError || !nowCfg?.automation_enabled || !nowCfg?.ai_enabled || !nowCfg?.conversation_worker_enabled || !nowCfg?.conversation_worker_dispatch_enabled) {
       throw new Error("worker_disabled");
     }
+    if (!openaiKey) throw new Error("openai_key_missing");
 
     let result: Record<string, unknown>;
     let usage: Record<string, unknown>;
