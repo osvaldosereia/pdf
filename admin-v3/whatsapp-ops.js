@@ -6,6 +6,7 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const fmt=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('pt-BR')};
   const n=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
+  const usd=v=>`US$ ${new Intl.NumberFormat('pt-BR',{minimumFractionDigits:4,maximumFractionDigits:6}).format(Number(v||0))}`;
   let loading=false;
   let lastData=null;
 
@@ -34,6 +35,13 @@
     lastData=data;
     const d=data.dashboard||{},cfg=d.config||{},q=d.queues||{},h=d.last_hour||{},u=d.today_usage||{};
     const release=String(cfg.release_mode||'off');
+    const costStatus=String(u.cost_status||'unpriced');
+    const costValue=costStatus==='priced'?usd(u.estimated_cost_usd):costStatus==='no_usage'?'—':'não precificado';
+    const costHelp=costStatus==='unpriced'
+      ? `${n(u.unpriced_events||0)} chamada(s) com tokens, mas sem tabela de preço registrada`
+      : costStatus==='priced'
+        ? `${n(u.priced_events||0)} chamada(s) com estimativa registrada`
+        : 'Nenhuma chamada concluída hoje';
     const banner=$('waReleaseBanner');
     if(banner){
       banner.className=`ops-alert ${release==='live'?'live':release==='observe'?'observe':'safe'}`;
@@ -51,7 +59,8 @@
       metric(n((q.human_open||0)+(q.human_claimed||0)),'Fallback humano','Abertos + assumidos',(q.human_open||q.human_claimed)?'warning':''),
       metric(n(q.ai_pending||0),'Jobs IA pendentes','Fila event-driven',q.ai_pending?'warning':''),
       metric(n(q.outbound_review||0),'Envios em revisão','Nunca recebem retry cego',q.outbound_review?'danger':''),
-      metric(n(u.input_tokens||0),'Tokens hoje','Entrada OpenAI')
+      metric(n(u.input_tokens||0),'Tokens hoje','Entrada OpenAI'),
+      metric(costValue,'Custo IA hoje',costHelp,costStatus==='unpriced'?'warning':'')
     ].join('');
     $('waOpsState').innerHTML=`
       <div class="ops-kv"><span>Inbound</span><strong>${cfg.inbound_enabled?'ligado':'desligado'}</strong></div>
@@ -63,6 +72,7 @@
       <div class="ops-kv"><span>Chamadas IA / hora</span><strong>${n(h.ai_calls||0)} / ${n(cfg.max_ai_jobs_per_hour||0)}</strong></div>
       <div class="ops-kv"><span>Outbound / hora</span><strong>${n(h.outbound_sent||0)} / ${n(cfg.max_outbound_per_hour||0)}</strong></div>
       <div class="ops-kv"><span>Tokens saída hoje</span><strong>${n(u.output_tokens||0)}</strong></div>
+      <div class="ops-kv"><span>Chamadas sem preço hoje</span><strong>${n(u.unpriced_events||0)}</strong></div>
       <div class="ops-kv"><span>Emergency stop</span><strong>${esc(cfg.emergency_stop_reason||'sem bloqueio registrado')}</strong></div>`;
 
     const handoffs=data.handoffs||[];

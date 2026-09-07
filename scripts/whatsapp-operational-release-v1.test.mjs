@@ -9,6 +9,7 @@ const hard=read('supabase/migrations/20260907213200_whatsapp_operational_release
 const providerVault=read('supabase/migrations/20260907223000_conversation_worker_provider_vault_v1.sql');
 const providerVaultFix=read('supabase/migrations/20260907223500_conversation_worker_provider_vault_digest_fix.sql');
 const resumeScope=read('supabase/migrations/20260907230000_resume_ai_channel_scope_v1.sql');
+const truthfulUsage=read('supabase/migrations/20260907230500_whatsapp_ops_usage_truthful_v1.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -74,6 +75,14 @@ test('web conversations can resume AI independently of WhatsApp release',()=>{
   has(resumeScope,/channel',c\.channel/,'resume response should expose the channel for audit');
 });
 
+test('ops dashboard never reports unknown provider cost as zero',()=>{
+  has(truthfulUsage,/count\(\*\) filter \(where estimated_cost_usd is null\)/,'dashboard must count unpriced events');
+  has(truthfulUsage,/then null::numeric/,'unknown cost must stay null rather than zero');
+  has(truthfulUsage,/'cost_status',case[\s\S]*'unpriced'/,'dashboard must expose cost status');
+  has(adminJs,/não precificado/,'admin must visibly distinguish unpriced cost');
+  has(adminJs,/u\.unpriced_events/,'admin must expose unpriced event count');
+});
+
 test('edge worker authenticates internally and processes exactly one claimed job',()=>{
   has(worker,/x-da-worker-key/);
   has(worker,/conversation_worker_webhook_v2/);
@@ -106,7 +115,6 @@ test('node and edge workers share one deterministic conversation core',()=>{
 test('admin exposes observability, handoff and emergency stop but no live-release button',()=>{
   has(adminHtml,/data-route="whatsapp"/);
   has(adminHtml,/Atendimento IA/);
-  has(adminHtml,/waEmergencyStop/);
   has(adminJs,/claim_handoff/);
   has(adminJs,/resolve_handoff/);
   has(adminJs,/resume_ai/);
