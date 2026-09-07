@@ -1,5 +1,5 @@
 {
-  "startedAt": "2026-09-06T04:40:22.772Z",
+  "startedAt": "2026-09-07T04:40:25.628Z",
   "mode": "production",
   "stockSync": true,
   "firebaseProducts": 1979,
@@ -167,13 +167,13 @@
     }
   ],
   "stateChanged": true,
-  "stockChecked": 1728,
+  "stockChecked": 1726,
   "stockUpdated": 0,
-  "stockUnchanged": 1728,
+  "stockUnchanged": 1726,
   "stockDifferences": [],
   "deferred": 0,
   "invalid": [],
   "conflicts": [],
   "errors": [],
-  "finishedAt": "2026-09-06T04:40:45.131Z"
+  "finishedAt": "2026-09-07T04:40:47.828Z"
 }
