@@ -1,0 +1,163 @@
+name: Dona Antonia - OpenAI audio homologation once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/conversation-worker-audio-homologation-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dona-antonia-openai-audio-homologation-once
+  cancel-in-progress: false
+
+env:
+  CONVERSATION_ID: 'e075cf1f-7e37-4a9b-a8a7-b0f50477d5fe'
+  SESSION_ID: '0174ba72-0a34-4b33-8e61-1d10bdb924aa'
+
+jobs:
+  homologate-audio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Validate worker tests
+        run: node --test scripts/conversation-worker-v1.test.mjs
+
+      - name: Validate required secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          test -n "$OPENAI_API_KEY"
+
+      - name: Generate synthetic Portuguese MP3 locally
+        run: |
+          set -euo pipefail
+          if ! command -v espeak-ng >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq espeak-ng
+          fi
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          espeak-ng -v pt-br -s 145 -w /tmp/homologacao.wav 'Quero uma cesta básica e também preciso de arroz.'
+          ffmpeg -hide_banner -loglevel error -y -i /tmp/homologacao.wav -codec:a libmp3lame -b:a 64k /tmp/homologacao.mp3
+          test -s /tmp/homologacao.mp3
+          test "$(stat -c%s /tmp/homologacao.mp3)" -lt 10485760
+
+      - name: Create isolated audio message, media and held job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY")
+          json=(-H 'Content-Type: application/json')
+
+          FLAGS=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1&select=automation_enabled,ai_enabled,conversation_worker_enabled" "${auth[@]}")
+          test "$(jq -r '.[0].automation_enabled' <<<"$FLAGS")" = true
+          test "$(jq -r '.[0].ai_enabled' <<<"$FLAGS")" = false
+          test "$(jq -r '.[0].conversation_worker_enabled' <<<"$FLAGS")" = false
+
+          ACTIVE=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/ai_jobs?status=in.(pending,processing)&select=id,status" "${auth[@]}")
+          test "$(jq 'length' <<<"$ACTIVE")" -eq 0
+
+          MESSAGE_ID=$(node -e "console.log(crypto.randomUUID())")
+          MEDIA_ID=$(node -e "console.log(crypto.randomUUID())")
+          OBJECT_PATH="sessions/${SESSION_ID}/audio/${MEDIA_ID}.mp3"
+          BYTES=$(stat -c%s /tmp/homologacao.mp3)
+          EXPIRES_AT=$(date -u -d '+30 minutes' +%Y-%m-%dT%H:%M:%SZ)
+
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/catalog_sessions?id=eq.${SESSION_ID}" "${auth[@]}" "${json[@]}" -H 'Prefer: return=minimal' --data "$(jq -cn --arg expires "$EXPIRES_AT" '{status:"open",expires_at:$expires}')"
+
+          curl --fail-with-body -sS -X POST "${SUPABASE_URL}/storage/v1/object/shopping-room-media/${OBJECT_PATH}" "${auth[@]}" -H 'Content-Type: audio/mpeg' -H 'x-upsert: false' --data-binary @/tmp/homologacao.mp3 >/dev/null
+
+          MSG=$(jq -cn --arg id "$MESSAGE_ID" --arg conv "$CONVERSATION_ID" '{id:$id,conversation_id:$conv,direction:"inbound",message_type:"audio",raw_event:{source:"shopping_room",test:true,purpose:"openai_audio_homologation_20260907"}}')
+          curl --fail-with-body -sS -X POST "${SUPABASE_URL}/rest/v1/messages" "${auth[@]}" "${json[@]}" -H 'Prefer: return=minimal' --data "$MSG"
+
+          MEDIA=$(jq -cn --arg id "$MEDIA_ID" --arg session "$SESSION_ID" --arg conv "$CONVERSATION_ID" --arg msg "$MESSAGE_ID" --arg path "$OBJECT_PATH" --argjson bytes "$BYTES" --arg expires "$EXPIRES_AT" '{id:$id,catalog_session_id:$session,conversation_id:$conv,message_id:$msg,kind:"audio",bucket:"shopping-room-media",object_path:$path,mime_type:"audio/mpeg",bytes:$bytes,processing_status:"uploaded",expires_at:$expires}')
+          curl --fail-with-body -sS -X POST "${SUPABASE_URL}/rest/v1/room_media" "${auth[@]}" "${json[@]}" -H 'Prefer: return=minimal' --data "$MEDIA"
+
+          QUEUED=$(curl --fail-with-body -sS -X POST "${SUPABASE_URL}/rest/v1/rpc/queue_ai_job_for_message" "${auth[@]}" "${json[@]}" --data "$(jq -cn --arg msg "$MESSAGE_ID" '{p_message_id:$msg,p_job_type:"transcription",p_input:{homologation:true}}')")
+          test "$(jq -r '.status' <<<"$QUEUED")" = held
+          JOB_ID=$(jq -r '.id' <<<"$QUEUED")
+          test -n "$JOB_ID"
+          test "$JOB_ID" != null
+
+          echo "MESSAGE_ID=$MESSAGE_ID" >> "$GITHUB_ENV"
+          echo "MEDIA_ID=$MEDIA_ID" >> "$GITHUB_ENV"
+          echo "JOB_ID=$JOB_ID" >> "$GITHUB_ENV"
+          echo "OBJECT_PATH=$OBJECT_PATH" >> "$GITHUB_ENV"
+
+      - name: Arm only the isolated audio job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H 'Content-Type: application/json')
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"ai_enabled":true,"conversation_worker_enabled":true}'
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${JOB_ID}&status=eq.held" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"status":"pending","error_message":null}'
+
+      - name: Process exactly one transcription job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_TRANSCRIPTION_MODEL: gpt-4o-mini-transcribe
+          AI_JOB_LIMIT: '1'
+        run: |
+          set -euo pipefail
+          RESULT=$(node scripts/conversation-worker-v1.mjs --apply)
+          echo "$RESULT"
+          test "$(jq -r '.done' <<<"$RESULT")" -eq 1
+          test "$(jq -r '.errors' <<<"$RESULT")" -eq 0
+
+      - name: Close AI gates even on failure
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H 'Content-Type: application/json')
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"ai_enabled":false,"conversation_worker_enabled":false}'
+          if [ -n "${JOB_ID:-}" ]; then
+            curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${JOB_ID}&status=eq.pending" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"status":"held","error_message":"audio_homologation_not_executed"}'
+          fi
+
+      - name: Audit transcription result
+        if: always() && env.JOB_ID != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY")
+          JOB=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${JOB_ID}&select=id,status,attempts,error_message,result" "${auth[@]}")
+          USAGE=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/ai_usage_events?job_id=eq.${JOB_ID}&select=status,model,provider_request_id,input_tokens,output_tokens,audio_seconds,created_at,finished_at" "${auth[@]}")
+          MSG=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/messages?id=eq.${MESSAGE_ID}&select=id,transcript,ai_interpretation" "${auth[@]}")
+          FLAGS=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1&select=ai_enabled,conversation_worker_enabled" "${auth[@]}")
+
+          test "$(jq -r '.[0].status' <<<"$JOB")" = done
+          test "$(jq -r '.[0].status' <<<"$USAGE")" = done
+          test "$(jq -r '.[0].model' <<<"$USAGE")" = gpt-4o-mini-transcribe
+          test "$(jq -r '.[0].provider_request_id // empty' <<<"$USAGE" | wc -c)" -gt 1
+          test "$(jq -r '.[0].transcript // empty' <<<"$MSG" | wc -c)" -gt 5
+          test "$(jq -r '.[0].ai_enabled' <<<"$FLAGS")" = false
+          test "$(jq -r '.[0].conversation_worker_enabled' <<<"$FLAGS")" = false
+
+          echo "AUDIO_HOMOLOGATION_OK job=${JOB_ID} message=${MESSAGE_ID}"
