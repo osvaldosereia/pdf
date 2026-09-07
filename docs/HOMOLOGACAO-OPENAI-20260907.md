@@ -2,7 +2,7 @@
 
 ## Estado
 
-**Homologações de texto e áudio concluídas com sucesso em produção, usando somente conversa sintética técnica. Imagem ainda pendente nesta etapa.**
+**Etapa 2 concluída com sucesso em produção: texto, áudio e imagem homologados usando somente conversa sintética técnica.**
 
 Nenhum cliente real participou dos testes. Não houve envio para Meta/WhatsApp, criação de pedido, sincronização de pedido ou comando Bling.
 
@@ -41,8 +41,6 @@ Mensagem de resposta criada no banco: `2c7a2c3d-b8f0-43a0-a657-12ee04594f9e`.
 
 ### Uso OpenAI de texto auditado
 
-`ai_usage_events` registrou:
-
 - status: `done`
 - model: `gpt-4o-mini`
 - provider request id: `req_3eb540ecddca42fbbc32b2a699ed3c0a`
@@ -51,7 +49,7 @@ Mensagem de resposta criada no banco: `2c7a2c3d-b8f0-43a0-a657-12ee04594f9e`.
 - início: `2026-09-07 18:11:14 UTC`
 - fim: `2026-09-07 18:11:16 UTC`
 
-Pelos preços oficiais consultados em 07/09/2026 para GPT-4o mini — US$ 0,15 por 1M tokens de entrada e US$ 0,60 por 1M de saída — esta chamada custa aproximadamente **US$ 0,00004785**.
+Custo aproximado pelos preços oficiais consultados em 07/09/2026: **US$ 0,00004785**.
 
 ## Áudio — execução aprovada
 
@@ -79,11 +77,9 @@ O MP3 foi gerado localmente pelo GitHub Runner com `espeak-ng` e `ffmpeg`, sem c
 - resposta gravada na Sala: sim
 - resposta enviada por WhatsApp/Meta: não
 
-A pequena diferença de transcrição é atribuída à voz sintética robótica usada apenas para homologação. O objetivo do teste foi validar a cadeia técnica completa de upload privado, leitura do arquivo, chamada de transcrição, persistência e roteamento.
+A pequena diferença de transcrição é atribuída à voz sintética robótica usada apenas para homologação. O objetivo foi validar a cadeia completa de upload privado, leitura do arquivo, chamada de transcrição, persistência e roteamento.
 
 ### Uso OpenAI de áudio auditado
-
-`ai_usage_events` registrou:
 
 - status: `done`
 - model: `gpt-4o-mini-transcribe`
@@ -93,25 +89,77 @@ A pequena diferença de transcrição é atribuída à voz sintética robótica 
 - início: `2026-09-07 18:16:43 UTC`
 - fim: `2026-09-07 18:16:46 UTC`
 
-Pelos preços oficiais consultados em 07/09/2026 para GPT-4o Mini Transcribe — US$ 1,25 por 1M tokens de áudio de entrada e US$ 5,00 por 1M tokens de saída — custo aproximado desta chamada: **US$ 0,0001075**.
+Custo aproximado pelos preços oficiais consultados em 07/09/2026: **US$ 0,0001075**.
+
+## Imagem — execução aprovada
+
+Workflow temporário: `Dona Antonia - OpenAI image homologation once`
+
+GitHub Actions run: `34151126578`
+
+Commit do disparo controlado: `3c5704e66bfdd6dc521cbdb98d45843354b3592e`
+
+Mensagem sintética: `d8464c32-4457-4601-b8e6-826db45446ef`
+
+Job de IA: `22d9fba9-763c-45d2-9a75-caa7315359f4`
+
+O PNG foi gerado localmente pelo GitHub Runner, sem API de geração de imagem. A imagem continha uma embalagem sintética com o texto `ARROZ 5 KG` e foi enviada ao worker como `image/png`, usando visão em `detail=low`.
+
+### Resultado funcional de imagem
+
+- job final: `done`
+- tentativas: `1`
+- erro: `null`
+- modelo: `gpt-4o-mini`
+- intenção: `search`
+- query gerada: `arroz 5kg`
+- descrição do modelo: `Pacote de arroz de 5 kg.`
+- resposta determinística: `Confira os resultados da busca e escolha os produtos que deseja.`
+- resposta gravada na Sala: sim
+- resposta enviada por WhatsApp/Meta: não
+
+Mensagem de resposta criada no banco: `243979aa-3bd0-47fc-bbee-571b16c4ebcc`.
+
+### Uso OpenAI de imagem auditado
+
+- status: `done`
+- model: `gpt-4o-mini`
+- provider request id: `req_253da0d3294c4474b51665e2b70bf7ef`
+- input tokens: `3026`
+- output tokens: `32`
+- início: `2026-09-07 18:19:37 UTC`
+- fim: `2026-09-07 18:19:43 UTC`
+
+Custo aproximado pelos preços oficiais consultados em 07/09/2026: **US$ 0,0004731**.
+
+## Custo total aproximado desta homologação controlada
+
+Somando as três chamadas auditadas com sucesso:
+
+- texto: `US$ 0,00004785`
+- áudio: `US$ 0,0001075`
+- imagem: `US$ 0,0004731`
+- total aproximado: **US$ 0,00062845**
+
+A tentativa anterior de texto que terminou em estado incerto não possui `provider_request_id` nem tokens gravados e, por política de segurança, não foi repetida cegamente. Ela não entra no cálculo acima porque não é possível provar cobrança ou uso real pelo registro local.
 
 ## Auditoria de segurança após os testes
 
-Flags verificadas após os workflows:
+Flags finais:
 
 - `automation_enabled=true`
 - `ai_enabled=false`
 - `conversation_worker_enabled=false`
 - `outbound_enabled=true`
 
-Auditoria específica do teste de áudio:
+Auditoria específica da janela do teste de imagem:
 
 - `outbound_jobs`: `0`
 - `orders`: `0`
 - `order_sync_jobs`: `0`
 - `bling_commands`: `0`
 
-Portanto as homologações não escaparam para Meta/WhatsApp nem Bling.
+A mesma auditoria de zero efeitos externos foi confirmada após texto e áudio. Portanto a Etapa 2 não escapou para Meta/WhatsApp nem Bling.
 
 ## Correção descoberta durante a primeira tentativa de texto
 
@@ -136,11 +184,15 @@ Nunca registrar seus valores em código, documentação, logs ou issues.
 
 ## Próximo ponto exato
 
-**Etapa 2 falta somente homologar visão de forma controlada antes da integração real com WhatsApp:**
+**Etapa 2 concluída. Próxima etapa: Etapa 3 — WhatsApp inbound/outbound real controlado.**
 
-1. imagem sintética simples → `gpt-4o-mini` visão em `detail=low`;
-2. verificar `ai_usage_events`, persistência, limites de mídia e fechamento dos gates;
-3. garantir novamente zero Meta outbound e zero Bling;
-4. depois iniciar a Etapa 3: inbound/outbound WhatsApp real controlado.
+Antes de liberar atendimento amplo:
 
-Não liberar jobs retidos em massa. Continuar usando testes sintéticos e limite `AI_JOB_LIMIT=1` nas homologações.
+1. revisar estado atual dos cenários Make/Meta e da conta WhatsApp usada como ponte;
+2. implementar/validar inbound real com idempotência, assinatura e associação à conversa;
+3. validar apenas uma mensagem real de teste;
+4. manter criação de pedido e Bling desligados durante a primeira rodada de WhatsApp;
+5. validar outbound por fila, dedupe e status de entrega com um único destinatário autorizado;
+6. só depois ampliar gradualmente.
+
+Não liberar jobs retidos em massa. Não deixar `ai_enabled` ou `conversation_worker_enabled` permanentemente ativos até a Etapa 3 estar homologada ponta a ponta.
