@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T02:37:43.701Z",
+  "ultima_execucao": "2026-09-07T03:34:15.172Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -3588,6 +3588,20 @@
       "historico_id": "oferta-1776338126676-1788452983243-0p4pu"
     },
     {
+      "produto_key": "1776338126771",
+      "codigo": "P330",
+      "nome": "Condor Vassoura V-35 com Cabo Unidade",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 14.9,
+      "preco_oferta": 14.01,
+      "desconto_percentual": 5.97,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-09T23:59:59-04:00",
+      "historico_id": "oferta-1776338126771-1788341453134-1veb8"
+    },
+    {
       "produto_key": "1776338126801",
       "codigo": "P357",
       "nome": "Fita Adesiva Unidade 45mm x 50m",
@@ -3614,6 +3628,20 @@
       "inicio": "2026-09-04",
       "fim": "2026-09-07T23:59:59-04:00",
       "historico_id": "oferta-1776338126807-1788517680744-ppkt9"
+    },
+    {
+      "produto_key": "1776338126825",
+      "codigo": "P10CSSD",
+      "nome": "Cor&Ton Tintura 3.0 Castanho Escuro 1un",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.21,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-13T23:59:59-04:00",
+      "historico_id": "oferta-1776338126825-1788752055172-1hae4"
     },
     {
       "produto_key": "1776338126864",
@@ -10252,6 +10280,20 @@
       "historico_id": "oferta-177884555767618385-1788748663701-uzibp"
     },
     {
+      "produto_key": "177884572579581869",
+      "codigo": "7257950837",
+      "nome": "Kit Shampoo e Condicionador TRESemmé Hidratação Profunda Pantenol Niacinamida 350ml + 175ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 31.9,
+      "preco_oferta": 29.67,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-06",
+      "fim": "2026-09-09T23:59:59-04:00",
+      "historico_id": "oferta-177884572579581869-1788752055172-p9vyy"
+    },
+    {
       "produto_key": "177885134238805873",
       "codigo": "P-QJTF",
       "nome": "Geleia de Laranja - (classica) - Forno Velho 420g",
@@ -16702,7 +16744,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1776338126825": {
-      "ultima_oferta_em": "2026-08-25T20:31:26.725Z",
+      "ultima_oferta_em": "2026-09-07T03:34:15.172Z",
       "regra_id": "regra-1785202557027"
     },
     "1776338125202": {
@@ -16998,7 +17040,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1776338126771": {
-      "ultima_oferta_em": "2026-09-02T09:30:53.134Z",
+      "ultima_oferta_em": "2026-09-07T03:34:15.172Z",
       "regra_id": "regra-1785205105033"
     },
     "1776338130442": {
@@ -17682,7 +17724,7 @@
       "regra_id": "regra-1785205192100"
     },
     "177884572579581869": {
-      "ultima_oferta_em": "2026-09-02T14:28:59.692Z",
+      "ultima_oferta_em": "2026-09-07T03:34:15.172Z",
       "regra_id": "regra-1785205192100"
     },
     "1776975339273": {
@@ -21500,23 +21542,6 @@
   },
   "execucoes": [
     {
-      "id": "github-1788074779532",
-      "executado_em": "2026-08-30T07:26:20.109Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 14,
-        "ofertas_nao_criadas": 9,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
-    {
       "id": "make-20260830043202143",
       "executado_em": "2026-08-30T07:33:39.271Z",
       "origem": "make",
@@ -24885,6 +24910,23 @@
     {
       "id": "github-1788748662765",
       "executado_em": "2026-09-07T02:37:43.701Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 3,
+        "ofertas_nao_criadas": 20,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788752054779",
+      "executado_em": "2026-09-07T03:34:15.172Z",
       "origem": "make",
       "modo": "completo",
       "resumo": {
