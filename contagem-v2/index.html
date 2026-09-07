@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f2a">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <title>Dona Antônia · Contagem física</title>
+  <link rel="stylesheet" href="./style.css?v=20260907-01">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
+    <div class="top-actions">
+      <button id="syncQueueButton" class="ghost" type="button" title="Sincronizar pendências">Pendências <b id="pendingBadge">0</b></button>
+      <button id="logoutButton" class="ghost hidden" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="loginCard" class="card login-card">
+      <div class="eyebrow">Acesso protegido</div>
+      <h1>Entrar na contagem</h1>
+      <p>Use o usuário autorizado do Admin Dona Antônia. A câmera só consulta o produto; a gravação vai direto para o Supabase.</p>
+      <form id="loginForm" class="stack">
+        <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
+        <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
+        <button id="loginButton" class="primary" type="submit">Entrar</button>
+      </form>
+      <div id="loginStatus" class="note"></div>
+    </section>
+
+    <div id="app" class="hidden">
+      <section class="status-row">
+        <div><span class="dot" id="connectionDot"></span><strong id="connectionLabel">Conectando…</strong><small id="userLabel"></small></div>
+        <div class="counter"><b id="sessionCount">0</b><span>contados</span></div>
+      </section>
+
+      <section class="card scanner-card">
+        <div class="section-head"><div><div class="eyebrow">1. Localizar produto</div><h2>Leia o EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div>
+        <div class="search-row">
+          <input id="eanInput" inputmode="numeric" autocomplete="off" placeholder="EAN, código ou SKU">
+          <button id="searchButton" class="primary" type="button">Buscar</button>
+        </div>
+        <div id="cameraPanel" class="camera-panel hidden">
+          <video id="video" playsinline muted autoplay></video>
+          <div class="scan-guide"><span></span></div>
+          <button id="closeCameraButton" class="danger floating-close" type="button">Fechar câmera</button>
+        </div>
+        <div id="lookupStatus" class="note">Pronto para ler um produto.</div>
+      </section>
+
+      <section id="productCard" class="card product-card hidden">
+        <div class="product-head">
+          <img id="productImage" alt="Produto" loading="eager">
+          <div><div class="eyebrow">Produto encontrado no Firebase</div><h1 id="productName"></h1><p id="productMeta"></p></div>
+        </div>
+
+        <div class="old-values">
+          <div><span>Estoque anterior</span><strong id="oldStock">—</strong></div>
+          <div><span>Validade anterior</span><strong id="oldValidity">—</strong></div>
+          <div><span>Local</span><strong id="oldLocation">—</strong></div>
+        </div>
+
+        <div class="form-grid">
+          <label class="large">Estoque contado agora<input id="stockInput" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
+          <label>Validade<input id="validityInput" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa"></label>
+          <label>Gôndola<input id="gondolaInput" autocomplete="off" placeholder="Opcional"></label>
+          <label>Prateleira<input id="shelfInput" autocomplete="off" placeholder="Opcional"></label>
+        </div>
+
+        <div id="saveStatus" class="note"></div>
+        <div class="sticky-actions">
+          <button id="skipButton" class="secondary" type="button">Pular</button>
+          <button id="saveButton" class="primary big" type="button">Salvar e próximo</button>
+        </div>
+      </section>
+
+      <section id="notFoundCard" class="card hidden">
+        <div class="eyebrow">Produto não encontrado</div>
+        <h2 id="notFoundCode">EAN</h2>
+        <p>Esse código não foi localizado no Firebase nem no catálogo administrativo.</p>
+        <div class="actions"><button id="retryButton" class="secondary" type="button">Tentar novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Abrir cadastro</a></div>
+      </section>
+
+      <section class="card session-card">
+        <div class="section-head"><div><div class="eyebrow">Sessão atual</div><h2>Últimos produtos</h2></div><button id="finishSessionButton" class="secondary" type="button">Finalizar contagem</button></div>
+        <div id="recentList" class="recent-list"><div class="empty">Nenhum produto contado nesta sessão.</div></div>
+      </section>
+    </div>
+  </main>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="./config.js?v=20260907-01"></script>
+  <script src="./app.js?v=20260907-01"></script>
+</body>
+</html>
