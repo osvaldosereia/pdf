@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#173f2a">
+  <title>Dona Antônia · Ativar Admin</title>
+  <link rel="stylesheet" href="./style.css?v=20260907-01">
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="logo">DA</div>
+      <div class="eyebrow">Configuração única</div>
+      <h1>Ativar o primeiro administrador</h1>
+      <p>Crie a sua conta do Supabase Auth e use o código de ativação de uso único. Depois disso, esta ativação é encerrada automaticamente.</p>
+      <label>Seu nome<input id="name" autocomplete="name" placeholder="Administrador"></label>
+      <label>E-mail<input id="email" type="email" autocomplete="username" required></label>
+      <label>Senha<input id="password" type="password" autocomplete="new-password" minlength="10" required></label>
+      <label>Código de ativação<input id="code" autocomplete="one-time-code" required placeholder="DA-..."></label>
+      <button id="create" type="button">Criar conta e ativar</button>
+      <button id="login" class="secondary" type="button">Já tenho a conta · entrar e ativar</button>
+      <div id="status" class="status"></div>
+      <a class="admin-link" href="../admin-v3/">Ir para o Admin v3</a>
+    </section>
+  </main>
+  <script src="./config.js?v=20260907-01"></script>
+  <script src="./app.js?v=20260907-01"></script>
+</body>
+</html>
