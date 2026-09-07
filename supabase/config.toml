@@ -1,0 +1,35 @@
+# Configuração explícita de autenticação das Edge Functions Dona Antônia.
+# Mantém o comportamento já implantado e evita alterações acidentais em deploys futuros.
+
+[functions.whatsapp-ingest]
+verify_jwt = false
+
+[functions.bling-products-ingest]
+verify_jwt = false
+
+[functions.bling-products-import-once]
+verify_jwt = false
+
+[functions.inventory-count-v2]
+verify_jwt = true
+
+[functions.admin-ops-v1]
+verify_jwt = true
+
+[functions.bootstrap-owner-v1]
+verify_jwt = true
+
+[functions.admin-baskets-v1]
+verify_jwt = true
+
+[functions.mini-catalog-v1]
+verify_jwt = false
+
+[functions.customer-intelligence-v1]
+verify_jwt = true
+
+[functions.shopping-room-v1]
+verify_jwt = false
+
+[functions.shopping-room-sales-v1]
+verify_jwt = false
