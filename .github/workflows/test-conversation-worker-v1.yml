@@ -1,9 +1,9 @@
 name: Test Dona Antonia conversation worker
 on:
   pull_request:
-    paths: ['scripts/**conversation**', 'scripts/whatsapp-bridge-v1.test.mjs', 'scripts/lib/conversation-core-v1.mjs', 'scripts/fixtures/conversation-schema-v1.sql', 'scripts/test-shopping-room-dom-v1.mjs', 'scripts/test-shopping-room-sales-preview-v1.mjs', 'scripts/test-shopping-room-sales-complete-v1.mjs', 'supabase/migrations/**', 'supabase/functions/whatsapp-ingest/**', 'supabase/functions/whatsapp-outbound-v1/**', 'supabase/functions/shopping-room-v1/**', 'supabase/functions/shopping-room-sales-v1/**', 'supabase/functions/admin-ops-v1/**', 'comprar/**', 'admin/**', 'admin-v3/app.js', 'tests/conversation/**', '.github/workflows/test-conversation-worker-v1.yml']
+    paths: ['scripts/**conversation**', 'scripts/whatsapp-bridge-v1.test.mjs', 'scripts/lib/conversation-core-v1.mjs', 'scripts/fixtures/conversation-schema-v1.sql', 'scripts/test-shopping-room-dom-v1.mjs', 'scripts/test-shopping-room-sales-preview-v1.mjs', 'scripts/test-shopping-room-sales-complete-v1.mjs', 'supabase/migrations/**', 'supabase/functions/whatsapp-ingest/**', 'supabase/functions/whatsapp-ingest-make-v1/**', 'supabase/functions/whatsapp-outbound-v1/**', 'supabase/functions/shopping-room-v1/**', 'supabase/functions/shopping-room-sales-v1/**', 'supabase/functions/admin-ops-v1/**', 'comprar/**', 'admin/**', 'admin-v3/app.js', 'tests/conversation/**', '.github/workflows/test-conversation-worker-v1.yml']
   push:
-    paths: ['scripts/**conversation**', 'scripts/whatsapp-bridge-v1.test.mjs', 'scripts/lib/conversation-core-v1.mjs', 'scripts/fixtures/conversation-schema-v1.sql', 'scripts/test-shopping-room-dom-v1.mjs', 'scripts/test-shopping-room-sales-preview-v1.mjs', 'scripts/test-shopping-room-sales-complete-v1.mjs', 'supabase/migrations/**', 'supabase/functions/whatsapp-ingest/**', 'supabase/functions/whatsapp-outbound-v1/**', 'supabase/functions/shopping-room-v1/**', 'supabase/functions/shopping-room-sales-v1/**', 'supabase/functions/admin-ops-v1/**', 'comprar/**', 'admin/**', 'admin-v3/app.js', 'tests/conversation/**', '.github/workflows/test-conversation-worker-v1.yml']
+    paths: ['scripts/**conversation**', 'scripts/whatsapp-bridge-v1.test.mjs', 'scripts/lib/conversation-core-v1.mjs', 'scripts/fixtures/conversation-schema-v1.sql', 'scripts/test-shopping-room-dom-v1.mjs', 'scripts/test-shopping-room-sales-preview-v1.mjs', 'scripts/test-shopping-room-sales-complete-v1.mjs', 'supabase/migrations/**', 'supabase/functions/whatsapp-ingest/**', 'supabase/functions/whatsapp-ingest-make-v1/**', 'supabase/functions/whatsapp-outbound-v1/**', 'supabase/functions/shopping-room-v1/**', 'supabase/functions/shopping-room-sales-v1/**', 'supabase/functions/admin-ops-v1/**', 'comprar/**', 'admin/**', 'admin-v3/app.js', 'tests/conversation/**', '.github/workflows/test-conversation-worker-v1.yml']
 permissions:
   contents: read
 jobs:
@@ -27,4 +27,4 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno check supabase/functions/whatsapp-ingest/index.ts supabase/functions/whatsapp-outbound-v1/index.ts supabase/functions/shopping-room-v1/index.ts supabase/functions/shopping-room-sales-v1/index.ts supabase/functions/admin-ops-v1/index.ts
+      - run: deno check supabase/functions/whatsapp-ingest/index.ts supabase/functions/whatsapp-ingest-make-v1/index.ts supabase/functions/whatsapp-outbound-v1/index.ts supabase/functions/shopping-room-v1/index.ts supabase/functions/shopping-room-sales-v1/index.ts supabase/functions/admin-ops-v1/index.ts
