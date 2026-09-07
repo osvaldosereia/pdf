@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {renderDecision,validateMedia} from './lib/conversation-core-v1.mjs';
 
 const edgePath=new URL('../supabase/functions/whatsapp-ingest/index.ts',import.meta.url);
+const makeAdapterPath=new URL('../supabase/functions/whatsapp-ingest-make-v1/index.ts',import.meta.url);
 const outboundEdgePath=new URL('../supabase/functions/whatsapp-outbound-v1/index.ts',import.meta.url);
 const migrationPath=new URL('../supabase/migrations/20260907184500_whatsapp_conversation_bridge_v1.sql',import.meta.url);
 const mediaMigrationPath=new URL('../supabase/migrations/20260907184450_room_media_whatsapp_metadata.sql',import.meta.url);
@@ -50,6 +51,18 @@ test('WhatsApp ingest is flat-Make compatible, idempotent for media, and isolate
   assert.match(source,/result\?\.ignored/);
   assert.doesNotMatch(source,/bling/i);
   assert.doesNotMatch(source,/confirm_order|room_confirm_order|order_sync/i);
+});
+
+test('Make adapter preserves current generic fields and legacy aliases for buttons and media',async()=>{
+  const source=await readFile(makeAdapterPath,'utf8');
+  assert.match(source,/form\.get\("media_id"\)/);
+  assert.match(source,/form\.get\("caption"\)/);
+  assert.match(source,/form\.get\("interactive_id"\)/);
+  assert.match(source,/form\.get\("interactive_title"\)/);
+  assert.match(source,/form\.get\("button_reply_id"\)/);
+  assert.match(source,/form\.get\("list_reply_id"\)/);
+  assert.match(source,/media_id:genericMediaId/);
+  assert.match(source,/interactive_id:firstNonEmpty\(genericInteractiveId/);
 });
 
 test('Database bridge preserves gates, service window, official voice profile and queue dedupe',async()=>{
