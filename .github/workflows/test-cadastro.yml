@@ -1,0 +1,44 @@
+name: Testar cadastro de produtos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cadastro/**'
+      - '.github/workflows/test-cadastro.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-cadastro-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validar JavaScript
+        run: |
+          node --check cadastro/cadastro-v10.js
+          node --check cadastro/product-edit-controls.js
+      - name: Validar controles operacionais
+        run: |
+          grep -q 'product-edit-controls.js' cadastro/index.html
+          grep -q 'existingPriceInput' cadastro/product-edit-controls.js
+          grep -q 'existingCostInput' cadastro/product-edit-controls.js
+          grep -q 'existingGondolaInput' cadastro/product-edit-controls.js
+          grep -q 'existingShelfInput' cadastro/product-edit-controls.js
+          grep -q 'existingActiveInput' cadastro/product-edit-controls.js
+          grep -q 'salePriceInput' cadastro/product-edit-controls.js
+          grep -q 'newActiveInput' cadastro/product-edit-controls.js
+      - name: Bloquear segredos novos no navegador
+        shell: bash
+        run: |
+          ! grep -R -E 'SUPABASE_SERVICE_ROLE_KEY|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' cadastro/ || (echo 'Segredo detectado no cadastro público' >&2; exit 1)
