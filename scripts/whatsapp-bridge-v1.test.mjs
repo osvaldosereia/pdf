@@ -8,6 +8,7 @@ const migrationPath=new URL('../supabase/migrations/20260907184500_whatsapp_conv
 const mediaMigrationPath=new URL('../supabase/migrations/20260907184450_room_media_whatsapp_metadata.sql',import.meta.url);
 const releaseGatePath=new URL('../supabase/migrations/20260907192800_whatsapp_live_release_gates_v1.sql',import.meta.url);
 const dispatchPath=new URL('../supabase/migrations/20260907191500_whatsapp_outbound_event_dispatch_v2.sql',import.meta.url);
+const dispatchV3Path=new URL('../supabase/migrations/20260907194000_whatsapp_outbound_webhook_response_v3.sql',import.meta.url);
 
 const fixtureJob={message_id:'m1',conversation_id:'c1',job_type:'transcription'};
 
@@ -44,6 +45,7 @@ test('WhatsApp ingest is flat-Make compatible, idempotent for media, and isolate
   assert.match(source,/meta_media_id/);
   assert.match(source,/maybeSingle\(\)/);
   assert.match(source,/queue_ai_job_for_message/);
+  assert.match(source,/result\?\.ignored/);
   assert.doesNotMatch(source,/bling/i);
   assert.doesNotMatch(source,/confirm_order|room_confirm_order|order_sync/i);
 });
@@ -91,4 +93,20 @@ test('Outbound event dispatcher is exact-job, event-driven and never blind-retri
   assert.match(sql,/dispatch_unreachable_review_required/);
   assert.match(sql,/cron\.schedule/);
   assert.doesNotMatch(sql,/https:\/\/hook\./i,'Make webhook must stay in Vault, not GitHub');
+});
+
+test('Outbound v3 sends the locked job to Make and reconciles only an explicit matching provider id',async()=>{
+  const sql=await readFile(dispatchV3Path,'utf8');
+  assert.match(sql,/event','outbound_delivery'/);
+  assert.match(sql,/protocol_version',3/);
+  assert.match(sql,/locked_by='pgnet-make-outbound-v3'/);
+  assert.match(sql,/timeout_milliseconds:=30000/);
+  assert.match(sql,/net\._http_response/);
+  assert.match(sql,/coalesce\(v_json->>'job_id',''\)<>v_job\.id::text/);
+  assert.match(sql,/provider_message_id/);
+  assert.match(sql,/delivery_uncertain_review_required/);
+  assert.match(sql,/now\(\)\+interval '100 years'/);
+  assert.match(sql,/dispatch_whatsapp_outbound_healthcheck_v3/);
+  assert.doesNotMatch(sql,/https:\/\/hook\./i,'webhook URL must remain in Vault');
+  assert.doesNotMatch(sql,/META_ACCESS_TOKEN|OPENAI_API_KEY|SUPABASE_SERVICE_ROLE_KEY/);
 });
