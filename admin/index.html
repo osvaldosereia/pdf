@@ -9,6 +9,7 @@
   <title>Dona Antônia · Admin</title>
   <link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02">
   <link rel="stylesheet" href="../admin-v3/enhancements.css?v=20260907-02">
+  <link rel="stylesheet" href="../admin-v3/customer-intelligence.css?v=20260907-01">
 </head>
 <body>
   <section id="loginView" class="login-shell">
@@ -28,6 +29,7 @@
         <button class="nav active" data-route="dashboard" type="button"><span>IN</span>Visão geral</button>
         <button class="nav" data-route="products" type="button"><span>PR</span>Produtos conferidos</button>
         <button class="nav" data-route="baskets" type="button"><span>CE</span>Cestas básicas</button>
+        <button class="nav" data-route="customers" type="button"><span>CL</span>Clientes</button>
         <button class="nav" data-route="counts" type="button"><span>CT</span>Contagens</button>
         <button class="nav" data-route="queue" type="button"><span>BQ</span>Fila Bling</button>
         <a class="nav link" href="../contagem/"><span>📷</span>Abrir contagem</a>
@@ -59,6 +61,11 @@
           <section class="panel"><div class="panel-head"><div><div class="eyebrow">Catálogo comercial</div><h2>Cestas básicas</h2></div><span id="basketSummary" class="muted"></span></div><div id="basketRows" class="basket-grid"><div class="empty">Abra esta seção para carregar as cestas.</div></div></section>
         </section>
 
+        <section class="view" data-view="customers">
+          <div class="toolbar"><div class="search"><span>⌕</span><input id="customerSearch" type="search" placeholder="Nome ou WhatsApp"></div><select id="customerModeFilter"><option value="">Todos os perfis</option><option value="catalog_first">Catálogo primeiro</option><option value="hybrid">Híbrido</option><option value="whatsapp_only">Somente WhatsApp</option></select></div>
+          <section class="panel table-panel"><div class="table-summary"><strong id="customerCount">0 clientes</strong><span id="customerPage"></span></div><div class="table-wrap"><table class="customer-table"><thead><tr><th>Cliente</th><th>Perfil</th><th>Compras</th><th>Última compra</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div><div class="pager"><button id="prevCustomers" class="button secondary small" type="button">Anterior</button><button id="nextCustomers" class="button secondary small" type="button">Próxima</button></div></section>
+        </section>
+
         <section class="view" data-view="counts"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="countRows" class="list"></div></section></section>
 
         <section class="view" data-view="queue"><div class="toolbar"><select id="queueStatus"><option value="">Todos</option><option value="pending">Pendentes</option><option value="processing">Processando</option><option value="done">Concluídos</option><option value="error">Erros</option><option value="cancelled">Cancelados</option></select><button id="reloadQueue" class="button secondary" type="button">Recarregar fila</button></div><section class="panel"><div id="queueRows" class="list"></div></section></section>
@@ -72,5 +79,6 @@
   <script src="./config.js?v=20260907-01"></script>
   <script src="../admin-v3/app.js?v=20260907-02"></script>
   <script src="../admin-v3/enhancements.js?v=20260907-02"></script>
+  <script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script>
 </body>
 </html>
