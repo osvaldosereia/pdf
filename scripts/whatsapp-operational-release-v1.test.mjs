@@ -8,6 +8,7 @@ const fix=read('supabase/migrations/20260907213100_whatsapp_operational_release_
 const hard=read('supabase/migrations/20260907213200_whatsapp_operational_release_v1_dispatch_hardening.sql');
 const providerVault=read('supabase/migrations/20260907223000_conversation_worker_provider_vault_v1.sql');
 const providerVaultFix=read('supabase/migrations/20260907223500_conversation_worker_provider_vault_digest_fix.sql');
+const resumeScope=read('supabase/migrations/20260907230000_resume_ai_channel_scope_v1.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -64,6 +65,13 @@ test('budgets and outbound guard fall back to human',()=>{
   has(main,/ai_daily_token_budget_human_required/);
   has(main,/outbound_hourly_cap_human_required/);
   has(main,/guard_whatsapp_ai_outbound_rate_v1/);
+});
+
+test('web conversations can resume AI independently of WhatsApp release',()=>{
+  has(resumeScope,/if c\.channel in \('whatsapp','hybrid'\) then/,'only WhatsApp-capable channels should require a release cohort');
+  has(resumeScope,/when c\.channel in \('whatsapp','hybrid'\)/,'automation cohort should only be rewritten for WhatsApp-capable channels');
+  assert.doesNotMatch(resumeScope,/c\.channel='whatsapp'\s+or\s+c\.whatsapp_account_id\s+is\s+not\s+null/i,'mandatory whatsapp_account_id must not classify web conversations as WhatsApp');
+  has(resumeScope,/channel',c\.channel/,'resume response should expose the channel for audit');
 });
 
 test('edge worker authenticates internally and processes exactly one claimed job',()=>{
