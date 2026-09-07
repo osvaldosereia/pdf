@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f2a">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <title>Dona Antônia · Admin v3</title>
+  <link rel="stylesheet" href="./style.css?v=20260907-01">
+</head>
+<body>
+  <section id="loginView" class="login-shell">
+    <form id="loginForm" class="login-card">
+      <div class="logo">DA</div>
+      <div class="eyebrow">Central operacional</div>
+      <h1>Dona Antônia</h1>
+      <p>Admin novo baseado no Supabase e no catálogo fisicamente conferido.</p>
+      <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
+      <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
+      <button id="loginButton" class="button primary" type="submit">Entrar</button>
+      <div id="loginStatus" class="status-text"></div>
+    </form>
+  </section>
+
+  <div id="adminApp" class="app hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span>DA</span><div><strong>Dona Antônia</strong><small>Admin v3</small></div></div>
+      <nav id="nav">
+        <button class="nav active" data-route="dashboard" type="button"><span>IN</span>Visão geral</button>
+        <button class="nav" data-route="products" type="button"><span>PR</span>Produtos conferidos</button>
+        <button class="nav" data-route="counts" type="button"><span>CT</span>Contagens</button>
+        <button class="nav" data-route="queue" type="button"><span>BQ</span>Fila Bling</button>
+        <a class="nav link" href="../contagem-v2/"><span>📷</span>Abrir contagem</a>
+      </nav>
+      <div class="side-bottom"><div><strong id="sideUser">Usuário</strong><small id="sideRole"></small></div><button id="logoutButton" type="button">Sair</button></div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button id="menuButton" class="icon mobile-only" type="button">☰</button>
+        <div><h1 id="pageTitle">Visão geral</h1><p id="pageSubtitle">Estado operacional do novo sistema.</p></div>
+        <button id="refreshButton" class="button secondary" type="button">Atualizar</button>
+      </header>
+
+      <main>
+        <section class="view active" data-view="dashboard">
+          <div id="metrics" class="metrics"></div>
+          <div class="grid-two">
+            <section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário</div><h2>Contagens recentes</h2></div><a class="button primary small" href="../contagem-v2/">Nova contagem</a></div><div id="recentCounts" class="list"></div></section>
+            <section class="panel"><div class="panel-head"><div><div class="eyebrow">Integração</div><h2>Erros Bling</h2></div></div><div id="recentErrors" class="list"></div></section>
+          </div>
+        </section>
+
+        <section class="view" data-view="products">
+          <div class="toolbar">
+            <div class="search"><span>⌕</span><input id="productSearch" type="search" placeholder="Nome, EAN, SKU ou marca"></div>
+            <select id="productStatus"><option value="">Todos</option><option value="whatsapp">WhatsApp ativos</option><option value="offer">Ofertas</option><option value="no-stock">Sem estoque</option></select>
+            <select id="productSync"><option value="">Toda sincronização</option><option value="pending_bling">Pendente Bling</option><option value="synced">Sincronizado</option><option value="error_bling">Erro Bling</option></select>
+          </div>
+          <section class="panel table-panel"><div class="table-summary"><strong id="productCount">0 produtos</strong><span id="productPage"></span></div><div class="table-wrap"><table><thead><tr><th>Produto</th><th>EAN / SKU</th><th>Estoque</th><th>Validade</th><th>WhatsApp</th><th>Sync</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div><div class="pager"><button id="prevProducts" class="button secondary small" type="button">Anterior</button><button id="nextProducts" class="button secondary small" type="button">Próxima</button></div></section>
+        </section>
+
+        <section class="view" data-view="counts">
+          <section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem-v2/">Nova contagem</a></div><div id="countRows" class="list"></div></section>
+        </section>
+
+        <section class="view" data-view="queue">
+          <div class="toolbar"><select id="queueStatus"><option value="">Todos</option><option value="pending">Pendentes</option><option value="processing">Processando</option><option value="done">Concluídos</option><option value="error">Erros</option><option value="cancelled">Cancelados</option></select><button id="reloadQueue" class="button secondary" type="button">Recarregar fila</button></div>
+          <section class="panel"><div id="queueRows" class="list"></div></section>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+  <section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section>
+  <div id="toastRegion" class="toasts" aria-live="polite"></div>
+
+  <script src="./config.js?v=20260907-01"></script>
+  <script src="./app.js?v=20260907-01"></script>
+</body>
+</html>
