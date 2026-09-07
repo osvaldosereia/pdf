@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {renderDecision,validateMedia} from './lib/conversation-core-v1.mjs';
 
 const edgePath=new URL('../supabase/functions/whatsapp-ingest/index.ts',import.meta.url);
+const outboundEdgePath=new URL('../supabase/functions/whatsapp-outbound-v1/index.ts',import.meta.url);
 const migrationPath=new URL('../supabase/migrations/20260907184500_whatsapp_conversation_bridge_v1.sql',import.meta.url);
 const mediaMigrationPath=new URL('../supabase/migrations/20260907184450_room_media_whatsapp_metadata.sql',import.meta.url);
 const releaseGatePath=new URL('../supabase/migrations/20260907192800_whatsapp_live_release_gates_v1.sql',import.meta.url);
@@ -109,4 +110,13 @@ test('Outbound v3 sends the locked job to Make and reconciles only an explicit m
   assert.match(sql,/dispatch_whatsapp_outbound_healthcheck_v3/);
   assert.doesNotMatch(sql,/https:\/\/hook\./i,'webhook URL must remain in Vault');
   assert.doesNotMatch(sql,/META_ACCESS_TOKEN|OPENAI_API_KEY|SUPABASE_SERVICE_ROLE_KEY/);
+});
+
+test('Legacy outbound Edge can only report health and cannot claim or finish jobs',async()=>{
+  const source=await readFile(outboundEdgePath,'utf8');
+  assert.match(source,/deprecated_event_driven_v3/);
+  assert.match(source,/legacy_claim_finish_disabled:true/);
+  assert.match(source,/pg_net_make_webhook_response_v3/);
+  assert.doesNotMatch(source,/claim_whatsapp_conversation_outbound_by_id/);
+  assert.doesNotMatch(source,/finish_whatsapp_conversation_outbound/);
 });
