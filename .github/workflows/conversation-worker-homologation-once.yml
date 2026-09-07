@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  HOMOLOGATION_JOB_ID: '3b774011-680d-4915-abb0-7f0c473ffbf7'
-  HOMOLOGATION_RUN: '20260907-02'
+  HOMOLOGATION_JOB_ID: '1b3e5ab3-afe1-4d9d-bac1-da1ef1d0dc29'
+  HOMOLOGATION_RUN: '20260907-03'
 
 jobs:
   homologate:
@@ -41,6 +41,18 @@ jobs:
           test -n "$SUPABASE_SERVICE_ROLE_KEY"
           test -n "$OPENAI_API_KEY"
 
+      - name: Validate isolated test state
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY")
+          pending=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/ai_jobs?status=eq.pending&select=id" "${auth[@]}")
+          test "$pending" = '[]'
+          held=$(curl --fail-with-body -sS "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${HOMOLOGATION_JOB_ID}&status=eq.held&select=id" "${auth[@]}")
+          echo "$held" | grep -q "$HOMOLOGATION_JOB_ID"
+
       - name: Arm only homologation job
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -56,8 +68,8 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_CONVERSATION_MODEL: ${{ vars.OPENAI_CONVERSATION_MODEL }}
-          OPENAI_TRANSCRIPTION_MODEL: ${{ vars.OPENAI_TRANSCRIPTION_MODEL }}
+          OPENAI_CONVERSATION_MODEL: gpt-4o-mini
+          OPENAI_TRANSCRIPTION_MODEL: gpt-4o-mini-transcribe
           AI_JOB_LIMIT: '1'
         run: node scripts/conversation-worker-v1.mjs --apply
 
