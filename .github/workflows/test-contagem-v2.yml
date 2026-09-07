@@ -1,0 +1,49 @@
+name: Testar contagem física v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'contagem-v2/**'
+      - 'scripts/bling-stock-writer-v1.mjs'
+      - 'supabase/functions/inventory-count-v2/**'
+      - '.github/workflows/bling-stock-writer-v1.yml'
+      - '.github/workflows/test-contagem-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-contagem-v2-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validar JavaScript
+        run: |
+          node --check contagem-v2/app-v2.js
+          node --check contagem-v2/config.js
+          node --check scripts/bling-stock-writer-v1.mjs
+      - name: Validar referências da página
+        run: |
+          grep -q 'app-v2.js' contagem-v2/index.html
+          grep -q 'inventory-count-v2' contagem-v2/config.js
+          grep -q 'site/produtos-admin.json' contagem-v2/config.js
+      - name: Validar ausência de segredos óbvios no microapp
+        shell: bash
+        run: |
+          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN' contagem-v2/ || (echo 'Segredo ou referência proibida no microapp' >&2; exit 1)
+      - name: Validar worker em modo seguro
+        shell: bash
+        run: |
+          grep -q "const APPLY = process.argv.includes('--apply')" scripts/bling-stock-writer-v1.mjs
+          grep -q "operacao: 'B'" scripts/bling-stock-writer-v1.mjs
+          grep -q 'bling-api-global' .github/workflows/bling-stock-writer-v1.yml
