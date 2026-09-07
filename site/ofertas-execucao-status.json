@@ -1,18 +1,18 @@
 {
   "status": "sucesso",
-  "executado_em": "2026-09-07T03:34:17.206Z",
+  "executado_em": "2026-09-07T04:33:56.785Z",
   "limpeza_codigo": 0,
   "validade_codigo": 0,
   "processamento_codigo": 0,
   "limpeza_log": "{\"status\":\"sucesso\",\"ofertas_validade_encerradas\":0,\"produtos\":[]}\n",
-  "validade_log": "{\"status\":\"sucesso\",\"regras_validade_ativas\":true,\"produtos_avaliados\":1979,\"produtos_alterados\":125,\"resumo\":{\"apply\":107,\"block\":18}}\n",
-  "processamento_log": "{\"status\":\"sucesso\",\"executionId\":\"github-1788752054779\",\"ofertas_solicitadas\":23,\"ofertas_criadas\":3,\"ofertas_nao_criadas\":20,\"ofertas_encerradas\":0,\"vencidos\":0,\"ofertas_reativadas\":0,\"reativacoes_com_falha\":0,\"banners_reativados\":0,\"banners_desativados\":0}\n",
+  "validade_log": "{\"status\":\"sucesso\",\"regras_validade_ativas\":true,\"produtos_avaliados\":1979,\"produtos_alterados\":126,\"resumo\":{\"apply\":106,\"block\":20}}\n",
+  "processamento_log": "{\"status\":\"sucesso\",\"executionId\":\"github-1788755612490\",\"ofertas_solicitadas\":23,\"ofertas_criadas\":3,\"ofertas_nao_criadas\":20,\"ofertas_encerradas\":257,\"vencidos\":257,\"ofertas_reativadas\":0,\"reativacoes_com_falha\":0,\"banners_reativados\":0,\"banners_desativados\":0}\n",
   "motor_resultado": "success",
   "publicacao_resultado": "success",
   "evento": "schedule",
-  "run_id": "34080000073",
+  "run_id": "34083449416",
   "tentativa": "1",
-  "sha_origem": "136df2c37d0e885386cd0d632bef5a99dfca93ca",
+  "sha_origem": "971bbfcff78ed8cc12b5a531f38bcffc2fca2830",
   "sucesso": true,
-  "publicado_em": "2026-09-07T03:34:21.169Z"
+  "publicado_em": "2026-09-07T04:34:00.438Z"
 }
