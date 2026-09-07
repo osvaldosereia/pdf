@@ -18,7 +18,6 @@ env:
 
 jobs:
   homologate:
-    if: github.event.head_commit.message == 'homologacao: executar uma chamada OpenAI controlada'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
