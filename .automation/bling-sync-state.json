@@ -951,11 +951,11 @@
       "hash": "4f973d8014227ef573fdba449c989c6d00b92ec6f333bf665b781270aadeff56",
       "blingId": 16632979556,
       "codigo": "811293L",
-      "syncedAt": "2026-08-12T16:45:00.371Z",
+      "syncedAt": "2026-09-07T04:40:39.026Z",
       "version": 3,
-      "fingerprint": "d27eb3e0c51386480153deab235792c3eb3510d151c07a2d7970a9b61c977adc",
+      "fingerprint": "10f208cd9eb2f8b40049e62eb41fdfb61e92a5400f63abcc48b4892cf143c897",
       "localStatus": "present",
-      "blingStatus": "A",
+      "blingStatus": "I",
       "deletedAt": null
     },
     "1776028741999": {
@@ -11879,11 +11879,11 @@
       "hash": "f74b5b710117bab9f711be3c0c4879d2fa2a9e4c1151af2f71c0a8b0bf7cf1be",
       "blingId": 16646996167,
       "codigo": "P-WRKB",
-      "syncedAt": "2026-08-12T16:59:41.625Z",
+      "syncedAt": "2026-09-07T04:40:39.875Z",
       "version": 3,
-      "fingerprint": "8fbf712a63a6548f8fa8f653acc8ed0e94df23ed9aba5ceeadc43ae1c5f0501a",
+      "fingerprint": "9fcf2525b30eac717bdd802b0b7e97b5f55df2d528fcc227eecb17261a4e7b24",
       "localStatus": "present",
-      "blingStatus": "A",
+      "blingStatus": "I",
       "deletedAt": null
     },
     "177850826754295841": {
