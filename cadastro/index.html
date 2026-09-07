@@ -24,6 +24,7 @@
   </script>
   <script defer src="./cadastro-taxonomia-v1.js?v=20260820-barcode-first-v1"></script>
   <script defer src="./cadastro-v10.js?v=20260820-barcode-first-v1"></script>
+  <script defer src="./product-edit-controls.js?v=20260907-01"></script>
 </head>
 <body class="ops-suite ops-cadastro">
 <header class="ops-topbar">
@@ -48,7 +49,7 @@
   </div>
 </header>
 <main>
-  <section class="hero"><h1>Leia o código antes de cadastrar.</h1><p>A câmera consulta o Firebase primeiro. Produto existente atualiza somente o estoque; produto novo segue para a foto da frente e cadastro com IA.</p></section>
+  <section class="hero"><h1>Leia o código antes de cadastrar.</h1><p>A câmera consulta o Firebase primeiro. Produto existente permite revisar estoque, preços, gôndola, prateleira e status; produto novo segue para a foto da frente e cadastro com IA.</p></section>
   <div id="message" class="message"></div>
 
   <section class="panel lookup-panel" id="lookupPanel">
@@ -70,13 +71,13 @@
   </section>
 
   <section class="panel existing-product" id="existingProductPanel" hidden>
-    <div class="panel-head"><h2>Produto já cadastrado</h2><p>Atualize o estoque total sem abrir um novo cadastro.</p></div>
+    <div class="panel-head"><h2>Produto já cadastrado</h2><p>Revise os dados operacionais e salve as alterações.</p></div>
     <div class="panel-body existing-product-body">
       <img id="existingProductImage" alt="Imagem do produto cadastrado">
       <div class="existing-product-info"><h3 id="existingProductName"></h3><p id="existingProductMeta"></p><div class="kv"><span>Estoque atual</span><b id="existingCurrentStock">0</b></div></div>
       <div class="existing-stock-actions">
         <div class="field"><label for="existingStockInput">Novo estoque total</label><input class="input" id="existingStockInput" type="number" min="0" step="1" inputmode="numeric"></div>
-        <button class="btn primary" id="updateStockButton" type="button">Atualizar estoque</button>
+        <button class="btn primary" id="updateStockButton" type="button">Salvar alterações</button>
         <button class="btn" id="existingAnotherButton" type="button">Consultar outro produto</button>
       </div>
     </div>
@@ -104,7 +105,7 @@
           <div class="field span"><label for="notesInput">Comentário para orientar a IA · opcional</label><textarea class="textarea" id="notesInput" placeholder="Ex.: é a versão sem açúcar; o nome correto é...; atenção ao sabor..."></textarea></div>
         </div>
 
-        <div class="note">A IA usa as classificações existentes no Firebase. Somente a foto da frente é enviada, e o produto continua sendo salvo como inativo para revisão.</div>
+        <div class="note">A IA usa as classificações existentes no Firebase. Estoque zero força o produto a permanecer inativo.</div>
         <button class="btn primary submit" id="submitButton" type="button">Cadastrar automaticamente</button>
       </div>
     </section>
@@ -118,12 +119,12 @@
           <div class="step" data-step="pesquisando">3. Pesquisar NCM e preço médio</div>
           <div class="step" data-step="gerando_imagem">4. Gerar fotografia de catálogo</div>
           <div class="step" data-step="salvando">5. Salvar GitHub e Firebase</div>
-          <div class="step" data-step="concluido">6. Concluir inativo</div>
+          <div class="step" data-step="concluido">6. Concluir cadastro</div>
         </div>
       </section>
 
       <section class="panel result" id="resultPanel">
-        <div class="panel-head"><h2>Produto cadastrado</h2><p>Salvo inativo para revisão.</p></div>
+        <div class="panel-head"><h2>Produto cadastrado</h2><p>Revise os dados finais.</p></div>
         <div class="panel-body"><img id="resultImage" alt="Imagem gerada"><h3 id="resultName"></h3><p id="resultKey"></p><div class="kv"><span>Preço médio</span><b id="resultPrice">—</b></div><div class="kv"><span>NCM</span><b id="resultNcm">—</b></div><div class="kv"><span>EAN</span><b id="resultEan">—</b></div><button class="btn danger" id="deleteRegistrationButton" type="button" style="width:100%;margin-top:10px">Apagar cadastro e foto</button><button class="btn primary" id="againButton" type="button" style="width:100%;margin-top:10px">Cadastrar outro</button></div>
       </section>
     </aside>
