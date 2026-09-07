@@ -1,0 +1,124 @@
+name: Dona Antônia · Estoque contado → Bling
+run-name: Estoque contado → Bling · ${{ inputs.mode }} · até ${{ inputs.limit }} comandos
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Modo de execução
+        required: true
+        default: dry-run
+        type: choice
+        options:
+          - dry-run
+          - apply
+      limit:
+        description: Máximo de comandos por rodada
+        required: true
+        default: '30'
+        type: string
+      deposit_id:
+        description: ID do depósito Bling (deixe vazio para detectar o padrão)
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bling-api-global
+  cancel-in-progress: false
+
+jobs:
+  estoque:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Baixar somente o worker
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          sparse-checkout: scripts/bling-stock-writer-v1.mjs
+          sparse-checkout-cone-mode: false
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Validar sintaxe
+        run: node --check scripts/bling-stock-writer-v1.mjs
+
+      - name: Validar secrets obrigatórias
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BLING_CLIENT_ID: ${{ secrets.BLING_CLIENT_ID }}
+          BLING_CLIENT_SECRET: ${{ secrets.BLING_CLIENT_SECRET }}
+          BLING_REFRESH_TOKEN: ${{ secrets.BLING_REFRESH_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_SERVICE_ROLE_KEY" || { echo 'Falta SUPABASE_SERVICE_ROLE_KEY' >&2; exit 1; }
+          test -n "$BLING_CLIENT_ID" || { echo 'Falta BLING_CLIENT_ID' >&2; exit 1; }
+          test -n "$BLING_CLIENT_SECRET" || { echo 'Falta BLING_CLIENT_SECRET' >&2; exit 1; }
+          test -n "$BLING_REFRESH_TOKEN" || { echo 'Falta BLING_REFRESH_TOKEN' >&2; exit 1; }
+
+      - name: Processar fila de estoque
+        id: worker
+        env:
+          SUPABASE_URL: https://ssbesxgaijknwsjbsbcz.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BLING_CLIENT_ID: ${{ secrets.BLING_CLIENT_ID }}
+          BLING_CLIENT_SECRET: ${{ secrets.BLING_CLIENT_SECRET }}
+          BLING_REFRESH_TOKEN: ${{ secrets.BLING_REFRESH_TOKEN }}
+          BLING_REFRESH_TOKEN_FILE: ${{ runner.temp }}/bling-refresh-token
+          BLING_DEPOSIT_ID: ${{ inputs.deposit_id }}
+          COMMAND_LIMIT: ${{ inputs.limit }}
+          WORKER_ID: github-${{ github.run_id }}-${{ github.run_attempt }}
+          BLING_STOCK_REPORT_FILE: ${{ runner.temp }}/bling-stock-report.json
+          BLING_REQUEST_INTERVAL_MS: '460'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${{ inputs.mode }}" = "apply" ]; then
+            node scripts/bling-stock-writer-v1.mjs --apply
+          else
+            node scripts/bling-stock-writer-v1.mjs
+          fi
+
+      - name: Persistir refresh token rotacionado do Bling
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
+          REFRESH_FILE: ${{ runner.temp }}/bling-refresh-token
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -s "$REFRESH_FILE" ]; then
+            test -n "$GH_TOKEN" || { echo 'Refresh token foi renovado, mas GH_SECRETS_TOKEN não está configurado.' >&2; exit 1; }
+            gh secret set BLING_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY" --body "$(cat "$REFRESH_FILE")"
+            echo 'Refresh token do Bling atualizado com segurança.'
+          else
+            echo 'Nenhum refresh token novo foi emitido nesta rodada.'
+          fi
+
+      - name: Resumo
+        if: always()
+        env:
+          REPORT_FILE: ${{ runner.temp }}/bling-stock-report.json
+        shell: bash
+        run: |
+          echo '### Estoque contado → Bling' >> "$GITHUB_STEP_SUMMARY"
+          echo '' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Modo: `${{ inputs.mode }}`' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Limite solicitado: `${{ inputs.limit }}`' >> "$GITHUB_STEP_SUMMARY"
+          if [ -s "$REPORT_FILE" ]; then
+            node -e "const r=require(process.env.REPORT_FILE); for (const [k,v] of Object.entries(r)) console.log('- '+k+': `'+v+'`')" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+# Segurança operacional:
+# - não há schedule automático nesta primeira versão;
+# - dry-run é o padrão;
+# - o worker respeita a fila Supabase e o limite da API Bling;
+# - concorrência global evita dois workers Bling simultâneos.
