@@ -1,9 +1,10 @@
-name: Testar Admin Dona Antônia v3
+name: Testar Admin Dona Antônia
 
 on:
   push:
     branches: [main]
     paths:
+      - 'admin/**'
       - 'admin-v3/**'
       - 'setup-admin/**'
       - 'supabase/functions/admin-ops-v1/**'
@@ -21,7 +22,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: test-admin-v3-${{ github.ref }}
+  group: test-admin-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -35,27 +36,29 @@ jobs:
           node-version: 22
       - name: Validar JavaScript público e workers
         run: |
+          node --check admin/config.js
           node --check admin-v3/app.js
           node --check admin-v3/enhancements.js
-          node --check admin-v3/config.js
           node --check setup-admin/app.js
           node --check setup-admin/config.js
           node --check scripts/bling-product-writer-v1.mjs
           node --check scripts/bling-stock-writer-v1.mjs
           node --check scripts/bling-sync-core.mjs
-      - name: Validar rotas essenciais
+      - name: Validar rotas essenciais do Admin oficial
         run: |
-          grep -q 'data-route="dashboard"' admin-v3/index.html
-          grep -q 'data-route="products"' admin-v3/index.html
-          grep -q 'data-route="baskets"' admin-v3/index.html
-          grep -q 'data-route="counts"' admin-v3/index.html
-          grep -q 'data-route="queue"' admin-v3/index.html
-          grep -q 'admin-ops-v1' admin-v3/config.js
+          grep -q 'data-route="dashboard"' admin/index.html
+          grep -q 'data-route="products"' admin/index.html
+          grep -q 'data-route="baskets"' admin/index.html
+          grep -q 'data-route="counts"' admin/index.html
+          grep -q 'data-route="queue"' admin/index.html
+          grep -q '../contagem/' admin/index.html
+          grep -q 'admin-ops-v1' admin/config.js
           grep -q 'bootstrap-owner-v1' setup-admin/config.js
+          grep -q '../admin/' setup-admin/index.html
       - name: Bloquear segredos no navegador
         shell: bash
         run: |
-          ! grep -R -E 'SUPABASE_SERVICE_ROLE_KEY|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' admin-v3/ setup-admin/ || (echo 'Referência de segredo detectada no código público' >&2; exit 1)
+          ! grep -R -E 'SUPABASE_SERVICE_ROLE_KEY|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' admin/ admin-v3/ setup-admin/ || (echo 'Referência de segredo detectada no código público' >&2; exit 1)
       - name: Garantir que workers ficam em dry-run por padrão
         run: |
           grep -q 'default: dry-run' .github/workflows/bling-product-writer-v1.yml
