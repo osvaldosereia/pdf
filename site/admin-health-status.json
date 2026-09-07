@@ -1,27 +1,27 @@
 {
-  "checkedAt": "2026-09-07T05:33:03.437Z",
+  "checkedAt": "2026-09-07T13:43:47.241Z",
   "baseUrl": "https://donaantonia.com.br",
   "ok": false,
   "checks": [
     {
       "name": "Todas as 18 abas passam no teste estrutural",
-      "ok": true,
-      "detail": "Admin V2 v13.1 validado: 18 abas, 113 arquivos JavaScript, imports, desempenho de Produtos e ciclo dos kits confirmados."
+      "ok": false,
+      "detail": "Admin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\nCommand failed: /opt/hostedtoolcache/node/22.23.2/x64/bin/node scripts/test-admin-v2-definitivo.mjs\n\nAdmin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\n"
     },
     {
       "name": "Entrada /producao aponta para o Admin oficial",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788759186347"
+      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788788629907"
     },
     {
       "name": "Atalho /admin aponta para o Admin oficial",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/admin/?_health=1788759186987"
+      "detail": "OK · https://donaantonia.com.br/admin/?_health=1788788630550"
     },
     {
       "name": "Admin oficial carregado",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788759187067"
+      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788788630624"
     },
     {
       "name": "Módulos ativos do Admin estão publicados",
@@ -46,27 +46,27 @@
     {
       "name": "Catálogo público possui produtos",
       "ok": true,
-      "detail": "1625 produto(s)"
+      "detail": "1626 produto(s)"
     },
     {
       "name": "Índice administrativo possui todos os produtos",
       "ok": true,
-      "detail": "1979 produto(s) administrativos · 1625 público(s) · campos OK"
+      "detail": "1980 produto(s) administrativos · 1626 público(s) · campos OK"
     },
     {
       "name": "Runtime do Admin carrega lista e cadastro completo",
       "ok": true,
-      "detail": "1979 produto(s) em 306 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
+      "detail": "1980 produto(s) em 265 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
     },
     {
       "name": "Pedidos usam consulta limitada no Firebase",
       "ok": true,
-      "detail": "12 pedido(s) retornado(s) em 284 ms · limite solicitado 12 · chaves OK"
+      "detail": "12 pedido(s) retornado(s) em 167 ms · limite solicitado 12 · chaves OK"
     },
     {
       "name": "Versão do catálogo válida",
       "ok": true,
-      "detail": "catalog-b9a344947c6274e2 · público 1625 · admin 1979"
+      "detail": "catalog-178880ebcab6938e · público 1626 · admin 1980"
     },
     {
       "name": "Banners permanecem removidos",
@@ -91,7 +91,7 @@
     {
       "name": "Rotina horária de ofertas atualizada",
       "ok": true,
-      "detail": "0.1h desde a execução · status sucesso · 0 expirada(s) ainda ativa(s)"
+      "detail": "0.2h desde a execução · status sucesso · 0 expirada(s) ainda ativa(s)"
     },
     {
       "name": "Arquitetura por rota do Admin",
@@ -106,6 +106,11 @@
   ],
   "errors": [
     {
+      "name": "Todas as 18 abas passam no teste estrutural",
+      "ok": false,
+      "detail": "Admin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\nCommand failed: /opt/hostedtoolcache/node/22.23.2/x64/bin/node scripts/test-admin-v2-definitivo.mjs\n\nAdmin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\n"
+    },
+    {
       "name": "Arquitetura por rota do Admin",
       "ok": false,
       "detail": "O teste local da arquitetura por rota falhou. Consulte admin-architecture.log no artefato do workflow."
@@ -118,12 +123,12 @@
   ],
   "warnings": [],
   "workflow": {
-    "event": "schedule",
-    "runId": "34087099748",
+    "event": "push",
+    "runId": "34128821967",
     "attempt": "1",
-    "sourceSha": "daff2067f37cdafb665b8281cfd5be521efecbbc",
+    "sourceSha": "4127208fe3e185b64ee009c4b91d6fd1d34e780c",
     "architecture": "failure",
     "mugStudio": "failure",
-    "publishedAt": "2026-09-07T05:33:11.463Z"
+    "publishedAt": "2026-09-07T13:43:54.951Z"
   }
 }
