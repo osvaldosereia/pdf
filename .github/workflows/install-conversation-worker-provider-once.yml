@@ -22,11 +22,12 @@ jobs:
           node <<'NODE'
           const {SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, OPENAI_API_KEY}=process.env;
           if(!SUPABASE_URL||!SUPABASE_SERVICE_ROLE_KEY||!OPENAI_API_KEY) throw new Error('required_secret_missing');
+          const base=new URL(SUPABASE_URL).origin;
           const headers={apikey:SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,'Content-Type':'application/json'};
-          const install=await fetch(`${SUPABASE_URL}/rest/v1/rpc/install_conversation_worker_provider_secret_v1`,{method:'POST',headers,body:JSON.stringify({p_openai_api_key:OPENAI_API_KEY})});
-          if(!install.ok) throw new Error(`provider_install_failed_${install.status}`);
-          const health=await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_conversation_worker_provider_health_v1`,{method:'POST',headers,body:'{}'});
-          if(!health.ok) throw new Error(`provider_health_failed_${health.status}`);
+          const install=await fetch(`${base}/rest/v1/rpc/install_conversation_worker_provider_secret_v1`,{method:'POST',headers,body:JSON.stringify({p_openai_api_key:OPENAI_API_KEY})});
+          if(!install.ok){const detail=(await install.text()).slice(0,500);throw new Error(`provider_install_failed_${install.status}:${detail}`);}
+          const health=await fetch(`${base}/rest/v1/rpc/get_conversation_worker_provider_health_v1`,{method:'POST',headers,body:'{}'});
+          if(!health.ok){const detail=(await health.text()).slice(0,500);throw new Error(`provider_health_failed_${health.status}:${detail}`);}
           const result=await health.json();
           if(result?.configured!==true) throw new Error('provider_not_configured');
           console.log(JSON.stringify({ok:true,provider:result.provider,configured:true}));
