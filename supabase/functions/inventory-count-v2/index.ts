@@ -123,7 +123,7 @@ Deno.serve(async (req: Request) => {
       const { error: patchError } = await supabase.from("products").update(patch).eq("id", productId);
       if (patchError) return json({ ok: false, error: "product_status_save_failed", detail: patchError.message }, 400);
 
-      if (before && before.is_active !== requestedActive) {
+      if ((!before && !requestedActive) || (before && before.is_active !== requestedActive)) {
         await supabase.from("bling_commands").insert({
           command_type: requestedActive ? "activate_product" : "inactivate_product",
           product_id: productId,
