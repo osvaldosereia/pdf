@@ -14,6 +14,11 @@ verify_jwt = false
 [functions.whatsapp-outbound-v1]
 verify_jwt = false
 
+# Worker event-driven interno. JWT gateway desligado porque aceita apenas a chave
+# gerada server-side no Vault e validada contra hash em system_secrets.
+[functions.conversation-worker-v2]
+verify_jwt = false
+
 [functions.bling-products-ingest]
 verify_jwt = false
 
@@ -24,6 +29,10 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.admin-ops-v1]
+verify_jwt = true
+
+# Observabilidade/fallback do WhatsApp: JWT + getUser + admin_users.
+[functions.admin-whatsapp-ops-v1]
 verify_jwt = true
 
 [functions.bootstrap-owner-v1]
