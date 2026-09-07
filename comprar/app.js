@@ -34,18 +34,46 @@
   function cartCount(){return (state.cart?.items||[]).reduce((n,x)=>n+Number(x.quantity||0),0)}
   function updateCartBar(){const count=cartCount();$('cartCount').textContent=String(count);$('cartItems').textContent=`${count} ${count===1?'item':'itens'}`;$('cartTotal').textContent=money(state.cart?.total||0);$('cartBar').classList.toggle('hidden',!state.cart||count===0||state.view==='success')}
 
+  const chatNodes=new Map();
+  let pollTimer=null,pollCursor='',pollBusy=false,pollFailures=0,lastSignedRefresh=0;
+  const processingLabel=m=>({held:'Recebido · processamento automático ainda indisponível',queued:'Recebido · aguardando processamento',uploaded:'Arquivo recebido',error:'Não foi possível interpretar. Envie texto ou fale com nossa equipe.',processed:'Processado'})[m.processing_status]||'';
   function renderChat(){
-    const host=$('chat');host.innerHTML='';
-    if(!state.messages.length){const first=text(state.customer?.name).split(' ')[0]||'Olá';host.innerHTML=`<div class="welcome"><strong>${esc(first)}, sua compra pode ser feita do seu jeito.</strong><p>Escolha visualmente abaixo ou envie texto, áudio ou foto.</p></div>`;return}
-    for(const m of state.messages.slice(-14)){
-      const div=document.createElement('div');div.className=`message ${m.direction==='inbound'?'inbound':'outbound'}`;
-      if(m.message_type==='image'&&m.media_url){div.classList.add('media');div.innerHTML=`<img src="${esc(m.media_url)}" alt="Foto enviada"><div class="media-caption">Foto enviada</div>`}
-      else if(m.message_type==='audio'&&m.media_url){div.classList.add('media');div.innerHTML=`<audio controls preload="metadata" src="${esc(m.media_url)}"></audio><div class="media-caption">Áudio</div>`}
-      else{const body=text(m.body_text||m.transcript);if(!body)continue;div.textContent=body}
-      host.appendChild(div);
+    const host=$('chat'),messages=state.messages.slice(-20),keep=new Set();
+    if(!messages.length){host.innerHTML='<div class="welcome"><strong>Sua compra pode ser feita do seu jeito.</strong><p>Escolha abaixo ou envie texto, áudio ou foto.</p></div>';chatNodes.clear();return}
+    host.querySelector('.welcome')?.remove();
+    for(const m of messages){
+      if(!m._localId)m._localId=crypto.randomUUID();
+      const key=m.id||m._localId;keep.add(key);let div=chatNodes.get(key);
+      if(!div){div=document.createElement('div');div.className=`message ${m.direction==='inbound'?'inbound':'outbound'}`;chatNodes.set(key,div);host.appendChild(div)}
+      const kind=m.message_type;
+      if(['audio','image'].includes(kind)&&m.media_url){
+        div.classList.add('media');let media=div.querySelector(kind==='audio'?'audio':'img');
+        if(!media){div.replaceChildren();media=document.createElement(kind==='audio'?'audio':'img');if(kind==='audio'){media.controls=true;media.preload='none'}else{media.alt='Foto enviada';media.loading='lazy'}div.appendChild(media);const caption=document.createElement('div');caption.className='media-caption';div.appendChild(caption)}
+        // Keep the same player and URL during playback; refresh expired signed URLs when idle.
+        if(media.getAttribute('src')!==m.media_url&&(kind!=='audio'||media.paused))media.src=m.media_url;
+        div.querySelector('.media-caption').textContent=[kind==='audio'?'Áudio':'Foto',processingLabel(m),text(m.transcript)].filter(Boolean).join(' · ');
+      }else div.textContent=text(m.body_text||m.transcript)||processingLabel(m)||'Arquivo recebido';
+      if(m.ui&&m.ui.type!=='none'){
+        let action=div.querySelector('button');if(!action){action=document.createElement('button');action.type='button';div.appendChild(action)}
+        action.textContent=({products:'Ver produtos',baskets:'Ver cestas',checkout:'Conferir pedido',human:'Continuar pelo WhatsApp'})[m.ui.type]||'Continuar';
+        action.onclick=()=>{if(m.ui.type==='products')loadProducts(m.ui);else if(m.ui.type==='baskets')loadBaskets();else if(m.ui.type==='checkout')loadCheckout();else if(m.ui.type==='human')returnWhatsapp()};
+      }
     }
-    host.scrollTop=host.scrollHeight;
+    for(const [key,node] of chatNodes){if(!keep.has(key)){node.remove();chatNodes.delete(key)}}
   }
+  function scheduleMessages(delay=30000){clearTimeout(pollTimer);if(token&&state.view!=='success'&&!document.hidden)pollTimer=setTimeout(pollMessages,delay)}
+  async function pollMessages(){
+    if(pollBusy||document.hidden||state.view==='success')return;scheduleMessages();pollBusy=true;let delay=30000;
+    try{
+      if(Date.now()-lastSignedRefresh>50*60*1000)pollCursor='';
+      const data=await api('messages',{cursor:pollCursor});pollFailures=0;
+      if(!data.unchanged){pollCursor=data.cursor;lastSignedRefresh=Date.now();state.messages=data.messages||[];renderChat()}
+      delay=data.pending?12000:30000;
+    }catch(e){pollFailures++;delay=Math.min(120000,30000*2**pollFailures);if(/expir|conclu/.test(e.message)){delay=0;clearTimeout(pollTimer);return}}
+    finally{pollBusy=false;if(delay)scheduleMessages(delay)}
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearTimeout(pollTimer);else scheduleMessages(1000)});
+
 
   function productCard(item,reason=''){
     const p=item.product||item,frag=$('productTemplate').content.cloneNode(true),card=frag.querySelector('.product-card');card.dataset.id=p.id||item.product_id;
@@ -72,7 +100,7 @@
     const c=state.checkout||{},host=$('content');host.innerHTML='';const wrap=document.createElement('div');wrap.className='checkout';
     const order=document.createElement('div');order.className='checkout-card';const lines=(c.items||[]).map(i=>`<div class="order-line"><span>${esc(i.quantity)}× ${esc(i.name)}</span><span>${i.source==='basket'?'incluído':money(i.line_total)}</span></div>`).join('');order.innerHTML=`<h2>Seu pedido</h2>${lines}<div class="total-line"><span>Total</span><strong>${money(c.cart?.total)}</strong></div>`;wrap.appendChild(order);
 
-    const customer=document.createElement('div');customer.className='checkout-card checkout-customer';const known=c.customer||state.customer||{};customer.innerHTML=`<h2>Seus dados</h2><div class="checkout-customer-grid"><label class="wide">Nome<input id="checkoutName" autocomplete="name" value="${esc(known.name||'')}"></label><label class="wide">WhatsApp com DDD<input id="checkoutPhone" inputmode="tel" autocomplete="tel" value="${esc(known.phone||'')}"></label>${c.requires_document?'<label class="wide">CPF para localizar/cadastrar no Bling<input id="checkoutDocument" inputmode="numeric" autocomplete="off" placeholder="Somente números"></label>':''}</div><div class="checkout-note${c.requires_document?' warning':''}">${c.requires_document?'O CPF é solicitado somente no fechamento para localizar ou cadastrar corretamente o cliente no ERP.':'Seu cadastro já está identificado para este pedido.'}</div>`;wrap.appendChild(customer);
+    const customer=document.createElement('div');customer.className='checkout-card checkout-customer';const known=c.customer||state.customer||{};customer.innerHTML=`<h2>Seus dados</h2><div class="checkout-customer-grid"><label class="wide">Nome<input id="checkoutName" autocomplete="name" value="${esc(known.name||'')}"></label><label class="wide">WhatsApp com DDD<input id="checkoutPhone" inputmode="tel" autocomplete="tel" value="${esc(known.phone||'')}"></label>${c.requires_document?'<label class="wide">CPF para localizar/cadastrar no Bling<input id="checkoutDocument" inputmode="numeric" autocomplete="off" placeholder="Somente números"></label>':''}<label>Aniversário (dia)<input id="birthdayDay" inputmode="numeric" type="number" min="1" max="31" placeholder="Opcional"></label><label>Mês<input id="birthdayMonth" inputmode="numeric" type="number" min="1" max="12" placeholder="1 a 12"></label><label class="wide"><input id="marketingOptIn" type="checkbox"> Quero receber ofertas da Dona Antônia pelo WhatsApp. Posso pedir para parar a qualquer momento.</label></div><div class="checkout-note${c.requires_document?' warning':''}">${c.requires_document?'O CPF é solicitado somente no fechamento para localizar ou cadastrar corretamente o cliente no ERP.':'Seu cadastro já está identificado para este pedido.'}</div>`;wrap.appendChild(customer);
 
     const address=document.createElement('div');address.className='checkout-card';address.innerHTML='<h2>Endereço de entrega</h2><div id="addressChoices" class="address-list"></div><div id="newAddressForm" class="address-form"><input class="wide" id="street" placeholder="Rua"><input id="number" placeholder="Número"><input id="neighborhood" placeholder="Bairro"><input class="wide" id="complement" placeholder="Complemento"><input class="wide" id="reference" placeholder="Referência"><input id="city" placeholder="Cidade" value="Cuiabá"><input id="state" placeholder="UF" value="MT"><input class="wide" id="postal" placeholder="CEP"></div><label class="save-address-row"><input id="saveAddress" type="checkbox" checked> Salvar este endereço para a próxima compra</label>';wrap.appendChild(address);
     const choices=address.querySelector('#addressChoices');const addresses=c.addresses||[];addresses.forEach((a,idx)=>{const label=document.createElement('label');label.className='address-option';label.innerHTML=`<input type="radio" name="address" value="${idx}" ${idx===0?'checked':''}><span><strong>${esc(a.label||'Endereço')}</strong><br>${esc(a.street)}, ${esc(a.number)} · ${esc(a.neighborhood||'')} · ${esc(a.city||'')}</span>`;choices.appendChild(label)});if(addresses.length){const other=document.createElement('label');other.className='address-option';other.innerHTML='<input type="radio" name="address" value="new"><span><strong>Usar outro endereço</strong><br>Preencher abaixo</span>';choices.appendChild(other)}
@@ -87,7 +115,8 @@
   async function confirmOrder(){
     const btn=$('confirmOrderButton'),err=$('checkoutError');if(btn){btn.disabled=true;btn.textContent='Confirmando…'}if(err)err.classList.add('hidden');
     try{
-      const name=text($('checkoutName')?.value),phone=text($('checkoutPhone')?.value),document=text($('checkoutDocument')?.value);const identified=await api('identify',{name,phone,document});state.customer={...(state.customer||{}),...(identified.customer||{})};if(identified.customer?.requires_document)throw new Error('Informe o CPF para concluir o pedido.');
+      const name=text($('checkoutName')?.value),phone=text($('checkoutPhone')?.value),documentValue=text($('checkoutDocument')?.value);const identified=await api('identify',{name,phone,document:documentValue});state.customer={...(state.customer||{}),...(identified.customer||{})};if(identified.customer?.requires_document)throw new Error('Informe o CPF para concluir o pedido.');
+      const day=text($('birthdayDay')?.value),month=text($('birthdayMonth')?.value),optIn=$('marketingOptIn')?.checked===true;if(day||month||optIn)await api('preferences',{birthday_day:day?Number(day):null,birthday_month:month?Number(month):null,marketing_opt_in:optIn?true:null});
       let address={};const selected=document.querySelector('input[name="address"]:checked');const addresses=state.checkout?.addresses||[];const usingSaved=selected&&selected.value!=='new'&&addresses[Number(selected.value)];if(usingSaved)address=addresses[Number(selected.value)];else{address=newAddress();if($('saveAddress')?.checked)await api('save_address',{delivery_address:address})}
       const data=await api('confirm_order',{delivery_address:address});state.whatsapp=data.whatsapp_url||state.whatsapp;state.view='success';setHead('Pedido recebido','Tudo certo',false);$('content').innerHTML=`<div class="success"><div class="check">✅</div><h2>Pedido recebido</h2><p>Total ${money(data.order?.total)}. Agora o sistema vai validar e registrar o pedido no Bling. A confirmação final também ficará vinculada ao seu WhatsApp.</p><button id="successWhatsapp" class="whatsapp-secondary" type="button">Abrir conversa no WhatsApp</button></div>`;showContent();$('cartBar').classList.add('hidden');$('composer').classList.add('hidden');$('successWhatsapp').onclick=()=>location.href=state.whatsapp;
     }catch(e){if(err){err.textContent=e.message;err.classList.remove('hidden')}else toast(e.message);if(btn){btn.disabled=false;btn.textContent='Confirmar pedido'}}
@@ -95,11 +124,11 @@
 
   async function returnWhatsapp(){try{const data=await api('return_whatsapp');location.href=data.whatsapp_url||state.whatsapp||C.whatsappFallback}catch{location.href=state.whatsapp||C.whatsappFallback}}
   async function syncRoom(render=true){const data=await api('open');if(data.closed){state.session=data.session;state.whatsapp=data.whatsapp_url||state.whatsapp;state.view='success';setHead('Pedido','Pedido recebido',false);$('content').innerHTML=`<div class="success"><div class="check">✅</div><h2>Pedido recebido</h2><p>${data.order?`Total ${money(data.order.total)}.`:'Seu pedido foi registrado.'}</p><button id="closedWhatsapp" class="whatsapp-secondary" type="button">Falar no WhatsApp</button></div>`;showContent();$('cartBar').classList.add('hidden');$('composer').classList.add('hidden');setTimeout(()=>{$('closedWhatsapp').onclick=returnWhatsapp},0);return}state.session=data.session;state.customer=data.customer;state.groups=data.groups||[];state.baskets=data.baskets||[];state.recommended=data.recommended||[];state.cart=data.cart;state.messages=data.messages||[];state.whatsapp=data.whatsapp_url||state.whatsapp;$('roomStatus').textContent='Sala de Compra · online';renderChat();updateCartBar();if(render)renderHome()}
-  async function sendMessage(message){const value=text(message);if(!value)return;state.messages.push({direction:'inbound',message_type:'text',body_text:value});renderChat();$('messageInput').value='';try{const data=await api('send_text',{message:value});state.messages.push({direction:'outbound',message_type:'text',body_text:data.reply});renderChat();const ui=data.ui||{};if(ui.type==='baskets')loadBaskets();else if(ui.type==='products')loadProducts({category:ui.category||'',offers:!!ui.offers,q:ui.q||''});else if(ui.type==='checkout'||ui.type==='checkout_hint')loadCheckout()}catch(e){toast(e.message)}}
+  async function sendMessage(message){const value=text(message);if(!value)return;state.messages.push({direction:'inbound',message_type:'text',body_text:value});renderChat();$('messageInput').value='';try{const data=await api('send_text',{message:value});if(data.reply)state.messages.push({direction:'outbound',message_type:'text',body_text:data.reply});renderChat();scheduleMessages(1000);const ui=data.ui||{};if(ui.type==='baskets')loadBaskets();else if(ui.type==='products')loadProducts({category:ui.category||'',offers:!!ui.offers,q:ui.q||''});else if(ui.type==='checkout'||ui.type==='checkout_hint')loadCheckout()}catch(e){toast(e.message)}}
 
   async function uploadMedia(kind,file,durationMs=0){
     const previewUrl=URL.createObjectURL(file);const temp={direction:'inbound',message_type:kind,media_url:previewUrl,temp:true};state.messages.push(temp);renderChat();
-    try{const data=await apiForm(kind,file,durationMs);Object.assign(temp,data.message||{}, {temp:false});toast(kind==='audio'?'Áudio enviado.':'Foto enviada.');renderChat()}catch(e){state.messages=state.messages.filter(x=>x!==temp);renderChat();toast(e.message)}finally{setTimeout(()=>URL.revokeObjectURL(previewUrl),60000)}
+    try{const data=await apiForm(kind,file,durationMs);Object.assign(temp,data.message||{}, {temp:false});scheduleMessages(1000);toast(kind==='audio'?'Áudio enviado.':'Foto enviada.');renderChat()}catch(e){state.messages=state.messages.filter(x=>x!==temp);renderChat();toast(e.message)}finally{setTimeout(()=>URL.revokeObjectURL(previewUrl),60000)}
   }
   function preferredAudioMime(){const list=['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus'];return list.find(x=>window.MediaRecorder?.isTypeSupported?.(x))||''}
   async function startRecording(){
@@ -113,7 +142,7 @@
     if(suppliedToken&&!/^[a-f0-9]{64}$/i.test(suppliedToken)){showState('Este link da Sala de Compra é inválido ou incompleto.');$('composer').classList.add('hidden');return}
     try{
       if(!token){showState('Preparando sua Sala de Compra...');const data=await api('create_web_room');token=data.token;createdFromSite=true;history.replaceState({},'',`${location.pathname}?s=${encodeURIComponent(token)}`)}
-      await syncRoom(true);
+      await syncRoom(true);scheduleMessages(1000);
     }catch(e){showState(e.message==='Esta Sala de Compra expirou.'?'Esta Sala de Compra expirou. Volte ao WhatsApp para abrir uma nova.':e.message||'Não foi possível abrir sua Sala de Compra.')}
   }
 

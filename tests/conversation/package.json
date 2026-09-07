@@ -1,0 +1,11 @@
+{
+  "name": "dona-antonia-conversation-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Isolated validation only; no production dependencies",
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "jsdom": "26.1.0",
+    "typescript": "5.9.3"
+  }
+}

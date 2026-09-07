@@ -16,6 +16,7 @@
   let productPage = 1;
   let productTotal = 0;
   let productTimer = null;
+  let productRequest = 0;
 
   function load(key,fallback){try{return JSON.parse(localStorage.getItem(key)||'null')??fallback}catch{return fallback}}
   function save(key,value){localStorage.setItem(key,JSON.stringify(value))}
@@ -79,13 +80,15 @@
   async function reloadDashboard(){try{renderDashboard(await api('health'))}catch(e){toast(e.message,'error')}}
 
   async function loadProducts(){
+    const request=++productRequest;
     $('productRows').innerHTML='<tr><td colspan="7">Carregando…</td></tr>';
     try{
-      const data=await api('products',{page:productPage,limit:40,q:$('productSearch').value,status:$('productStatus').value,sync_status:$('productSync').value});
+      const data=await api('products',{page:productPage,limit:40,q:$('productSearch').value,status:$('productStatus').value,sync_status:$('productSync').value,expiry:$('productExpiry')?.value||'',sort:$('productSort')?.value||'',category:$('productCategory')?.value||'',brand:$('productBrand')?.value||'',gondola:$('productGondola')?.value||'',shelf:$('productShelf')?.value||''});
+      if(request!==productRequest)return;
       productTotal=data.total||0;$('productCount').textContent=`${productTotal} produto(s)`;$('productPage').textContent=`Página ${data.page||1}`;
       $('prevProducts').disabled=productPage<=1;$('nextProducts').disabled=productPage*40>=productTotal;
       $('productRows').innerHTML=(data.products||[]).length?(data.products||[]).map(p=>`<tr>
-        <td><div class="product-cell"><img src="${esc(img(p.image_url))}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.name)}</strong><small>${esc([p.brand,p.packaging,p.category].filter(Boolean).join(' · '))}</small></div></div></td>
+        <td><div class="product-cell"><img loading="lazy" decoding="async" src="${esc(img(p.image_url))}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.name)}</strong><small>${esc([p.brand,p.packaging,p.category].filter(Boolean).join(' · '))}</small></div></div></td>
         <td><strong>${esc(p.gtin||'—')}</strong><small>${esc(p.sku||'')}</small></td>
         <td><strong>${esc(p.stock??0)}</strong><small>${p.price!=null?money(p.price):''}</small></td>
         <td><strong>${esc(p.validity_date||'—')}</strong><small>${esc([p.gondola,p.shelf].filter(Boolean).join(' / '))}</small></td>
@@ -93,7 +96,7 @@
         <td>${badge(p.sync_status)}</td>
         <td><button class="row-button" data-open-product="${esc(p.id)}" type="button">Abrir</button></td>
       </tr>`).join(''):'<tr><td colspan="7" class="empty">Nenhum produto conferido.</td></tr>';
-    }catch(e){$('productRows').innerHTML=`<tr><td colspan="7" class="empty">${esc(e.message)}</td></tr>`}
+    }catch(e){if(request!==productRequest)return;$('productRows').innerHTML=`<tr><td colspan="7" class="empty">${esc(e.message)}</td></tr>`}
   }
 
   async function toggleWhatsapp(input){
@@ -138,6 +141,8 @@
     $('loginForm').addEventListener('submit',async e=>{e.preventDefault();$('loginButton').disabled=true;$('loginStatus').textContent='Entrando…';try{await signIn($('emailInput').value.trim(),$('passwordInput').value);await boot();$('loginStatus').textContent=''}catch(err){$('loginStatus').textContent=err.code==='admin_not_authorized'?'Conta válida, mas não autorizada no Admin.':err.message}finally{$('loginButton').disabled=false}});
     $('logoutButton').onclick=logout;$('refreshButton').onclick=()=>setRoute(route,true);$('menuButton').onclick=()=> $('sidebar').classList.toggle('open');
     $('nav').addEventListener('click',e=>{const b=e.target.closest('[data-route]');if(b)setRoute(b.dataset.route,true)});
+    for(const id of ['productExpiry','productSort'])$(id)?.addEventListener('change',()=>{productPage=1;loadProducts()});
+    for(const id of ['productCategory','productBrand','productGondola','productShelf'])$(id)?.addEventListener('input',()=>{clearTimeout(productTimer);productTimer=setTimeout(()=>{productPage=1;loadProducts()},300)});
     $('productSearch').addEventListener('input',()=>{clearTimeout(productTimer);productTimer=setTimeout(()=>{productPage=1;loadProducts()},220)});$('productStatus').onchange=()=>{productPage=1;loadProducts()};$('productSync').onchange=()=>{productPage=1;loadProducts()};
     $('prevProducts').onclick=()=>{if(productPage>1){productPage--;loadProducts()}};$('nextProducts').onclick=()=>{if(productPage*40<productTotal){productPage++;loadProducts()}};
     $('productRows').addEventListener('change',e=>{const i=e.target.closest('[data-whatsapp-toggle]');if(i)toggleWhatsapp(i)});$('productRows').addEventListener('click',e=>{const b=e.target.closest('[data-open-product]');if(b)openProduct(b.dataset.openProduct)});
@@ -148,3 +153,4 @@
   async function init(){bind();if(auth?.access_token){try{await boot()}catch{auth=null;localStorage.removeItem(AUTH_KEY);$('loginStatus').textContent='Entre para acessar o Admin.'}}}
   init();
 })();
+

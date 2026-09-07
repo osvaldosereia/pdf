@@ -10,6 +10,7 @@ const num=(v:unknown)=>{if(v===null||v===undefined||v==="")return null;const n=N
 const validGtin=(value:unknown)=>{const g=digits(value);if(![8,12,13,14].includes(g.length))return false;const expected=Number(g.at(-1));let sum=0;for(let i=g.length-2,o=0;i>=0;i--,o++)sum+=Number(g[i])*(o%2===0?3:1);return(10-(sum%10))%10===expected};
 const isoDate=(v:unknown)=>{const s=text(v,10);if(!s)return null;if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return undefined;const d=new Date(`${s}T00:00:00Z`);return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===s?s:undefined};
 const ERP_KEYS=new Set(["name","sku","gtin","ncm","price","brand","unit","validity_date","image_url","description_short","description_long"]);
+const SNAPSHOT_KEYS=["name","sku","gtin","ncm","price","cost","brand","category","subcategory","packaging","supplier","unit","validity_date","gondola","shelf","is_active","is_whatsapp_active","is_offer","whatsapp_category","is_upsell","min_stock","sort_order","image_url","description_short","description_long","tags","desired_bling_status"];
 const pick=(obj:any,keys:string[])=>Object.fromEntries(keys.map(k=>[k,obj?.[k]??null]));
 
 Deno.serve(async(req:Request)=>{
@@ -47,7 +48,19 @@ Deno.serve(async(req:Request)=>{
   }
   if(action==="products"){
     const limit=int(body?.limit,10,100),page=int(body?.page,1,100000),from=(page-1)*limit,to=from+limit-1,q=text(body?.q,100),sync=text(body?.sync_status,50),status=text(body?.status,30);
-    let query=sb.from("products").select("id,bling_product_id,sku,name,gtin,ncm,price,cost,stock,image_url,brand,category,subcategory,packaging,validity_date,gondola,shelf,is_active,is_whatsapp_active,is_offer,is_upsell,min_stock,physically_verified,last_counted_at,sync_status,sync_error,updated_at",{count:"exact"}).eq("physically_verified",true).order("last_counted_at",{ascending:false}).range(from,to);
+    let query=sb.from("products").select("id,bling_product_id,sku,name,gtin,ncm,price,cost,stock,image_url,brand,category,subcategory,packaging,validity_date,gondola,shelf,is_active,is_whatsapp_active,is_offer,is_upsell,min_stock,physically_verified,last_counted_at,sync_status,sync_error,updated_at",{count:"exact"}).eq("physically_verified",true).range(from,to);
+    const category=text(body?.category,120),brand=text(body?.brand,120),gondola=text(body?.gondola,100),shelf=text(body?.shelf,100),expiry=text(body?.expiry,20),sort=text(body?.sort,30);
+    const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Cuiaba',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const days=(n:number)=>new Date(Date.parse(today+'T12:00:00Z')+n*86400000).toISOString().slice(0,10);
+    if(category)query=query.ilike('category','%'+category.replace(/[%_]/g,'')+'%');
+    if(brand)query=query.ilike('brand','%'+brand.replace(/[%_]/g,'')+'%');
+    if(gondola)query=query.eq('gondola',gondola);if(shelf)query=query.eq('shelf',shelf);
+    if(expiry==='expired')query=query.lt('validity_date',today);
+    if(expiry==='30')query=query.gte('validity_date',today).lte('validity_date',days(30));
+    if(expiry==='60')query=query.gt('validity_date',days(30)).lte('validity_date',days(60));
+    if(expiry==='missing')query=query.is('validity_date',null);
+    const orderColumn=({name:'name',expiry:'validity_date',stock:'stock',price:'price'} as Record<string,string>)[sort]||'last_counted_at';
+    query=query.order(orderColumn,{ascending:orderColumn!=='last_counted_at',nullsFirst:false}).order('id');
     if(q){const safe=q.replace(/[,%()]/g," ").trim();if(safe)query=query.or(`name.ilike.%${safe}%,gtin.ilike.%${safe}%,sku.ilike.%${safe}%,brand.ilike.%${safe}%`)}
     if(sync)query=query.eq("sync_status",sync);if(status==="whatsapp")query=query.eq("is_whatsapp_active",true);if(status==="offer")query=query.eq("is_offer",true);if(status==="no-stock")query=query.lte("stock",0);if(status==="inactive")query=query.eq("is_active",false);if(status==="upsell")query=query.eq("is_upsell",true);
     const {data,error,count}=await query;if(error)return json({ok:false,error:"products_failed",detail:error.message},400);return json({ok:true,products:data||[],total:count||0,page,limit});
@@ -84,3 +97,4 @@ Deno.serve(async(req:Request)=>{
   if(action==="admins"){if(!isOwner)return json({ok:false,error:"owner_required"},403);const {data,error}=await sb.from("admin_users").select("user_id,role,is_active,display_name,email,created_at,last_login_at,updated_at").order("created_at",{ascending:true});if(error)return json({ok:false,error:"admins_failed"},400);return json({ok:true,admins:data||[]})}
   return json({ok:false,error:"unknown_action"},400);
 });
+
