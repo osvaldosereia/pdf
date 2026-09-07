@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <title>Dona Antônia · Contagem física</title>
-  <link rel="stylesheet" href="./style.css?v=20260907-01">
+  <link rel="stylesheet" href="./style.css?v=20260907-02">
 </head>
 <body>
   <header class="topbar">
@@ -22,7 +22,7 @@
     <section id="loginCard" class="card login-card">
       <div class="eyebrow">Acesso protegido</div>
       <h1>Entrar na contagem</h1>
-      <p>Use o usuário autorizado do Admin Dona Antônia. A câmera só consulta o produto; a gravação vai direto para o Supabase.</p>
+      <p>Use o usuário autorizado do Admin Dona Antônia. A câmera consulta o produto legado e a contagem confirmada é gravada diretamente no Supabase.</p>
       <form id="loginForm" class="stack">
         <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
         <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
@@ -54,22 +54,19 @@
       <section id="productCard" class="card product-card hidden">
         <div class="product-head">
           <img id="productImage" alt="Produto" loading="eager">
-          <div><div class="eyebrow">Produto encontrado no Firebase</div><h1 id="productName"></h1><p id="productMeta"></p></div>
+          <div><div class="eyebrow">Produto localizado no cadastro legado</div><h1 id="productName"></h1><p id="productMeta"></p></div>
         </div>
-
         <div class="old-values">
           <div><span>Estoque anterior</span><strong id="oldStock">—</strong></div>
           <div><span>Validade anterior</span><strong id="oldValidity">—</strong></div>
           <div><span>Local</span><strong id="oldLocation">—</strong></div>
         </div>
-
         <div class="form-grid">
           <label class="large">Estoque contado agora<input id="stockInput" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></label>
           <label>Validade<input id="validityInput" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa"></label>
           <label>Gôndola<input id="gondolaInput" autocomplete="off" placeholder="Opcional"></label>
           <label>Prateleira<input id="shelfInput" autocomplete="off" placeholder="Opcional"></label>
         </div>
-
         <div id="saveStatus" class="note"></div>
         <div class="sticky-actions">
           <button id="skipButton" class="secondary" type="button">Pular</button>
@@ -80,7 +77,7 @@
       <section id="notFoundCard" class="card hidden">
         <div class="eyebrow">Produto não encontrado</div>
         <h2 id="notFoundCode">EAN</h2>
-        <p>Esse código não foi localizado no Firebase nem no catálogo administrativo.</p>
+        <p>Esse código não foi localizado no Firebase nem no catálogo administrativo derivado dele.</p>
         <div class="actions"><button id="retryButton" class="secondary" type="button">Tentar novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Abrir cadastro</a></div>
       </section>
 
@@ -92,7 +89,7 @@
   </main>
 
   <div id="toastRegion" class="toast-region" aria-live="polite"></div>
-  <script src="./config.js?v=20260907-01"></script>
-  <script src="./app.js?v=20260907-01"></script>
+  <script src="./config.js?v=20260907-02"></script>
+  <script src="./app-v2.js?v=20260907-02"></script>
 </body>
 </html>
