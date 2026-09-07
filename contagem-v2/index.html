@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <title>Dona Antônia · Contagem física</title>
-  <link rel="stylesheet" href="./style.css?v=20260907-03">
+  <link rel="stylesheet" href="./style.css?v=20260907-04">
 </head>
 <body>
   <header class="topbar">
@@ -39,7 +39,7 @@
       </section>
 
       <section class="card scanner-card">
-        <div class="section-head"><div><div class="eyebrow">1. Localizar produto</div><h2>Leia o EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div>
+        <div class="section-head"><div><div class="eyebrow">Localizar produto</div><h2>Leia o EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div>
         <div class="search-row">
           <input id="eanInput" inputmode="numeric" autocomplete="off" placeholder="EAN, código ou SKU">
           <button id="searchButton" class="primary" type="button">Buscar</button>
@@ -55,7 +55,7 @@
       <section id="productCard" class="card product-card hidden">
         <div class="product-head">
           <img id="productImage" alt="Produto" loading="eager">
-          <div><div class="eyebrow">Produto localizado no cadastro legado</div><h1 id="productName"></h1><p id="productMeta"></p></div>
+          <div><div class="eyebrow">Produto localizado</div><h1 id="productName"></h1><p id="productMeta"></p></div>
         </div>
         <div class="old-values">
           <div><span>Estoque anterior</span><strong id="oldStock">—</strong></div>
@@ -83,8 +83,8 @@
       </section>
 
       <section class="card session-card">
-        <div class="section-head"><div><div class="eyebrow">Sessão atual</div><h2>Últimos produtos</h2></div><button id="finishSessionButton" class="secondary" type="button">Finalizar contagem</button></div>
-        <div id="recentList" class="recent-list"><div class="empty">Nenhum produto contado nesta sessão.</div></div>
+        <div class="section-head"><div><div class="eyebrow">Sessão atual</div><h2>Último produto lido</h2></div><button id="finishSessionButton" class="secondary" type="button">Finalizar</button></div>
+        <div id="recentList" class="recent-list"><div class="empty">Nenhum produto contado ainda.</div></div>
       </section>
     </div>
   </main>
