@@ -15,6 +15,7 @@ concurrency:
 
 env:
   HOMOLOGATION_JOB_ID: '3b774011-680d-4915-abb0-7f0c473ffbf7'
+  HOMOLOGATION_RUN: '20260907-02'
 
 jobs:
   homologate:
