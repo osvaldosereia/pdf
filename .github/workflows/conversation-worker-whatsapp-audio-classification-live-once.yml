@@ -1,0 +1,71 @@
+name: Dona Antonia - WhatsApp audio classification live once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/conversation-worker-whatsapp-audio-classification-live-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dona-antonia-conversation-worker
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      EXPECTED_JOB_ID: a2997ca0-6e55-4976-bec0-a3169cbc6d5d
+      EXPECTED_MESSAGE_ID: abbb8676-b4da-4f9b-a432-4dfd588f19d8
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_CONVERSATION_MODEL: ${{ vars.OPENAI_CONVERSATION_MODEL }}
+      OPENAI_TRANSCRIPTION_MODEL: ${{ vars.OPENAI_TRANSCRIPTION_MODEL }}
+      AI_JOB_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Verify exact pending conversation job before provider spend
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const {SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,EXPECTED_JOB_ID,EXPECTED_MESSAGE_ID}=process.env;
+          const headers={apikey:SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${SUPABASE_SERVICE_ROLE_KEY}`};
+          const r=await fetch(`${SUPABASE_URL}/rest/v1/ai_jobs?status=eq.pending&select=id,message_id,job_type,status&order=created_at.asc`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'});
+          if(!r.ok) throw new Error(`jobs_http_${r.status}`);
+          const jobs=await r.json();
+          if(jobs.length!==1) throw new Error(`unexpected_pending_count_${jobs.length}`);
+          if(jobs[0].id!==EXPECTED_JOB_ID||jobs[0].message_id!==EXPECTED_MESSAGE_ID||jobs[0].job_type!=='conversation') throw new Error('unexpected_conversation_job');
+          const m=await fetch(`${SUPABASE_URL}/rest/v1/messages?id=eq.${EXPECTED_MESSAGE_ID}&select=id,message_type,body_text,transcript`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'});
+          if(!m.ok) throw new Error(`message_http_${m.status}`);
+          const rows=await m.json();
+          if(rows.length!==1||rows[0].message_type!=='audio'||!String(rows[0].body_text||'').trim()||rows[0].body_text!==rows[0].transcript) throw new Error('audio_transcript_not_ready');
+          console.log(JSON.stringify({preflight:'ok',job_id:jobs[0].id,has_transcript:true}));
+          NODE
+
+      - name: Run worker tests
+        run: node --test scripts/conversation-worker-v1.test.mjs scripts/audio-transcription-chain-v1.test.mjs scripts/whatsapp-bridge-v1.test.mjs scripts/whatsapp-outbound-receipt-v1.test.mjs
+
+      - name: Process exactly one conversation job
+        run: node scripts/conversation-worker-v1.mjs --apply
+
+      - name: Verify exact job completed
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const {SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,EXPECTED_JOB_ID}=process.env;
+          const headers={apikey:SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${SUPABASE_SERVICE_ROLE_KEY}`};
+          const r=await fetch(`${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${EXPECTED_JOB_ID}&select=id,status,attempts,error_message,result`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'});
+          if(!r.ok) throw new Error(`postflight_http_${r.status}`);
+          const jobs=await r.json();
+          if(jobs.length!==1||jobs[0].status!=='done'||jobs[0].attempts!==1) throw new Error('expected_job_not_done_once');
+          if(!String(jobs[0].result?.reply||'').trim()||jobs[0].result?.reply_suppressed===true) throw new Error('expected_real_reply_missing');
+          console.log(JSON.stringify({postflight:'ok',job_id:jobs[0].id,status:jobs[0].status,attempts:jobs[0].attempts}));
+          NODE
