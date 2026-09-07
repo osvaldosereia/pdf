@@ -8,13 +8,13 @@
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <title>Dona Antônia · Contagem física</title>
   <link rel="stylesheet" href="./style.css?v=20260907-06">
-  <link rel="stylesheet" href="./kiosk-mode.css?v=20260907-02">
+  <link rel="stylesheet" href="./kiosk-mode.css?v=20260907-03">
 </head>
 <body>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
     <div class="top-actions">
-      <a class="ghost" href="../admin-v3/" style="text-decoration:none">Admin</a>
+      <a class="ghost" href="../admin/" style="text-decoration:none">Admin</a>
       <button id="syncQueueButton" class="ghost" type="button" title="Sincronizar pendências">Pendências <b id="pendingBadge">0</b></button>
       <button id="logoutButton" class="ghost hidden" type="button">Sair</button>
     </div>
@@ -24,7 +24,7 @@
     <section id="loginCard" class="card login-card">
       <div class="eyebrow">Acesso protegido</div>
       <h1>Entrar na contagem</h1>
-      <p>Use o usuário autorizado do Admin Dona Antônia. Se você já entrou no Admin neste aparelho, a sessão será reaproveitada automaticamente.</p>
+      <p>Use o mesmo acesso do Admin Dona Antônia.</p>
       <form id="loginForm" class="stack">
         <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
         <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
@@ -41,7 +41,7 @@
 
       <section class="card scanner-card">
         <div class="section-head"><div><div class="eyebrow">Leitura</div><h2>EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div>
-        <div class="search-row"><input id="eanInput" inputmode="none" autocomplete="off" readonly placeholder="EAN, código ou SKU"><button id="searchButton" class="primary" type="button">Buscar</button></div>
+        <div class="search-row"><input id="eanInput" inputmode="none" autocomplete="off" readonly placeholder="EAN"><button id="searchButton" class="primary" type="button">Buscar</button></div>
         <div id="cameraPanel" class="camera-panel hidden"><video id="video" playsinline muted autoplay></video><div class="scan-guide"><span></span></div><button id="closeCameraButton" class="danger floating-close" type="button">Fechar câmera</button></div>
         <div id="lookupStatus" class="note">Câmera ligada.</div>
       </section>
@@ -49,16 +49,18 @@
       <section id="productCard" class="card product-card hidden">
         <div class="product-head">
           <img id="productImage" alt="Produto" loading="eager">
-          <div><div class="eyebrow">Produto localizado</div><h1 id="productName"></h1><p id="productMeta"></p></div>
+          <div><div class="eyebrow">Produto encontrado</div><h1 id="productName">Aguardando leitura</h1><p id="productMeta">Leia o EAN ou pesquise pelo nome.</p></div>
         </div>
         <div class="old-values">
           <div><span>Estoque anterior</span><strong id="oldStock">—</strong></div>
           <div><span>Validade anterior</span><strong id="oldValidity">—</strong></div>
           <div><span>Local</span><strong id="oldLocation">—</strong></div>
         </div>
-        <div class="form-grid">
+        <div class="form-grid count-fields">
           <label class="large">Estoque<input id="stockInput" type="text" inputmode="none" readonly placeholder="0"></label>
           <label>Validade<input id="validityInput" type="text" inputmode="none" readonly placeholder="dd/mm/aaaa"></label>
+          <label>Preço custo<input id="costInput" type="text" inputmode="none" readonly placeholder="0,00"></label>
+          <label>Preço venda<input id="priceInput" type="text" inputmode="none" readonly placeholder="0,00"></label>
           <label>Gôndola<input id="gondolaInput" type="text" inputmode="none" readonly placeholder="—"></label>
           <label>Prateleira<input id="shelfInput" type="text" inputmode="none" readonly placeholder="—"></label>
         </div>
@@ -72,14 +74,14 @@
       <section id="notFoundCard" class="card hidden">
         <div class="eyebrow">Produto não encontrado</div>
         <h2 id="notFoundCode">EAN</h2>
-        <p>Esse código não foi localizado no cadastro atual.</p>
-        <div class="actions"><button id="retryButton" class="secondary" type="button">Tentar câmera novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Cadastrar</a></div>
+        <p>Esse código não foi localizado no cadastro antigo.</p>
+        <div class="actions"><button id="retryButton" class="secondary" type="button">Tentar novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Abrir cadastro</a></div>
       </section>
 
-      <section class="card session-card">
-        <div id="lastReadCard" class="last-read-card"><div class="empty">Nenhum produto contado ainda.</div></div>
-        <div id="recentList" class="recent-list hidden"><div class="empty">Nenhum produto contado ainda.</div></div>
-        <button id="finishSessionButton" class="hidden" type="button">Finalizar</button>
+      <section class="card session-card hidden">
+        <div id="lastReadCard" class="last-read-card"></div>
+        <div id="recentList" class="recent-list"></div>
+        <button id="finishSessionButton" type="button">Finalizar</button>
       </section>
     </div>
   </main>
@@ -89,6 +91,6 @@
   <script src="./config.js?v=20260907-02"></script>
   <script src="./app-v2.js?v=20260907-02"></script>
   <script src="./stock-zero-guard.js?v=20260907-01"></script>
-  <script src="./kiosk-mode.js?v=20260907-02"></script>
+  <script src="./kiosk-mode.js?v=20260907-03"></script>
 </body>
 </html>
