@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-07T13:43:47.241Z",
+  "checkedAt": "2026-09-07T14:33:33.962Z",
   "baseUrl": "https://donaantonia.com.br",
   "ok": false,
   "checks": [
@@ -11,17 +11,17 @@
     {
       "name": "Entrada /producao aponta para o Admin oficial",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788788629907"
+      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788791616797"
     },
     {
       "name": "Atalho /admin aponta para o Admin oficial",
-      "ok": true,
-      "detail": "OK · https://donaantonia.com.br/admin/?_health=1788788630550"
+      "ok": false,
+      "detail": "Conteúdo ausente: producao-v2, admin-produtivo.html"
     },
     {
       "name": "Admin oficial carregado",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788788630624"
+      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788791617476"
     },
     {
       "name": "Módulos ativos do Admin estão publicados",
@@ -56,12 +56,12 @@
     {
       "name": "Runtime do Admin carrega lista e cadastro completo",
       "ok": true,
-      "detail": "1980 produto(s) em 265 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
+      "detail": "1980 produto(s) em 272 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
     },
     {
       "name": "Pedidos usam consulta limitada no Firebase",
       "ok": true,
-      "detail": "12 pedido(s) retornado(s) em 167 ms · limite solicitado 12 · chaves OK"
+      "detail": "12 pedido(s) retornado(s) em 226 ms · limite solicitado 12 · chaves OK"
     },
     {
       "name": "Versão do catálogo válida",
@@ -91,7 +91,7 @@
     {
       "name": "Rotina horária de ofertas atualizada",
       "ok": true,
-      "detail": "0.2h desde a execução · status sucesso · 0 expirada(s) ainda ativa(s)"
+      "detail": "1.1h desde a execução · status sucesso · 0 expirada(s) ainda ativa(s)"
     },
     {
       "name": "Arquitetura por rota do Admin",
@@ -111,6 +111,11 @@
       "detail": "Admin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\nCommand failed: /opt/hostedtoolcache/node/22.23.2/x64/bin/node scripts/test-admin-v2-definitivo.mjs\n\nAdmin V2 v13.1: 6 falha(s).\n1. /admin não aponta para o Admin oficial.\n2. /admin não declara uma release estável.\n3. /admin não envia a release ao carregador.\n4. /admin não sincroniza save_build com admin_build.\n5. /admin precisa revalidar somente a entrada do Admin.\n6. /admin voltou a invalidar o cache em toda abertura.\n"
     },
     {
+      "name": "Atalho /admin aponta para o Admin oficial",
+      "ok": false,
+      "detail": "Conteúdo ausente: producao-v2, admin-produtivo.html"
+    },
+    {
       "name": "Arquitetura por rota do Admin",
       "ok": false,
       "detail": "O teste local da arquitetura por rota falhou. Consulte admin-architecture.log no artefato do workflow."
@@ -123,12 +128,12 @@
   ],
   "warnings": [],
   "workflow": {
-    "event": "push",
-    "runId": "34128821967",
+    "event": "schedule",
+    "runId": "34133356879",
     "attempt": "1",
-    "sourceSha": "4127208fe3e185b64ee009c4b91d6fd1d34e780c",
+    "sourceSha": "3cbc90b746d96d4707b951e9158adbe7c053d245",
     "architecture": "failure",
     "mugStudio": "failure",
-    "publishedAt": "2026-09-07T13:43:54.951Z"
+    "publishedAt": "2026-09-07T14:33:42.600Z"
   }
 }
