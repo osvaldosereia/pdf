@@ -52,6 +52,12 @@
           <div class="toolbar"><div class="search"><span>⌕</span><input id="productSearch" type="search" placeholder="Nome, EAN, SKU ou marca"></div>
             <select id="productStatus"><option value="">Todos</option><option value="whatsapp">WhatsApp ativos</option><option value="offer">Ofertas</option><option value="upsell">Upsell</option><option value="no-stock">Sem estoque</option><option value="inactive">Inativos</option></select>
             <select id="productSync"><option value="">Toda sincronização</option><option value="pending_bling">Pendente Bling</option><option value="synced">Sincronizado</option><option value="error_bling">Erro Bling</option></select>
+            <select id="productExpiry" aria-label="Validade"><option value="">Todas as validades</option><option value="expired">Vencidos</option><option value="30">Vencem em até 30 dias · regra 30%</option><option value="60">Vencem entre 31 e 60 dias · regra 20%</option><option value="missing">Sem validade cadastrada</option></select>
+            <select id="productSort" aria-label="Ordenação"><option value="">Conferidos recentemente</option><option value="name">Nome</option><option value="expiry">Validade mais próxima</option><option value="stock">Menor estoque</option><option value="price">Menor preço</option></select>
+            <input id="productCategory" type="search" placeholder="Categoria" aria-label="Categoria">
+            <input id="productBrand" type="search" placeholder="Marca" aria-label="Marca">
+            <input id="productGondola" type="search" placeholder="Gôndola" aria-label="Gôndola">
+            <input id="productShelf" type="search" placeholder="Prateleira" aria-label="Prateleira">
           </div>
           <section class="panel table-panel"><div class="table-summary"><strong id="productCount">0 produtos</strong><span id="productPage"></span></div><div class="table-wrap"><table><thead><tr><th>Produto</th><th>EAN / SKU</th><th>Estoque</th><th>Validade</th><th>WhatsApp</th><th>Sync</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div><div class="pager"><button id="prevProducts" class="button secondary small" type="button">Anterior</button><button id="nextProducts" class="button secondary small" type="button">Próxima</button></div></section>
         </section>
@@ -77,8 +83,9 @@
   <section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section>
   <div id="toastRegion" class="toasts" aria-live="polite"></div>
   <script src="./config.js?v=20260907-01"></script>
-  <script src="../admin-v3/app.js?v=20260907-02"></script>
+  <script src="../admin-v3/app.js?v=20260907-03"></script>
   <script src="../admin-v3/enhancements.js?v=20260907-02"></script>
   <script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script>
 </body>
 </html>
+

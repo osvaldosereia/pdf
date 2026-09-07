@@ -1,0 +1,39 @@
+name: Dona Antonia - Conversation worker
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Dry-run checks release gates; apply processes at most 3 pending jobs
+        type: choice
+        options: [dry-run, apply]
+        default: dry-run
+permissions:
+  contents: read
+concurrency:
+  group: dona-antonia-conversation-worker
+  cancel-in-progress: false
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: node --test scripts/conversation-worker-v1.test.mjs
+      - name: Process queue
+        env:
+          MODE: ${{ inputs.mode }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_CONVERSATION_MODEL: ${{ vars.OPENAI_CONVERSATION_MODEL }}
+          OPENAI_TRANSCRIPTION_MODEL: ${{ vars.OPENAI_TRANSCRIPTION_MODEL }}
+          AI_JOB_LIMIT: '3'
+        run: |
+          if [ "$MODE" = 'apply' ]; then
+            node scripts/conversation-worker-v1.mjs --apply
+          else
+            node scripts/conversation-worker-v1.mjs
+          fi
