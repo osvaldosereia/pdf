@@ -10,6 +10,7 @@ const mediaMigrationPath=new URL('../supabase/migrations/20260907184450_room_med
 const releaseGatePath=new URL('../supabase/migrations/20260907192800_whatsapp_live_release_gates_v1.sql',import.meta.url);
 const dispatchPath=new URL('../supabase/migrations/20260907191500_whatsapp_outbound_event_dispatch_v2.sql',import.meta.url);
 const dispatchV3Path=new URL('../supabase/migrations/20260907194000_whatsapp_outbound_webhook_response_v3.sql',import.meta.url);
+const homologationPath=new URL('../supabase/migrations/20260907194600_whatsapp_homologation_allowlist_v1.sql',import.meta.url);
 
 const fixtureJob={message_id:'m1',conversation_id:'c1',job_type:'transcription'};
 
@@ -119,4 +120,22 @@ test('Legacy outbound Edge can only report health and cannot claim or finish job
   assert.match(source,/pg_net_make_webhook_response_v3/);
   assert.doesNotMatch(source,/claim_whatsapp_conversation_outbound_by_id/);
   assert.doesNotMatch(source,/finish_whatsapp_conversation_outbound/);
+});
+
+test('Controlled homologation is DB-enforced, allowlisted and auto-expires fail-closed',async()=>{
+  const sql=await readFile(homologationPath,'utf8');
+  assert.match(sql,/whatsapp_release_mode in \('off','observe','homologation','live'\)/);
+  assert.match(sql,/create table if not exists public\.whatsapp_test_allowlist/);
+  assert.match(sql,/alter table public\.whatsapp_test_allowlist enable row level security/);
+  assert.match(sql,/rename to ingest_whatsapp_message_core_v1/);
+  const releaseCall=sql.indexOf('v_release:=public.whatsapp_release_decision');
+  const coreCall=sql.indexOf('return public.ingest_whatsapp_message_core_v1');
+  assert.ok(releaseCall>0 && coreCall>releaseCall,'allowlist decision must happen before core ingest');
+  assert.match(sql,/homologation_phone_blocked/);
+  assert.match(sql,/arm_whatsapp_homologation_v1/);
+  assert.match(sql,/ai_enabled=false/);
+  assert.match(sql,/conversation_worker_enabled=false/);
+  assert.match(sql,/dona-antonia-whatsapp-homologation-expiry-v1/);
+  assert.match(sql,/perform public\.close_whatsapp_homologation_v1\(\)/);
+  assert.doesNotMatch(sql,/\+5565[0-9]+/,'test phone must never be committed');
 });
