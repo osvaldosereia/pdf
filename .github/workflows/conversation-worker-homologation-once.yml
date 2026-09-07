@@ -1,0 +1,73 @@
+name: Dona Antonia - OpenAI homologation once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/conversation-worker-homologation-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dona-antonia-openai-homologation-once
+  cancel-in-progress: false
+
+env:
+  HOMOLOGATION_JOB_ID: '3b774011-680d-4915-abb0-7f0c473ffbf7'
+
+jobs:
+  homologate:
+    if: github.event.head_commit.message == 'homologacao: executar uma chamada OpenAI controlada'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Validate worker tests
+        run: node --test scripts/conversation-worker-v1.test.mjs
+
+      - name: Validate required secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          test -n "$OPENAI_API_KEY"
+
+      - name: Arm only homologation job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H 'Content-Type: application/json')
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"ai_enabled":true,"conversation_worker_enabled":true}'
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${HOMOLOGATION_JOB_ID}&status=eq.held" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"status":"pending","error_message":null}'
+
+      - name: Process exactly one AI job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_CONVERSATION_MODEL: ${{ vars.OPENAI_CONVERSATION_MODEL }}
+          OPENAI_TRANSCRIPTION_MODEL: ${{ vars.OPENAI_TRANSCRIPTION_MODEL }}
+          AI_JOB_LIMIT: '1'
+        run: node scripts/conversation-worker-v1.mjs --apply
+
+      - name: Close AI gates even on failure
+        if: always()
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          set -euo pipefail
+          auth=(-H "apikey: $SUPABASE_SERVICE_ROLE_KEY" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H 'Content-Type: application/json')
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/automation_config?id=eq.1" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"ai_enabled":false,"conversation_worker_enabled":false}'
+          curl --fail-with-body -sS -X PATCH "${SUPABASE_URL}/rest/v1/ai_jobs?id=eq.${HOMOLOGATION_JOB_ID}&status=eq.pending" "${auth[@]}" -H 'Prefer: return=minimal' --data '{"status":"held","error_message":"homologation_not_executed"}'
