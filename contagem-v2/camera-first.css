@@ -1,0 +1,41 @@
+:root{--scan-height:min(34dvh,250px)}
+.scan-actions{display:flex;gap:6px;align-items:center}
+#manualModeButton{white-space:nowrap}
+body:not([data-read-mode="manual"]) .search-row{display:none!important}
+body[data-read-mode="manual"] .search-row{display:grid!important}
+body[data-read-mode="manual"] #cameraPanel{display:none!important}
+
+.camera-panel{position:relative!important;inset:auto!important;width:100%;height:var(--scan-height);min-height:180px;max-height:260px;margin:7px 0 0!important;border-radius:13px!important;aspect-ratio:auto!important;overflow:hidden;background:#101512}
+.camera-panel video{width:100%;height:100%;object-fit:cover}
+.scan-guide{inset:24% 7%!important}
+.floating-close{right:8px!important;bottom:8px!important;padding:7px 9px!important;font-size:9px!important}
+
+.session-card{padding:7px 9px!important}
+.last-read-card{margin-bottom:6px}
+.last-read-horizontal{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px;border:1px solid #e5e8e2;border-radius:11px;background:#fafbf8}
+.last-read-horizontal img{width:44px;height:44px;object-fit:contain;border-radius:9px;background:#f1f3ef;border:1px solid #e6e8e3}
+.last-read-copy{min-width:0}.last-read-copy strong,.last-read-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.last-read-copy strong{font-size:11px}.last-read-copy small{margin-top:2px;font-size:8px;color:var(--muted)}
+.last-read-values{display:grid;grid-template-columns:auto auto;gap:7px}.last-read-values span{display:grid;text-align:right;color:var(--muted);font-size:7px;text-transform:uppercase;line-height:1.1}.last-read-values b{margin-top:2px;color:var(--text);font-size:12px;text-transform:none}
+.recent-strip-label{display:flex;align-items:center;justify-content:space-between;margin:3px 1px 4px;font-size:8px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.session-card .recent-list{display:flex!important;gap:5px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;padding:0 0 2px;scrollbar-width:none}.session-card .recent-list::-webkit-scrollbar{display:none}
+.session-card .recent-item,.session-card .recent-item:not(:first-child){display:grid!important;grid-template-columns:29px minmax(72px,1fr) auto!important;gap:5px!important;align-items:center;flex:0 0 145px;min-width:145px;padding:4px!important;border-radius:9px!important;scroll-snap-align:start}
+.session-card .recent-item img{width:29px!important;height:29px!important;border-radius:7px!important}.session-card .recent-item strong{font-size:8px!important}.session-card .recent-item small{font-size:7px!important}.session-card .recent-values b{font-size:10px!important}.session-card .sync-dot{display:none}
+
+@media(max-width:520px){
+  .scanner-card{padding:8px!important}
+  .scanner-card .section-head{margin-bottom:4px!important}
+  .scanner-card .section-head h2{font-size:13px!important}
+  .scan-actions button{padding:7px 8px;font-size:9px}
+  .camera-panel{height:min(33dvh,235px);min-height:175px;max-height:235px}
+  .status-row{padding-bottom:4px!important}
+  .session-card .section-head{margin-bottom:4px!important}
+  .last-read-horizontal{grid-template-columns:40px minmax(0,1fr) auto;padding:5px}
+  .last-read-horizontal img{width:40px;height:40px}
+  .last-read-values{gap:5px}.last-read-values b{font-size:11px}
+}
+@media(max-height:680px) and (max-width:520px){
+  :root{--scan-height:190px}
+  .camera-panel{height:190px;min-height:160px;max-height:190px}
+  .session-card .recent-list{max-height:39px}
+  .last-read-horizontal{grid-template-columns:36px minmax(0,1fr) auto}.last-read-horizontal img{width:36px;height:36px}
+}
