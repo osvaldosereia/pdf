@@ -2,119 +2,34 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#173f2a">
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>Contagem de Produtos · Dona Antônia</title>
-  <link rel="stylesheet" href="./contagem.css?v=20260804-mobile-width-v3">
-  <link rel="stylesheet" href="./contagem-resultados-v2.css?v=20260804-mobile-width-v3">
-  <link rel="stylesheet" href="../operacoes-mobile.css?v=20260814-suite-cestas-v1">
+  <title>Dona Antônia · Contagem física</title>
+  <link rel="stylesheet" href="../contagem-v2/style.css?v=20260907-06">
+  <link rel="stylesheet" href="../contagem-v2/kiosk-mode.css?v=20260907-03">
 </head>
-<body class="ops-suite ops-contagem">
-<header class="ops-topbar">
-  <div class="ops-topbar-inner">
-    <div class="ops-topbar-main">
-      <div class="ops-brand">
-        <div class="ops-brand-mark">DA</div>
-        <div class="ops-brand-copy"><strong class="ops-brand-title">Contagem de produtos</strong><small class="ops-brand-subtitle">Estoque e validade direto no Firebase</small></div>
-      </div>
-      <div class="ops-actions"><div class="count ops-counter"><strong id="sessionCount">0</strong><span>contados</span></div></div>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
+    <div class="top-actions"><a class="ghost" href="../admin/" style="text-decoration:none">Admin</a><button id="syncQueueButton" class="ghost" type="button">Pendências <b id="pendingBadge">0</b></button><button id="logoutButton" class="ghost hidden" type="button">Sair</button></div>
+  </header>
+  <main class="shell">
+    <section id="loginCard" class="card login-card"><div class="eyebrow">Acesso protegido</div><h1>Entrar na contagem</h1><p>Use o mesmo acesso do Admin Dona Antônia.</p><form id="loginForm" class="stack"><label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label><label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label><button id="loginButton" class="primary" type="submit">Entrar</button></form><div id="loginStatus" class="note"></div></section>
+    <div id="app" class="hidden">
+      <section class="status-row"><div><span class="dot" id="connectionDot"></span><strong id="connectionLabel">Conectando…</strong><small id="userLabel"></small></div><div class="counter"><b id="sessionCount">0</b><span>contados</span></div></section>
+      <section class="card scanner-card"><div class="section-head"><div><div class="eyebrow">Leitura</div><h2>EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div><div class="search-row"><input id="eanInput" inputmode="none" autocomplete="off" readonly placeholder="EAN"><button id="searchButton" class="primary" type="button">Buscar</button></div><div id="cameraPanel" class="camera-panel hidden"><video id="video" playsinline muted autoplay></video><div class="scan-guide"><span></span></div><button id="closeCameraButton" class="danger floating-close" type="button">Fechar câmera</button></div><div id="lookupStatus" class="note">Câmera ligada.</div></section>
+      <section id="productCard" class="card product-card hidden"><div class="product-head"><img id="productImage" alt="Produto" loading="eager"><div><div class="eyebrow">Produto encontrado</div><h1 id="productName">Aguardando leitura</h1><p id="productMeta">Leia o EAN ou pesquise pelo nome.</p></div></div><div class="old-values"><div><span>Estoque anterior</span><strong id="oldStock">—</strong></div><div><span>Validade anterior</span><strong id="oldValidity">—</strong></div><div><span>Local</span><strong id="oldLocation">—</strong></div></div><div class="form-grid count-fields"><label class="large">Estoque<input id="stockInput" type="text" inputmode="none" readonly placeholder="0"></label><label>Validade<input id="validityInput" type="text" inputmode="none" readonly placeholder="dd/mm/aaaa"></label><label>Preço custo<input id="costInput" type="text" inputmode="none" readonly placeholder="0,00"></label><label>Preço venda<input id="priceInput" type="text" inputmode="none" readonly placeholder="0,00"></label><label>Gôndola<input id="gondolaInput" type="text" inputmode="none" readonly placeholder="—"></label><label>Prateleira<input id="shelfInput" type="text" inputmode="none" readonly placeholder="—"></label></div><div id="saveStatus" class="note"></div><div class="sticky-actions"><button id="skipButton" class="secondary" type="button">Pular</button><button id="saveButton" class="primary big" type="button">Salvar e próximo</button></div></section>
+      <section id="notFoundCard" class="card hidden"><div class="eyebrow">Produto não encontrado</div><h2 id="notFoundCode">EAN</h2><p>Esse código não foi localizado no cadastro antigo.</p><div class="actions"><button id="retryButton" class="secondary" type="button">Tentar novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Abrir cadastro</a></div></section>
+      <section class="card session-card hidden"><div id="lastReadCard" class="last-read-card"></div><div id="recentList" class="recent-list"></div><button id="finishSessionButton" type="button">Finalizar</button></section>
     </div>
-    <nav class="ops-app-nav" aria-label="Trocar aplicação">
-      <a class="active" aria-current="page" href="../contagem/"><span class="ops-app-nav-icon">📦</span><span>Contagem</span></a>
-      <a href="../cadastro/"><span class="ops-app-nav-icon">➕</span><span>Cadastro</span></a>
-      <a href="../validades/"><span class="ops-app-nav-icon">📅</span><span>Validades</span></a>
-      <a href="../cesta-mobile/"><span class="ops-app-nav-icon">🧺</span><span>Cestas</span></a>
-      <a href="../kit-mobile/"><span class="ops-app-nav-icon">🎁</span><span>Kits</span></a>
-    </nav>
-  </div>
-</header>
-
-<main>
-  <div id="status" class="status warn">Pronto. Leia o EAN, digite o código ou pesquise pelo nome.</div>
-
-  <section class="card searches">
-    <div>
-      <div class="searchgrid">
-        <input id="codeInput" class="input" inputmode="numeric" autocomplete="off" placeholder="EAN ou código">
-        <button id="cameraBtn" class="btn gold" type="button">📷 Câmera</button>
-      </div>
-      <button id="findCodeBtn" class="btn soft full mt8" type="button">Buscar pelo EAN</button>
-    </div>
-
-    <div>
-      <div class="searchgrid">
-        <input id="nameInput" class="input" autocomplete="off" placeholder="Nome, marca ou categoria; vazio mostra todos">
-        <button id="findNameBtn" class="btn soft" type="button">Buscar / todos</button>
-      </div>
-      <div id="nameResults" class="nameResults"></div>
-    </div>
-
-    <div id="cameraBox" class="cameraBox">
-      <div class="videoWrap">
-        <video id="video" class="video" playsinline muted autoplay></video>
-        <div class="scanline"></div>
-      </div>
-      <div class="cameraActions">
-        <button id="closeCameraBtn" class="btn red" type="button">Fechar câmera</button>
-        <button id="photoCameraBtn" class="btn soft" type="button">Usar câmera do celular</button>
-      </div>
-      <input id="photoInput" type="file" accept="image/*" capture="environment" hidden>
-    </div>
-  </section>
-
-  <section id="recentCard" class="card hidden">
-    <div class="eyebrow">Últimos produtos</div>
-    <div id="recent" class="recent"></div>
-  </section>
-
-  <section id="productCard" class="card">
-    <div id="empty" class="empty">Nenhum produto carregado.</div>
-
-    <div id="product" class="product">
-      <div class="head">
-        <img id="photo" class="photo" alt="Produto">
-        <div>
-          <h1 id="displayName" class="pname"></h1>
-          <div id="displayMeta" class="meta"></div>
-        </div>
-      </div>
-
-      <div class="grid">
-        <div class="field span"><label>Nome</label><input id="f_nome" class="input" data-field="nome"></div>
-        <div class="field"><label>Validade</label><input id="f_validade" class="input" inputmode="numeric" maxlength="10" placeholder="dd/mm/aaaa" data-field="validade"></div>
-        <div class="field"><label>Estoque contado</label><input id="f_estoque" class="input" inputmode="decimal" data-field="estoque"></div>
-        <div class="field"><label>Preço de custo</label><input id="f_preco_custo" class="input money" inputmode="decimal" data-field="preco_custo"></div>
-        <div class="field"><label>Preço de venda</label><input id="f_preco" class="input money" inputmode="decimal" data-field="preco"></div>
-        <div class="field"><label>Gôndola</label><input id="f_gondola" class="input" list="gondolas" data-field="gondola"></div>
-        <div class="field"><label>Prateleira</label><input id="f_prateleira" class="input" list="prateleiras" data-field="prateleira"></div>
-        <div class="field"><label>Marca</label><input id="f_marca" class="input" list="marcas" data-field="marca"></div>
-        <div class="field"><label>Categoria</label><input id="f_categoria" class="input" list="categorias" data-field="categoria"></div>
-        <div class="field"><label>Subcategoria</label><input id="f_subcategoria" class="input" list="subcategorias" data-field="subcategoria"></div>
-      </div>
-    </div>
-  </section>
-</main>
-
-<datalist id="gondolas"></datalist>
-<datalist id="prateleiras"></datalist>
-<datalist id="marcas"></datalist>
-<datalist id="categorias"></datalist>
-<datalist id="subcategorias"></datalist>
-
-<div id="savebar" class="savebar hidden">
-  <div class="savein">
-    <button id="nextBtn" class="btn soft" type="button">Próximo</button>
-    <button id="saveBtn" class="btn green" type="button">Salvar contagem</button>
-  </div>
-</div>
-
-<div id="busy" class="busy"><div id="busyText">Carregando...</div></div>
-
-<script src="./contagem.js?v=20260804-mobile-width-v3"></script>
-<script src="./contagem-resultados-v2.js?v=20260804-mobile-width-v3"></script>
+  </main>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="../contagem-v2/bridge-auth.js?v=20260907-03"></script>
+  <script src="../contagem-v2/config.js?v=20260907-02"></script>
+  <script src="../contagem-v2/app-v2.js?v=20260907-02"></script>
+  <script src="../contagem-v2/stock-zero-guard.js?v=20260907-01"></script>
+  <script src="../contagem-v2/kiosk-mode.js?v=20260907-03"></script>
 </body>
 </html>
