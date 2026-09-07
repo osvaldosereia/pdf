@@ -31,12 +31,19 @@ jobs:
         run: |
           node --check contagem-v2/app-v2.js
           node --check contagem-v2/config.js
+          node --check contagem-v2/kiosk-mode.js
+          node --check contagem-v2/stock-zero-guard.js
           node --check scripts/bling-stock-writer-v1.mjs
-      - name: Validar referências da página
+      - name: Validar referências da página kiosk
         run: |
           grep -q 'app-v2.js' contagem-v2/index.html
+          grep -q 'kiosk-mode.js' contagem-v2/index.html
+          grep -q 'kiosk-mode.css' contagem-v2/index.html
           grep -q 'inventory-count-v2' contagem-v2/config.js
           grep -q 'site/produtos-admin.json' contagem-v2/config.js
+          grep -q 'readonly' contagem-v2/index.html
+          grep -q 'manualEanButton' contagem-v2/kiosk-mode.js
+          grep -q 'kioskPad' contagem-v2/kiosk-mode.js
       - name: Validar ausência de segredos óbvios no microapp
         shell: bash
         run: |
