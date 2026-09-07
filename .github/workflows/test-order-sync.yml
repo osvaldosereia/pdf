@@ -1,0 +1,38 @@
+name: Testar fila de pedidos Bling
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/bling-order-writer-v1.mjs'
+      - '.github/workflows/bling-order-writer-v1.yml'
+      - '.github/workflows/test-order-sync.yml'
+      - 'supabase/migrations/*order_sync*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Sintaxe do writer
+        run: node --check scripts/bling-order-writer-v1.mjs
+      - name: Garantias de segurança
+        shell: bash
+        run: |
+          grep -q "const APPLY=process.argv.includes('--apply')" scripts/bling-order-writer-v1.mjs
+          grep -q "class AmbiguousError" scripts/bling-order-writer-v1.mjs
+          grep -q "enable-jwt.*1" scripts/bling-order-writer-v1.mjs
+          grep -q "outrasDespesas" scripts/bling-order-writer-v1.mjs
+          grep -q "Pagamento somente na entrega" scripts/bling-order-writer-v1.mjs
+          grep -q "default: dry-run" .github/workflows/bling-order-writer-v1.yml
+          grep -q "concurrency:" .github/workflows/bling-order-writer-v1.yml
+          grep -q "review_bling" supabase/migrations/20260907161000_order_sync_queue_v1.sql
+          ! grep -E "service_role.*sb_|BLING_CLIENT_SECRET=.*[^}]$" scripts/bling-order-writer-v1.mjs
