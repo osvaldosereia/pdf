@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T19:23:15.443Z",
+  "ultima_execucao": "2026-09-07T20:27:57.122Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -2846,6 +2846,20 @@
       "historico_id": "oferta-1776338125389-1788704656077-o971i"
     },
     {
+      "produto_key": "1776338125410",
+      "codigo": "P566",
+      "nome": "Naturale Aveia em Flocos 170g",
+      "categoria": "CAFÉ DA MANHÃ",
+      "regra_id": "regra-1785205019989",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.6,
+      "preco_oferta": 3.4,
+      "desconto_percentual": 5.56,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338125410-1788812877122-w8jes"
+    },
+    {
       "produto_key": "1776338125414",
       "codigo": "77476395",
       "nome": "Urca Desinfetante 2 litros",
@@ -3012,6 +3026,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338125729-1788747163548-dlrvz"
+    },
+    {
+      "produto_key": "1776338125731",
+      "codigo": "P5518",
+      "nome": "Above Desodorante Aerosol Men Elements Vulcan 150ml",
+      "categoria": "DESODORANTE",
+      "regra_id": "regra-1785205065492",
+      "origem": "campanha_automatica",
+      "preco_normal": 9.9,
+      "preco_oferta": 9.31,
+      "desconto_percentual": 5.96,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338125731-1788812877122-bew6v"
     },
     {
       "produto_key": "1776338125766",
@@ -7228,6 +7256,20 @@
       "historico_id": "oferta-1776338132715-1788693769749-go3hj"
     },
     {
+      "produto_key": "1776338132723",
+      "codigo": "P5432B",
+      "nome": "Colgate Creme Dental Sensitive Pro Alivio Imediato Xtreme 90g",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 9.9,
+      "preco_oferta": 9.11,
+      "desconto_percentual": 7.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338132723-1788812877122-17eq7"
+    },
+    {
       "produto_key": "1776338132774",
       "codigo": "C0096",
       "nome": "Café Coador de Pano com Suporte Plástico 15cm",
@@ -8670,6 +8712,20 @@
       "historico_id": "oferta-1777552354075-1788168929272-1jlyi"
     },
     {
+      "produto_key": "1777553818464",
+      "codigo": "p009s3",
+      "nome": "Lola Cosmetics Shampoo Meu Cacho Minha Vida 500ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 29.9,
+      "preco_oferta": 27.81,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1777553818464-1788812877122-kzat8"
+    },
+    {
       "produto_key": "1777553998950",
       "codigo": "P-8831",
       "nome": "Lola Cosmetics Óleo Pinga Acai e Pracaxi 50ml",
@@ -8920,6 +8976,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1778005766792-1788808995443-ho2ac"
+    },
+    {
+      "produto_key": "1778006192023",
+      "codigo": "06192023",
+      "nome": "Santa Távola Passata Tradizionale Tomate 680g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.01,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1778006192023-1788812877122-8lmk0"
     },
     {
       "produto_key": "1778006376230",
@@ -9550,6 +9620,20 @@
       "inicio": "2026-09-04",
       "fim": "2026-09-07T23:59:59-04:00",
       "historico_id": "oferta-177879018497725148-1788539335569-nn31q"
+    },
+    {
+      "produto_key": "177884333190222700",
+      "codigo": "3319020659",
+      "nome": "Downy Amaciante Concentrado Vero Tropical 3L",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 49.9,
+      "preco_oferta": 46.41,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177884333190222700-1788812877122-zt1cj"
     },
     {
       "produto_key": "177884345901395057",
@@ -11792,6 +11876,20 @@
       "historico_id": "oferta-178092462895543521-1788791348259-7ycmg"
     },
     {
+      "produto_key": "178154552113823517",
+      "codigo": "5211380239",
+      "nome": "NIVEA Sabonete Líquido Derma Control 250ml",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.89,
+      "desconto_percentual": 5.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178154552113823517-1788812877122-bznji"
+    },
+    {
       "produto_key": "178154653839768128",
       "codigo": "5383970003",
       "nome": "NIVEA Sabonete Líquido Creme Soft Refil 200ml",
@@ -13388,6 +13486,20 @@
       "historico_id": "oferta-1787061612834e8c5-1788801927194-9nevx"
     },
     {
+      "produto_key": "1787061761005_7df0",
+      "codigo": "7898964012015",
+      "nome": "Desinfetante Remmus Eucalipto 2L",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 6.9,
+      "preco_oferta": 6.49,
+      "desconto_percentual": 5.94,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-17870617610057df0-1788812877122-vf5e9"
+    },
+    {
       "produto_key": "1787062667647_bf8d",
       "codigo": "7898964012268",
       "nome": "Desinfetante Lavanda Remmus 5L",
@@ -14536,6 +14648,20 @@
       "historico_id": "oferta-pm5ck-1788743156205-63csf"
     },
     {
+      "produto_key": "P-RWN5",
+      "codigo": "P-RWN5",
+      "nome": "Elseve Creme de Tratamento Óleo Extraordinário para Nutrição Unidade",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 28.9,
+      "preco_oferta": 26.01,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-14T23:59:59-04:00",
+      "historico_id": "oferta-prwn5-1788812877122-yh7yf"
+    },
+    {
       "produto_key": "P-SVVW",
       "codigo": "P-SVVW",
       "nome": "Cremer Fralda G 20un",
@@ -15266,7 +15392,7 @@
       "regra_id": "regra-1785205031260"
     },
     "1776338125731": {
-      "ultima_oferta_em": "2026-09-03T20:26:57.786Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205065492"
     },
     "1776338132381": {
@@ -16518,7 +16644,7 @@
       "regra_id": "regra-1785205096285"
     },
     "177884333190222700": {
-      "ultima_oferta_em": "2026-09-03T17:26:26.468Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205096285"
     },
     "1776338127116": {
@@ -17010,7 +17136,7 @@
       "regra_id": "regra-1785202557027"
     },
     "P-RWN5": {
-      "ultima_oferta_em": "2026-08-26T12:30:01.780Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785202557027"
     },
     "1775940331078": {
@@ -17438,7 +17564,7 @@
       "regra_id": "regra-1785205192100"
     },
     "1777553818464": {
-      "ultima_oferta_em": "2026-09-03T08:36:14.853Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205192100"
     },
     "1776028741999": {
@@ -17486,7 +17612,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338132723": {
-      "ultima_oferta_em": "2026-09-03T19:22:37.804Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205082552"
     },
     "177956446936322925": {
@@ -17790,7 +17916,7 @@
       "regra_id": "regra-1785205113340"
     },
     "1778006192023": {
-      "ultima_oferta_em": "2026-09-03T19:22:37.804Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205113340"
     },
     "1776338129356": {
@@ -18726,7 +18852,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338125410": {
-      "ultima_oferta_em": "2026-09-03T19:22:37.804Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205019989"
     },
     "1776338129835": {
@@ -19766,7 +19892,7 @@
       "regra_id": "regra-1785205164829"
     },
     "178154552113823517": {
-      "ultima_oferta_em": "2026-09-03T19:22:37.804Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205164829"
     },
     "1776532784311": {
@@ -20374,7 +20500,7 @@
       "regra_id": "regra-1785205019989"
     },
     "1787061761005_7df0": {
-      "ultima_oferta_em": "2026-09-03T01:02:42.802Z",
+      "ultima_oferta_em": "2026-09-07T20:27:57.122Z",
       "regra_id": "regra-1785205105033"
     },
     "1787061866210_f38b": {
@@ -20655,23 +20781,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788132172012",
-      "executado_em": "2026-08-30T23:22:52.613Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 8,
-        "ofertas_nao_criadas": 15,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788138393002",
       "executado_em": "2026-08-31T01:06:33.613Z",
@@ -24041,6 +24150,23 @@
     {
       "id": "github-1788808994943",
       "executado_em": "2026-09-07T19:23:15.443Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 9,
+        "ofertas_nao_criadas": 14,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788812876474",
+      "executado_em": "2026-09-07T20:27:57.122Z",
       "origem": "make",
       "modo": "completo",
       "resumo": {
