@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T13:29:49.049Z",
+  "ultima_execucao": "2026-09-07T14:29:08.259Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -2930,6 +2930,20 @@
       "historico_id": "oferta-1776338125872-1788618236111-9oc3t"
     },
     {
+      "produto_key": "1776338125987",
+      "codigo": "79344981",
+      "nome": "Rexona Desodorante Cotton Dry 200ml",
+      "categoria": "DESODORANTE",
+      "regra_id": "regra-1785205065492",
+      "origem": "campanha_automatica",
+      "preco_normal": 19.9,
+      "preco_oferta": 18.71,
+      "desconto_percentual": 5.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338125987-1788791348259-80crf"
+    },
+    {
       "produto_key": "1776338126013",
       "codigo": "412307W",
       "nome": "Salon Line Kit Shampoo e Condicionador Hidra Óleo de Coco 300ml cada",
@@ -3348,6 +3362,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1776338126825-1788752055172-1hae4"
+    },
+    {
+      "produto_key": "1776338126832",
+      "codigo": "P0271",
+      "nome": "Glade Purificador Aero Lavanda 360ml - Roxo",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.89,
+      "desconto_percentual": 5.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338126832-1788791348259-tz9qh"
     },
     {
       "produto_key": "1776338126864",
@@ -4624,6 +4652,20 @@
       "historico_id": "oferta-1776338129122-1788582594122-06ilf"
     },
     {
+      "produto_key": "1776338129124",
+      "codigo": "P0286",
+      "nome": "NIVEA Sabonete Aveia 85g",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.79,
+      "preco_oferta": 2.62,
+      "desconto_percentual": 6.09,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338129124-1788791348259-dujyg"
+    },
+    {
       "produto_key": "1776338129152",
       "codigo": "P561",
       "nome": "Café Filtro de Papel 102 - Brasileiro Unidade",
@@ -5644,6 +5686,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776338130861-1788770354905-o8sbu"
+    },
+    {
+      "produto_key": "1776338130869",
+      "codigo": "90674849",
+      "nome": "Closeup Creme Dental Close-Up - Menta Americana 70g",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.49,
+      "preco_oferta": 3.21,
+      "desconto_percentual": 8.02,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338130869-1788791348259-ug2g0"
     },
     {
       "produto_key": "1776338130911",
@@ -11190,6 +11246,34 @@
       "historico_id": "oferta-178050212748636364-1788603176110-d9zn2"
     },
     {
+      "produto_key": "178092462895543521",
+      "codigo": "6289550975",
+      "nome": "Riscossa Macarrão Cannelloni 250g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 15.9,
+      "preco_oferta": 14.31,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178092462895543521-1788791348259-7ycmg"
+    },
+    {
+      "produto_key": "178154920077744517",
+      "codigo": "2007770566",
+      "nome": "NIVEA Demaquilante Bifásico 125ml",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 25.9,
+      "preco_oferta": 23.31,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-14T23:59:59-04:00",
+      "historico_id": "oferta-178154920077744517-1787725778869-244g6"
+    },
+    {
       "produto_key": "178155183815725474",
       "codigo": "8381570778",
       "nome": "NIVEA Desodorante Roll-On Feminino Black & White Cl 50ml",
@@ -12506,6 +12590,20 @@
       "historico_id": "oferta-17867188531945d6b-1788593178522-288t1"
     },
     {
+      "produto_key": "1786798760721_d55e",
+      "codigo": "7891018000648",
+      "nome": "Café 3 Fazendas Torrado e Moído a Vácuo 500g",
+      "categoria": "CAFÉ DA MANHÃ",
+      "regra_id": "regra-1785205019989",
+      "origem": "campanha_automatica",
+      "preco_normal": 26.9,
+      "preco_oferta": 25.39,
+      "desconto_percentual": 5.61,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1786798760721d55e-1788791348259-op53s"
+    },
+    {
       "produto_key": "1786800854596_9dbc",
       "codigo": "7896110011615",
       "nome": "Fralda Personal Baby Protect & Sec Tamanho P Pacote com 44 unidades",
@@ -13220,6 +13318,20 @@
       "historico_id": "oferta-1787584801609f201-1788787789049-9g98z"
     },
     {
+      "produto_key": "1788789607798_dbc7",
+      "codigo": "7500435156974",
+      "nome": "Downy Concentrado Sensitive Hipoalergênico 1,35 L",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 35,
+      "preco_oferta": 32.55,
+      "desconto_percentual": 7,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1788789607798dbc7-1788791348259-f2nd4"
+    },
+    {
       "produto_key": "6194017200509",
       "codigo": "allegro.azeite.500",
       "nome": "Azeite de Oliva Extra Virgem Allegro 500ml",
@@ -13708,6 +13820,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-pzvpp-1788698022343-pjay1"
+    },
+    {
+      "produto_key": "produto_1783369837523",
+      "codigo": "pij890",
+      "nome": "Lola Cosmetics Condicionador Meu Cacho Minha Vida 500ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 27.9,
+      "preco_oferta": 25.95,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-produto1783369837523-1788791348259-evrid"
     },
     {
       "produto_key": "produto_1784126678409",
@@ -15848,7 +15974,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1776338126832": {
-      "ultima_oferta_em": "2026-09-02T19:24:43.804Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205105033"
     },
     "1776338127474": {
@@ -16152,7 +16278,7 @@
       "regra_id": "regra-1785205065492"
     },
     "1776338130869": {
-      "ultima_oferta_em": "2026-09-03T13:28:35.835Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205082552"
     },
     "1776338131599": {
@@ -16268,7 +16394,7 @@
       "regra_id": "regra-1785205192100"
     },
     "produto_1783369837523": {
-      "ultima_oferta_em": "2026-09-03T01:02:42.802Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205192100"
     },
     "1776338123633": {
@@ -16624,7 +16750,7 @@
       "regra_id": "regra-1785205113340"
     },
     "178092462895543521": {
-      "ultima_oferta_em": "2026-09-03T14:30:31.445Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205113340"
     },
     "1776338129877": {
@@ -17524,7 +17650,7 @@
       "regra_id": "regra-1785205065492"
     },
     "1776338125987": {
-      "ultima_oferta_em": "2026-09-03T14:30:31.445Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205065492"
     },
     "1776434295471": {
@@ -18244,7 +18370,7 @@
       "regra_id": "regra-1785202557027"
     },
     "178154920077744517": {
-      "ultima_oferta_em": "2026-08-26T06:29:38.869Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785202557027"
     },
     "1776338125246": {
@@ -18856,7 +18982,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1776338129124": {
-      "ultima_oferta_em": "2026-09-03T13:28:35.835Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205164829"
     },
     "1776338129763": {
@@ -19448,7 +19574,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1786798760721_d55e": {
-      "ultima_oferta_em": "2026-09-03T13:28:35.835Z",
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
       "regra_id": "regra-1785205019989"
     },
     "1787059910250_045a": {
@@ -19746,26 +19872,13 @@
     "1787405634897_e11d": {
       "ultima_oferta_em": "2026-09-04T07:29:42.373Z",
       "regra_id": "regra-1785205122760"
+    },
+    "1788789607798_dbc7": {
+      "ultima_oferta_em": "2026-09-07T14:29:08.259Z",
+      "regra_id": "regra-1785205096285"
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788110521914",
-      "executado_em": "2026-08-30T17:22:02.401Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 9,
-        "ofertas_nao_criadas": 14,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788114476335",
       "executado_em": "2026-08-30T18:27:56.724Z",
@@ -23141,6 +23254,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 14,
         "ofertas_nao_criadas": 9,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788791347800",
+      "executado_em": "2026-09-07T14:29:08.259Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 9,
+        "ofertas_nao_criadas": 14,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
