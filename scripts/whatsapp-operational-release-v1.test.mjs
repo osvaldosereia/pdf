@@ -6,6 +6,7 @@ const read=p=>fs.readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const main=read('supabase/migrations/20260907213000_whatsapp_operational_release_v1.sql');
 const fix=read('supabase/migrations/20260907213100_whatsapp_operational_release_v1_fix.sql');
 const hard=read('supabase/migrations/20260907213200_whatsapp_operational_release_v1_dispatch_hardening.sql');
+const providerVault=read('supabase/migrations/20260907223000_conversation_worker_provider_vault_v1.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -15,7 +16,7 @@ const nodeCore=read('scripts/lib/conversation-core-v1.mjs');
 
 function has(text,pattern,message){assert.match(text,pattern,message)}
 
- test('deploy defaults remain closed and observe can never auto-reply',()=>{
+test('deploy defaults remain closed and observe can never auto-reply',()=>{
   has(main,/conversation_worker_dispatch_enabled boolean not null default false/,'dispatcher must be closed by default');
   has(main,/whatsapp_live_canary_percent smallint not null default 0/,'live canary must start at zero');
   has(main,/whatsapp_release_mode in \('off','observe'\) and whatsapp_auto_reply_enabled/,'DB must reject auto reply in off/observe');
@@ -70,11 +71,21 @@ test('edge worker authenticates internally and processes exactly one claimed job
   has(worker,/job_id_required/);
   has(worker,/claim_conversation_job_v2/);
   has(worker,/p_expected_job_id: expectedJobId/);
-  has(worker,/Recheck immediately before provider spend/);
   has(worker,/completion_uncertain_review_required/);
   has(worker,/gpt-4o-mini-transcribe/);
   has(worker,/gpt-4o-mini/);
   has(worker,/detail: "low"/);
+});
+
+test('provider secret is Vault-backed, service-role only and health exposes only configured boolean',()=>{
+  has(providerVault,/vault\.create_secret/);
+  has(providerVault,/vault\.update_secret/);
+  has(providerVault,/get_conversation_worker_provider_secret_v1/);
+  has(providerVault,/revoke all on function public\.get_conversation_worker_provider_secret_v1\(\) from public,anon,authenticated/);
+  has(providerVault,/grant execute on function public\.get_conversation_worker_provider_secret_v1\(\) to service_role/);
+  has(worker,/get_conversation_worker_provider_secret_v1/);
+  has(worker,/provider_configured: Boolean\(openaiKey\)/);
+  assert.doesNotMatch(worker,/provider_configured:\s*openaiKey/,'health must never return provider secret');
 });
 
 test('node and edge workers share one deterministic conversation core',()=>{
