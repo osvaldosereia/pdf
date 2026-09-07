@@ -1,0 +1,91 @@
+name: Dona Antonia - WhatsApp audio full-chain live once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/conversation-worker-whatsapp-audio-fullchain-live-once.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dona-antonia-conversation-worker
+  cancel-in-progress: false
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_JOB_ID: 6ebb5a42-bd61-4418-99cb-9f0e9b460ca7
+      EXPECTED_MESSAGE_ID: 5871fcbf-6229-49b3-bb34-8cfe854b1746
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_CONVERSATION_MODEL: ${{ vars.OPENAI_CONVERSATION_MODEL }}
+      OPENAI_TRANSCRIPTION_MODEL: ${{ vars.OPENAI_TRANSCRIPTION_MODEL }}
+      AI_JOB_LIMIT: '2'
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Verify exact fresh audio before provider spend
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const {SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,EXPECTED_JOB_ID,EXPECTED_MESSAGE_ID}=process.env;
+          if(!SUPABASE_URL||!SUPABASE_SERVICE_ROLE_KEY) throw new Error('missing_required_environment');
+          const headers={apikey:SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${SUPABASE_SERVICE_ROLE_KEY}`};
+          const [jr,mr]=await Promise.all([
+            fetch(`${SUPABASE_URL}/rest/v1/ai_jobs?status=eq.pending&select=id,message_id,job_type,status,attempts&order=created_at.asc`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'}),
+            fetch(`${SUPABASE_URL}/rest/v1/room_media?message_id=eq.${EXPECTED_MESSAGE_ID}&select=id,message_id,kind,mime_type,bytes,object_path,processing_status`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'})
+          ]);
+          if(!jr.ok||!mr.ok) throw new Error('preflight_http_failed');
+          const jobs=await jr.json(), media=await mr.json();
+          if(jobs.length!==1) throw new Error(`unexpected_pending_count_${jobs.length}`);
+          const j=jobs[0];
+          if(j.id!==EXPECTED_JOB_ID||j.message_id!==EXPECTED_MESSAGE_ID||j.job_type!=='transcription'||j.attempts!==0) throw new Error('unexpected_audio_job');
+          if(media.length!==1) throw new Error(`unexpected_media_count_${media.length}`);
+          const m=media[0];
+          if(m.kind!=='audio'||m.mime_type!=='audio/ogg'||!(Number(m.bytes)>0&&Number(m.bytes)<=10485760)||!String(m.object_path||'').includes('/audio/whatsapp/')) throw new Error('invalid_audio_media');
+          console.log(JSON.stringify({preflight:'ok',job_id:j.id,bytes:m.bytes,mime_type:m.mime_type}));
+          NODE
+
+      - name: Run worker tests
+        run: node --test scripts/conversation-worker-v1.test.mjs scripts/audio-transcription-chain-v1.test.mjs scripts/whatsapp-bridge-v1.test.mjs scripts/whatsapp-outbound-receipt-v1.test.mjs
+
+      - name: Process transcription and chained conversation exactly once each
+        run: node scripts/conversation-worker-v1.mjs --apply
+
+      - name: Verify full chain and wait for Meta receipt
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          const {SUPABASE_URL,SUPABASE_SERVICE_ROLE_KEY,EXPECTED_JOB_ID,EXPECTED_MESSAGE_ID}=process.env;
+          const headers={apikey:SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${SUPABASE_SERVICE_ROLE_KEY}`};
+          const get=async path=>{const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{headers,signal:AbortSignal.timeout(20000),redirect:'error'});if(!r.ok)throw new Error(`postflight_http_${r.status}`);return r.json();};
+          const transcription=(await get(`ai_jobs?id=eq.${EXPECTED_JOB_ID}&select=id,status,attempts,result,error_message`))[0];
+          if(!transcription||transcription.status!=='done'||transcription.attempts!==1||!String(transcription.result?.transcript||'').trim()) throw new Error('transcription_not_done_once');
+          const message=(await get(`messages?id=eq.${EXPECTED_MESSAGE_ID}&select=id,message_type,body_text,transcript`))[0];
+          if(!message||message.message_type!=='audio'||!String(message.transcript||'').trim()||message.body_text!==message.transcript) throw new Error('transcript_not_promoted_to_body_text');
+          const convJobs=await get(`ai_jobs?message_id=eq.${EXPECTED_MESSAGE_ID}&job_type=eq.conversation&select=id,status,attempts,result,error_message&order=created_at.asc`);
+          if(convJobs.length!==1) throw new Error(`unexpected_conversation_job_count_${convJobs.length}`);
+          const c=convJobs[0];
+          if(c.status!=='done'||c.attempts!==1||!String(c.result?.reply||'').trim()||c.result?.reply_suppressed===true||!c.result?.outbound_job_id) throw new Error('conversation_not_done_once');
+          const active=await get(`ai_jobs?conversation_id=eq.ff5c1e73-f3ed-4b88-8eba-b6e3a9883941&status=in.(pending,processing)&select=id`);
+          if(active.length) throw new Error(`active_ai_jobs_remaining_${active.length}`);
+          let outbound=null;
+          for(let i=0;i<18;i++){
+            const rows=await get(`outbound_jobs?id=eq.${c.result.outbound_job_id}&select=id,status,attempts,dispatch_attempts,provider_message_id,dispatch_response_status,last_error,payload`);
+            outbound=rows[0]||null;
+            if(outbound?.status==='sent'&&outbound.provider_message_id&&Number(outbound.dispatch_response_status)===200) break;
+            await new Promise(r=>setTimeout(r,2500));
+          }
+          if(!outbound||outbound.status!=='sent'||!outbound.provider_message_id||Number(outbound.dispatch_response_status)!==200) throw new Error('meta_audio_receipt_not_confirmed');
+          if(outbound.payload?.delivery_mode!=='audio'||outbound.payload?.voice_profile!=='dona_antonia_marin_b_v1') throw new Error('unexpected_delivery_profile');
+          console.log(JSON.stringify({postflight:'ok',transcription_job:transcription.id,conversation_job:c.id,outbound_job:outbound.id,delivery_mode:outbound.payload.delivery_mode}));
+          NODE
