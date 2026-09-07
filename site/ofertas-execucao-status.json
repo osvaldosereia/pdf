@@ -1,18 +1,18 @@
 {
   "status": "sucesso",
-  "executado_em": "2026-09-07T02:37:45.517Z",
+  "executado_em": "2026-09-07T03:34:17.206Z",
   "limpeza_codigo": 0,
   "validade_codigo": 0,
   "processamento_codigo": 0,
   "limpeza_log": "{\"status\":\"sucesso\",\"ofertas_validade_encerradas\":0,\"produtos\":[]}\n",
   "validade_log": "{\"status\":\"sucesso\",\"regras_validade_ativas\":true,\"produtos_avaliados\":1979,\"produtos_alterados\":125,\"resumo\":{\"apply\":107,\"block\":18}}\n",
-  "processamento_log": "{\"status\":\"sucesso\",\"executionId\":\"github-1788748662765\",\"ofertas_solicitadas\":23,\"ofertas_criadas\":3,\"ofertas_nao_criadas\":20,\"ofertas_encerradas\":0,\"vencidos\":0,\"ofertas_reativadas\":0,\"reativacoes_com_falha\":0,\"banners_reativados\":0,\"banners_desativados\":0}\n",
+  "processamento_log": "{\"status\":\"sucesso\",\"executionId\":\"github-1788752054779\",\"ofertas_solicitadas\":23,\"ofertas_criadas\":3,\"ofertas_nao_criadas\":20,\"ofertas_encerradas\":0,\"vencidos\":0,\"ofertas_reativadas\":0,\"reativacoes_com_falha\":0,\"banners_reativados\":0,\"banners_desativados\":0}\n",
   "motor_resultado": "success",
   "publicacao_resultado": "success",
   "evento": "schedule",
-  "run_id": "34076817407",
+  "run_id": "34080000073",
   "tentativa": "1",
-  "sha_origem": "e9896e06b11c45d87fbe49dd606e326fcafe2696",
+  "sha_origem": "136df2c37d0e885386cd0d632bef5a99dfca93ca",
   "sucesso": true,
-  "publicado_em": "2026-09-07T02:37:49.351Z"
+  "publicado_em": "2026-09-07T03:34:21.169Z"
 }
