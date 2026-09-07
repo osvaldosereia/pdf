@@ -4,6 +4,11 @@
 [functions.whatsapp-ingest]
 verify_jwt = false
 
+# Server-to-server Make -> Supabase. JWT gateway desligado somente porque a função
+# valida x-da-ingest-key contra hash server-only em system_secrets.
+[functions.whatsapp-outbound-v1]
+verify_jwt = false
+
 [functions.bling-products-ingest]
 verify_jwt = false
 
