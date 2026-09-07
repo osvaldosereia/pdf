@@ -1,613 +1,477 @@
 # RETOMADA — Projeto Dona Antônia
 
-Atualizado em **2026-09-07 — rodada de Conversation Worker e evolução comercial**.
+Atualizado em **07/09/2026 — Etapa 3 WhatsApp Bridge v3**.
 
-Este arquivo é a referência principal para retomar o projeto em uma nova conversa. Ele está mais atualizado que `docs/ARQUITETURA-DONA-ANTONIA-V2.md`, que contém decisões anteriores e deve ser usado apenas como contexto complementar.
+Este é o arquivo **autoritativo** para retomar o projeto em uma nova conversa. Não voltar a planejar do zero. Primeiro ler este arquivo, depois consultar o estado real no GitHub, Supabase e Make antes de alterar qualquer gate.
 
-## Rodada de 07/09/2026 — worker, cadastro e evolução comercial
+Documento técnico complementar da etapa atual:
 
-**Leia esta atualização antes do ponto técnico anterior.** Código preparado na branch
-`codex/dona-antonia-conversation-crm-20260907`; a aplicação das migrations no Supabase real foi rejeitada pela revisão automática por exigir autorização explícita de alteração do schema. **Nada deste bloco foi aplicado ao banco ou às Edge Functions de produção.** Não incorporar o frontend antes das migrations e funções.
+- `docs/WHATSAPP-BRIDGE-V3.md`
 
-Documentos novos:
+Documentos importantes anteriores:
 
-- `docs/CONVERSATION-WORKER-V1.md`: componentes, testes, limitações e ordem de implantação.
-- `docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`: requisitos completos e pesquisa de recompra, aniversário, relatórios, validade, editor de regras, orientação da IA e Meta Ads.
+- `docs/HOMOLOGACAO-OPENAI-20260907.md`
+- `docs/SALA-COMPRA-MOTOR-COMERCIAL-V1.md`
+- `docs/CONVERSATION-WORKER-V1.md`
+- `docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`
+- `docs/ARQUITETURA-DONA-ANTONIA-V2.md` — contexto histórico, não fonte principal.
 
-Estado real consultado nesta rodada (não presumir que permaneça igual):
+---
 
-- 99 produtos, todos fisicamente verificados; fila `ai_jobs` vazia na consulta.
-- `automation_enabled=true`, `outbound_enabled=true`, **`ai_enabled=false`**. Diferente do estado inicial descrito abaixo. As flags foram preservadas.
-- Make 6779824, TESTE WhatsApp 1018: `isActive=false`, `status=error`.
-- Make 7274337, TESTE Saída 1018: `isActive=true`, `trigger=on-demand`.
-- Edge Functions: `shopping-room-v1` versão 3 e `admin-ops-v1` versão 2.
+## PONTO EXATO DE RETOMADA
 
-Código preparado:
+A **Sala de Compra + motor comercial** e a **homologação OpenAI texto/áudio/imagem** já foram concluídas.
 
-- Worker manual de transcrição/visão/classificação, lib modular, gate próprio desligado, uso por evento e conclusão atômica; sem Meta/Bling/TTS nesta rodada.
-- Polling leve de mensagens, estados/transcrição e preservação do player de áudio.
-- Correção de MIME com codec no upload e da variável `document` que atrapalhava o endereço no checkout.
-- Aniversário opcional (dia/mês), consentimento explícito separado e trilha de consentimentos.
-- Filtros de produtos por validade, categoria, marca, gôndola/prateleira e ordenação; busca paginada e proteção contra respostas antigas.
-- Simulador de regra de validade: 31–60 dias = 20%; 0–30 = 30%; vencido sem preço sugerido. **Descontos ainda não aplicados ao carrinho/produção.**
+A **Etapa 3 — WhatsApp** está tecnicamente preparada em PR #146, branch:
 
-Validação: 13 testes do worker aprovados; migrations e invariantes testados em PostgreSQL isolado; teste de DOM da Sala aprovado; sintaxe JS/TS aprovada. `deno check` completo precisa do CI, pois o registro JSR ficou inacessível localmente. Não houve teste pago com OpenAI nem mensagens/pedidos reais.
+`codex/dona-antonia-whatsapp-bridge-v1-20260907`
 
-**Próximo ponto exato:** obter autorização explícita para aplicar as duas migrations desta branch, publicar as funções correspondentes e só depois incorporar o frontend, preservando `conversation_worker_enabled=false`. Seguir a ordem em `CONVERSATION-WORKER-V1.md`. Após isso: homologar uma mensagem de teste, integrar `plan_next_sales_move` e eventos de oferta à Sala, concluir TTS e ponte inbound/outbound conforme prioridades já descritas. Não liberar jobs retidos em massa.
+No fechamento desta atualização:
 
-As novas ideias comerciais são requisitos de evolução, não campanhas já ativadas. A estratégia inicial usa cadência de 15 dias configurável, relevância individual, opt-in/template marketing, benefício mensal de aniversário e regras determinísticas. Antes de descontos automáticos universais, resolver lotes e preço consistente em todos os canais/checkout/Bling.
+- migrations WhatsApp v3/allowlist/health já foram aplicadas no Supabase de produção;
+- `whatsapp-ingest` está em produção na **v3**;
+- `whatsapp-outbound-v1` está em produção na **v4**, com protocolo antigo `claim/finish` desativado;
+- Make outbound oficial é o scenario **7290488 — Dona Antônia - WhatsApp Outbound Event-Driven v3**;
+- Make inbound é o scenario **6779824 — Dona Antônia - WhatsApp Inbound Controlado v1**;
+- inbound teve os HTTP v4 corrigidos com campos avançados e aceita ativação, mas foi deixado desligado;
+- scenario **7290290** foi renomeado para `LEGACY - NÃO USAR - WhatsApp Outbound HTTP v1` e está desligado;
+- healthcheck Supabase → Make v3 passou com HTTP 200 e `sent=false`;
+- allowlist temporária foi testada apenas com telefone fictício e fechada em seguida;
+- nenhum cliente real foi atendido nesta rodada;
+- nenhum TTS foi consumido nesta rodada;
+- nenhum pedido/Bling foi criado ou alterado nesta rodada.
 
-## Como retomar em um novo chat
-
-Use a instrução:
-
-> Acesse o GitHub `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md` e continue exatamente do ponto indicado, programando o máximo possível por rodada com padrão profissional e sem ativar integrações reais perigosas sem validação controlada.
-
-## Objetivo do projeto
-
-Construir o sistema operacional e comercial da **Dona Antônia Cestas e Supermercado**, com atendimento altamente automatizado pelo WhatsApp e uma **Sala de Compra** visual integrada à mesma conversa/carrinho.
-
-A experiência deve permitir ao cliente:
-
-- comprar somente pelo WhatsApp, inclusive por áudio;
-- abrir a Sala de Compra quando a experiência visual ajudar;
-- alternar WhatsApp ↔ Sala sem perder carrinho/conversa;
-- escolher e personalizar cestas;
-- adicionar produtos complementares;
-- usar texto, áudio e foto;
-- informar/confirmar cadastro e endereço;
-- conferir e confirmar o pedido;
-- receber confirmação final pelo WhatsApp após o pedido oficial chegar ao Bling.
-
-A automação deve agir como uma boa vendedora de varejo: relevante, contextual, sem insistir quando o cliente demonstra desinteresse.
-
-## Arquitetura oficial
+Estado final auditado no Supabase:
 
 ```text
-WhatsApp/Meta ──────┐
-                    ├── Conversation Engine ── Supabase/Postgres
-Sala de Compra ─────┘                 │
-                                      ├── OpenAI somente quando necessário
-                                      ├── regras determinísticas de preço/estoque
-                                      └── carrinho/pedido
-                                               │
-                                      GitHub Actions / workers
-                                               │
-                                              Bling
-                                               │
-                                      fila outbound WhatsApp
+whatsapp_release_mode = off
+whatsapp_inbound_enabled = false
+whatsapp_auto_reply_enabled = false
+ai_enabled = false
+conversation_worker_enabled = false
+allowlist ativa = 0
+seller_message pending = 0
+seller_message processing = 0
+seller_message error = 0
+ai_jobs pending/processing/error = 0
 ```
 
-### Responsabilidades
+`automation_enabled` e `outbound_enabled` podem permanecer true globalmente porque os gates específicos do WhatsApp/IA acima estão fechados. Sempre reler o banco antes de confiar nestes valores.
 
-- **GitHub:** código, deploy, CI, migrations, Edge Functions versionadas e Actions.
-- **Supabase:** banco operacional, clientes, conversas, produtos adotados, histórico, carrinhos, pedidos, recomendações, Storage, Auth e funções de negócio.
-- **Make:** ponte fina com WhatsApp/Meta e integrações em que trouxer vantagem; nunca deve virar o backend principal.
-- **Bling:** ERP oficial, contatos fiscais, produtos ERP, estoque oficial e pedido oficial.
-- **OpenAI:** compreensão/conversa/transcrição/visão/TTS quando realmente necessário. Preço, estoque, regras e criação de pedido ficam determinísticos.
-- **Firebase:** legado temporário somente para localizar/enriquecer produtos durante a conferência física. Não é o banco novo.
+### Próxima ação real necessária
 
-## Endereços públicos/operacionais definitivos
+A próxima etapa é uma **homologação inbound real somente no telefone de teste do usuário**, nunca liberação geral.
 
-- Admin: `https://donaantonia.com.br/admin/`
-- Contagem: `https://donaantonia.com.br/contagem/`
-- Cadastro atual: `https://donaantonia.com.br/cadastro/` — **ainda possui legado Firebase/Make e precisa ser migrado depois**.
-- Sala de Compra: `https://donaantonia.com.br/comprar/`
-- `/catalogo/` foi transformado em redirecionamento para `/comprar/` preservando token.
+Ordem:
 
-Não expor `v2`, `v3` etc. nas URLs de operação. Versões podem permanecer internamente em nomes técnicos de arquivos/functions.
+1. consultar `get_whatsapp_bridge_health_v1()`;
+2. confirmar todos os jobs vazios e release `off`;
+3. armar `arm_whatsapp_homologation_v1(<telefone de teste>, 30–60)`;
+4. ativar Make scenario `6779824`;
+5. pedir ao usuário para enviar **uma mensagem de texto nova**;
+6. validar ingest e welcome/menu determinístico ainda com IA desligada;
+7. depois abrir IA/worker somente dentro da janela/allowlist;
+8. testar texto IA;
+9. testar áudio inbound → transcrição → resposta Marin B;
+10. testar imagem inbound → visão;
+11. fechar `close_whatsapp_homologation_v1()`;
+12. desligar scenario inbound novamente se a homologação terminar;
+13. auditar zero efeito em Bling e zero job incerto.
 
-## Site principal planejado
+**Não pedir configuração manual ao usuário antes do passo 5.** As conexões Meta/OpenAI já estão funcionais. A autorização Supabase→Make que chegou a ser iniciada como plano B não é necessária na arquitetura v3 e pode ser ignorada.
 
-A home atual ainda não deve ser considerada definitiva. Decisão aprovada para o futuro `www.donaantonia.com.br`:
+---
+
+## Estado da Etapa 1 — Sala de Compra + motor comercial
+
+Concluída.
+
+PR #145 foi incorporada anteriormente com motor comercial determinístico e Edge isolada `shopping-room-sales-v1`.
+
+A Sala de Compra oficial fica em:
+
+`/comprar/`
+
+Princípios:
+
+- WhatsApp e Sala representam a mesma venda/conversa;
+- não obrigar cliente de WhatsApp a usar site;
+- interface visual ajuda quando necessário;
+- carrinho, preços e estoque são validados no backend;
+- recomendações comerciais são relevantes e não insistentes.
+
+Motor comercial:
+
+- não recomenda item já no carrinho;
+- histórico do próprio cliente tem peso alto;
+- afinidade, oferta e upsell aumentam score;
+- rejeição recente exclui/penaliza;
+- máximo inicial de 2 iniciativas proativas por compra;
+- “não quero” / “só a cesta” reduz pressão a zero;
+- cliente com pressa segue para checkout;
+- sem recomendação forte, não oferecer.
+
+Edge de produção:
+
+`shopping-room-sales-v1`
+
+Mantém OpenAI, Meta e Bling fora da decisão comercial determinística.
+
+---
+
+## Estado da Etapa 2 — OpenAI
+
+Concluída.
+
+Homologações reais controladas passaram para:
+
+- texto;
+- transcrição de áudio;
+- visão de imagem.
+
+Worker:
+
+- `scripts/conversation-worker-v1.mjs`
+- `scripts/lib/conversation-core-v1.mjs`
+
+Modelos base atualmente usados/configuráveis:
+
+- conversa/visão: `gpt-4o-mini`;
+- transcrição: `gpt-4o-mini-transcribe`;
+- TTS: `gpt-4o-mini-tts`.
+
+### Voz oficial escolhida
+
+O usuário comparou vozes e estilos reais no WhatsApp e escolheu:
+
+- voz: **Marin**;
+- perfil: **B — atendente natural/humanizada**;
+- id técnico: `dona_antonia_marin_b_v1`.
+
+Características:
+
+- português brasileiro natural;
+- mulher adulta;
+- calorosa e tranquila;
+- sem tom de locutora/URA/propaganda;
+- pausas e variação natural de ritmo;
+- respostas curtas e conversacionais.
+
+O TTS do atendimento deve usar o endpoint direto da OpenAI porque precisamos do campo `instructions` completo.
+
+---
+
+## Etapa 3 — arquitetura WhatsApp oficial
+
+Visão simplificada:
 
 ```text
-DONA ANTÔNIA
-
-[ Encomendar por WhatsApp ]
-[ Encomendar pelo site ]
+Meta WhatsApp
+   │
+   ▼
+Make inbound
+   │
+   ▼
+Supabase ingest / Postgres / Storage
+   │
+   ├── IA quando gates permitem
+   │
+   └── outbound_jobs seller_message
+             │
+             ▼
+          pg_net
+             │
+             ▼
+Make outbound v3
+   │          │
+ texto      Marin B
+   │          │
+   └──── Meta WhatsApp
+             │
+             ▼
+      Webhook Response
+             │
+             ▼
+      net._http_response
+             │
+             ▼
+       reconciliação DB
 ```
 
-Entrando pelo site, usar a Sala de Compra com menu:
+### Inbound
 
-- Cestas Básicas
-- Mercearia Completa
-- Limpeza e Lavanderia
-- Higiene e Beleza
-- Casa e Pet
+Make scenario:
 
-Checkout do site é apenas conferência/fechamento da encomenda; pagamento é na entrega.
+`6779824 — Dona Antônia - WhatsApp Inbound Controlado v1`
+
+Fluxo:
+
+- trigger WhatsApp Business Cloud;
+- filtro de inbound verdadeiro;
+- adaptador flat para Supabase;
+- dedupe por message id;
+- customer/conversation;
+- texto/interativos;
+- para áudio/imagem: download Meta + Storage privado;
+- job de transcrição/visão quando gates permitem.
+
+Os módulos HTTP v4 agora possuem explicitamente os campos avançados de runtime; isso corrigiu o `BundleValidationError` observado na criação inicial.
+
+### Outbound v3
+
+Make scenario:
+
+`7290488 — Dona Antônia - WhatsApp Outbound Event-Driven v3`
+
+Não usa polling e não faz callback HTTP Make→Supabase.
+
+O Postgres:
+
+1. valida gates e janela de atendimento;
+2. bloqueia o job exato;
+3. manda o job completo pelo `pg_net` ao webhook Make guardado no Vault;
+4. Make envia pela Meta;
+5. Make devolve `provider_message_id` na resposta síncrona do webhook;
+6. `net._http_response` guarda o resultado;
+7. Postgres reconcilia e só então marca `sent`.
+
+Se houver qualquer dúvida de que a Meta possa ter recebido a tentativa, o job vai para `review_required` e **não é reenviado cegamente**.
+
+### Outbound legado
+
+`7290290 — LEGACY - NÃO USAR - WhatsApp Outbound HTTP v1`
+
+Deixado inativo somente como referência. Não reativar.
+
+---
+
+## Segurança de release do WhatsApp
+
+Gates principais:
+
+- `whatsapp_release_mode`;
+- `whatsapp_inbound_enabled`;
+- `whatsapp_auto_reply_enabled`;
+- `whatsapp_inbound_since`;
+- `ai_enabled`;
+- `conversation_worker_enabled`.
+
+Release modes:
+
+- `off` — fechado;
+- `observe` — ingest permitido, respostas ainda controladas;
+- `homologation` — somente allowlist temporária;
+- `live` — geral, ainda sujeito aos demais gates.
+
+### Anti-backlog
+
+Eventos anteriores a `whatsapp_inbound_since` são recusados antes de criar cliente/conversa.
+
+### Homologação allowlisted
+
+Tabela server-only:
+
+`whatsapp_test_allowlist`
+
+RPCs:
+
+- `whatsapp_release_decision(...)`;
+- `arm_whatsapp_homologation_v1(...)`;
+- `close_whatsapp_homologation_v1()`;
+- `expire_whatsapp_homologation_v1()`.
+
+A allowlist é aplicada no próprio banco antes do core de ingest. O número de teste nunca deve ser commitado no GitHub.
+
+Cron de expiração roda a cada minuto e fecha automaticamente a homologação.
+
+### Health e emergency stop
+
+RPCs:
+
+- `get_whatsapp_bridge_health_v1()`;
+- `whatsapp_bridge_emergency_stop_v1(reason)`;
+- `dispatch_whatsapp_outbound_healthcheck_v3()`;
+- `reconcile_whatsapp_outbound_responses_v3()`;
+- `recover_whatsapp_outbound_dispatch()`.
+
+Emergency stop:
+
+- fecha release/inbound/auto-reply/IA/worker;
+- desativa allowlist;
+- cancela jobs ainda não enviados;
+- jobs já em processamento vão para revisão, não retry.
+
+---
 
 ## Supabase
 
 Projeto:
 
-- ref: `ssbesxgaijknwsjbsbcz`
-- região: São Paulo `sa-east-1`
-- PostgreSQL 17
+- ref `ssbesxgaijknwsjbsbcz`;
+- região São Paulo `sa-east-1`;
+- PostgreSQL 17.
 
-O primeiro usuário Auth já foi criado e vinculado como **owner**. O Admin `/admin/` já autentica corretamente.
+Responsabilidades:
 
-RLS continua habilitado e as tabelas server-only estão fechadas para `anon/authenticated`. Avisos `RLS enabled no policy` do Advisor são intencionais enquanto o acesso é feito por Edge Functions/service role.
+- banco operacional;
+- clientes/conversas;
+- produtos fisicamente adotados;
+- cestas/carrinhos/pedidos;
+- Storage privado;
+- filas de IA/outbound/Bling;
+- funções determinísticas;
+- Auth/Admin.
 
-### Segurança
+Segurança:
 
-- nunca colocar service role, chaves Meta/Bling/OpenAI ou PII no GitHub/browser;
-- Edge Functions administrativas usam JWT + `admin_users`;
-- Sala de Compra pública usa token aleatório da sessão, CORS restrito aos domínios Dona Antônia e rate limiting;
-- mídia da Sala vai para bucket privado e é entregue por signed URL;
-- writes críticos ficam no backend;
-- idempotência obrigatória em mensagens/pedidos.
+- nunca versionar service role, Meta, Bling ou OpenAI keys;
+- server-only tables fechadas para anon/authenticated;
+- Edge pública apenas quando há autenticação custom adequada;
+- mídia privada e URLs assinadas;
+- idempotência obrigatória.
 
-## Gestão de produtos / contagem
+Edge WhatsApp de produção no fechamento:
 
-Decisão mantida: **não importar em massa todos os produtos antigos**.
+- `whatsapp-ingest` v3;
+- `whatsapp-ingest-make-v1` v1;
+- `whatsapp-outbound-v1` v4.
 
-Fluxo oficial:
+`whatsapp-outbound-v1` v4 não transporta mais mensagens; ele apenas reporta health/status autenticado e retorna 410 para o protocolo antigo.
 
-```text
-produto físico na prateleira
-→ celular lê EAN
-→ Firebase legado localiza cadastro quando disponível
-→ operador confere estoque/validade/preço/localização/status
-→ Supabase recebe produto fisicamente verificado
-→ fila Bling
-→ worker GitHub Actions
-```
+---
 
-A Contagem permite editar:
+## Make
 
-- estoque;
-- validade;
-- preço de custo;
-- preço de venda;
-- gôndola;
-- prateleira;
-- ativo/inativo.
+Princípio oficial:
 
-Regra obrigatória:
+> Make é ponte fina, não backend.
 
-```text
-estoque = 0
-→ produto inativo
-→ fora do WhatsApp
-→ saldo zero continua podendo ir para o Bling
-```
+Conexões já funcionais:
 
-Produtos com estoque maior que zero podem permanecer ativos ou ser desativados manualmente.
+- WhatsApp Business Cloud;
+- OpenAI.
 
-Não confiar em números de quantidade de produtos citados em chats antigos: consultar o Supabase no início da nova conversa, pois a contagem física continua em andamento.
+Não pedir ao usuário para criar uma conexão Supabase no Make para a arquitetura atual. O outbound v3 não precisa dela.
 
-## Admin
+Inbound ainda usa HTTP para a Edge, agora com configuração v4 corrigida.
 
-Admin definitivo em `/admin/`.
+---
 
-Já contém base para:
+## Bling
 
-- dashboard;
-- produtos conferidos;
-- edição de produto;
-- cestas básicas;
-- clientes/histórico/recomendações;
-- sessões de contagem;
-- fila Bling.
+Bling continua sendo ERP oficial, mas **não faz parte da homologação WhatsApp atual**.
 
-Editor de produtos administra nome, SKU, EAN, NCM, preço venda/custo, marca, categoria, embalagem, validade, gôndola/prateleira, imagem, descrições, tags, oferta, upsell, WhatsApp e ativo/inativo.
+Workers existentes:
 
-Cestas usam somente produtos fisicamente verificados.
+- `scripts/bling-order-writer-v1.mjs`;
+- `scripts/bling-stock-writer-v1.mjs`;
+- `scripts/bling-product-writer-v1.mjs`.
 
-## Regra comercial/fiscal das cestas
+Pedido real só será homologado depois do WhatsApp ponta a ponta.
 
-Regra confirmada pelo usuário:
+Regras das cestas:
 
-- a cesta tem **preço comercial próprio**;
-- o preço da cesta **não é a soma dos produtos**;
-- o cliente não vê preço individual dos componentes da cesta;
-- no pedido real do Bling os produtos da cesta são enviados **individualmente**;
-- diferença positiva entre soma fiscal dos produtos e preço comercial final vai como **Outras despesas**;
-- diferença negativa, quando existir, deve ser tratada como desconto;
+- cesta tem preço comercial próprio;
+- preço não é soma dos componentes;
+- cliente não vê preços individuais;
+- Bling recebe componentes individualizados;
+- diferença positiva vai para Outras despesas;
+- diferença negativa vira desconto;
 - IA nunca calcula essa diferença.
 
-## Sala de Compra — conceito oficial
+---
 
-O antigo conceito de “mini catálogo” foi absorvido pela **Sala de Compra**.
+## Gestão de produtos
 
-A Sala não substitui o WhatsApp. Ela é uma extensão visual da mesma venda, usando a mesma `conversation_id`, `customer_id` e `cart_id`.
+Decisão mantida: não importar em massa todo legado.
 
-WhatsApp continua sendo:
-
-- porta de entrada;
-- canal simples para clientes que preferem áudio/texto;
-- retomada;
-- notificações;
-- confirmação final.
-
-Sala de Compra é usada para:
-
-- catálogo;
-- ofertas;
-- cesta editável;
-- carrosséis/cards;
-- busca;
-- carrinho;
-- cadastro;
-- endereço;
-- conferência;
-- áudio/foto/texto;
-- finalização.
-
-Cliente pode ser classificado como:
-
-- `catalog_first`
-- `hybrid`
-- `whatsapp_only`
-- `auto`
-
-O sistema aprende comportamento e não deve obrigar cliente de WhatsApp a sair do WhatsApp.
-
-## Sala de Compra — código atual
-
-Diretório: `comprar/`.
-
-Arquivos principais:
-
-- `comprar/index.html`
-- `comprar/app.js`
-- `comprar/style.css`
-- `comprar/room-v2.css`
-- `comprar/config.js`
-
-Edge Function:
-
-- `supabase/functions/shopping-room-v1/index.ts`
-- produção estava em **version 3** no momento desta retomada.
-
-A Sala já possui/foi preparada para:
-
-- abrir sessão por token;
-- criar sessão vinda diretamente do site (`create_web_room`);
-- categorias comerciais;
-- busca de produtos;
-- ofertas;
-- recomendações;
-- cestas;
-- personalização de cesta;
-- carrinho persistente;
-- checkout;
-- identificação de cliente;
-- CPF/CNPJ quando necessário;
-- endereço;
-- pagamento “na entrega”;
-- retorno ao WhatsApp;
-- upload de áudio e foto;
-- Storage privado;
-- fila de processamento de IA para transcrição/visão.
-
-CI da Sala valida `MediaRecorder`, upload de mídia, criação web, identificação, regras de segurança e ausência de secrets no frontend.
-
-## Migrations recentes importantes
-
-### Núcleo Sala
-
-- `supabase/migrations/20260907152000_shopping_room_core_v1.sql`
-
-### Identidade, mídia e segurança
-
-- `supabase/migrations/20260907160549_shopping_room_identity_media_and_security.sql`
-
-Inclui, entre outros:
-
-- `channel = whatsapp|web|hybrid` em conversas;
-- sessões web;
-- normalização/variantes de telefone brasileiro, incluindo 8/9 dígitos;
-- identificação de cliente por telefone/documento;
-- Storage/mídia;
-- rate limits públicos;
-- `room_identify_customer`;
-- `room_save_address`;
-- fila de jobs de IA para mídia.
-
-### Resolução de cliente Bling e fila outbound
-
-- `supabase/migrations/20260907160650_order_customer_resolution_and_outbound_queue.sql`
-
-Inclui:
-
-- `outbound_jobs` com dedupe;
-- `bind_bling_contact_id`;
-- pedido exige cliente/documento suficiente antes da integração;
-- preparação da confirmação final via WhatsApp;
-- reforço do checkout/identificação.
-
-### Fila de pedido Bling
-
-- `supabase/migrations/20260907161000_order_sync_queue_v1.sql`
-
-Inclui `order_sync_jobs`, claim/finish e estado `review_bling` para casos ambíguos.
-
-### Motor comercial contextual
-
-Último avanço funcional antes deste arquivo:
-
-- commit `8801b6635bdf67585f5e79a7c21deec40b8eef7a`
-- migration `supabase/migrations/20260907162325_cart_aware_sales_recommendation_engine.sql`
-
-Foi criado:
-
-- `sales_offer_events`;
-- `record_sales_offer_event(...)`;
-- `get_cart_aware_recommendations(...)`;
-- `plan_next_sales_move(...)`.
-
-Regras do motor:
-
-- não recomendar item já no carrinho;
-- histórico do próprio cliente tem peso alto;
-- ofertas, categorias de afinidade e produtos de upsell aumentam score;
-- produto rejeitado recentemente é excluído;
-- ofertas repetidas são penalizadas;
-- no máximo 2 iniciativas comerciais proativas por compra como regra inicial;
-- se cliente disser “não quero”/“só a cesta”, `sales_pressure_level=0` e segue para checkout;
-- se cliente demonstrar pressa, segue para checkout;
-- checkout não deve ter upsell agressivo;
-- sem recomendação realmente relevante, não oferecer nada.
-
-## Histórico de compras / inteligência do cliente
-
-Estruturas já preparadas:
-
-- `orders`
-- `order_items`
-- `customer_product_stats`
-- `customer_behavior_events`
-- `sales_offer_events`
-
-Cada pedido confirmado deve alimentar estatísticas por produto/cliente para permitir:
-
-- “você costuma comprar…”;
-- ofertas de produtos realmente relevantes;
-- lembrar itens que o cliente costuma levar e não colocou no pedido atual;
-- preferir texto/áudio conforme comportamento;
-- aprender uso da Sala vs WhatsApp.
-
-## Conversational selling
-
-Campos em `conversations` já incluem:
-
-- `mode = ai|human|paused`
-- `sales_pressure_level` 0..3
-- `proactive_offer_count`
-- `upsell_declined`
-- `fast_checkout`
-- `last_offer_at`
-- `room_last_active_at`
-- takeover humano / retorno à IA.
-
-Princípio:
-
-> IA conversa e vende; interface apresenta; backend valida; Bling registra.
-
-A IA nunca deve:
-
-- inventar preço;
-- prometer estoque;
-- alterar carrinho sem validação;
-- criar pedido sem confirmação explícita;
-- insistir depois de rejeição.
-
-Áudio da vendedora deve ser curto e usado quando melhora a experiência. Listas, totais, endereço e confirmação permanecem visuais/escritos.
-
-## Bling — pedido oficial
-
-Worker:
-
-- `scripts/bling-order-writer-v1.mjs`
-- `.github/workflows/bling-order-writer-v1.yml`
-
-CI:
-
-- `.github/workflows/test-order-sync.yml`
-
-O teste da fila de pedidos Bling terminou em **success** antes desta retomada.
-
-O writer:
-
-- inicia em `dry-run`;
-- usa `concurrency: bling-api-global`;
-- valida subtotal fiscal + outras despesas - desconto = total;
-- exige Bling Product ID nos itens;
-- resolve contato Bling pelo CPF/CNPJ quando necessário;
-- cria contato se realmente não existir;
-- vincula `bling_contact_id` ao cliente Supabase;
-- cria pedido em `POST /pedidos/vendas`;
-- envia produtos individualizados;
-- envia `outrasDespesas` da cesta;
-- pagamento descrito como na entrega;
-- se a rede falhar depois de iniciar criação do pedido/contato, usa estado de revisão, sem retry cego para evitar duplicidade.
-
-O cenário Make legado grande `5897739` foi estudado somente como referência para os payloads reais do Bling. Ele não é base da arquitetura nova.
-
-## Estoque e produtos → Bling
-
-Workers já existentes:
-
-- `scripts/bling-stock-writer-v1.mjs`
-- `.github/workflows/bling-stock-writer-v1.yml`
-- `scripts/bling-product-writer-v1.mjs`
-- `.github/workflows/bling-product-writer-v1.yml`
-
-Todos continuam protegidos; não transformar em writes automáticos indiscriminados.
-
-## WhatsApp/Meta/Make
-
-Conta correta:
-
-- WABA: `840102181903253`
-- Phone Number ID: `1218939807961094`
-- número: `+55 65 8449-1018`
-- conexão Make saudável: `10607999`
-
-A conexão anterior `10606991` apresentou 401 e **não deve ser usada**.
-
-O cenário de teste WhatsApp `Dona Antônia - TESTE WhatsApp 1018` já recebeu mensagens reais com sucesso e demonstrou o payload. Foi deixado inativo após o teste para evitar consumo/acidente. Antes de confiar no status, consultar o Make novamente no novo chat.
-
-Payload inbound real já confirmado possui:
-
-- `metadata.phone_number_id`;
-- contato/`wa_id`;
-- `messages[].id` para idempotência;
-- `messages[].type`;
-- texto e mídia conforme evento.
-
-Arquitetura desejada do Make:
+Fluxo:
 
 ```text
-WhatsApp trigger
-→ filtro de inbound verdadeiro
-→ UMA chamada ao backend/Supabase
-→ fim
+produto físico
+→ ler EAN
+→ Firebase apenas como lookup legado quando existir
+→ operador verifica dados/estoque/validade/localização
+→ Supabase
+→ fila Bling
 ```
 
-Não colocar AI/Bling/30 módulos dentro do Make.
+Firebase não deve crescer como banco novo.
 
-## Fila outbound WhatsApp
+A página `/cadastro/` ainda é dívida de migração para Supabase.
 
-`outbound_jobs` já existe no Supabase, mas o worker/ponte final de envio pelo WhatsApp ainda deve ser concluído.
+---
 
-O outbound deve respeitar:
+## CRM / evolução comercial futura
 
-- `automation_config.outbound_enabled`;
-- dedupe key;
-- janela de atendimento/template quando aplicável;
-- conta WhatsApp correta;
-- confirmação de pedido somente após Bling confirmar;
-- idempotência do provider message id.
+Requisitos documentados em `docs/EVOLUCAO-COMERCIAL-DONA-ANTONIA.md`:
 
-## Automação global — segurança
+- salvar todos os pedidos/histórico;
+- relatórios no admin;
+- recompra personalizada;
+- cadência inicial pensada em ~15 dias, configurável;
+- opt-in e templates Meta quando necessário;
+- aniversário opcional para benefício no mês;
+- recomendações baseadas no próprio perfil/histórico;
+- ampliar o leque de compra com ofertas estratégicas relevantes;
+- regras de validade/descontos determinísticas.
 
-`automation_config` foi criado inicialmente com:
+Não ativar campanhas em massa nesta etapa.
 
-- `automation_enabled = false`
-- `ai_enabled = false`
-- `outbound_enabled = false`
+---
 
-Antes de ativar produção, consultar o estado atual e manter kill switch. Não presumir que flags mudaram sem ler o Supabase.
+## URLs operacionais
 
-## OpenAI / áudio / imagem
+- Admin: `/admin/`
+- Contagem: `/contagem/`
+- Cadastro legado: `/cadastro/`
+- Sala de Compra: `/comprar/`
+- `/catalogo/` redireciona para `/comprar/` preservando token.
 
-Decisão de custo-benefício:
+Pagamento: somente na entrega.
 
-- usar modelo barato/rápido quando resolve;
-- escolher modelo melhor quando a diferença de preço for pequena e a melhora de qualidade justificar;
-- AI não deve ser chamada para botões/ações determinísticas;
-- transcrever somente áudio;
-- visão somente imagem quando necessário;
-- TTS apenas em respostas curtas que tenham valor comercial/conversacional.
+Operação: somente entrega.
 
-A Sala já enfileira mídia para `transcription`/`vision`, mas **o worker real de IA que consome esses jobs ainda é um próximo passo**.
+---
 
-## Cadastro de produtos
+## O que continua NÃO liberado
 
-A página `/cadastro/` ainda é o ponto mais importante de dívida legada: ela ainda usa Firebase/Make para produto novo.
+- IA geral atendendo todos os clientes do WhatsApp;
+- `whatsapp_release_mode=live`;
+- automação comercial de marketing/recompra em massa;
+- criação indiscriminada de pedido real no Bling;
+- writers Bling automáticos amplos;
+- remoção do Firebase antes de migrar cadastro;
+- campanhas de validade/desconto sem controle de lote/preço consistente.
 
-Direção aprovada:
+---
 
-```text
-EAN/foto
-→ consulta Firebase só para legado
-→ se existe: encaminhar para contagem
-→ se novo: IA ajuda cadastro + imagem
-→ salvar no Supabase
-→ fila produto Bling
-```
+## Ordem recomendada após concluir a homologação WhatsApp
 
-Não expandir o Firebase novo.
+1. homologar texto/áudio/imagem no número allowlisted;
+2. fechar homologação e auditar;
+3. decidir liberação gradual do WhatsApp;
+4. homologar um pedido Bling real controlado;
+5. finalizar fechamento/retorno do pedido no WhatsApp;
+6. migrar `/cadastro/` para Supabase;
+7. evoluir CRM, relatórios, recompra e aniversário;
+8. só depois acabamento final/home pública/campanhas.
 
-## Make legado
+---
 
-O sincronizador agendado `6567836 — Disparar sincronizacao Firebase para Bling` foi desativado.
-
-Existem cenários temporários/on-demand de importação Bling → Supabase. Não executar importação massiva sem motivo; a decisão é adoção física progressiva.
-
-## O que NÃO está liberado ainda
-
-- IA conversando autonomamente com cliente real no WhatsApp;
-- outbound automático de confirmação/status;
-- envio real indiscriminado de pedidos ao Bling;
-- writers de estoque/produtos em automação ampla;
-- substituição completa da home principal;
-- remoção definitiva do Firebase;
-- cadastro novo 100% Supabase;
-- worker de áudio/visão/TTS completo.
-
-## Próximo ponto exato de programação
-
-Na próxima conversa, **não voltar a planejar do zero**. Primeiro ler este arquivo e consultar estado real no Supabase/GitHub/Make.
-
-Prioridade técnica recomendada:
-
-1. **Concluir o Conversation Engine e jobs de IA**:
-   - worker de `ai_jobs` para transcrição de áudio;
-   - visão de imagem;
-   - roteamento estruturado da intenção;
-   - resposta em texto e opção TTS;
-   - limitar chamadas por evento e registrar custo/uso.
-
-2. **Concluir a Sala de Compra**:
-   - renderização estável de áudio/imagem;
-   - atualização de mensagens sem refresh completo (Realtime ou polling leve seguro);
-   - tratamento de estados de processamento de mídia;
-   - integração do `plan_next_sales_move()` no backend da Sala;
-   - registrar `sales_offer_events` quando sugestões forem mostradas/adicionadas/rejeitadas;
-   - cadastro/endereço/checkout bem validados no mobile.
-
-3. **WhatsApp inbound fino**:
-   - reabrir cenário 1018 somente em janela de teste;
-   - trigger → backend único;
-   - dedupe por `wamid`;
-   - criar/localizar customer/conversation;
-   - suportar texto/áudio/imagem;
-   - depois desativar novamente até homologação.
-
-4. **Outbound WhatsApp**:
-   - consumir `outbound_jobs`;
-   - enviar confirmação depois de `sent_to_bling`;
-   - registrar provider message id/status;
-   - dedupe;
-   - manter `outbound_enabled=false` durante desenvolvimento.
-
-5. **Pedido Bling controlado**:
-   - conferir secrets e vínculos reais;
-   - dry-run com pedido real de teste controlado;
-   - validar contato, produtos, outras despesas e endereço;
-   - somente depois um `apply` único e auditado.
-
-6. **Migrar `/cadastro/` para Supabase** e reduzir Firebase a lookup legado.
-
-7. **Nova home pública** somente depois que Sala + WhatsApp + fechamento estiverem estáveis.
-
-## Últimos commits funcionais relevantes antes desta retomada
-
-- `80f1a40c...` — adiciona áudio e foto à Sala de Compra
-- `f5fa19ed...` — completa fluxo web, checkout e mídia
-- `b86d2026...` — resolve/cria cliente no Bling antes do pedido
-- `6892b17a...` — versiona identidade e mídia da Sala
-- `d7f5728f...` — resolução de cliente e fila outbound
-- `95313d8d...` — amplia CI da Sala
-- `276adf9f...` — amplia CI de pedidos e resolução Bling
-- `8801b663...` — motor comercial contextual/cart-aware
-
-## Regra de trabalho para as próximas rodadas
+## Regra de trabalho
 
 O usuário pediu explicitamente:
 
-- programar **grandes blocos por rodada**;
-- manter padrão profissional/modular;
-- analisar o projeto globalmente a cada avanço;
-- priorizar primeiro fazer o sistema funcionar ponta a ponta;
-- depois aperfeiçoar detalhes;
-- controlar custos do Make e evitar operações desnecessárias;
-- preferir backend/GitHub Actions quando mais barato e apropriado;
-- registrar andamento no GitHub para que qualquer nova conversa possa continuar.
+- programar grandes blocos por rodada;
+- manter padrão profissional e modular;
+- analisar o projeto de forma global;
+- fazer funcionar ponta a ponta antes de polir detalhes;
+- buscar baixo custo;
+- evitar operações Make desnecessárias;
+- nunca ativar integração perigosa sem validação controlada;
+- atualizar o GitHub para que uma nova conversa retome exatamente daqui.
 
-Ao terminar cada grande rodada futura, atualizar este arquivo `docs/RETOMADA-DONA-ANTONIA.md` com o novo ponto exato.
+### Instrução para um novo chat
+
+> Acesse o GitHub `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md` e `docs/WHATSAPP-BRIDGE-V3.md`, consulte o estado real no Supabase e Make e continue exatamente do ponto indicado. Programe o máximo possível por rodada, mantendo os gates fechados fora de homologação controlada.
