@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02">
   <link rel="stylesheet" href="../admin-v3/enhancements.css?v=20260907-02">
   <link rel="stylesheet" href="../admin-v3/customer-intelligence.css?v=20260907-01">
+  <link rel="stylesheet" href="../admin-v3/whatsapp-ops.css?v=20260907-01">
 </head>
 <body>
   <section id="loginView" class="login-shell">
@@ -30,6 +31,7 @@
         <button class="nav" data-route="products" type="button"><span>PR</span>Produtos conferidos</button>
         <button class="nav" data-route="baskets" type="button"><span>CE</span>Cestas básicas</button>
         <button class="nav" data-route="customers" type="button"><span>CL</span>Clientes</button>
+        <button class="nav" data-route="whatsapp" type="button"><span>IA</span>Atendimento IA</button>
         <button class="nav" data-route="counts" type="button"><span>CT</span>Contagens</button>
         <button class="nav" data-route="queue" type="button"><span>BQ</span>Fila Bling</button>
         <a class="nav link" href="../contagem/"><span>📷</span>Abrir contagem</a>
@@ -72,6 +74,23 @@
           <section class="panel table-panel"><div class="table-summary"><strong id="customerCount">0 clientes</strong><span id="customerPage"></span></div><div class="table-wrap"><table class="customer-table"><thead><tr><th>Cliente</th><th>Perfil</th><th>Compras</th><th>Última compra</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div><div class="pager"><button id="prevCustomers" class="button secondary small" type="button">Anterior</button><button id="nextCustomers" class="button secondary small" type="button">Próxima</button></div></section>
         </section>
 
+        <section class="view" data-view="whatsapp">
+          <div class="ops-alert" id="waReleaseBanner">Atendimento geral fechado. Carregando estado operacional…</div>
+          <div id="waOpsMetrics" class="metrics"></div>
+          <div class="grid-two">
+            <section class="panel">
+              <div class="panel-head"><div><div class="eyebrow">Fallback humano</div><h2>Atendimentos que precisam da equipe</h2></div><span id="waHandoffCount" class="muted"></span></div>
+              <div id="waHandoffRows" class="list"><div class="empty">Carregando…</div></div>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><div><div class="eyebrow">Segurança</div><h2>Controle operacional</h2></div></div>
+              <div id="waOpsState" class="ops-state"></div>
+              <div class="ops-danger-zone"><strong>Parada de emergência</strong><p>Fecha inbound, IA, worker e respostas automáticas imediatamente. Não reenvia mensagens incertas.</p><button id="waEmergencyStop" class="button danger" type="button">Parar atendimento automático</button></div>
+            </section>
+          </div>
+          <section class="panel"><div class="panel-head"><div><div class="eyebrow">Auditoria</div><h2>Eventos recentes</h2></div></div><div id="waOpsEvents" class="list"><div class="empty">Carregando…</div></div></section>
+        </section>
+
         <section class="view" data-view="counts"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="countRows" class="list"></div></section></section>
 
         <section class="view" data-view="queue"><div class="toolbar"><select id="queueStatus"><option value="">Todos</option><option value="pending">Pendentes</option><option value="processing">Processando</option><option value="done">Concluídos</option><option value="error">Erros</option><option value="cancelled">Cancelados</option></select><button id="reloadQueue" class="button secondary" type="button">Recarregar fila</button></div><section class="panel"><div id="queueRows" class="list"></div></section></section>
@@ -82,10 +101,10 @@
   <div id="modalBackdrop" class="modal-backdrop hidden"></div>
   <section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section>
   <div id="toastRegion" class="toasts" aria-live="polite"></div>
-  <script src="./config.js?v=20260907-01"></script>
+  <script src="./config.js?v=20260907-02"></script>
   <script src="../admin-v3/app.js?v=20260907-03"></script>
   <script src="../admin-v3/enhancements.js?v=20260907-02"></script>
   <script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script>
+  <script src="../admin-v3/whatsapp-ops.js?v=20260907-01"></script>
 </body>
 </html>
-
