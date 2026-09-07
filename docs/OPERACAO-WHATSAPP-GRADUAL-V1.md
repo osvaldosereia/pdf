@@ -2,51 +2,54 @@
 
 Data: 07/09/2026
 
-Status: infraestrutura preparada, **release geral deve permanecer OFF até homologação do worker operacional**.
+Status: Worker V2 automático homologado em WhatsApp real; `observe`, fallback humano, emergency stop e observabilidade validados sinteticamente. **Release geral permanece OFF.**
 
 ## Objetivo
 
-Substituir o Conversation Worker manual/one-shot por execução event-driven segura, adicionar observabilidade e fallback humano e permitir uma liberação real por canary sem transformar uma falha de IA ou transporte em atendimento perdido.
+Operar o atendimento de forma event-driven, auditável e fail-closed, permitindo evolução de `off` → observação controlada → canary mínimo → live gradual sem perder mensagens nem transformar falhas de IA/transporte em atendimento silenciosamente abandonado.
 
 ## Princípios
 
 1. **Não perder a mensagem do cliente.** Fora do canary, em observe ou quando um limite é atingido, a conversa vai para humano; não é descartada.
-2. **Sem retry cego após gasto externo.** Job `processing` com lease expirado vai para `review_required`/humano; nunca volta automaticamente para `pending`.
+2. **Sem retry cego após gasto externo.** Job `processing` com lease expirado vai para revisão/humano; nunca volta automaticamente para `pending`.
 3. **Uma chamada, um job exato.** O dispatcher envia `job_id`; o Edge Worker só pode claimar esse ID.
 4. **Gates rechecados antes do gasto.** O worker reconsulta configuração imediatamente antes de chamar OpenAI.
 5. **Preço, estoque, pedido e Bling continuam fora da decisão da IA.** Esta etapa não libera pedidos.
-6. **Fallback humano é parte da arquitetura, não exceção.** Erros, budgets e cohorts humanos geram fila visível no Admin.
-7. **Live não é botão simples.** A API server-side exige owner + confirmação explícita e percentual de canary.
+6. **Fallback humano é parte da arquitetura.** Erros, budgets e cohorts humanos geram fila visível no Admin.
+7. **Live não é botão simples.** A API server-side exige owner + confirmação explícita + percentual de canary.
 8. **Emergency stop é imediato.** Corta inbound/auto-reply/IA/worker/dispatcher e preserva envios incertos para revisão.
+9. **Custo desconhecido não é custo zero.** Tokens são exatos; custo só é mostrado como valor quando existe estimativa gravada para todas as chamadas contabilizadas.
 
 ## Worker operacional V2
 
-Fluxo:
+Fluxo homologado:
 
 ```text
 ai_jobs.pending
 → trigger Postgres
 → pg_net
-→ conversation-worker-v2 (Edge)
-→ valida chave interna do Vault
+→ conversation-worker-v2
+→ autenticação server-to-server
 → claim_conversation_job_v2(job_id exato)
-→ baixa mídia privada se necessário
-→ revalida gates
+→ mídia privada quando necessária
+→ revalidação de gates
 → OpenAI
 → finish_conversation_job
-→ outbound event-driven já homologado
+→ outbound event-driven quando permitido
 ```
 
-O segredo interno do worker é gerado no próprio Postgres e armazenado em Supabase Vault. Apenas o hash fica em `system_secrets`. Nenhuma chave é versionada.
+Provider OpenAI do Worker V2 fica no Supabase Vault. A chave não é versionada nem devolvida pelo healthcheck.
+
+Worker V2 passou em smoke sintético e em mensagem WhatsApp real allowlisted. Ver `docs/HOMOLOGACAO-WORKER-V2-20260907.md`.
 
 ### Recovery
 
 Cron de 1 minuto:
 
-- redispara apenas job que **continua `pending`** e cuja tentativa de dispatch envelheceu;
-- depois do limite de dispatch, job vira `held` e cai em humano;
-- job `processing` com lease >10 min vira `error/lease_expired_review_required` e cai em humano;
-- nunca há `processing → pending` automático.
+- redispara apenas job que **continua `pending`** e cujo dispatch envelheceu;
+- depois do limite de dispatch, job vai para humano;
+- job `processing` com lease expirado vai para `lease_expired_review_required`/humano;
+- nunca há `processing → pending` automático após possível chamada externa.
 
 ## Modos de release
 
@@ -57,119 +60,200 @@ Cron de 1 minuto:
 - IA/worker/dispatcher: desligados;
 - canary: 0%.
 
-Estado normal enquanto a infraestrutura está sendo preparada.
+Estado normal fora de testes e antes da liberação real.
 
 ### `homologation`
 
-Somente número temporário em allowlist. É o modo para provar o worker event-driven antes de qualquer cliente real.
+Número temporário em allowlist. Já foi usado para provar texto, áudio, imagem e Worker V2 automático.
 
 ### `observe`
 
-- todas as mensagens novas podem ser persistidas;
+Semântica atual do modo global:
+
+- todas as mensagens novas após o cutover podem ser persistidas;
 - **nenhuma resposta automática é enviada**;
-- conversas entram em `human_handoffs`;
-- usado para observar volume/formatos sem risco de IA responder.
+- decisão retorna `observe_human_only`;
+- atendimento é direcionado para controle humano.
+
+**Importante:** `observe` atual é global. Portanto não deve ser ativado para teste real enquanto não houver uma variante temporária/allowlisted. O próximo passo é criar essa variante segura em vez de abrir ingestão para todos os clientes.
 
 ### `live`
 
 Todas as mensagens entram, mas apenas uma fração estável entra no cohort `ai_canary`.
 
-Bucket por telefone: 0–99, determinístico. Exemplo: canary 5% → apenas buckets 0–4 são candidatos a IA.
-
-Quem ficar fora do canary entra em `human_control` e aparece no fallback humano. Não perde mensagem.
+Bucket por telefone: 0–99, determinístico. Quem fica fora do canary entra em `human_control` e aparece no fallback humano.
 
 ## Limites iniciais conservadores
-
-Defaults de infraestrutura, ajustáveis futuramente pelo Admin seguro:
 
 - novas conversas IA/hora: 10;
 - chamadas IA WhatsApp/hora: 40;
 - respostas automáticas IA/hora: 40;
 - tokens de entrada/dia: 150.000 (soft limit);
 - tokens de saída/dia: 30.000 (soft limit);
-- dispatch por job: até 5 tentativas enquanto o job ainda estiver pending.
+- dispatch por job: até 5 tentativas enquanto o job ainda estiver `pending`.
 
-Quando um limite de IA é atingido, o atendimento vai para humano. O sistema não aumenta o limite sozinho.
+Quando limite é atingido, o sistema encaminha para humano. Não aumenta budget sozinho.
 
-## Fallback humano
+## Fallback humano — VALIDADO
 
 Tabela `human_handoffs` mantém no máximo um atendimento ativo por conversa.
 
 Motivos automáticos incluem:
 
 - cliente pediu humano;
-- job OpenAI/visão/transcrição falhou;
-- lease expirou em situação incerta;
-- budget por evento/hora/dia atingido;
-- dispatch do worker esgotado;
-- cliente ficou fora do cohort canary;
-- cap de outbound atingido.
+- falha de OpenAI/visão/transcrição;
+- lease expirado em situação incerta;
+- budget por evento/hora/dia;
+- dispatch esgotado;
+- cliente fora do cohort canary;
+- cap de outbound.
 
-O Admin permite:
+Ciclo sintético comprovado:
 
-- visualizar fila;
-- assumir atendimento;
-- resolver;
-- resolver e devolver à IA **somente se a conversa ainda for elegível pelo release atual**;
-- emergency stop.
+```text
+conversa IA
+→ queue_human_handoff_v1
+→ mode=human / status=needs_human
+→ Admin assume
+→ handoff=claimed
+→ Admin resolve
+→ handoff=resolved
+→ retomar IA
+→ mode=ai / status=open / human_required=false
+```
 
-Não há botão de `live` nesta primeira versão do painel.
+Durante essa validação foi descoberto um bug real: `whatsapp_account_id` é obrigatório inclusive para conversa web, então a função antiga tratava qualquer conversa web como WhatsApp ao devolver para IA. A Sala ficaria bloqueada quando o release WhatsApp estivesse `off`.
 
-## Observabilidade no Admin
+Correção:
+
+- PR #164;
+- migration `20260907230000_resume_ai_channel_scope_v1.sql`;
+- gate WhatsApp agora se aplica apenas a `channel in ('whatsapp','hybrid')`;
+- conversa `web` pode retomar IA independentemente do release WhatsApp.
+
+A mesma conversa sintética que falhou antes passou depois da migration. Dados sintéticos foram apagados.
+
+## Observe — VALIDAÇÃO SINTÉTICA PASSOU
+
+Foi ativado `observe` por poucos segundos somente no banco, com Make inbound desligado.
+
+`whatsapp_release_decision` retornou:
+
+```text
+mode = observe
+cohort = observe
+reason = observe_human_only
+allow_ingest = true
+auto_reply_allowed = false
+```
+
+Em seguida o release voltou imediatamente para `off`.
+
+Conclusão: a semântica está correta; falta apenas uma forma **allowlisted e autoexpirável** para a prova real sem abrir observe globalmente.
+
+## Emergency stop — VALIDADO
+
+Teste sintético com filas vazias confirmou:
+
+- release `off`;
+- inbound desligado;
+- auto-reply desligado;
+- IA desligada;
+- worker desligado;
+- dispatcher desligado;
+- allowlist fechada;
+- nenhum envio pendente cancelado indevidamente;
+- nenhum processamento incerto criado.
+
+Depois do teste, o motivo sintético foi limpo e o estado permaneceu `off`.
+
+## Observabilidade no Admin — VALIDADA
 
 Seção **Atendimento IA** mostra:
 
-- modo de release;
-- percentual canary;
-- gates inbound/auto-reply/IA/worker/dispatcher;
+- release;
+- canary;
+- gates;
 - filas IA/outbound/review;
 - handoffs abertos/assumidos;
-- chamadas IA na última hora;
-- outbound da última hora;
+- chamadas IA e outbound/hora;
 - tokens do dia;
-- eventos operacionais recentes;
-- motivo do último emergency stop.
+- eventos operacionais;
+- emergency stop.
 
-Nenhum telefone completo, chave ou payload sensível é necessário nessa tela.
+Ciclo assumir/resolver/resolver+IA foi validado no backend.
 
-## Plano de homologação antes de `live`
+### Custo OpenAI auditável
 
-1. deploy do Edge Worker e Admin Ops com release OFF;
-2. aplicar migrations com release OFF;
-3. confirmar cron e dashboard, filas zeradas;
-4. testar autenticação interna/dispatcher sem provider;
-5. criar testes sintéticos de cohort/fallback e removê-los;
-6. abrir `homologation` somente para o telefone de teste;
-7. ativar o dispatcher operacional;
-8. enviar uma mensagem real de texto;
-9. provar que o job foi disparado automaticamente, sem workflow one-shot;
-10. repetir com áudio para provar encadeamento transcription → conversation event-driven;
-11. fechar homologation e auditar zero pendências;
-12. somente depois estudar `observe` e um canary real muito pequeno.
+Foi corrigida uma inconsistência antes do canary: chamadas com tokens, mas sem estimativa gravada, apareciam como `US$ 0`.
 
-## Critérios mínimos antes de canary real
+Correção:
+
+- PR #165;
+- migration `20260907230500_whatsapp_ops_usage_truthful_v1.sql`;
+- Admin distingue `priced`, `unpriced` e `no_usage`;
+- se houver qualquer evento sem preço, `estimated_cost_usd=null` e a UI mostra **“não precificado”**;
+- tokens e quantidade de chamadas continuam exatos.
+
+Validação de produção após a correção:
+
+```text
+cost_status = unpriced
+input_tokens = 7231
+output_tokens = 291
+total_events = 11
+priced_events = 0
+unpriced_events = 11
+estimated_cost_usd = null
+```
+
+Isso evita falsa percepção de custo zero.
+
+## Critérios antes de canary real
+
+Já concluídos:
 
 - CI verde;
-- worker event-driven real homologado;
-- `human_handoffs` funcionando;
-- emergency stop testado sem cliente real;
-- dashboard Admin funcionando;
+- Worker V2 event-driven real homologado;
+- provider Vault;
+- fallback humano sintético;
+- retomada IA web corrigida;
+- emergency stop sintético;
+- Admin/filas/budgets funcionando;
+- custo/token auditável;
 - filas zeradas;
-- nenhum `review_required` sem dono;
-- Make inbound tecnicamente estável;
 - outbound v3 estável;
-- equipe preparada para responder à fila humana;
-- Bling ainda fora.
+- Bling fora.
+
+Ainda falta:
+
+1. implementar observação real temporária e allowlisted;
+2. provar com uma mensagem real que ela é persistida e vira handoff humano **sem resposta automática e sem OpenAI**;
+3. fechar automaticamente a janela;
+4. auditar filas e resolver o handoff de teste;
+5. só então preparar canary `live` mínimo.
+
+## Próximo passo técnico
+
+Criar uma operação dedicada de **observe homologation**. Requisitos:
+
+- somente telefone allowlisted;
+- janela curta com expiração;
+- anti-backlog via `whatsapp_inbound_since`;
+- `auto_reply=false`;
+- `ai=false`;
+- `conversation_worker=false`;
+- `dispatcher=false`;
+- inbound permitido somente para o telefone de teste;
+- mensagem persistida e encaminhada para handoff humano;
+- outros telefones bloqueados antes da persistência;
+- fechamento e expiry retornam tudo para `off`;
+- nenhuma participação do Bling.
+
+Não usar `observe` global para esta prova.
 
 ## Bling
 
 **Esta etapa não autoriza pedido real.**
 
-Depois de o atendimento operacional passar em homologação e em um canary controlado, o próximo marco é um único pedido real no Bling, com:
-
-- cliente/teste conhecido;
-- pedido exato auditado antes do envio;
-- idempotência/dedupe;
-- sem retry cego após resposta externa incerta;
-- conferência de componentes da cesta e regra fiscal;
-- confirmação final no WhatsApp somente depois do Bling confirmar o pedido.
+Somente depois da observação real segura e de um canary mínimo do atendimento, homologar um único pedido real no Bling com idempotência, componentes da cesta, regra fiscal e confirmação final no WhatsApp.
