@@ -13,7 +13,6 @@ function json(body: unknown, status = 200) {
     headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" },
   });
 }
-
 function text(value: unknown, max = 500) {
   return String(value ?? "").replace(/[\u0000-\u001f\u007f]/g, " ").replace(/\s+/g, " ").trim().slice(0, max);
 }
@@ -25,6 +24,7 @@ function finiteNumber(value: unknown) {
 }
 function sanitizeSource(input: any) {
   const tags = Array.isArray(input?.tags) ? input.tags.slice(0, 30).map((v: unknown) => text(v, 80)).filter(Boolean) : [];
+  const active = typeof input?.is_active === "boolean" ? input.is_active : typeof input?.ativo === "boolean" ? input.ativo : undefined;
   const out: Record<string, unknown> = {
     firebaseKey: text(input?.firebaseKey || input?.firebase_key || input?.id, 160),
     codigo: text(input?.codigo || input?.sku, 120), sku: text(input?.sku || input?.codigo, 120),
@@ -34,7 +34,8 @@ function sanitizeSource(input: any) {
     categoria: text(input?.categoria, 160), subcategoria: text(input?.subcategoria, 160), subsubcategoria: text(input?.subsubcategoria, 160),
     gondola: text(input?.gondola ?? input?.["gôndola"], 80), prateleira: text(input?.prateleira, 80),
     validade: text(input?.validade || input?.data_validade, 40), url_imagem: text(input?.url_imagem || input?.imagem_url || input?.imagem, 1000),
-    estoque: finiteNumber(input?.estoque), preco: finiteNumber(input?.preco), preco_custo: finiteNumber(input?.preco_custo), tags,
+    estoque: finiteNumber(input?.estoque), preco: finiteNumber(input?.preco), preco_custo: finiteNumber(input?.preco_custo),
+    ativo: active, situacao: text(input?.situacao || input?.status, 30), tags,
   };
   return Object.fromEntries(Object.entries(out).filter(([, v]) => v !== "" && v !== null && v !== undefined && (!Array.isArray(v) || v.length)));
 }
@@ -84,9 +85,25 @@ Deno.serve(async (req: Request) => {
     const source = sanitizeSource(body?.product || body?.source || {});
     const stock = finiteNumber(body?.counted_stock);
     if (stock === null || stock < 0) return json({ ok: false, error: "invalid_stock" }, 400);
-    if (!digits((source as any).gtin || (source as any).ean)) return json({ ok: false, error: "gtin_required" }, 400);
+    const gtin = digits((source as any).gtin || (source as any).ean);
+    if (!gtin) return json({ ok: false, error: "gtin_required" }, 400);
+    const price = finiteNumber((source as any).preco);
+    const cost = finiteNumber((source as any).preco_custo);
+    if (price !== null && price < 0) return json({ ok: false, error: "invalid_price" }, 400);
+    if (cost !== null && cost < 0) return json({ ok: false, error: "invalid_cost" }, 400);
     const validity = parseDate(body?.validity_date);
     if (body?.validity_date && !validity) return json({ ok: false, error: "invalid_validity_date" }, 400);
+
+    const { data: before } = await supabase.from("products")
+      .select("id,is_active,price,cost,gondola,shelf")
+      .eq("gtin", gtin).maybeSingle();
+
+    let requestedActive = true;
+    if (typeof body?.is_active === "boolean") requestedActive = body.is_active;
+    else if (typeof (source as any).ativo === "boolean") requestedActive = (source as any).ativo;
+    else if (["I", "INATIVO", "INACTIVE"].includes(text((source as any).situacao, 30).toUpperCase())) requestedActive = false;
+    if (stock <= 0) requestedActive = false;
+
     const { data, error } = await supabase.rpc("save_verified_inventory_count", {
       p_inventory_count_id: body?.inventory_count_id || null,
       p_user_id: user.id,
@@ -98,7 +115,25 @@ Deno.serve(async (req: Request) => {
       p_shelf: text(body?.shelf || (source as any).prateleira, 80) || null,
     });
     if (error) return json({ ok: false, error: "save_failed", detail: error.message }, 400);
-    return json({ ok: true, ...data });
+
+    const productId = data?.product_id;
+    if (productId) {
+      const patch: Record<string, unknown> = { is_active: requestedActive };
+      if (!requestedActive) patch.is_whatsapp_active = false;
+      const { error: patchError } = await supabase.from("products").update(patch).eq("id", productId);
+      if (patchError) return json({ ok: false, error: "product_status_save_failed", detail: patchError.message }, 400);
+
+      if (before && before.is_active !== requestedActive) {
+        await supabase.from("bling_commands").insert({
+          command_type: requestedActive ? "activate_product" : "inactivate_product",
+          product_id: productId,
+          payload: { desired_status: requestedActive ? "A" : "I", source: "inventory_count" },
+          status: "pending",
+          created_by: user.id,
+        });
+      }
+    }
+    return json({ ok: true, ...data, is_active: requestedActive, price, cost });
   }
   if (action === "close") {
     if (admin.role === "viewer") return json({ ok: false, error: "read_only" }, 403);
@@ -111,7 +146,7 @@ Deno.serve(async (req: Request) => {
   if (action === "recent") {
     const limit = Math.min(50, Math.max(1, Number(body?.limit || 20)));
     let query = supabase.from("inventory_count_items")
-      .select("id,inventory_count_id,ean,counted_stock,validity_date,counted_at,sync_status,product:products(id,name,image_url,brand,packaging,gondola,shelf)")
+      .select("id,inventory_count_id,ean,counted_stock,validity_date,counted_at,sync_status,product:products(id,name,image_url,brand,packaging,gondola,shelf,price,cost,is_active)")
       .order("counted_at", { ascending: false }).limit(limit);
     if (body?.inventory_count_id) query = query.eq("inventory_count_id", body.inventory_count_id);
     const { data, error } = await query;
