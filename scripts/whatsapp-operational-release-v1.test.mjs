@@ -10,6 +10,7 @@ const providerVault=read('supabase/migrations/20260907223000_conversation_worker
 const providerVaultFix=read('supabase/migrations/20260907223500_conversation_worker_provider_vault_digest_fix.sql');
 const resumeScope=read('supabase/migrations/20260907230000_resume_ai_channel_scope_v1.sql');
 const truthfulUsage=read('supabase/migrations/20260907230500_whatsapp_ops_usage_truthful_v1.sql');
+const observeHomologation=read('supabase/migrations/20260907231500_whatsapp_observe_homologation_v1.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -34,6 +35,23 @@ test('gradual release ingests non-canary traffic but sends it to human control',
   has(main,/queue_human_handoff_v1/);
   has(main,/Atendimento retido pela liberação gradual/);
   has(main,/jsonb_set\(v_result,'\{should_reply\}','false'/);
+});
+
+test('observe homologation is single-phone, human-only and auto-expiring through homologation',()=>{
+  has(observeHomologation,/arm_whatsapp_observe_homologation_v1/);
+  has(observeHomologation,/controlled_observe_homologation/);
+  has(observeHomologation,/whatsapp_release_mode='homologation'/);
+  has(observeHomologation,/whatsapp_inbound_enabled=true/);
+  has(observeHomologation,/whatsapp_auto_reply_enabled=false/);
+  has(observeHomologation,/ai_enabled=false/);
+  has(observeHomologation,/conversation_worker_enabled=false/);
+  has(observeHomologation,/conversation_worker_dispatch_enabled=false/);
+  has(observeHomologation,/observe_homologation_allowlist/);
+  has(observeHomologation,/'auto_reply_allowed',false/);
+  has(observeHomologation,/'cohort','observe'/);
+  has(observeHomologation,/homologation_phone_blocked/);
+  has(observeHomologation,/select public\.close_whatsapp_homologation_v1\(\)/,'migration must end fail-closed');
+  assert.doesNotMatch(observeHomologation,/LIBERAR_ATENDIMENTO_REAL/,'observe homologation must never open live');
 });
 
 test('live release requires explicit server-side confirmation and canary',()=>{
