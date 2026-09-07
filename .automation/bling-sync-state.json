@@ -24016,6 +24016,96 @@
       "blingStatus": "I",
       "syncedAt": "2026-09-07T15:31:38.023Z",
       "deletedAt": null
+    },
+    "1788795050219_31c0": {
+      "version": 3,
+      "fingerprint": "fbb83f5329420874748e2c1f725df9a7837e2c119c8f66f3456731b64af7674e",
+      "blingId": 16702600982,
+      "codigo": "7500435160636",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:35.159Z",
+      "deletedAt": null
+    },
+    "1788797247978_a3d2": {
+      "version": 3,
+      "fingerprint": "8e6f2f5ffaacfb8ac25c10a4fdeb64c8f67d8cf66523e7c64891980732a2f0f3",
+      "blingId": 16702600985,
+      "codigo": "7896098902424",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:35.603Z",
+      "deletedAt": null
+    },
+    "1788797389630_c415": {
+      "version": 3,
+      "fingerprint": "11c746d07caee644db840fd2af3a4c89196a27c1c3ac99707ee651038deb123d",
+      "blingId": 16702600987,
+      "codigo": "7898964012053",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:36.003Z",
+      "deletedAt": null
+    },
+    "1788802963577_1dc8": {
+      "version": 3,
+      "fingerprint": "3746150e783f93efdefa0a1023f1bf6437cccb692af29a11820d4769a74b3def",
+      "blingId": 16702600990,
+      "codigo": "7908228809753",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:36.433Z",
+      "deletedAt": null
+    },
+    "1788803147799_5f92": {
+      "version": 3,
+      "fingerprint": "4f78e563fe37b54eead4060b1fbabda618dddb14bdd9bcc59c83884e80c58e71",
+      "blingId": 16702600992,
+      "codigo": "7896005402757",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:36.843Z",
+      "deletedAt": null
+    },
+    "1788803434522_05c3": {
+      "version": 3,
+      "fingerprint": "189a72e8546f362e2fa21f0fe055c3bf52e6b85bf3b0a70bf9d83c970fd3d2a1",
+      "blingId": 16702600993,
+      "codigo": "7896423701012",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:37.261Z",
+      "deletedAt": null
+    },
+    "1788803581382_cd09": {
+      "version": 3,
+      "fingerprint": "d161ff2c8d1cd3097d466037f7d3f78c3a9df42729972f4810577b4c374b9e57",
+      "blingId": 16702600996,
+      "codigo": "7896423700367",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:37.686Z",
+      "deletedAt": null
+    },
+    "1788803691038_594e": {
+      "version": 3,
+      "fingerprint": "b9ba719f024202c056c1f3e967fbebe46dc85d421b26fd6ab6155e6db9a3de5f",
+      "blingId": 16702600999,
+      "codigo": "7896005206539",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:38.113Z",
+      "deletedAt": null
+    },
+    "1788803830893_cd71": {
+      "version": 3,
+      "fingerprint": "568ba59a397cd75128b1e93bfee9e8f3ef5b177376f0d9f2ad8a3bd3a16e40b0",
+      "blingId": 16702601003,
+      "codigo": "7896322800755",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-07T18:34:38.526Z",
+      "deletedAt": null
     }
   }
 }
