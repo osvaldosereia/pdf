@@ -29,9 +29,15 @@ Deno.serve(async(req:Request)=>{
   const {data:secret,error:secretError}=await sb.from("system_secrets").select("key_hash,is_active").eq("key_name","make_whatsapp_ingest").maybeSingle();
   if(secretError||!secret?.is_active||(await sha256Hex(supplied))!==secret.key_hash)return json({ok:false,error:"unauthorized"},401);
 
-  let body:any;
-  try{body=await req.json()}catch{return json({ok:false,error:"invalid_json"},400)}
-  const action=clean(body?.action,30).toLowerCase();
+  const requestUrl=new URL(req.url);
+  const query=requestUrl.searchParams;
+  let body:any={};
+  const bodyLength=Number(req.headers.get("content-length")||0);
+  const contentType=req.headers.get("content-type")||"";
+  if(bodyLength>0||contentType.includes("application/json")){
+    try{body=await req.json()}catch{return json({ok:false,error:"invalid_json"},400)}
+  }
+  const action=clean(query.get("action")||body?.action,30).toLowerCase();
 
   if(action==="claim"){
     const {data,error}=await sb.rpc("claim_whatsapp_conversation_outbound",{p_worker:WORKER});
@@ -42,10 +48,12 @@ Deno.serve(async(req:Request)=>{
   }
 
   if(action==="finish"){
-    const jobId=clean(body?.job_id,80),success=body?.success===true;
+    const jobId=clean(query.get("job_id")||body?.job_id,80);
+    const successRaw=query.get("success");
+    const success=successRaw!==null ? successRaw==="true" : body?.success===true;
     if(!validUuid(jobId))return json({ok:false,error:"invalid_job_id"},400);
-    const providerMessageId=clean(body?.provider_message_id,300)||null;
-    const errorText=success?null:(clean(body?.error,1000)||"whatsapp_send_failed");
+    const providerMessageId=clean(query.get("provider_message_id")||body?.provider_message_id,300)||null;
+    const errorText=success?null:(clean(query.get("error")||body?.error,1000)||"whatsapp_send_failed");
     const {data,error}=await sb.rpc("finish_whatsapp_conversation_outbound",{
       p_job_id:jobId,p_worker:WORKER,p_success:success,p_provider_message_id:providerMessageId,p_error:errorText
     });
