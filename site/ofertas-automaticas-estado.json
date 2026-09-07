@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-07T04:33:33.171Z",
+  "ultima_execucao": "2026-09-07T05:28:37.670Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -226,6 +226,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1775965599400-1788747163548-42wrv"
+    },
+    {
+      "produto_key": "1775965599402",
+      "codigo": "734854K",
+      "nome": "Johnson’s Sabonete Erva-Doce 80g",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.89,
+      "preco_oferta": 2.72,
+      "desconto_percentual": 5.88,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1775965599402-1788758917670-wx0m1"
     },
     {
       "produto_key": "1775966798593",
@@ -1432,6 +1446,20 @@
       "historico_id": "oferta-1776338123621-1788377083804-1jn2t"
     },
     {
+      "produto_key": "1776338123633",
+      "codigo": "P0151",
+      "nome": "Vitoriosa Farinha Trigo 1kg",
+      "categoria": "MERCEARIA BÁSICA",
+      "regra_id": "regra-1785205122760",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.69,
+      "preco_oferta": 3.54,
+      "desconto_percentual": 4.07,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338123633-1788758917670-zfx1a"
+    },
+    {
       "produto_key": "1776338123643",
       "codigo": "P433",
       "nome": "Macarrão Badotti Sêmola Espaguete 400g",
@@ -1740,6 +1768,20 @@
       "historico_id": "oferta-1776338124090-1788597030628-nwv3g"
     },
     {
+      "produto_key": "1776338124104",
+      "codigo": "927079I",
+      "nome": "Leão Chá Matte Natural com 25 saches",
+      "categoria": "CAFÉ DA MANHÃ",
+      "regra_id": "regra-1785205019989",
+      "origem": "campanha_automatica",
+      "preco_normal": 7.99,
+      "preco_oferta": 7.54,
+      "desconto_percentual": 5.63,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338124104-1788758917670-0061c"
+    },
+    {
       "produto_key": "1776338124115",
       "codigo": "73219738",
       "nome": "Cabide Pequeno para Roupas Leves Unidade",
@@ -1794,6 +1836,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338124159-1788686833409-snueu"
+    },
+    {
+      "produto_key": "1776338124168",
+      "codigo": "417248R",
+      "nome": "Skala Shampoo Skalinha Bebê Glicerinado Camomila 200ml",
+      "categoria": "BEBÊ",
+      "regra_id": "regra-1785202788822",
+      "origem": "campanha_automatica",
+      "preco_normal": 9.9,
+      "preco_oferta": 9.24,
+      "desconto_percentual": 6.67,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338124168-1788758917670-5j1np"
     },
     {
       "produto_key": "1776338124196",
@@ -2130,6 +2186,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338124992-1788743156205-4r1hz"
+    },
+    {
+      "produto_key": "1776338124995",
+      "codigo": "P12EE",
+      "nome": "Cor&Ton Tintura 4.0 Castanho Médio 1un",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.21,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-14T23:59:59-04:00",
+      "historico_id": "oferta-1776338124995-1787693289090-f9fjl"
     },
     {
       "produto_key": "1776338125014",
@@ -3378,6 +3448,20 @@
       "historico_id": "oferta-1776338127845-1788597030628-gaklu"
     },
     {
+      "produto_key": "1776338127883",
+      "codigo": "P0127",
+      "nome": "Desinfetante Remmus Desaflora Roxo Unidade",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 5.99,
+      "preco_oferta": 5.63,
+      "desconto_percentual": 6.01,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338127883-1788758917670-q11nl"
+    },
+    {
       "produto_key": "1776338127949",
       "codigo": "P17",
       "nome": "Condor Escova de Cabelo Oval Vermelha Belle 1un",
@@ -3768,6 +3852,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338128497-1788363214343-9kk4n"
+    },
+    {
+      "produto_key": "1776338128519",
+      "codigo": "P0218",
+      "nome": "Linha Magna Verde Unidade",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 1.5,
+      "preco_oferta": 1.35,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338128519-1788758917670-63u16"
     },
     {
       "produto_key": "1776338128587",
@@ -4582,6 +4680,20 @@
       "historico_id": "oferta-1776338130348-1788374440833-ismfu"
     },
     {
+      "produto_key": "1776338130360",
+      "codigo": "P0032",
+      "nome": "Bala de Gelatina Fini 15g Beijos Morango e Nata",
+      "categoria": "BALAS E CHICLETES",
+      "regra_id": "regra-1785202804573",
+      "origem": "campanha_automatica",
+      "preco_normal": 1.69,
+      "preco_oferta": 1.52,
+      "desconto_percentual": 10.06,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338130360-1788413102365-0h45e"
+    },
+    {
       "produto_key": "1776338130362",
       "codigo": "P399",
       "nome": "Pratos Bandeja Petisqueira Pastel Espeto Lanche - 18 X Unidade",
@@ -4750,6 +4862,20 @@
       "historico_id": "oferta-1776338130553-1788708235541-6bnf6"
     },
     {
+      "produto_key": "1776338130566",
+      "codigo": "P0217",
+      "nome": "Linha Magna Preta Unidade",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 1.5,
+      "preco_oferta": 1.35,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338130566-1788758917670-kpdo9"
+    },
+    {
       "produto_key": "1776338130581",
       "codigo": "P502",
       "nome": "Cesto Plástico Jáguar Telado 10L",
@@ -4818,6 +4944,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1776338130637-1788748663701-rybal"
+    },
+    {
+      "produto_key": "1776338130648",
+      "codigo": "P389",
+      "nome": "Livro de Colorir Carregue-Me Dinossauros Unidade",
+      "categoria": "UTENSÍLIOS E UTILIDADES",
+      "regra_id": "regra-1785205206545",
+      "origem": "campanha_automatica",
+      "preco_normal": 4.9,
+      "preco_oferta": 4.41,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338130648-1788758917670-vww91"
     },
     {
       "produto_key": "1776338130687",
@@ -5126,6 +5266,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338131144-1788711968702-8o74n"
+    },
+    {
+      "produto_key": "1776338131163",
+      "codigo": "816534J",
+      "nome": "Comfort Amaciante Concentrado Puro Cuidado 1,5L",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 29.9,
+      "preco_oferta": 27.81,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338131163-1788758917670-k2bpb"
     },
     {
       "produto_key": "1776338131184",
@@ -6108,6 +6262,20 @@
       "historico_id": "oferta-1776434295471-1788511173037-dluc5"
     },
     {
+      "produto_key": "1776434860979",
+      "codigo": "34860979",
+      "nome": "Carmed Gel Dental Cereja 70g",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 16.9,
+      "preco_oferta": 15.55,
+      "desconto_percentual": 7.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776434860979-1788758917670-c2a5r"
+    },
+    {
       "produto_key": "1776438902228",
       "codigo": "38902228",
       "nome": "NIVEA Hidratante Labial Cereja 4,8g",
@@ -6820,6 +6988,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776976368598-1788755613171-vjyle"
+    },
+    {
+      "produto_key": "1776976576814",
+      "codigo": "76576814",
+      "nome": "Kit Shampoo Pantene Colágeno 300ml + Condicionador 150ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 32.9,
+      "preco_oferta": 30.6,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776976576814-1788758917670-xrf8a"
     },
     {
       "produto_key": "1777264673630",
@@ -8978,6 +9160,20 @@
       "historico_id": "oferta-177972237229601358-1788726328042-00xbo"
     },
     {
+      "produto_key": "177972529700688419",
+      "codigo": "2970060709",
+      "nome": "Oruam Molho para Salada Kisabor - Caesar Unidade",
+      "categoria": "MOLHOS E CONDIMENTOS",
+      "regra_id": "regra-1785205132287",
+      "origem": "campanha_automatica",
+      "preco_normal": 8.9,
+      "preco_oferta": 8.19,
+      "desconto_percentual": 7.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-177972529700688419-1788758917670-gsiwd"
+    },
+    {
       "produto_key": "177972550188333130",
       "codigo": "5018830710",
       "nome": "Mabel Rosquinha Leite 300g",
@@ -9382,6 +9578,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-178015085911587839-1788736989903-thvn3"
+    },
+    {
+      "produto_key": "17801556591116394",
+      "codigo": "P-8EUO",
+      "nome": "Macarrão Parafuso Urbano Arroz e Feijão Preto Zero Glúten 500g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 7.9,
+      "preco_oferta": 7.11,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-17801556591116394-1788758917670-0vp5k"
     },
     {
       "produto_key": "178015652237210548",
@@ -9858,6 +10068,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-178050212748636364-1788603176110-d9zn2"
+    },
+    {
+      "produto_key": "178155244029872786",
+      "codigo": "4402980254",
+      "nome": "NIVEA Desodorante Roll-On Derma Control RESTAURA 50ml",
+      "categoria": "DESODORANTE",
+      "regra_id": "regra-1785205065492",
+      "origem": "campanha_automatica",
+      "preco_normal": 10.9,
+      "preco_oferta": 10.25,
+      "desconto_percentual": 5.96,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178155244029872786-1788758917670-j7e9m"
     },
     {
       "produto_key": "178155551409232272",
@@ -10714,6 +10938,20 @@
       "historico_id": "oferta-1786371387505b35b-1788621903432-pr61t"
     },
     {
+      "produto_key": "1786371466517_fe20",
+      "codigo": "7896003741711",
+      "nome": "Rosquinha Sabor Coco Bulnez 400g",
+      "categoria": "BOLACHAS E BISCOITOS",
+      "regra_id": "regra-1785205001908",
+      "origem": "campanha_automatica",
+      "preco_normal": 3.59,
+      "preco_oferta": 3.37,
+      "desconto_percentual": 6.13,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1786371466517fe20-1788758917670-r0mxs"
+    },
+    {
       "produto_key": "1786371676052_a844",
       "codigo": "7894650015681",
       "nome": "Glade Gotas Perfumadas Citronela 120 ml",
@@ -11538,6 +11776,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-17873203370124eda-1788729763200-0d1vh"
+    },
+    {
+      "produto_key": "1787404129365_86a7",
+      "codigo": "7896533700608",
+      "nome": "Mistura para Bolo Emegê Sabor Cenoura 400g",
+      "categoria": "CONFEITARIA",
+      "regra_id": "regra-1785205052179",
+      "origem": "campanha_automatica",
+      "preco_normal": 4.89,
+      "preco_oferta": 4.55,
+      "desconto_percentual": 6.95,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-178740412936586a7-1788758917670-e0h14"
     },
     {
       "produto_key": "1787405634897_e11d",
@@ -13144,7 +13396,7 @@
       "regra_id": "regra-1785202788822"
     },
     "1776338130360": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785202804573"
     },
     "1775971741046": {
@@ -13244,7 +13496,7 @@
       "regra_id": "regra-1785205096285"
     },
     "1776338131163": {
-      "ultima_oferta_em": "2026-09-03T04:53:03.961Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205096285"
     },
     "1776338123521": {
@@ -13400,7 +13652,7 @@
       "regra_id": "regra-1785205122760"
     },
     "1776338124995": {
-      "ultima_oferta_em": "2026-08-25T21:28:09.090Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785202557027"
     },
     "177850826754511278270": {
@@ -13688,7 +13940,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1776338127883": {
-      "ultima_oferta_em": "2026-09-02T11:26:29.133Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205105033"
     },
     "1776338128235": {
@@ -14036,7 +14288,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776434860979": {
-      "ultima_oferta_em": "2026-09-03T04:53:03.961Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205082552"
     },
     "177930533148511936": {
@@ -14328,7 +14580,7 @@
       "regra_id": "regra-1785202804573"
     },
     "1776976576814": {
-      "ultima_oferta_em": "2026-09-02T15:33:34.343Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205192100"
     },
     "produto_1784140220379": {
@@ -14408,7 +14660,7 @@
       "regra_id": "regra-1785205113340"
     },
     "17801556591116394": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205113340"
     },
     "1778004013614": {
@@ -14508,7 +14760,7 @@
       "regra_id": "regra-1785205192100"
     },
     "1776338123633": {
-      "ultima_oferta_em": "2026-09-03T04:53:03.961Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205122760"
     },
     "1776338127873": {
@@ -15056,15 +15308,15 @@
       "regra_id": "regra-1785205206545"
     },
     "1776338130566": {
-      "ultima_oferta_em": "2026-09-03T03:27:07.068Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205206545"
     },
     "1776338128519": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205206545"
     },
     "1776338130648": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205206545"
     },
     "1776338127255": {
@@ -15256,7 +15508,7 @@
       "regra_id": "regra-1785205065492"
     },
     "178155244029872786": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205065492"
     },
     "1776338124749": {
@@ -15496,7 +15748,7 @@
       "regra_id": "regra-1785202788822"
     },
     "1776338124168": {
-      "ultima_oferta_em": "2026-09-03T04:53:03.961Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785202788822"
     },
     "1776338127455": {
@@ -15548,7 +15800,7 @@
       "regra_id": "regra-1785205082552"
     },
     "177972529700688419": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205132287"
     },
     "7897005104979": {
@@ -15592,7 +15844,7 @@
       "regra_id": "regra-1785205019989"
     },
     "1776338124104": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205019989"
     },
     "1776338124088": {
@@ -17056,7 +17308,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1775965599402": {
-      "ultima_oferta_em": "2026-09-03T04:53:03.961Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205164829"
     },
     "1775965599399": {
@@ -17532,7 +17784,7 @@
       "regra_id": "regra-1785205132287"
     },
     "1786371466517_fe20": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205001908"
     },
     "1786371387505_b35b": {
@@ -17936,7 +18188,7 @@
       "regra_id": "regra-1785205001908"
     },
     "1787404129365_86a7": {
-      "ultima_oferta_em": "2026-09-03T05:25:02.365Z",
+      "ultima_oferta_em": "2026-09-07T05:28:37.670Z",
       "regra_id": "regra-1785205052179"
     },
     "1787319035410_524a": {
@@ -17985,23 +18237,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788078689752",
-      "executado_em": "2026-08-30T08:31:30.622Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 13,
-        "ofertas_nao_criadas": 10,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788081969971",
       "executado_em": "2026-08-30T09:26:10.553Z",
@@ -21379,6 +21614,23 @@
         "ofertas_nao_criadas": 20,
         "ofertas_encerradas": 257,
         "vencidos": 257,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788758917010",
+      "executado_em": "2026-09-07T05:28:37.670Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 18,
+        "ofertas_nao_criadas": 5,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
         "ofertas_reativadas": 0,
         "reativacoes_com_falha": 0,
         "banners_reativados": 0,
