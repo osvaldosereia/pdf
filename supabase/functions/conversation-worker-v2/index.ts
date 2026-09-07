@@ -31,7 +31,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json({ ok: false, error: "method_not_allowed" }, 405);
   const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
-  const openaiKey = Deno.env.get("OPENAI_API_KEY") || "";
+  let openaiKey = Deno.env.get("OPENAI_API_KEY") || "";
   if (!supabaseUrl || !serviceKey) return json({ ok: false, error: "server_config" }, 500);
   const parsed = new URL(supabaseUrl);
   if (parsed.protocol !== "https:" || parsed.hostname !== PROJECT_HOST) return json({ ok: false, error: "unexpected_supabase_project" }, 500);
@@ -45,8 +45,16 @@ Deno.serve(async (req: Request) => {
     return json({ ok: false, error: "unauthorized" }, 401);
   }
 
+  if (!openaiKey) {
+    const { data: vaultKey, error: vaultError } = await sb.rpc("get_conversation_worker_provider_secret_v1");
+    if (!vaultError && typeof vaultKey === "string") openaiKey = vaultKey;
+  }
+
   let body: any = {};
   try { body = await req.json(); } catch { return json({ ok: false, error: "invalid_json" }, 400); }
+  if (body?.event === "healthcheck") {
+    return json({ ok: true, event: "healthcheck", provider: "openai", provider_configured: Boolean(openaiKey) }, 200);
+  }
   const expectedJobId = clean(body?.job_id, 80);
   if (!validUuid(expectedJobId)) return json({ ok: false, error: "job_id_required" }, 400);
 
@@ -82,7 +90,6 @@ Deno.serve(async (req: Request) => {
       media = { blob, mime };
     }
 
-    // Recheck immediately before provider spend.
     const { data: nowCfg, error: nowCfgError } = await sb.from("automation_config")
       .select("automation_enabled,ai_enabled,conversation_worker_enabled,conversation_worker_dispatch_enabled")
       .eq("id", 1).maybeSingle();
@@ -144,7 +151,6 @@ Deno.serve(async (req: Request) => {
   } catch (error) {
     const code = safeErrorCode(error);
     if (code === "completion_uncertain") {
-      // Provider may already have been charged. Leave processing lease untouched: cron moves it to human review after expiry.
       return json({ ok: false, error: "completion_uncertain_review_required" }, 500);
     }
     try {
