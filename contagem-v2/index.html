@@ -7,12 +7,13 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
   <title>Dona Antônia · Contagem física</title>
-  <link rel="stylesheet" href="./style.css?v=20260907-02">
+  <link rel="stylesheet" href="./style.css?v=20260907-03">
 </head>
 <body>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
     <div class="top-actions">
+      <a class="ghost" href="../admin-v3/" style="text-decoration:none">Admin</a>
       <button id="syncQueueButton" class="ghost" type="button" title="Sincronizar pendências">Pendências <b id="pendingBadge">0</b></button>
       <button id="logoutButton" class="ghost hidden" type="button">Sair</button>
     </div>
@@ -22,7 +23,7 @@
     <section id="loginCard" class="card login-card">
       <div class="eyebrow">Acesso protegido</div>
       <h1>Entrar na contagem</h1>
-      <p>Use o usuário autorizado do Admin Dona Antônia. A câmera consulta o produto legado e a contagem confirmada é gravada diretamente no Supabase.</p>
+      <p>Use o usuário autorizado do Admin Dona Antônia. Se você já entrou no Admin neste aparelho, a sessão será reaproveitada automaticamente.</p>
       <form id="loginForm" class="stack">
         <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
         <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
@@ -89,6 +90,7 @@
   </main>
 
   <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="./bridge-auth.js?v=20260907-03"></script>
   <script src="./config.js?v=20260907-02"></script>
   <script src="./app-v2.js?v=20260907-02"></script>
 </body>
