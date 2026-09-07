@@ -77,6 +77,52 @@ begin
 end;
 $$;
 
+-- A funcao de negocio validada na migration anterior vira o nucleo interno.
+-- O wrapper abaixo aplica a allowlist antes de qualquer escrita de cliente/conversa.
+alter function public.ingest_whatsapp_message(
+  text,text,text,text,text,timestamptz,text,text,text,jsonb,jsonb,jsonb
+) rename to ingest_whatsapp_message_core_v1;
+
+create or replace function public.ingest_whatsapp_message(
+  p_phone_number_id text,
+  p_waba_id text,
+  p_from text,
+  p_profile_name text,
+  p_message_id text,
+  p_message_timestamp timestamptz,
+  p_message_type text,
+  p_body_text text default null,
+  p_media_id text default null,
+  p_interactive_payload jsonb default '{}'::jsonb,
+  p_referral jsonb default '{}'::jsonb,
+  p_raw_event jsonb default '{}'::jsonb
+)
+returns jsonb
+language plpgsql
+security definer
+set search_path=''
+as $$
+declare
+  v_release jsonb;
+begin
+  v_release:=public.whatsapp_release_decision(p_from,p_message_timestamp);
+  if coalesce((v_release->>'allow_ingest')::boolean,false) is not true then
+    return jsonb_build_object(
+      'ok',true,
+      'ignored',true,
+      'reason',coalesce(v_release->>'reason','release_blocked'),
+      'release_mode',v_release->>'mode',
+      'should_reply',false
+    );
+  end if;
+
+  return public.ingest_whatsapp_message_core_v1(
+    p_phone_number_id,p_waba_id,p_from,p_profile_name,p_message_id,p_message_timestamp,p_message_type,
+    p_body_text,p_media_id,p_interactive_payload,p_referral,p_raw_event
+  );
+end;
+$$;
+
 create or replace function public.arm_whatsapp_homologation_v1(
   p_phone text,
   p_minutes integer default 60
@@ -174,6 +220,10 @@ $$;
 
 revoke all on function public.whatsapp_release_decision(text,timestamptz) from public,anon,authenticated;
 grant execute on function public.whatsapp_release_decision(text,timestamptz) to service_role;
+revoke all on function public.ingest_whatsapp_message_core_v1(text,text,text,text,text,timestamptz,text,text,text,jsonb,jsonb,jsonb) from public,anon,authenticated;
+grant execute on function public.ingest_whatsapp_message_core_v1(text,text,text,text,text,timestamptz,text,text,text,jsonb,jsonb,jsonb) to service_role;
+revoke all on function public.ingest_whatsapp_message(text,text,text,text,text,timestamptz,text,text,text,jsonb,jsonb,jsonb) from public,anon,authenticated;
+grant execute on function public.ingest_whatsapp_message(text,text,text,text,text,timestamptz,text,text,text,jsonb,jsonb,jsonb) to service_role;
 revoke all on function public.arm_whatsapp_homologation_v1(text,integer) from public,anon,authenticated;
 grant execute on function public.arm_whatsapp_homologation_v1(text,integer) to service_role;
 revoke all on function public.close_whatsapp_homologation_v1() from public,anon,authenticated;
