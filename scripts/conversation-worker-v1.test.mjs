@@ -53,9 +53,10 @@ test('provider sends strict classification schema, no stored response or tools',
  let body;const provider=createProvider({key:'test',fetchImpl:async(url,options)=>{assert.equal(url,'https://api.openai.com/v1/responses');body=JSON.parse(options.body);return Response.json({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify({intent:'search',query:'arroz',confidence:0.9,description:''})}]}],usage:{input_tokens:30,output_tokens:12}});}});
  const output=await provider.analyze(job,null);assert.equal(body.store,false);assert.equal(body.text.format.strict,true);assert.equal(body.tools,undefined);assert.equal(output.result.ui.q,'arroz');assert.equal(output.usage.input_tokens,30);
 });
-test('audio uses one transcription call and deterministic response',async()=>{
+test('audio transcription returns transcript only and defers intent classification',async()=>{
  let calls=0;const p=createProvider({key:'test',fetchImpl:async(url,opts)=>{calls++;assert.equal(url,'https://api.openai.com/v1/audio/transcriptions');assert.equal(opts.body.get('language'),'pt');return Response.json({text:'Não quero mais nada'});}});
- const output=await p.analyze({...job,job_type:'transcription',media:{object_path:'audio.webm'}},{blob:new Blob(['audio'])});assert.equal(calls,1);assert.equal(output.result.intent,'decline_upsell');
+ const output=await p.analyze({...job,job_type:'transcription',media:{object_path:'audio.webm'}},{blob:new Blob(['audio'])});
+ assert.equal(calls,1);assert.deepEqual(output.result,{transcript:'Não quero mais nada'});assert.equal(output.result.intent,undefined);assert.equal(output.result.reply,undefined);
 });
 test('backend refuses arbitrary destination for privileged credentials',()=>{
  assert.throws(()=>createBackend({url:'https://evil.example',key:'test'}),/unexpected_supabase_project/);
