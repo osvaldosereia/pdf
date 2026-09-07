@@ -5,7 +5,15 @@ on:
     branches: [main]
     paths:
       - 'admin-v3/**'
+      - 'setup-admin/**'
       - 'supabase/functions/admin-ops-v1/**'
+      - 'supabase/functions/admin-baskets-v1/**'
+      - 'supabase/functions/bootstrap-owner-v1/**'
+      - 'scripts/bling-product-writer-v1.mjs'
+      - 'scripts/bling-stock-writer-v1.mjs'
+      - 'scripts/bling-sync-core.mjs'
+      - '.github/workflows/bling-product-writer-v1.yml'
+      - '.github/workflows/bling-stock-writer-v1.yml'
       - '.github/workflows/test-admin-v3.yml'
   workflow_dispatch:
 
@@ -25,18 +33,30 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22
-      - name: Validar JavaScript público
+      - name: Validar JavaScript público e workers
         run: |
           node --check admin-v3/app.js
+          node --check admin-v3/enhancements.js
           node --check admin-v3/config.js
+          node --check setup-admin/app.js
+          node --check setup-admin/config.js
+          node --check scripts/bling-product-writer-v1.mjs
+          node --check scripts/bling-stock-writer-v1.mjs
+          node --check scripts/bling-sync-core.mjs
       - name: Validar rotas essenciais
         run: |
           grep -q 'data-route="dashboard"' admin-v3/index.html
           grep -q 'data-route="products"' admin-v3/index.html
+          grep -q 'data-route="baskets"' admin-v3/index.html
           grep -q 'data-route="counts"' admin-v3/index.html
           grep -q 'data-route="queue"' admin-v3/index.html
           grep -q 'admin-ops-v1' admin-v3/config.js
+          grep -q 'bootstrap-owner-v1' setup-admin/config.js
       - name: Bloquear segredos no navegador
         shell: bash
         run: |
-          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' admin-v3/ || (echo 'Referência de segredo detectada no Admin público' >&2; exit 1)
+          ! grep -R -E 'SUPABASE_SERVICE_ROLE_KEY|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|OPENAI_API_KEY' admin-v3/ setup-admin/ || (echo 'Referência de segredo detectada no código público' >&2; exit 1)
+      - name: Garantir que workers ficam em dry-run por padrão
+        run: |
+          grep -q 'default: dry-run' .github/workflows/bling-product-writer-v1.yml
+          grep -q 'default: dry-run' .github/workflows/bling-stock-writer-v1.yml
