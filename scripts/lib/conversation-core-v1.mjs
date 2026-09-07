@@ -30,19 +30,37 @@ export function validateIntent(value) {
       Object.keys(value).some(k=>!['intent','query','confidence','description'].includes(k))) throw new Error('invalid_model_intent');
   return {intent:value.confidence>=0.75?value.intent:'clarify',query:clean(value.query,100),description:clean(value.description,1000),confidence:value.confidence};
 }
-export function renderDecision(value) {
-  const intent=value?.intent, q=clean(value?.query,100);
+export function renderDecision(value, {channel='shopping_room'}={}) {
+  const intent=value?.intent, q=clean(value?.query,100), whatsapp=channel==='whatsapp';
   const base={intent:INTENTS.includes(intent)?intent:'clarify',ui:{type:'none'}};
   switch(base.intent) {
-    case 'greeting': return {...base,reply:'Olá! Você pode escolher uma cesta, procurar produtos ou me enviar uma foto ou áudio.'};
-    case 'baskets': return {...base,reply:'Você pode conferir as cestas e personalizar os itens.',ui:{type:'baskets'}};
-    case 'offers': return {...base,reply:'Confira as ofertas disponíveis na seleção abaixo.',ui:{type:'products',offers:true}};
-    case 'search': return q?{...base,reply:'Confira os resultados da busca e escolha os produtos que deseja.',ui:{type:'products',q}}:renderDecision({intent:'clarify'});
-    case 'checkout': return {...base,reply:'Vamos conferir os itens e os dados de entrega. O pedido só será enviado quando você tocar em Confirmar pedido.',ui:{type:'checkout'}};
+    case 'greeting': return whatsapp
+      ? {...base,reply:'Oi! Posso te ajudar com as cestas, produtos ou ofertas. Se preferir, pode mandar um áudio também.'}
+      : {...base,reply:'Olá! Você pode escolher uma cesta, procurar produtos ou me enviar uma foto ou áudio.'};
+    case 'baskets': return whatsapp
+      ? {...base,reply:'Claro. Posso te mostrar as cestas disponíveis e ajudar a personalizar os itens.',ui:{type:'baskets'}}
+      : {...base,reply:'Você pode conferir as cestas e personalizar os itens.',ui:{type:'baskets'}};
+    case 'offers': return whatsapp
+      ? {...base,reply:'Temos ofertas disponíveis. Me diga o que você procura que eu separo as opções mais relevantes.',ui:{type:'products',offers:true}}
+      : {...base,reply:'Confira as ofertas disponíveis na seleção abaixo.',ui:{type:'products',offers:true}};
+    case 'search': return q
+      ? (whatsapp
+          ? {...base,reply:`Vou procurar ${q} para você.`,ui:{type:'products',q}}
+          : {...base,reply:'Confira os resultados da busca e escolha os produtos que deseja.',ui:{type:'products',q}})
+      : renderDecision({intent:'clarify'},{channel});
+    case 'checkout': return whatsapp
+      ? {...base,reply:'Vamos conferir os itens e os dados de entrega antes de confirmar o pedido.',ui:{type:'checkout'}}
+      : {...base,reply:'Vamos conferir os itens e os dados de entrega. O pedido só será enviado quando você tocar em Confirmar pedido.',ui:{type:'checkout'}};
     case 'decline_upsell': return {...base,reply:'Perfeito. Vou focar somente no que você já escolheu.',ui:{type:'checkout'}};
-    case 'fast_checkout': return {...base,reply:'Claro. Vamos direto para a conferência do pedido.',ui:{type:'checkout'}};
-    case 'human': return {...base,reply:'Para falar com nossa equipe, toque em Continuar pelo WhatsApp. Seu pedido permanece salvo.',ui:{type:'human'}};
-    default: return {...base,intent:'clarify',reply:'Pode me dizer o nome do produto ou o que deseja fazer? Se preferir, continue com nossa equipe pelo WhatsApp.'};
+    case 'fast_checkout': return whatsapp
+      ? {...base,reply:'Claro. Vamos direto para a conferência do pedido.',ui:{type:'checkout'}}
+      : {...base,reply:'Claro. Vamos direto para a conferência do pedido.',ui:{type:'checkout'}};
+    case 'human': return whatsapp
+      ? {...base,reply:'Claro. Vou deixar seu atendimento com a nossa equipe. O que você já informou fica salvo.',ui:{type:'human'}}
+      : {...base,reply:'Para falar com nossa equipe, toque em Continuar pelo WhatsApp. Seu pedido permanece salvo.',ui:{type:'human'}};
+    default: return whatsapp
+      ? {...base,intent:'clarify',reply:'Me diz o nome do produto ou o que você quer fazer? Se preferir, posso deixar o atendimento com a nossa equipe.'}
+      : {...base,intent:'clarify',reply:'Pode me dizer o nome do produto ou o que deseja fazer? Se preferir, continue com nossa equipe pelo WhatsApp.'};
   }
 }
 export function parseResponse(data) {
@@ -59,7 +77,8 @@ export function validateMedia(media,job) {
   if(!Number.isFinite(Number(media.bytes)) || Number(media.bytes)<=0 || Number(media.bytes)>10485760) throw new Error('media_size_limit');
   if(!(Date.parse(media.expires_at)>Date.now())) throw new Error('media_expired');
   const mime=String(media.mime_type).split(';')[0].trim().toLowerCase();
-  const allowed=job.job_type==='transcription'?['audio/webm','audio/mpeg','audio/mp4']:['image/jpeg','image/png','image/webp'];
+  // O WhatsApp Cloud normalmente entrega notas de voz como OGG/Opus. O endpoint de transcrição aceita OGG.
+  const allowed=job.job_type==='transcription'?['audio/webm','audio/mpeg','audio/mp4','audio/ogg']:['image/jpeg','image/png','image/webp'];
   if(!allowed.includes(mime) || media.kind!==(job.job_type==='transcription'?'audio':'image')) throw new Error('media_conversion_required');
   return mime;
 }
