@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f2a">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <title>Dona Antônia · Sala de Compra</title>
+  <link rel="stylesheet" href="./style.css?v=20260907-01">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button id="backButton" class="icon-btn" type="button" aria-label="Voltar">‹</button>
+      <div class="brand"><span>DA</span><div><strong>Dona Antônia</strong><small id="roomStatus">Sala de Compra</small></div></div>
+      <button id="cartButton" class="cart-button" type="button"><span>🛒</span><b id="cartCount">0</b></button>
+    </header>
+
+    <main>
+      <section id="chat" class="chat" aria-live="polite"></section>
+
+      <section class="quick-actions" id="quickActions">
+        <button data-home="baskets" type="button">🧺 Cestas</button>
+        <button data-home="offers" type="button">🏷️ Ofertas</button>
+        <button data-home="mercearia" type="button">🛒 Mercearia</button>
+        <button data-home="limpeza_lavanderia" type="button">🧼 Limpeza</button>
+      </section>
+
+      <section class="workspace">
+        <div class="workspace-head">
+          <div><div id="viewEyebrow" class="eyebrow">Sua compra</div><h1 id="viewTitle">Escolha como prefere comprar</h1></div>
+          <button id="homeButton" class="soft-btn hidden" type="button">Início</button>
+        </div>
+        <div id="searchBox" class="search hidden"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar produto"><button id="searchButton" type="button">Buscar</button></div>
+        <div id="contentState" class="state">Abrindo sua Sala de Compra...</div>
+        <section id="content" class="content hidden"></section>
+      </section>
+    </main>
+
+    <div id="cartBar" class="cart-bar hidden">
+      <div><small>Seu pedido</small><strong id="cartTotal">R$ 0,00</strong><span id="cartItems">0 itens</span></div>
+      <button id="reviewButton" type="button">Conferir pedido</button>
+    </div>
+
+    <form id="composer" class="composer">
+      <input id="messageInput" type="text" maxlength="500" autocomplete="off" placeholder="Escreva o que você precisa...">
+      <button id="sendButton" type="submit" aria-label="Enviar">➤</button>
+    </form>
+  </div>
+
+  <template id="productTemplate">
+    <article class="product-card">
+      <div class="product-image-wrap"><img class="product-image" alt=""></div>
+      <div class="product-body"><div class="product-head"><div><h2 class="product-name"></h2><p class="product-meta"></p></div><strong class="product-price"></strong></div><p class="product-reason"></p><div class="qty-control"><button class="minus" type="button">−</button><span class="qty">0</span><button class="plus" type="button">+</button></div></div>
+    </article>
+  </template>
+
+  <template id="basketTemplate">
+    <article class="basket-card"><img class="basket-image" alt=""><div><h2 class="basket-name"></h2><p class="basket-description"></p><strong class="basket-price"></strong><button class="basket-select" type="button">Escolher esta cesta</button></div></article>
+  </template>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="./config.js?v=20260907-01"></script>
+  <script src="./app.js?v=20260907-01"></script>
+</body>
+</html>
