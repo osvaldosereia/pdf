@@ -1,15 +1,15 @@
 {
-  "version": "catalog-1788787793396",
-  "adminVersion": "admin-8aea3ecfea7f1985",
-  "updatedAt": "2026-09-07T13:29:53.396Z",
+  "version": "catalog-178880ebcab6938e",
+  "adminVersion": "admin-f6dd033a2b0e6a1d",
+  "updatedAt": "2026-09-07T13:33:07.144Z",
   "products": "site/produtos-home.json",
   "adminProducts": "site/produtos-admin.json",
   "changed": [
     "products",
-    "offers"
+    "admin-products"
   ],
-  "productCount": 1623,
-  "adminProductCount": 1979,
-  "source": "automatic-offers",
-  "instructions": "Catálogo atualizado após o processamento automático de ofertas."
+  "productCount": 1626,
+  "adminProductCount": 1980,
+  "source": "firebase-official-sync",
+  "instructions": "Catálogo público compacto; modelos públicos de canecas permanecem sob encomenda e preservam arte horizontal, thumbnail e duas prévias quando disponíveis."
 }
