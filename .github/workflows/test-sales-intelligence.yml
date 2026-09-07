@@ -1,0 +1,59 @@
+name: Testar vendas conversacionais
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'catalogo/**'
+      - 'admin/**'
+      - 'admin-v3/customer-intelligence.*'
+      - 'supabase/functions/mini-catalog-v1/**'
+      - 'supabase/functions/customer-intelligence-v1/**'
+      - 'supabase/migrations/*customer_purchase_intelligence*'
+      - 'supabase/migrations/*customer_sales_context*'
+      - '.github/workflows/test-sales-intelligence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-sales-intelligence-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validar JavaScript público
+        run: |
+          node --check catalogo/app.js
+          node --check catalogo/config.js
+          node --check admin-v3/customer-intelligence.js
+      - name: Validar estrutura do catálogo
+        run: |
+          grep -q 'mini-catalog-v1' catalogo/config.js
+          grep -q 'Continuar no WhatsApp' catalogo/index.html
+          grep -q 'set_quantity' catalogo/app.js
+          grep -q 'return_whatsapp' catalogo/app.js
+      - name: Validar inteligência de clientes
+        run: |
+          grep -q 'customer-intelligence-v1' admin-v3/customer-intelligence.js
+          grep -q 'create_catalog' admin-v3/customer-intelligence.js
+          grep -q 'Produtos que já compra' admin-v3/customer-intelligence.js
+          grep -q 'data-route="customers"' admin/index.html
+      - name: Validar backend versionado
+        run: |
+          grep -q 'set_catalog_item_quantity' supabase/functions/mini-catalog-v1/index.ts
+          grep -q 'get_customer_recommendations' supabase/functions/customer-intelligence-v1/index.ts
+          grep -q 'customer_product_stats' supabase/migrations/20260907143000_customer_purchase_intelligence_and_mini_catalog.sql
+          grep -q 'build_customer_sales_context' supabase/migrations/20260907144500_customer_sales_context_and_reply_mode.sql
+      - name: Verificar ausência de segredos no frontend
+        shell: bash
+        run: |
+          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN|META_ACCESS_TOKEN|OPENAI_API_KEY' catalogo/ admin-v3/customer-intelligence.js || (echo 'Segredo proibido no frontend' >&2; exit 1)
