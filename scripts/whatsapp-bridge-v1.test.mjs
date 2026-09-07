@@ -6,6 +6,8 @@ import {renderDecision,validateMedia} from './lib/conversation-core-v1.mjs';
 const edgePath=new URL('../supabase/functions/whatsapp-ingest/index.ts',import.meta.url);
 const migrationPath=new URL('../supabase/migrations/20260907184500_whatsapp_conversation_bridge_v1.sql',import.meta.url);
 const mediaMigrationPath=new URL('../supabase/migrations/20260907184450_room_media_whatsapp_metadata.sql',import.meta.url);
+const releaseGatePath=new URL('../supabase/migrations/20260907192800_whatsapp_live_release_gates_v1.sql',import.meta.url);
+const dispatchPath=new URL('../supabase/migrations/20260907191500_whatsapp_outbound_event_dispatch_v2.sql',import.meta.url);
 
 const fixtureJob={message_id:'m1',conversation_id:'c1',job_type:'transcription'};
 
@@ -63,4 +65,30 @@ test('Room media provenance is server-side JSON metadata',async()=>{
   const sql=await readFile(mediaMigrationPath,'utf8');
   assert.match(sql,/alter table public\.room_media/i);
   assert.match(sql,/metadata jsonb not null default '\{\}'::jsonb/i);
+});
+
+test('WhatsApp live release is fail-closed and ignores backlog before creating customers',async()=>{
+  const sql=await readFile(releaseGatePath,'utf8');
+  assert.match(sql,/whatsapp_inbound_enabled boolean not null default false/i);
+  assert.match(sql,/whatsapp_auto_reply_enabled boolean not null default false/i);
+  assert.match(sql,/whatsapp_inbound_since timestamptz not null default now\(\)/i);
+  const disabled=sql.indexOf("reason','whatsapp_inbound_disabled");
+  const customerWrite=sql.indexOf('insert into public.customers');
+  assert.ok(disabled>0 && customerWrite>disabled,'gate must execute before customer persistence');
+  assert.match(sql,/p_message_timestamp < v_cfg\.whatsapp_inbound_since/);
+  assert.match(sql,/before_whatsapp_cutover/);
+  assert.match(sql,/v_cfg\.whatsapp_auto_reply_enabled/);
+  assert.match(sql,/cfg\.whatsapp_auto_reply_enabled/);
+});
+
+test('Outbound event dispatcher is exact-job, event-driven and never blind-retries uncertain sends',async()=>{
+  const sql=await readFile(dispatchPath,'utf8');
+  assert.match(sql,/claim_whatsapp_conversation_outbound_by_id/);
+  assert.match(sql,/j\.id=p_job_id/);
+  assert.match(sql,/net\.http_post/);
+  assert.match(sql,/dona_antonia_whatsapp_outbound_make_webhook/);
+  assert.match(sql,/lease_expired_review_required/);
+  assert.match(sql,/dispatch_unreachable_review_required/);
+  assert.match(sql,/cron\.schedule/);
+  assert.doesNotMatch(sql,/https:\/\/hook\./i,'Make webhook must stay in Vault, not GitHub');
 });
