@@ -7,6 +7,7 @@ const main=read('supabase/migrations/20260907213000_whatsapp_operational_release
 const fix=read('supabase/migrations/20260907213100_whatsapp_operational_release_v1_fix.sql');
 const hard=read('supabase/migrations/20260907213200_whatsapp_operational_release_v1_dispatch_hardening.sql');
 const providerVault=read('supabase/migrations/20260907223000_conversation_worker_provider_vault_v1.sql');
+const providerVaultFix=read('supabase/migrations/20260907223500_conversation_worker_provider_vault_digest_fix.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -83,6 +84,8 @@ test('provider secret is Vault-backed, service-role only and health exposes only
   has(providerVault,/get_conversation_worker_provider_secret_v1/);
   has(providerVault,/revoke all on function public\.get_conversation_worker_provider_secret_v1\(\) from public,anon,authenticated/);
   has(providerVault,/grant execute on function public\.get_conversation_worker_provider_secret_v1\(\) to service_role/);
+  has(providerVaultFix,/extensions\.digest\(v_key,'sha256'\)/,'SECURITY DEFINER functions with empty search_path must schema-qualify pgcrypto');
+  assert.doesNotMatch(providerVaultFix,/(?<!extensions\.)digest\(v_key,'sha256'\)/,'provider vault fix must not call unqualified digest');
   has(worker,/get_conversation_worker_provider_secret_v1/);
   has(worker,/provider_configured: Boolean\(openaiKey\)/);
   assert.doesNotMatch(worker,/provider_configured:\s*openaiKey/,'health must never return provider secret');
