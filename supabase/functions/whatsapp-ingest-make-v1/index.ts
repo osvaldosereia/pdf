@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const HEADERS={"Content-Type":"application/json","Cache-Control":"no-store"};
 const clean=(v:unknown,max=4000)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g," ").trim().slice(0,max);
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:HEADERS});
+const firstNonEmpty=(...values:unknown[])=>{for(const v of values){const c=clean(v,4000);if(c)return c}return ""};
 
 Deno.serve(async(req:Request)=>{
   if(req.method!=="POST")return json({ok:false,error:"method_not_allowed"},405);
@@ -23,11 +24,14 @@ Deno.serve(async(req:Request)=>{
     timestamp:clean(form.get("timestamp"),80),
     message_type:clean(form.get("message_type"),30),
     text_body:clean(form.get("text_body"),4000),
-    caption:clean(form.get("caption"),4000),
-    media_id:clean(form.get("media_id"),240),
+    caption:firstNonEmpty(form.get("image_caption"),form.get("video_caption"),form.get("document_caption")),
+    audio_id:clean(form.get("audio_id"),240),
+    image_id:clean(form.get("image_id"),240),
+    video_id:clean(form.get("video_id"),240),
+    document_id:clean(form.get("document_id"),240),
     interactive_type:clean(form.get("interactive_type"),40),
-    interactive_id:clean(form.get("interactive_id"),256),
-    interactive_title:clean(form.get("interactive_title"),256),
+    interactive_id:firstNonEmpty(form.get("button_reply_id"),form.get("list_reply_id")),
+    interactive_title:firstNonEmpty(form.get("button_reply_title"),form.get("list_reply_title")),
   };
   if(!raw.phone_number_id||!raw.from||!raw.message_id)return json({ok:false,error:"not_inbound_message",should_reply:false},200);
 
