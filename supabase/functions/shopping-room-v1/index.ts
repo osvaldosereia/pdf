@@ -1,0 +1,69 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+const CORS={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"content-type","Access-Control-Allow-Methods":"POST, OPTIONS"};
+const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...CORS,"Content-Type":"application/json","Cache-Control":"no-store"}});
+const clean=(v:unknown,max=500)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max);
+const digits=(v:unknown)=>String(v??"").replace(/\D/g,"");
+const qty=(v:unknown)=>{const n=Number(v);return Number.isFinite(n)?Math.max(0,Math.min(999,n)):null};
+const validToken=(v:unknown)=>/^[a-f0-9]{64}$/i.test(clean(v,80));
+const validUuid=(v:unknown)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clean(v,80));
+const normalize=(v:unknown)=>clean(v,400).toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const groups=[{id:'baskets',label:'Cestas Básicas',icon:'🧺'},{id:'mercearia',label:'Mercearia Completa',icon:'🛒'},{id:'limpeza_lavanderia',label:'Limpeza e Lavanderia',icon:'🧼'},{id:'higiene_beleza',label:'Higiene e Beleza',icon:'🧴'},{id:'casa_pet',label:'Casa e Pet',icon:'🏠'}];
+
+function intentFor(input:string){
+  const s=normalize(input);
+  if(/\b(nao quero|não quero|so a cesta|só a cesta|somente a cesta|sem mais nada)\b/.test(s))return {type:'decline_upsell'};
+  if(/\b(pressa|rapido|rápido|correndo|finaliza logo)\b/.test(s))return {type:'fast_checkout'};
+  if(/\b(finalizar|fechar|concluir|terminar|confirmar pedido)\b/.test(s))return {type:'checkout'};
+  if(/\b(oferta|ofertas|promocao|promoção|barato|baratos)\b/.test(s))return {type:'offers'};
+  if(/\b(cesta|cestas)\b/.test(s))return {type:'baskets'};
+  if(/\b(limpeza|lavanderia|sabao|sabão|amaciante|desinfetante)\b/.test(s))return {type:'category',category:'limpeza_lavanderia'};
+  if(/\b(higiene|beleza|creme|shampoo|sabonete|desodorante|nivea|nívea)\b/.test(s))return {type:'category',category:'higiene_beleza'};
+  if(/\b(pet|pets|cachorro|gato|casa|vassoura|rodo|balde)\b/.test(s))return {type:'category',category:'casa_pet'};
+  if(/\b(mercearia|arroz|feijao|feijão|cafe|café|molho|tempero|macarrao|macarrão)\b/.test(s))return {type:'category',category:'mercearia'};
+  return {type:'search',q:clean(input,120)};
+}
+
+Deno.serve(async(req:Request)=>{
+  if(req.method==='OPTIONS')return new Response('ok',{headers:CORS});
+  if(req.method!=='POST')return json({ok:false,error:'method_not_allowed'},405);
+  const url=Deno.env.get('SUPABASE_URL'),key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if(!url||!key)return json({ok:false,error:'server_config'},500);
+  let body:any;try{body=await req.json()}catch{return json({ok:false,error:'invalid_json'},400)}
+  const token=clean(body?.token,80),action=clean(body?.action||'open',60).toLowerCase();
+  if(!validToken(token))return json({ok:false,error:'invalid_token'},400);
+  const sb=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
+  const {data:session,error:se}=await sb.from('catalog_sessions').select('id,public_token,customer_id,conversation_id,cart_id,kind,title,status,expires_at,last_opened_at,last_activity_at,current_view,completed_at,metadata').eq('public_token',token).maybeSingle();
+  if(se)return json({ok:false,error:'room_lookup_failed'},500);if(!session)return json({ok:false,error:'room_not_found'},404);
+  const expired=new Date(session.expires_at).getTime()<=Date.now();if(expired&&session.status!=='closed')return json({ok:false,error:'room_expired'},410);
+  if(session.status==='closed'&&action!=='open'&&action!=='return_whatsapp')return json({ok:false,error:'room_closed'},409);
+
+  const whatsappUrl=async(message='Quero continuar meu pedido.')=>{let phone='556584491018';if(session.conversation_id){const {data:conv}=await sb.from('conversations').select('whatsapp_account:whatsapp_accounts(phone_e164)').eq('id',session.conversation_id).maybeSingle();const found=digits((conv as any)?.whatsapp_account?.phone_e164);if(found)phone=found;}return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`};
+  const cartSnapshot=async()=>{const {data:s}=await sb.from('catalog_sessions').select('cart_id').eq('id',session.id).single();if(!s?.cart_id)return null;const {data:c}=await sb.from('carts').select('id,status,total,fiscal_subtotal,other_expenses,discount,version,basket_id').eq('id',s.cart_id).maybeSingle();if(!c)return null;const {data:items}=await sb.from('cart_items').select('product_id,source,quantity,base_quantity,commercial_delta,metadata,product:products(id,name,price,image_url,stock)').eq('cart_id',c.id).gt('quantity',0).order('created_at');return {...c,items:items||[]}};
+
+  if(action==='open'){
+    if(session.status==='closed'){const {data:o}=session.cart_id?await sb.from('orders').select('id,status,total,bling_order_id,created_at').eq('cart_id',session.cart_id).order('created_at',{ascending:false}).limit(1).maybeSingle():{data:null} as any;return json({ok:true,closed:true,session:{title:session.title,current_view:'success',completed_at:session.completed_at},order:o||null,whatsapp_url:await whatsappUrl('Quero falar sobre meu pedido.')})}
+    const firstOpen=!session.last_opened_at||(Date.now()-new Date(session.last_opened_at).getTime())>30*60*1000;await sb.from('catalog_sessions').update({last_opened_at:new Date().toISOString(),last_activity_at:new Date().toISOString(),experience:'shopping_room'}).eq('id',session.id);if(session.conversation_id)await sb.from('conversations').update({room_last_active_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',session.conversation_id);if(firstOpen)await sb.from('catalog_events').insert({catalog_session_id:session.id,customer_id:session.customer_id,event_type:'catalog_open',event_data:{source:'shopping_room'}});
+    let customer:any=null;if(session.customer_id){const {data:c}=await sb.from('customers').select('id,name,preferred_reply,shopping_mode,catalog_skill_score').eq('id',session.customer_id).maybeSingle();customer=c||null}let messages:any[]=[];if(session.conversation_id){const {data:m}=await sb.from('messages').select('id,direction,message_type,body_text,transcript,created_at').eq('conversation_id',session.conversation_id).in('message_type',['text','audio','image','system']).order('created_at',{ascending:false}).limit(20);messages=(m||[]).reverse()}
+    const {data:recommended}=await sb.from('catalog_session_items').select('product_id,rank,reason,quantity,product:products(id,name,price,image_url,category,sales_category,brand,packaging,stock,is_offer)').eq('catalog_session_id',session.id).order('rank').limit(12);const {data:baskets}=await sb.from('basket_templates').select('id,name,description,image_url,base_price,sort_order').eq('is_active',true).eq('is_whatsapp_active',true).order('sort_order').limit(8);
+    return json({ok:true,session:{title:session.title,kind:session.kind,current_view:session.current_view,expires_at:session.expires_at},customer:customer?{name:customer.name,preferred_reply:customer.preferred_reply,shopping_mode:customer.shopping_mode}:null,groups,baskets:baskets||[],recommended:recommended||[],cart:await cartSnapshot(),messages,whatsapp_url:await whatsappUrl('Quero continuar meu pedido pelo WhatsApp.')});
+  }
+
+  if(action==='products'){
+    const q=clean(body?.q,100).replace(/[,%()]/g,' ').trim(),category=clean(body?.category,40),offers=body?.offers===true,limit=Math.max(1,Math.min(Number(body?.limit)||24,40));let query=sb.from('products').select('id,name,price,image_url,brand,packaging,category,sales_category,stock,is_offer,sort_order').eq('physically_verified',true).eq('is_active',true).eq('is_whatsapp_active',true).gt('stock',0).order('sort_order').order('name').limit(limit);if(category&&['mercearia','limpeza_lavanderia','higiene_beleza','casa_pet'].includes(category))query=query.eq('sales_category',category);if(offers)query=query.eq('is_offer',true);if(q)query=query.or(`name.ilike.%${q}%,brand.ilike.%${q}%,category.ilike.%${q}%,packaging.ilike.%${q}%`);const {data,error}=await query;if(error)return json({ok:false,error:'products_failed',detail:error.message},400);const ids=(data||[]).map((p:any)=>p.id);let selected:any[]=[];const current=await cartSnapshot();if(current&&ids.length){selected=(current.items||[]).filter((x:any)=>ids.includes(x.product_id))}const map=new Map(selected.map((x:any)=>[x.product_id,Number(x.quantity||0)]));return json({ok:true,products:(data||[]).map((p:any)=>({...p,quantity:map.get(p.id)||0}))});
+  }
+  if(action==='baskets'){const {data,error}=await sb.from('basket_templates').select('id,name,description,image_url,base_price,sort_order').eq('is_active',true).eq('is_whatsapp_active',true).order('sort_order').order('name').limit(30);if(error)return json({ok:false,error:'baskets_failed'},400);return json({ok:true,baskets:data||[]})}
+  if(action==='start_basket'){const id=clean(body?.basket_id,80);if(!validUuid(id))return json({ok:false,error:'invalid_basket'},400);const {data,error}=await sb.rpc('room_start_basket',{p_public_token:token,p_basket_id:id});if(error)return json({ok:false,error:'basket_start_failed',detail:error.message},400);const {data:items}=await sb.from('cart_items').select('product_id,source,quantity,base_quantity,commercial_delta,metadata,product:products(id,name,image_url,stock)').eq('cart_id',data.cart_id).order('created_at');return json({ok:true,result:data,items:items||[],cart:await cartSnapshot()})}
+  if(action==='set_quantity'){const id=clean(body?.product_id,80),quantity=qty(body?.quantity);if(!validUuid(id)||quantity===null)return json({ok:false,error:'invalid_quantity'},400);const {data,error}=await sb.rpc('room_set_product_quantity',{p_public_token:token,p_product_id:id,p_quantity:quantity});if(error)return json({ok:false,error:'quantity_failed',detail:error.message},400);return json({ok:true,...data})}
+  if(action==='set_basket_quantity'){const id=clean(body?.product_id,80),quantity=qty(body?.quantity);if(!validUuid(id)||quantity===null)return json({ok:false,error:'invalid_quantity'},400);const {data,error}=await sb.rpc('room_set_basket_quantity',{p_public_token:token,p_product_id:id,p_quantity:quantity});if(error)return json({ok:false,error:'basket_quantity_failed',detail:error.message},400);return json({ok:true,cart:data})}
+  if(action==='send_text'){
+    const message=clean(body?.message,500);if(!message)return json({ok:false,error:'message_required'},400);if(session.conversation_id)await sb.from('messages').insert({conversation_id:session.conversation_id,direction:'inbound',message_type:'text',body_text:message,raw_event:{source:'shopping_room',session_id:session.id}});const intent=intentFor(message);let reply='Certo. Vou te ajudar por aqui.';let ui:any={type:'none'};
+    if(intent.type==='decline_upsell'){reply='Perfeito. Vou focar somente no que você já escolheu.';ui={type:'checkout_hint'};if(session.conversation_id)await sb.from('conversations').update({upsell_declined:true,sales_pressure_level:0,updated_at:new Date().toISOString()}).eq('id',session.conversation_id)}else if(intent.type==='fast_checkout'){reply='Claro. Vou direto para a conferência do pedido.';ui={type:'checkout'};if(session.conversation_id)await sb.from('conversations').update({fast_checkout:true,sales_pressure_level:0,updated_at:new Date().toISOString()}).eq('id',session.conversation_id)}else if(intent.type==='checkout'){reply='Vamos conferir seu pedido antes de confirmar.';ui={type:'checkout'}}else if(intent.type==='offers'){reply='Vou mostrar as ofertas disponíveis agora.';ui={type:'products',offers:true}}else if(intent.type==='baskets'){reply='Estas são as cestas disponíveis para encomenda.';ui={type:'baskets'}}else if(intent.type==='category'){reply='Separei essa seção para você escolher com calma.';ui={type:'products',category:(intent as any).category}}else{reply='Vou procurar produtos relacionados ao que você pediu.';ui={type:'products',q:(intent as any).q}}
+    if(session.conversation_id)await sb.from('messages').insert({conversation_id:session.conversation_id,direction:'outbound',message_type:'text',body_text:reply,ai_interpretation:{source:'deterministic_room_router',intent},raw_event:{source:'shopping_room',session_id:session.id}});await sb.from('catalog_sessions').update({last_activity_at:new Date().toISOString()}).eq('id',session.id);return json({ok:true,reply,ui,intent});
+  }
+  if(action==='checkout_preview'){const {data,error}=await sb.rpc('room_checkout_preview',{p_public_token:token});if(error)return json({ok:false,error:'checkout_failed',detail:error.message},400);return json({ok:true,checkout:data})}
+  if(action==='confirm_order'){const address=body?.delivery_address&&typeof body.delivery_address==='object'?body.delivery_address:{};const {data,error}=await sb.rpc('room_confirm_order',{p_public_token:token,p_delivery_address:address});if(error)return json({ok:false,error:'confirm_failed',detail:error.message},400);const {data:draft}=await sb.rpc('build_bling_order_draft',{p_order_id:data.order_id});return json({ok:true,order:data,erp_status:'pending_integration',bling_draft_ready:!!draft,whatsapp_url:await whatsappUrl(`Meu pedido foi confirmado na Sala de Compra. Pedido ${data.order_id}.`)})}
+  if(action==='return_whatsapp'){await sb.from('catalog_events').insert({catalog_session_id:session.id,customer_id:session.customer_id,event_type:'catalog_checkout_return',event_data:{source:'shopping_room',without_checkout:true}});return json({ok:true,whatsapp_url:await whatsappUrl('Quero continuar meu pedido pelo WhatsApp.')})}
+  return json({ok:false,error:'unknown_action'},400);
+});
