@@ -1,9 +1,10 @@
-name: Testar contagem física v2
+name: Testar contagem física
 
 on:
   push:
     branches: [main]
     paths:
+      - 'contagem/**'
       - 'contagem-v2/**'
       - 'scripts/bling-stock-writer-v1.mjs'
       - 'supabase/functions/inventory-count-v2/**'
@@ -15,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: test-contagem-v2-${{ github.ref }}
+  group: test-contagem-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -34,20 +35,22 @@ jobs:
           node --check contagem-v2/kiosk-mode.js
           node --check contagem-v2/stock-zero-guard.js
           node --check scripts/bling-stock-writer-v1.mjs
-      - name: Validar referências da página kiosk
+      - name: Validar tela operacional
         run: |
-          grep -q 'app-v2.js' contagem-v2/index.html
-          grep -q 'kiosk-mode.js' contagem-v2/index.html
-          grep -q 'kiosk-mode.css' contagem-v2/index.html
+          grep -q 'app-v2.js' contagem/index.html
+          grep -q 'kiosk-mode.js' contagem/index.html
+          grep -q 'kiosk-mode.css' contagem/index.html
+          grep -q 'costInput' contagem/index.html
+          grep -q 'priceInput' contagem/index.html
+          grep -q 'quickSearchInput' contagem-v2/kiosk-mode.js
+          grep -q 'modeText' contagem-v2/kiosk-mode.js
+          grep -q 'modeNum' contagem-v2/kiosk-mode.js
           grep -q 'inventory-count-v2' contagem-v2/config.js
           grep -q 'site/produtos-admin.json' contagem-v2/config.js
-          grep -q 'readonly' contagem-v2/index.html
-          grep -q 'manualEanButton' contagem-v2/kiosk-mode.js
-          grep -q 'kioskPad' contagem-v2/kiosk-mode.js
       - name: Validar ausência de segredos óbvios no microapp
         shell: bash
         run: |
-          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN' contagem-v2/ || (echo 'Segredo ou referência proibida no microapp' >&2; exit 1)
+          ! grep -R -E 'service_role|BLING_CLIENT_SECRET|BLING_REFRESH_TOKEN' contagem-v2/ contagem/index.html || (echo 'Segredo ou referência proibida no microapp' >&2; exit 1)
       - name: Validar worker em modo seguro
         shell: bash
         run: |
