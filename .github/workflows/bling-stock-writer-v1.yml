@@ -111,10 +111,10 @@ jobs:
         run: |
           echo '### Estoque contado → Bling' >> "$GITHUB_STEP_SUMMARY"
           echo '' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Modo: `${{ inputs.mode }}`' >> "$GITHUB_STEP_SUMMARY"
-          echo '- Limite solicitado: `${{ inputs.limit }}`' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Modo: ${{ inputs.mode }}' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Limite solicitado: ${{ inputs.limit }}' >> "$GITHUB_STEP_SUMMARY"
           if [ -s "$REPORT_FILE" ]; then
-            node -e "const r=require(process.env.REPORT_FILE); for (const [k,v] of Object.entries(r)) console.log('- '+k+': `'+v+'`')" >> "$GITHUB_STEP_SUMMARY"
+            node -e 'const r=require(process.env.REPORT_FILE); for (const [k,v] of Object.entries(r)) console.log(`- ${k}: ${v}`)' >> "$GITHUB_STEP_SUMMARY"
           fi
 
 # Segurança operacional:
