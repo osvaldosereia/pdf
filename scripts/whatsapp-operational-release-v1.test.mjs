@@ -11,6 +11,7 @@ const providerVaultFix=read('supabase/migrations/20260907223500_conversation_wor
 const resumeScope=read('supabase/migrations/20260907230000_resume_ai_channel_scope_v1.sql');
 const truthfulUsage=read('supabase/migrations/20260907230500_whatsapp_ops_usage_truthful_v1.sql');
 const observeHomologation=read('supabase/migrations/20260907231500_whatsapp_observe_homologation_v1.sql');
+const handoffSmallintFix=read('supabase/migrations/20260907232500_whatsapp_observe_handoff_smallint_fix.sql');
 const worker=read('supabase/functions/conversation-worker-v2/index.ts');
 const adminEdge=read('supabase/functions/admin-whatsapp-ops-v1/index.ts');
 const adminHtml=read('admin/index.html');
@@ -52,6 +53,12 @@ test('observe homologation is single-phone, human-only and auto-expiring through
   has(observeHomologation,/homologation_phone_blocked/);
   has(observeHomologation,/select public\.close_whatsapp_homologation_v1\(\)/,'migration must end fail-closed');
   assert.doesNotMatch(observeHomologation,/LIBERAR_ATENDIMENTO_REAL/,'observe homologation must never open live');
+});
+
+test('observe handoff calls the exact smallint function signature',()=>{
+  has(handoffSmallintFix,/queue_human_handoff_v1\([\s\S]*?2::smallint/,'handoff priority must be explicitly cast to smallint');
+  assert.doesNotMatch(handoffSmallintFix,/v_message\s*,\s*2\s*,\s*'Atendimento retido/,'plain integer priority would fail PostgreSQL function resolution');
+  has(handoffSmallintFix,/select public\.close_whatsapp_homologation_v1\(\)/,'fix deploy must end fail-closed');
 });
 
 test('live release requires explicit server-side confirmation and canary',()=>{
