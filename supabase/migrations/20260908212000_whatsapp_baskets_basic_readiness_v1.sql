@@ -6,8 +6,7 @@ begin;
 -- configuracao, preservando a diferenca operacional/comercial oculta da cesta.
 update public.basket_template_items bi
 set remove_unit_delta = coalesce(bi.remove_unit_delta, -p.price),
-    add_unit_delta = coalesce(bi.add_unit_delta, p.price),
-    updated_at = now()
+    add_unit_delta = coalesce(bi.add_unit_delta, p.price)
 from public.products p
 where p.id=bi.product_id
   and p.price is not null
