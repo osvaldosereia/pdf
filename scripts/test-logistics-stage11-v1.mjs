@@ -6,6 +6,7 @@ const foundation=fs.readFileSync('supabase/migrations/20260908112000_stage11_log
 const driverActions=fs.readFileSync('supabase/migrations/20260908112100_stage11_driver_actions_v1.sql','utf8');
 const adminFn=fs.readFileSync('supabase/functions/admin-logistics-v1/index.ts','utf8');
 const driverFn=fs.readFileSync('supabase/functions/driver-logistics-v1/index.ts','utf8');
+const sbConfig=fs.readFileSync('supabase/config.toml','utf8');
 const adminConfig=fs.readFileSync('admin/config.js','utf8');
 const adminHtml=fs.readFileSync('admin/index.html','utf8');
 const driverConfig=fs.readFileSync('driver-app/config.js','utf8');
@@ -49,6 +50,8 @@ assert.match(driverActions,/arrival_confirmation_required/,'delivery requires ex
 assert.match(driverActions,/update public\.orders set status='delivered'/,'delivery must reflect in commercial order');
 assert.doesNotMatch(driverActions,/geofence/i,'geofence must not auto-complete delivery');
 
+assert.match(sbConfig,/\[functions\.admin-logistics-v1\][\s\S]*verify_jwt\s*=\s*true/,'admin logistics must require JWT');
+assert.match(sbConfig,/\[functions\.driver-logistics-v1\][\s\S]*verify_jwt\s*=\s*true/,'driver logistics must require JWT');
 assert.match(adminFn,/admin_users/);
 assert.match(adminFn,/owner_required/);
 assert.match(adminFn,/runtime_activation_supported:false/);
@@ -67,6 +70,7 @@ assert.match(adminConfig,/logisticsUiEnabled:\s*false/);
 assert.match(adminHtml,/id="logisticsNav" class="nav hidden"/);
 assert.match(adminHtml,/id="logisticsMount"/);
 assert.match(driverConfig,/enabled:false/);
+assert.match(driverConfig,/gpsEnabled:false/);
 assert.match(driverApp,/localStorage\.setItem\('da_driver_queue_v1'/,'offline queue missing');
 assert.match(driverApp,/watchPosition/,'GPS lifecycle missing');
 assert.match(driverApp,/route\?\.status!==['"]active['"]/,'GPS must require active route');
