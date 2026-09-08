@@ -13,6 +13,12 @@ export class FlowCryptoError extends Error{
 const encoder=new TextEncoder();
 const decoder=new TextDecoder();
 
+function toArrayBuffer(bytes:Uint8Array):ArrayBuffer{
+  const out=new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(out).set(bytes);
+  return out;
+}
+
 function bytesToBase64(bytes:Uint8Array):string{
   let binary='';
   const chunk=0x8000;
@@ -64,7 +70,7 @@ export async function importFlowPrivateKey(privateKeyPem:string):Promise<CryptoK
   try{
     return await crypto.subtle.importKey(
       'pkcs8',
-      pemToDer(privateKeyPem,'PRIVATE KEY'),
+      toArrayBuffer(pemToDer(privateKeyPem,'PRIVATE KEY')),
       {name:'RSA-OAEP',hash:'SHA-256'},
       false,
       ['decrypt'],
@@ -86,7 +92,7 @@ export async function decryptFlowRequest(
   const privateKey=await importFlowPrivateKey(privateKeyPem);
   let aesKeyBytes:Uint8Array;
   try{
-    aesKeyBytes=new Uint8Array(await crypto.subtle.decrypt({name:'RSA-OAEP'},privateKey,encryptedKey));
+    aesKeyBytes=new Uint8Array(await crypto.subtle.decrypt({name:'RSA-OAEP'},privateKey,toArrayBuffer(encryptedKey)));
   }catch{
     // Meta reference implementation uses 421 so the client refreshes the business public key.
     throw new FlowCryptoError(421,'flow_key_decrypt_failed','Unable to decrypt Flow AES key.');
@@ -94,12 +100,12 @@ export async function decryptFlowRequest(
   if(aesKeyBytes.length!==16)throw new FlowCryptoError(400,'invalid_aes_key','Expected AES-128 key.');
 
   let aesKey:CryptoKey;
-  try{aesKey=await crypto.subtle.importKey('raw',aesKeyBytes,{name:'AES-GCM'},false,['decrypt','encrypt']);}
+  try{aesKey=await crypto.subtle.importKey('raw',toArrayBuffer(aesKeyBytes),{name:'AES-GCM'},false,['decrypt','encrypt']);}
   catch{throw new FlowCryptoError(400,'invalid_aes_key','Unable to import AES key.');}
 
   let plaintext:ArrayBuffer;
   try{
-    plaintext=await crypto.subtle.decrypt({name:'AES-GCM',iv,tagLength:128},aesKey,encryptedData);
+    plaintext=await crypto.subtle.decrypt({name:'AES-GCM',iv:toArrayBuffer(iv),tagLength:128},aesKey,toArrayBuffer(encryptedData));
   }catch{
     throw new FlowCryptoError(400,'flow_data_decrypt_failed','Unable to decrypt Flow payload.');
   }
@@ -119,13 +125,13 @@ export async function encryptFlowResponse(
   if(aesKeyBytes.length!==16)throw new FlowCryptoError(500,'invalid_aes_key','Expected AES-128 key.');
   const flippedIv=new Uint8Array(initialVectorBytes.length);
   for(let i=0;i<initialVectorBytes.length;i++)flippedIv[i]=(~initialVectorBytes[i])&0xff;
-  const aesKey=await crypto.subtle.importKey('raw',aesKeyBytes,{name:'AES-GCM'},false,['encrypt']);
+  const aesKey=await crypto.subtle.importKey('raw',toArrayBuffer(aesKeyBytes),{name:'AES-GCM'},false,['encrypt']);
   const plaintext=encoder.encode(JSON.stringify(response));
-  const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv:flippedIv,tagLength:128},aesKey,plaintext));
+  const encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv:toArrayBuffer(flippedIv),tagLength:128},aesKey,toArrayBuffer(plaintext)));
   return bytesToBase64(encrypted);
 }
 
 export async function sha256Hex(value:string):Promise<string>{
-  const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(value)));
+  const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',toArrayBuffer(encoder.encode(value))));
   return [...digest].map(v=>v.toString(16).padStart(2,'0')).join('');
 }
