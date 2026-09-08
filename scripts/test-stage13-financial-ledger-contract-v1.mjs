@@ -1,7 +1,10 @@
 import {readFileSync} from 'node:fs';
 
-const path='supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql';
-const sql=readFileSync(path,'utf8');
+const basePath='supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql';
+const fixPath='supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql';
+const base=readFileSync(basePath,'utf8');
+const fix=readFileSync(fixPath,'utf8');
+const sql=`${base}\n${fix}`;
 const lower=sql.toLowerCase();
 
 const required=[
@@ -31,6 +34,9 @@ const required=[
   'create or replace function public.open_financial_reconciliation_case_v1',
   "'fiscal_mutated',false",
   "'route_mutated',false",
+  'alter function public.prevent_financial_append_only_mutation_v1() security invoker',
+  'revoke all on function public.prevent_financial_append_only_mutation_v1() from public, anon, authenticated',
+  'grant execute on function public.prevent_financial_append_only_mutation_v1() to service_role',
   'revoke all on table public.financial_runtime_config',
   'to service_role'
 ];
@@ -62,5 +68,6 @@ for(const needle of forbidden){
 
 if(/external_reconciliation_enabled\s*=\s*true/i.test(sql))throw new Error('external_reconciliation_must_not_be_enabled');
 if(/fiscal_projection_enabled\s*=\s*true/i.test(sql))throw new Error('fiscal_projection_must_not_be_enabled');
+if(/security\s+definer[\s\S]{0,250}prevent_financial_append_only_mutation_v1/i.test(fix))throw new Error('append_only_guard_must_not_remain_security_definer');
 
-console.log('PASS: Stage 13 financial foundation is dormant, append-only, idempotent, provider-free and cannot mutate order/fiscal/logistics state.');
+console.log('PASS: Stage 13 financial foundation is dormant, append-only, idempotent, provider-free, cannot mutate order/fiscal/logistics state, and the trigger guard is not client-callable SECURITY DEFINER.');
