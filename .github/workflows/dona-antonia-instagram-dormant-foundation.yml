@@ -1,0 +1,51 @@
+name: Dona Antonia Instagram dormant foundation
+
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/instagram-policy-v1.mjs'
+      - 'supabase/functions/_shared/instagram-policy-v1.mjs'
+      - 'supabase/functions/instagram-webhook-v1/**'
+      - 'supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql'
+      - 'supabase/config.toml'
+      - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
+      - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
+      - 'docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  push:
+    branches: [main]
+    paths:
+      - 'lib/omnichannel/instagram-policy-v1.mjs'
+      - 'supabase/functions/_shared/instagram-policy-v1.mjs'
+      - 'supabase/functions/instagram-webhook-v1/**'
+      - 'supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql'
+      - 'supabase/config.toml'
+      - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
+      - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policy-and-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Instagram policy and fail-closed contract
+        run: node scripts/test-instagram-direct-comment-foundation-v1.mjs
+
+  deno-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check dormant Instagram webhook
+        run: deno check supabase/functions/instagram-webhook-v1/index.ts
