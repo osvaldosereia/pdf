@@ -45,6 +45,18 @@ try{
   `);
   await db.exec(readFileSync('supabase/migrations/20260908001000_experience_orchestrator_v1.sql','utf8'));
   await db.exec(readFileSync('supabase/migrations/20260908002000_basket_flow_contract_v1.sql','utf8'));
+  await db.exec(`create or replace function public.plan_next_sales_move(p_conversation_id uuid)
+    returns jsonb language sql stable as $$
+      select jsonb_build_object(
+        'action','offer_suggestions','reason','fixture_recommendations','shopping_mode','hybrid','reply_mode','text',
+        'recommendations',jsonb_build_array(
+          jsonb_build_object('product_id',gen_random_uuid(),'name','Leite'),
+          jsonb_build_object('product_id',gen_random_uuid(),'name','Biscoito'),
+          jsonb_build_object('product_id',gen_random_uuid(),'name','Suco')
+        )
+      )
+    $$;`);
+  await db.exec(readFileSync('supabase/migrations/20260908003000_experience_sales_lifecycle_v1.sql','utf8'));
 
   let r=await one(`select experience_orchestrator_enabled enabled from public.automation_config where id=1`);
   if(r.enabled!==false)throw new Error('orchestrator_must_default_off');
@@ -53,7 +65,7 @@ try{
   r=await one(`select count(*)::int n from public.experience_definitions where experience_type='whatsapp_flow' and status='draft'`);
   if(r.n<3)throw new Error('flow_drafts_missing');
 
-  const conv=(await one(`insert into public.conversations(automation_bucket) values(0) returning id`)).id;
+  const conv=(await one(`insert into public.conversations(automation_bucket,automation_cohort) values(0,'fixture_ai') returning id`)).id;
   r=await one(`select public.plan_next_experience_v1('${conv}'::uuid,'basket_customize',0,8,false,'{}'::jsonb) plan`);
   if(r.plan.action!=='conversation'||r.plan.reason!=='basket_interfaces_disabled')throw new Error('disabled_orchestrator_must_not_open_flow');
 
@@ -71,15 +83,44 @@ try{
   r=await one(`select public.plan_next_experience_v1('${conv}'::uuid,'recommendations',30,0,true,'{}'::jsonb) plan`);
   if(r.plan.action!=='shopping_room')throw new Error('large_visual_recommendation_should_use_room');
 
+  // Motor comercial decide o movimento; orquestrador decide a interface, sem registrar oferta.
+  r=await one(`select public.plan_sales_experience_v1('${conv}'::uuid) plan`);
+  if(r.plan.side_effects!==false||r.plan.sales_plan.action!=='offer_suggestions')throw new Error('sales_bridge_must_be_read_only');
+  if(r.plan.experience_plan.action!=='whatsapp_flow'||r.plan.experience_plan.definition_slug!=='flow-upsell-v1')throw new Error('sales_bridge_should_choose_upsell_flow');
+
   r=await one(`select public.create_experience_session_v1('${conv}'::uuid,'flow-personalizar-cesta-v1','fixture-session-0001',null,null,'{}'::jsonb) result`);
   if(!r.result.ok||r.result.duplicate)throw new Error('session_not_created');
   const sessionId=r.result.session_id;
   r=await one(`select public.create_experience_session_v1('${conv}'::uuid,'flow-personalizar-cesta-v1','fixture-session-0001',null,null,'{}'::jsonb) result`);
   if(!r.result.duplicate||r.result.session_id!==sessionId)throw new Error('session_idempotency_failed');
+  r=await one(`select public.mark_experience_session_open_v1('${sessionId}'::uuid,'provider-fixture') result`);
+  if(!r.result.ok||r.result.status!=='open')throw new Error('session_open_failed');
+  r=await one(`select public.mark_experience_session_open_v1('${sessionId}'::uuid,'provider-fixture') result`);
+  if(!r.result.ok||r.result.status!=='open')throw new Error('session_open_idempotency_failed');
+  r=await one(`select count(*)::int n from public.experience_events where session_id='${sessionId}'::uuid and event_type='session_opened'`);
+  if(r.n!==1)throw new Error('session_open_event_must_be_deduplicated');
   r=await one(`select public.complete_experience_session_v1('${sessionId}'::uuid,'{"basket":"media"}'::jsonb,'provider-fixture') result`);
   if(!r.result.ok||r.result.status!=='completed')throw new Error('session_completion_failed');
   r=await one(`select public.complete_experience_session_v1('${sessionId}'::uuid,'{"basket":"other"}'::jsonb,'provider-fixture') result`);
   if(!r.result.duplicate)throw new Error('completion_idempotency_failed');
+
+  r=await one(`select public.create_experience_session_v1('${conv}'::uuid,'flow-personalizar-cesta-v1','fixture-session-abandon-0001',null,null,'{}'::jsonb) result`);
+  const abandonedId=r.result.session_id;
+  r=await one(`select public.abandon_experience_session_v1('${abandonedId}'::uuid,'cliente preferiu conversa') result`);
+  if(!r.result.ok||r.result.status!=='abandoned')throw new Error('session_abandon_failed');
+  r=await one(`select public.abandon_experience_session_v1('${abandonedId}'::uuid,'repeat') result`);
+  if(!r.result.duplicate)throw new Error('abandon_idempotency_failed');
+
+  r=await one(`select public.create_experience_session_v1('${conv}'::uuid,'flow-personalizar-cesta-v1','fixture-session-expire-0001',null,null,'{}'::jsonb) result`);
+  const expiredId=r.result.session_id;
+  await db.exec(`update public.experience_sessions set expires_at=now()-interval '1 minute' where id='${expiredId}'::uuid`);
+  r=await one(`select public.expire_experience_sessions_v1() result`);
+  if(Number(r.result.expired)<1)throw new Error('expired_session_not_recovered');
+  r=await one(`select status from public.experience_sessions where id='${expiredId}'::uuid`);
+  if(r.status!=='expired')throw new Error('expired_session_status_wrong');
+  r=await one(`select public.get_experience_funnel_metrics_v1(now()-interval '1 day') metrics`);
+  const flowMetric=r.metrics.definitions.find(x=>x.slug==='flow-personalizar-cesta-v1');
+  if(!flowMetric||Number(flowMetric.sessions)<3||Number(flowMetric.completed)<1||Number(flowMetric.abandoned)<1||Number(flowMetric.expired)<1)throw new Error('funnel_metrics_incomplete');
 
   await db.exec(`update public.conversations set upsell_declined=true where id='${conv}'::uuid`);
   r=await one(`select public.plan_next_experience_v1('${conv}'::uuid,'upsell',4,4,false,'{}'::jsonb) plan`);
@@ -123,5 +164,5 @@ try{
   r=await one(`select public.get_experience_orchestrator_dashboard_v1() dashboard`);
   if(r.dashboard.config.orchestrator_enabled!==false)throw new Error('dashboard_state_wrong');
   if(!Array.isArray(r.dashboard.features)||r.dashboard.features.length<5)throw new Error('dashboard_features_missing');
-  console.log('PASS: experience orchestrator + safe basket Flow contract, no component prices, idempotent sessions, routing, upsell suppression and human precedence.');
+  console.log('PASS: experience orchestrator + sales bridge + lifecycle + funnel + safe basket Flow contract + no component prices + idempotency + human precedence.');
 }finally{await db.close()}
