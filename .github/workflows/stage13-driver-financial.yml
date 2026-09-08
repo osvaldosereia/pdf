@@ -1,0 +1,70 @@
+name: Stage 13 Driver Financial
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908174000_stage13_driver_financial_context_v1.sql'
+      - 'supabase/functions/driver-logistics-v1/index.ts'
+      - 'driver-app/**'
+      - 'scripts/test-stage13-driver-financial-contract-v1.mjs'
+      - 'scripts/test-stage13-driver-financial-db-v1.mjs'
+      - 'docs/ETAPA-13-DRIVER-FINANCIAL-V1.md'
+      - 'docs/ROADMAP-20-ETAPAS-PROGRESS.md'
+      - '.github/workflows/stage13-driver-financial.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908174000_stage13_driver_financial_context_v1.sql'
+      - 'supabase/functions/driver-logistics-v1/index.ts'
+      - 'driver-app/**'
+      - 'scripts/test-stage13-driver-financial-contract-v1.mjs'
+      - 'scripts/test-stage13-driver-financial-db-v1.mjs'
+      - 'docs/ETAPA-13-DRIVER-FINANCIAL-V1.md'
+      - 'docs/ROADMAP-20-ETAPAS-PROGRESS.md'
+      - '.github/workflows/stage13-driver-financial.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  driver-financial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql
+            supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql
+            supabase/migrations/20260908173000_stage13_collection_expectations_v1.sql
+            supabase/migrations/20260908173100_stage13_collection_expectations_prepaid_fix_v2.sql
+            supabase/migrations/20260908174000_stage13_driver_financial_context_v1.sql
+            supabase/functions/driver-logistics-v1/index.ts
+            driver-app/app.js
+            driver-app/index.html
+            driver-app/style.css
+            driver-app/config.js
+            driver-app/sw.js
+            scripts/test-stage13-driver-financial-contract-v1.mjs
+            scripts/test-stage13-driver-financial-db-v1.mjs
+            docs/ETAPA-13-DRIVER-FINANCIAL-V1.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage13-driver-financial" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático
+        run: node scripts/test-stage13-driver-financial-contract-v1.mjs
+      - name: Driver financeiro em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage13-driver-financial
+        run: node scripts/test-stage13-driver-financial-db-v1.mjs
+      - name: Validar JavaScript do PWA
+        run: node --check driver-app/app.js
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Validar Edge Function
+        run: deno check supabase/functions/driver-logistics-v1/index.ts

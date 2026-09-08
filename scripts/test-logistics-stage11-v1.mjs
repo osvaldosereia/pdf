@@ -116,9 +116,10 @@ assert.match(driverFn,/auth\.getUser\(token\)/);
 assert.match(driverFn,/driver_runtime_disabled/);
 assert.match(driverFn,/gps_tracking_disabled/);
 assert.match(driverFn,/client_event_id/);
-assert.match(driverFn,/driver_deliver_stop_v2/);
-assert.match(driverFn,/payment_status/);
-assert.match(driverFn,/confirmed_payment_requires_valid_method_and_amount/);
+assert.match(driverFn,/driver_deliver_stop_v3/,'current driver transport must use governed ledger-first delivery v3');
+assert.match(driverFn,/p_collection:collection/,'driver collection must use structured collection payload');
+assert.match(driverFn,/invalid_collection_payload/);
+assert.doesNotMatch(driverFn,/confirm_order_payment_v1/,'driver transport must not confirm fiscal payment directly');
 assert.doesNotMatch(driverFn,/bling|sefaz/i,'driver transport must not call fiscal providers');
 
 assert.match(adminConfig,/logisticsUiEnabled:\s*false/);
