@@ -14,6 +14,7 @@ on:
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
       - 'scripts/test-automation-dispatcher-stage10-v3.mjs'
+      - 'scripts/test-automation-openai-compiler-stage10-v4.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
   push:
     branches: [main]
@@ -29,6 +30,7 @@ on:
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
       - 'scripts/test-automation-dispatcher-stage10-v3.mjs'
+      - 'scripts/test-automation-openai-compiler-stage10-v4.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
 
 permissions:
@@ -37,7 +39,7 @@ permissions:
 jobs:
   safety-contract:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,6 +56,7 @@ jobs:
             scripts/test-automation-engine-stage10-v1.mjs
             scripts/test-automation-builder-stage10-v2.mjs
             scripts/test-automation-dispatcher-stage10-v3.mjs
+            scripts/test-automation-openai-compiler-stage10-v4.mjs
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
@@ -67,6 +70,8 @@ jobs:
         run: node scripts/test-automation-builder-stage10-v2.mjs
       - name: Testar dispatcher v3
         run: node scripts/test-automation-dispatcher-stage10-v3.mjs
+      - name: Testar compilador OpenAI v4
+        run: node scripts/test-automation-openai-compiler-stage10-v4.mjs
       - name: Verificar JavaScript do Admin
         run: node --check admin-v3/automation-builder.js
       - name: Deno check do Builder
