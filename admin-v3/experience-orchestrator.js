@@ -2,8 +2,9 @@
   'use strict';
   const C=window.DA_ADMIN_V3_CONFIG||{};
   const AUTH_KEY='da_admin_v3_auth';
-  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
   const n=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
+  const pct=v=>v===null||v===undefined?'—':`${new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(Number(v))}%`;
   const fmt=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('pt-BR')};
   let root=null,last=null,loading=false;
   function auth(){try{return JSON.parse(localStorage.getItem(AUTH_KEY)||'null')}catch{return null}}
@@ -32,6 +33,10 @@
         <section class="exp-card"><header><div><small>Feature flags</small><h3>Interfaces disponíveis</h3></div><button id="expReload" class="button secondary small" type="button">Atualizar</button></header><div id="expFeatures" class="exp-list"><div class="empty">Carregando…</div></div></section>
         <section class="exp-card"><header><div><small>WhatsApp Flows</small><h3>Definições preparadas</h3></div></header><div id="expDefinitions" class="exp-list"><div class="empty">Carregando…</div></div></section>
       </div>
+      <div class="exp-grid">
+        <section class="exp-card"><header><div><small>Readiness</small><h3>Contrato do Flow de cesta</h3></div></header><div id="expFlowReadiness" class="exp-list"><div class="empty">Carregando…</div></div></section>
+        <section class="exp-card"><header><div><small>Últimos 7 dias</small><h3>Funil por experiência</h3></div></header><div id="expFunnel" class="exp-list"><div class="empty">Nenhuma sessão.</div></div></section>
+      </div>
       <section class="exp-card"><header><div><small>Simulador sem efeitos</small><h3>Qual interface seria escolhida?</h3></div></header>
         <form id="expPreviewForm" class="exp-form">
           <label>Conversa<select id="expConversation" required></select></label>
@@ -47,6 +52,7 @@
     </section>`}
   function render(data){
     last=data;const d=data.dashboard||{},cfg=d.config||{},m=d.metrics_24h||{};
+    const readiness=data.flow_readiness?.basket_personalization_v1||{};
     root.querySelector('#expMetrics').innerHTML=[
       metric(cfg.orchestrator_enabled?'LIGADO':'DESLIGADO','Kill switch','Não existe ativação por botão nesta fase'),
       metric(n((d.features||[]).filter(x=>x.enabled).length),'Features ligadas','Todas nasceram desligadas'),
@@ -58,6 +64,12 @@
     root.querySelector('#expFeatures').innerHTML=features.length?features.map(f=>`<div class="exp-row"><div><strong>${esc(f.key)}</strong><small>${esc(actionLabel(f.experience_type))} · canal ${esc(f.channel)} · rollout ${n(f.rollout_percent)}%</small></div><div>${f.enabled?'<span class="exp-badge success">enabled</span>':'<span class="exp-badge muted">off</span>'}<button class="row-button" data-exp-feature="${esc(f.key)}" type="button">Editar rascunho</button></div></div>`).join(''):'<div class="empty">Nenhuma feature cadastrada.</div>';
     const defs=d.definitions||[];
     root.querySelector('#expDefinitions').innerHTML=defs.length?defs.map(x=>`<div class="exp-row"><div><strong>${esc(x.slug)}</strong><small>${esc(x.purpose)}</small><small>${esc(x.provider||'interno')} · schema v${n(x.schema_version)}${x.provider_id?' · provider configurado':''}</small></div><div>${statusBadge(x.status)}<button class="row-button" data-exp-definition="${esc(x.id)}" type="button">Editar</button></div></div>`).join(''):'<div class="empty">Nenhuma definição cadastrada.</div>';
+    root.querySelector('#expFlowReadiness').innerHTML=`
+      <div class="exp-row"><div><strong>Contrato interno</strong><small>Payload/validação de personalização sem preço individual dos componentes.</small></div>${readiness.contract_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge warning">pendente</span>'}</div>
+      <div class="exp-row"><div><strong>Transporte Meta</strong><small>Provider ID + definição pronta/publicada. Não ativa rollout.</small></div>${readiness.transport_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge muted">não configurado</span>'}</div>
+      <div class="exp-row"><div><strong>Exposição de componentes</strong><small>Preço individual permanece oculto por contrato.</small></div>${readiness.component_prices_visible?'<span class="exp-badge warning">revisar</span>':'<span class="exp-badge success">seguro</span>'}</div>`;
+    const funnel=data.funnel?.definitions||[];
+    root.querySelector('#expFunnel').innerHTML=funnel.length?funnel.map(x=>`<div class="exp-row"><div><strong>${esc(x.slug)}</strong><small>${n(x.sessions)} sessões · ${n(x.completed)} concluídas · ${n(x.abandoned)} abandonos · ${n(x.expired)} expiradas</small></div><div><span class="exp-badge info">abertura ${esc(pct(x.open_rate))}</span><span class="exp-badge ${Number(x.completion_rate||0)>=70?'success':'muted'}">conclusão ${esc(pct(x.completion_rate))}</span></div></div>`).join(''):'<div class="empty">Nenhuma sessão no período.</div>';
     const conv=data.conversations||[];root.querySelector('#expConversation').innerHTML=conv.length?conv.map(c=>`<option value="${esc(c.id)}">${esc(c.channel)} · ${esc(c.stage||c.status)} · ${esc(c.automation_cohort||'sem cohort')} · ${esc(c.id.slice(0,8))}</option>`).join(''):'<option value="">Nenhuma conversa disponível</option>';
     const events=d.recent_events||[];root.querySelector('#expEvents').innerHTML=events.length?events.map(e=>`<div class="exp-row"><div><strong>${esc(e.event_type)}</strong><small>${esc(actionLabel(e.interface_type))} · ${esc(e.cohort||'—')} · ${fmt(e.created_at)}</small></div></div>`).join(''):'<div class="empty">Nenhum evento de experiência registrado.</div>';
   }
