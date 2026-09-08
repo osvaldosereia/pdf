@@ -7,7 +7,10 @@ Este é o arquivo **autoritativo de retomada operacional**. Ler junto com:
 1. `docs/ROADMAP-FINAL-DONA-ANTONIA-20-ETAPAS.md`;
 2. `docs/ROADMAP-20-ETAPAS-PROGRESS.md`;
 3. `docs/ETAPA-12-CHECKPOINT-FINAL-20260908.md`;
-4. documentos de decisão mais recentes.
+4. `docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md`;
+5. documentos de decisão mais recentes.
+
+O plano de IA é uma **diretriz transversal obrigatória**: Cost Policy Engine configurável, política de ação segura/confirmação, confiança versionada, memória comercial útil com evidência, pedido implícito, Next Best Action, compressão com baixa carga cognitiva e ordem de objetivos `resolver → facilitar → fechar → aumentar ticket`.
 
 Antes de programar: auditar GitHub e Supabase; auditar Make se o bloco tocar automações/conectores ou para confirmar o baseline operacional. Não reiniciar etapa concluída.
 
@@ -34,6 +37,8 @@ Primeiro bloco seguro recomendado da Etapa 13:
 - abstração de conciliação externa sem provider/chamada real inicialmente;
 - read models/Admin atrás de gate OFF;
 - GitHub Actions para reconciliação batch quando fizer sentido.
+
+O financeiro da Etapa 13 deve expor somente **contexto determinístico** para o futuro `next_best_action`; a IA não decide se pagamento ocorreu nem reconcilia valores por inferência.
 
 ---
 
@@ -243,6 +248,26 @@ Observação: a primeira tentativa de correção dos benefícios baseada em `SET
 
 ---
 
+## Diretriz transversal de IA comercial
+
+Referência oficial: `docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md`.
+
+Regras que precisam orientar novas implementações:
+
+- Cost Policy Engine configurável/versionado; preço de canal nunca hardcoded;
+- custo desconhecido/desatualizado => bloquear;
+- minimizar mensagens **e** carga cognitiva;
+- ações seguras/reversíveis podem ser executadas conforme política;
+- ações irreversíveis/obrigacionais exigem confirmação;
+- confiança é configurável e nunca bypassa confirmação irreversível;
+- memória comercial só vira preferência com evidência/confiança/recorrência;
+- pedido implícito deve gerar ação útil quando houver contexto suficiente;
+- Next Best Action decide antes da geração textual;
+- ordem de objetivos: `resolver corretamente → facilitar → fechar → aumentar ticket`;
+- aprendizado futuro usa evidência e testes controlados, sem alterar regras críticas automaticamente.
+
+---
+
 ## Segurança / Supabase Advisor
 
 Última auditoria não encontrou alerta crítico novo.
@@ -267,7 +292,7 @@ Não alterar configuração de Auth automaticamente.
 
 ## Próxima ação ao receber “continue”
 
-1. reler este arquivo, roadmap e checkpoint da Etapa 12;
+1. reler este arquivo, roadmap, checkpoint da Etapa 12 e plano de IA;
 2. auditar `main`/PRs recentes e Supabase;
 3. iniciar **Etapa 13** somente com fundação financeira dormente;
 4. não conectar banco/adquirente/Pix/Bling financeiro real no primeiro bloco;
