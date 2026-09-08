@@ -15,6 +15,8 @@ IA entende a missão
 → Meta abre Flow reutilizável
 → Data Exchange chega criptografado
 → backend descriptografa e revalida dados
+→ replay guard identifica repetição
+→ máquina de estados valida a transição
 → backend responde criptografado
 → somente uma etapa transacional futura poderá aplicar alterações
 ```
@@ -43,6 +45,8 @@ Criptografia:
 
 A mensagem outbound futura usará o contrato Cloud API `interactive.type = flow`, com versão de mensagem `3`, `flow_token`, `flow_id`, CTA e ação apropriada (`data_exchange`/`navigate`).
 
+Compatibilidade Deno/WebCrypto: inputs `Uint8Array` usados pelo WebCrypto são normalizados para `ArrayBuffer` antes de `importKey`, `decrypt`, `encrypt` e `digest`, evitando a incompatibilidade de tipagem `BufferSource` observada no `deno check` do Deno 2.x.
+
 ---
 
 ## Edge Functions
@@ -58,13 +62,17 @@ Proteções:
 - somente POST JSON;
 - limite de tamanho;
 - chaves vindas do Vault server-side;
-- nenhum log de payload descriptografado, token, chave ou PII;
+- nenhum log de payload descriptografado, token, chave, fingerprint ou PII;
 - `ping` suportado;
 - erro do cliente é apenas reconhecido/auditado;
 - token de Flow obrigatório para ações de negócio;
 - sessão expirada/humana é rejeitada;
+- takeover humano é rechecado sob lock antes da regra de negócio;
 - resposta sempre criptografada após descriptografia válida;
-- chamadas de negócio são revalidadas no PostgreSQL.
+- chamadas de negócio são revalidadas no PostgreSQL;
+- fingerprint SHA-256 do envelope criptografado alimenta o replay guard;
+- repetição reconhecida não executa novamente transição de estado;
+- budget por sessão bloqueia abuso antes de qualquer futura escrita.
 
 ### `admin-whatsapp-flow-v1`
 
@@ -119,9 +127,10 @@ Novos flags em `automation_config`:
 ```text
 whatsapp_flow_data_exchange_enabled = false
 whatsapp_flow_send_enabled = false
+whatsapp_flow_max_exchanges_per_session = 40
 ```
 
-Ambos nascem e terminam a migration como `false`.
+Os dois flags funcionais nascem e terminam a migration como `false`. O terceiro é apenas um budget de segurança; não ativa nada.
 
 Além deles, emissão de token exige simultaneamente:
 
@@ -142,7 +151,7 @@ Mesmo que um flag seja ligado por engano, token não nasce com transporte incomp
 
 ---
 
-## Token de Flow
+## Token de Flow e estado da sessão
 
 `issue_whatsapp_flow_token_v1(session_id)` gera token aleatório de alta entropia.
 
@@ -153,6 +162,17 @@ SHA-256(token)
 issued_at
 last_exchange_at
 exchange_count
+current_screen
+state_version
+last_request_fingerprint
+```
+
+Ao emitir/rotacionar o token, a máquina de estados é reiniciada com:
+
+```text
+current_screen = null
+state_version = 0
+exchange_count = 0
 ```
 
 O token cru é devolvido uma única vez ao componente server-side que futuramente montar a mensagem `interactive.flow`.
@@ -162,9 +182,36 @@ O token cru não deve aparecer em:
 - logs;
 - `experience_events`;
 - tabela de exchanges;
+- replay guard;
 - Admin;
 - navegador;
 - GitHub.
+
+---
+
+## Replay guard
+
+`whatsapp_flow_request_guard` guarda somente metadados não reversíveis/operacionais:
+
+- SHA-256 do envelope criptografado (`request_fingerprint`);
+- request ID interno;
+- sessão, quando resolvida;
+- ação/tela;
+- primeiro horário;
+- expiração do guard.
+
+Não guarda body, `flow_token`, chave, `encrypted_flow_data`, dados do formulário ou payload descriptografado.
+
+`claim_whatsapp_flow_request_v1(...)` é `service_role` only e usa a fingerprint como chave primária:
+
+```text
+primeira ocorrência → claimed=true
+mesmo envelope novamente → replay=true
+```
+
+O TTL do guard é 24 horas; a sessão Flow normal expira muito antes disso. Um replay reconhecido pode reconstruir a resposta read-only necessária, mas não avança `state_version` nem executa novamente uma transição.
+
+Esta camada é requisito técnico para a futura escrita idempotente no carrinho, porém **não autoriza essa escrita**.
 
 ---
 
@@ -178,6 +225,7 @@ O token cru não deve aparecer em:
 - tela;
 - status;
 - código de erro;
+- `is_replay`;
 - horário.
 
 A tabela deliberadamente não possui colunas para:
@@ -192,9 +240,24 @@ Dados necessários para a regra de negócio permanecem na sessão/entidades ofic
 
 ---
 
-## Flow Personalizar Cesta
+## Máquina de estados — Flow Personalizar Cesta
 
 Nesta fundação somente `flow-personalizar-cesta-v1` possui handler.
+
+Fluxo aceito:
+
+```text
+TOKEN ISSUED
+  current_screen = null
+        ↓ INIT
+BASKET_EDIT
+        ↓ data_exchange + seleção válida
+BASKET_REVIEW
+        ↓ confirmação
+BASKET_REVIEW / write_enabled=false
+```
+
+Saltos de tela ou requisições antigas que não sejam replay reconhecido retornam `flow_transition_invalid`.
 
 ### INIT
 
@@ -233,6 +296,8 @@ Seleção válida segue para:
 BASKET_REVIEW
 ```
 
+A transição incrementa `state_version`. Replay reconhecido da mesma seleção pode reconstruir a tela de revisão, mas não incrementa a versão novamente.
+
 ### BASKET_REVIEW
 
 A escrita no carrinho está propositalmente bloqueada:
@@ -246,9 +311,28 @@ Nenhuma seleção de Flow desta etapa pode alterar carrinho/pedido.
 
 ---
 
+## Takeover humano vence sempre
+
+A sessão Flow é recusada se a conversa estiver em modo humano ou `human_required=true`.
+
+A proteção existe em duas camadas:
+
+1. `resolve_whatsapp_flow_token_v1` rejeita a sessão;
+2. `handle_whatsapp_flow_exchange_v1` bloqueia a sessão e revalida o estado da conversa antes da regra de negócio.
+
+Assim, uma conversa assumida por humano não volta para automação por uma requisição Flow tardia.
+
+---
+
 ## Readiness no Admin
 
-O `admin-experience-orchestrator-v1` passa a agregar também `get_whatsapp_flow_transport_readiness_v1`.
+O `admin-experience-orchestrator-v1` agrega `get_whatsapp_flow_transport_readiness_v1`.
+
+O readiness inclui agora também:
+
+- `replay_guard_enabled=true`;
+- `state_machine_enabled=true`;
+- `max_exchanges_per_session=40` por padrão.
 
 O módulo visual dormente do Admin mostrará:
 
@@ -275,20 +359,28 @@ Não há botão de ativação nesta fase.
 
 - runtime default off;
 - readiness false por padrão;
-- nenhuma coluna de payload sensível na auditoria;
+- budget de 40 exchanges por sessão;
+- replay guard e detecção de envelope repetido;
+- nenhuma coluna de payload sensível na auditoria/guard;
 - sessão Flow existente mas token bloqueado enquanto runtime off;
 - flags sozinhos insuficientes para emissão;
 - key install sem retorno da private key;
 - `pending` da Meta bloqueando envio;
 - `valid` liberando readiness em fixture;
 - somente hash do token persistido;
+- reset da máquina de estados na emissão;
 - token resolvendo sessão;
 - token cru ausente dos eventos;
 - INIT retornando contrato sem preço individual;
-- validação de seleção;
+- INIT replay sem avanço duplicado;
+- `BASKET_EDIT → BASKET_REVIEW` válido;
+- salto/stale transition rejeitado;
+- replay de edição idempotente;
 - review sem escrita de carrinho;
+- takeover humano invalidando runtime Flow;
+- budget excedido falhando fechado;
 - gate revalidado no handler;
-- RPC da chave privada revogado de cliente e permitido apenas a service_role.
+- RPCs sensíveis revogados de cliente e permitidos apenas a `service_role`.
 
 `crypto.test.ts` cobre o round-trip criptográfico Meta-style e HTTP 421 para chave privada incorreta.
 
@@ -311,7 +403,7 @@ Não há botão de ativação nesta fase.
 
 ## Ordem segura da próxima fase
 
-1. passar CI desta fundação;
+1. passar CI desta fundação/hardening;
 2. merge;
 3. aplicar migrations em produção com flags `false`;
 4. publicar os dois Edge Functions, mantendo endpoint desabilitado;
