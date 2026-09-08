@@ -30,8 +30,8 @@ Deno.serve(async(req:Request)=>{
       sb.rpc("commercial_readiness_v1"),
       sb.rpc("commercial_report_summary_v1"),
       sb.from("commercial_expiry_report_v1").select("product_id,name,sku,category,effective_stock,effective_expiry,days_remaining,expiry_bucket").order("effective_expiry",{ascending:true,nullsFirst:false}).limit(100),
-      sb.from("commercial_product_health_v1").select("product_id,name,sku,category,price,cost,effective_stock,effective_expiry,base_margin_percent,base_margin_brl,commercial_health").in("commercial_health",["margin_risk","cost_unknown","expired","stockout"]).order("name").limit(100),
-      sb.from("inventory_lots").select("id,product_id,lot_code,status,quantity_on_hand,quantity_reserved,unit_cost,expires_at,physically_verified,updated_at").order("expires_at",{ascending:true,nullsFirst:false}).limit(100),
+      sb.from("commercial_product_health_v1").select("product_id,name,sku,category,price,cost,effective_stock,effective_expiry,base_margin_percent,base_margin_brl,commercial_health").in("commercial_health",["margin_risk","cost_unknown","expired","stockout","lot_truth_missing","no_verified_available_lot"]).order("name").limit(100),
+      sb.from("inventory_lots").select("id,product_id,lot_code,status,quantity_on_hand,quantity_reserved,unit_cost,expires_at,expiry_handling,physically_verified,updated_at").order("expires_at",{ascending:true,nullsFirst:false}).limit(100),
       sb.from("promotion_campaigns").select("id,campaign_key,display_name,campaign_type,status,enabled,execution_mode,budget_brl,spent_brl,updated_at").order("updated_at",{ascending:false}).limit(50)
     ]);
     const error=e1||e2||e3||e4||e5||e6;if(error)return json({ok:false,error:"dashboard_read_failed",detail:error.message},500);
@@ -68,9 +68,12 @@ Deno.serve(async(req:Request)=>{
     if(!isOwner)return json({ok:false,error:"owner_required"},403);
     const productId=uuid(body?.product_id),lotCode=clean(body?.lot_code,80);if(!productId||!lotCode)return json({ok:false,error:"product_and_lot_required"},400);
     const onHand=num(body?.quantity_on_hand??0,0,100000000),unitCost=body?.unit_cost==null?null:num(body.unit_cost,0,1000000);
-    if(onHand===null||body?.unit_cost!=null&&unitCost===null)return json({ok:false,error:"invalid_lot_values"},400);
-    const payload={product_id:productId,lot_code:lotCode,status:"draft",quantity_on_hand:onHand,quantity_reserved:0,unit_cost:unitCost,manufactured_at:body?.manufactured_at||null,expires_at:body?.expires_at||null,received_at:body?.received_at||null,warehouse_location:clean(body?.warehouse_location,120)||null,source_system:"admin_draft",source_ref:clean(body?.source_ref,120)||null,physically_verified:false,metadata:{...obj(body?.metadata),draft_only:true},updated_at:new Date().toISOString()};
-    const {data,error}=await sb.from("inventory_lots").upsert(payload,{onConflict:"product_id,lot_code"}).select("id,product_id,lot_code,status,quantity_on_hand,quantity_reserved,unit_cost,expires_at,physically_verified,updated_at").single();
+    if(onHand===null||(body?.unit_cost!=null&&unitCost===null))return json({ok:false,error:"invalid_lot_values"},400);
+    const expiresAt=clean(body?.expires_at,20)||null;
+    const requestedExpiryHandling=clean(body?.expiry_handling,30).toLowerCase();
+    const expiryHandling=expiresAt?"known":requestedExpiryHandling==="not_required"?"not_required":"unknown";
+    const payload={product_id:productId,lot_code:lotCode,status:"draft",quantity_on_hand:onHand,quantity_reserved:0,unit_cost:unitCost,manufactured_at:body?.manufactured_at||null,expires_at:expiresAt,expiry_handling:expiryHandling,received_at:body?.received_at||null,warehouse_location:clean(body?.warehouse_location,120)||null,source_system:"admin_draft",source_ref:clean(body?.source_ref,120)||null,physically_verified:false,metadata:{...obj(body?.metadata),draft_only:true},updated_at:new Date().toISOString()};
+    const {data,error}=await sb.from("inventory_lots").upsert(payload,{onConflict:"product_id,lot_code"}).select("id,product_id,lot_code,status,quantity_on_hand,quantity_reserved,unit_cost,expires_at,expiry_handling,physically_verified,updated_at").single();
     if(error)return json({ok:false,error:"lot_draft_failed",detail:error.message},400);
     return json({ok:true,lot:data,activated:false,stock_truth_changed:false});
   }
@@ -79,7 +82,7 @@ Deno.serve(async(req:Request)=>{
     if(!isOwner)return json({ok:false,error:"owner_required"},403);
     const scope=["global","category","product"].includes(clean(body?.scope,20))?clean(body?.scope,20):"global";
     const productId=scope==="product"?uuid(body?.product_id):null,category=scope==="category"?clean(body?.category,120):null;
-    if(scope==="product"&&!productId||scope==="category"&&!category)return json({ok:false,error:"invalid_policy_scope"},400);
+    if((scope==="product"&&!productId)||(scope==="category"&&!category))return json({ok:false,error:"invalid_policy_scope"},400);
     const minPct=num(body?.min_margin_percent??0,0,100),minBrl=num(body?.min_margin_brl??0,0,1000000),maxDisc=num(body?.max_discount_percent??0,0,100);
     if(minPct===null||minBrl===null||maxDisc===null)return json({ok:false,error:"invalid_margin_policy"},400);
     const {data,error}=await sb.from("commercial_margin_policies").insert({version:Math.max(1,Number(body?.version)||1),scope,product_id:productId,category,priority:Number(body?.priority)||0,min_margin_percent:minPct,min_margin_brl:minBrl,max_discount_percent:maxDisc,status:"draft",created_by:userData.user.id}).select().single();
