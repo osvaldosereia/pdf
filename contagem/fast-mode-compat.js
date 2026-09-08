@@ -96,11 +96,21 @@
     },350);
   }
 
+  function loadStockOperation(){
+    if(document.querySelector('script[data-fast-stock-operation]'))return;
+    const script=document.createElement('script');
+    script.src='./fast-stock-operation.js?v=20260908-01';
+    script.async=false;
+    script.dataset.fastStockOperation='1';
+    document.head.appendChild(script);
+  }
+
   function bind(){
     $('searchButton')?.addEventListener('click',routeLegacyScanToFast,true);
     const app=$('app');
     if(app)new MutationObserver(syncMode).observe(app,{attributes:true,attributeFilter:['class']});
     bindContinuousScanner();
+    loadStockOperation();
     syncMode();
   }
 
