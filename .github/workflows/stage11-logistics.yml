@@ -7,6 +7,7 @@ on:
       - 'supabase/migrations/20260908112100_stage11_driver_actions_v1.sql'
       - 'supabase/functions/admin-logistics-v1/**'
       - 'supabase/functions/driver-logistics-v1/**'
+      - 'supabase/config.toml'
       - 'lib/logistics/**'
       - 'driver-app/**'
       - 'admin-v3/logistics.js'
@@ -14,6 +15,7 @@ on:
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-logistics-stage11-v1.mjs'
+      - 'docs/ETAPA-11-LOGISTICA-V1.md'
       - '.github/workflows/stage11-logistics.yml'
   push:
     branches: [main]
@@ -22,6 +24,7 @@ on:
       - 'supabase/migrations/20260908112100_stage11_driver_actions_v1.sql'
       - 'supabase/functions/admin-logistics-v1/**'
       - 'supabase/functions/driver-logistics-v1/**'
+      - 'supabase/config.toml'
       - 'lib/logistics/**'
       - 'driver-app/**'
       - 'admin-v3/logistics.js'
@@ -29,6 +32,7 @@ on:
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-logistics-stage11-v1.mjs'
+      - 'docs/ETAPA-11-LOGISTICA-V1.md'
       - '.github/workflows/stage11-logistics.yml'
 
 permissions:
@@ -40,6 +44,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
