@@ -102,7 +102,7 @@ insert into public.service_guidance_rules(
   '{}',
   array['sales','ux','minimal_interactions'],
   'published',
-  110,
+  100,
   1
 )
 on conflict(rule_key,version_no) do nothing;
