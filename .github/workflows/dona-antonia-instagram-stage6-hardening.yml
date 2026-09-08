@@ -1,0 +1,63 @@
+name: Dona Antonia Instagram Stage 6 hardening
+
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/instagram-policy-v2.mjs'
+      - 'lib/omnichannel/instagram-send-contract-v2.mjs'
+      - 'supabase/functions/_shared/instagram-policy-v2.mjs'
+      - 'supabase/functions/_shared/instagram-send-contract-v2.mjs'
+      - 'supabase/functions/meta-instagram-webhook-v1/**'
+      - 'supabase/migrations/20260908060000_instagram_stage6_human_policy_attribution_v2.sql'
+      - 'supabase/migrations/20260908060001_instagram_stage6_prepare_guard_fix_v2.sql'
+      - 'supabase/migrations/20260908060100_instagram_stage6_order_attribution_v2.sql'
+      - 'scripts/test-instagram-stage6-hardening-v2.mjs'
+      - '.github/workflows/dona-antonia-instagram-stage6-hardening.yml'
+      - 'docs/INSTAGRAM-STAGE6-HARDENING-V2.md'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  push:
+    branches: [main]
+    paths:
+      - 'lib/omnichannel/instagram-policy-v2.mjs'
+      - 'lib/omnichannel/instagram-send-contract-v2.mjs'
+      - 'supabase/functions/_shared/instagram-policy-v2.mjs'
+      - 'supabase/functions/_shared/instagram-send-contract-v2.mjs'
+      - 'supabase/functions/meta-instagram-webhook-v1/**'
+      - 'supabase/migrations/20260908060000_instagram_stage6_human_policy_attribution_v2.sql'
+      - 'supabase/migrations/20260908060001_instagram_stage6_prepare_guard_fix_v2.sql'
+      - 'supabase/migrations/20260908060100_instagram_stage6_order_attribution_v2.sql'
+      - 'scripts/test-instagram-stage6-hardening-v2.mjs'
+      - '.github/workflows/dona-antonia-instagram-stage6-hardening.yml'
+      - 'docs/INSTAGRAM-STAGE6-HARDENING-V2.md'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stage6-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate original Instagram foundation
+        run: |
+          node scripts/test-instagram-direct-foundation-v1.mjs
+          node scripts/test-instagram-runtime-v1.mjs
+      - name: Validate Stage 6 hardening
+        run: node scripts/test-instagram-stage6-hardening-v2.mjs
+
+  deno-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check dormant Instagram code
+        run: deno check supabase/functions/meta-instagram-webhook-v1/index.ts supabase/functions/_shared/instagram-policy-v2.mjs supabase/functions/_shared/instagram-send-contract-v2.mjs
