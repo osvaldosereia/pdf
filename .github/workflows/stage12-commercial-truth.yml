@@ -8,6 +8,8 @@ on:
       - 'supabase/migrations/20260908120200_stage12_promotions_benefits_v1.sql'
       - 'supabase/migrations/20260908120300_stage12_reports_recommendations_v1.sql'
       - 'supabase/migrations/20260908120400_stage12_lot_truth_fail_closed_v2.sql'
+      - 'supabase/migrations/20260908120500_stage12_fefo_expiry_idempotency_v3.sql'
+      - 'supabase/migrations/20260908120600_stage12_reservation_idempotency_fix_v4.sql'
       - 'supabase/functions/admin-commercial-truth-v1/**'
       - 'supabase/config.toml'
       - 'admin-v3/commercial-truth.js'
@@ -15,6 +17,7 @@ on:
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-commercial-truth-stage12-v1.mjs'
+      - 'scripts/test-commercial-truth-stage12-hardening-v2.mjs'
       - 'scripts/test-commercial-truth-stage12-db-v1.mjs'
       - '.github/workflows/processar-ofertas.yml'
       - 'docs/ETAPA-12-VERDADE-COMERCIAL-V1.md'
@@ -27,6 +30,8 @@ on:
       - 'supabase/migrations/20260908120200_stage12_promotions_benefits_v1.sql'
       - 'supabase/migrations/20260908120300_stage12_reports_recommendations_v1.sql'
       - 'supabase/migrations/20260908120400_stage12_lot_truth_fail_closed_v2.sql'
+      - 'supabase/migrations/20260908120500_stage12_fefo_expiry_idempotency_v3.sql'
+      - 'supabase/migrations/20260908120600_stage12_reservation_idempotency_fix_v4.sql'
       - 'supabase/functions/admin-commercial-truth-v1/**'
       - 'supabase/config.toml'
       - 'admin-v3/commercial-truth.js'
@@ -34,6 +39,7 @@ on:
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-commercial-truth-stage12-v1.mjs'
+      - 'scripts/test-commercial-truth-stage12-hardening-v2.mjs'
       - 'scripts/test-commercial-truth-stage12-db-v1.mjs'
       - '.github/workflows/processar-ofertas.yml'
       - 'docs/ETAPA-12-VERDADE-COMERCIAL-V1.md'
@@ -58,6 +64,8 @@ jobs:
         run: npm install --prefix "$RUNNER_TEMP/stage12" --no-save @electric-sql/pglite@0.5.8
       - name: Validar contratos de segurança
         run: node scripts/test-commercial-truth-stage12-v1.mjs
+      - name: Validar hardening FEFO/margem
+        run: node scripts/test-commercial-truth-stage12-hardening-v2.mjs
       - name: Aplicar migrations e testar comportamento
         env:
           TEST_RUNTIME: ${{ runner.temp }}/stage12
