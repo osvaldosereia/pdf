@@ -8,6 +8,7 @@ on:
       - 'admin-v3/automation-builder.js'
       - 'admin-v3/automation-builder.css'
       - 'admin/index.html'
+      - 'admin/config.js'
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
@@ -19,6 +20,7 @@ on:
       - 'admin-v3/automation-builder.js'
       - 'admin-v3/automation-builder.css'
       - 'admin/index.html'
+      - 'admin/config.js'
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
@@ -32,6 +34,18 @@ jobs:
     timeout-minutes: 7
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            supabase/migrations/20260908070000_automation_engine_stage10_v1.sql
+            supabase/functions/admin-automation-builder-v1
+            admin-v3/automation-builder.js
+            admin-v3/automation-builder.css
+            admin/index.html
+            admin/config.js
+            scripts/test-automation-engine-stage10-v1.mjs
+            scripts/test-automation-builder-stage10-v2.mjs
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
