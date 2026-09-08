@@ -2,6 +2,7 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   supabaseUrl: 'https://ssbesxgaijknwsjbsbcz.supabase.co',
   supabasePublishableKey: 'sb_publishable_tFXHtH0HCXZepVtwgKElIg_DxS76Gu8',
   edgeFunction: 'admin-ops-v1',
+  categoryEdgeFunction: 'admin-product-categories-v1',
   whatsappOpsEdgeFunction: 'admin-whatsapp-ops-v1',
   humanServiceCenterUiEnabled: false,
   humanCopilotEnabled: false,
@@ -18,7 +19,7 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   commercialTruthUiEnabled: false,
   driverAppUrl: '../driver-app/',
   countAppUrl: '../contagem/',
-  build: '20260908-stage13d-copilot-financial-admin-02'
+  build: '20260908-product-categories-inline-01'
 });
 
 (function loadHumanServiceCenter(cfg){
@@ -73,5 +74,17 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   }
   if(!document.querySelector('script[data-financial-admin]')){
     const script=document.createElement('script');script.src='../admin-v3/financial-admin.js?v=20260908-01';script.dataset.financialAdmin='1';script.onload=()=>window.DAFinancialAdmin?.mount(mount);document.body.appendChild(script);
+  }
+})(window.DA_ADMIN_V3_CONFIG);
+
+(function loadProductCategoriesInline(cfg){
+  if(!cfg?.categoryEdgeFunction)return;
+  if(!document.querySelector('link[data-product-categories-inline]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';link.href='../admin-v3/product-categories-inline.css?v=20260908-01';link.dataset.productCategoriesInline='1';document.head.appendChild(link);
+  }
+  if(!document.querySelector('script[data-product-categories-inline]')){
+    const script=document.createElement('script');
+    script.src='../admin-v3/product-categories-inline.js?v=20260908-01';script.dataset.productCategoriesInline='1';document.body.appendChild(script);
   }
 })(window.DA_ADMIN_V3_CONFIG);
