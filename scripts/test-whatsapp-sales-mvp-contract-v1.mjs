@@ -80,12 +80,26 @@ must(worker,'queue_human_handoff_v1','handoff humano preservado');
 mustNot(worker,'carousel','worker não usa carrossel');
 mustNot(worker,'/Api/v3/produtos','worker não consulta Bling');
 
+// Backend continua profissional e versionado.
 must(admin,'service_knowledge_items','Admin gerencia conhecimento');
+must(admin,'service_guidance_rules','Admin gerencia orientações');
+must(admin,'service_procedures','Admin gerencia procedimentos');
 must(admin,'set_status','Admin publica/arquiva');
-must(admin,'owner_required','publicação/runtime owner-only');
+must(admin,'owner_required','publicação continua owner-only');
 must(admin,'search_whatsapp_sellable_products_v1','Admin consulta catálogo próprio');
-must(ui,'preview_bundle','UI tem prévia do cérebro');
-for(const label of ['Conhecimento','Orientações','Procedimentos','Mídia','Testes','Publicação'])must(page,label,`Admin contém ${label}`);
+
+// Interface do MVP esconde complexidade técnica.
+for(const label of ['O que a IA deve saber','Como a IA deve atender','Regras importantes'])must(page,label,`Admin simples contém ${label}`);
+must(page,'Preço, estoque e fotos dos produtos continuam vindo automaticamente','Admin explica fonte dinâmica');
+must(ui,"o.priority=90",'prioridade técnica é automática');
+must(ui,"channel_scope:['whatsapp']",'canal técnico é automático');
+must(ui,"makeKey('info'",'chave técnica de conhecimento é automática');
+must(ui,"makeKey('orientacao'",'chave técnica de orientação é automática');
+must(ui,"makeKey('regra'",'chave técnica de regra é automática');
+mustNot(page,'data-tab="media"','mídia técnica não aparece na tela simples');
+mustNot(page,'data-tab="regression_case"','testes técnicos não aparecem na tela simples');
+mustNot(page,'data-tab="runtime"','runtime técnico não aparece na tela simples');
+mustNot(ui,'preview_bundle','prévia técnica não aparece na tela simples');
 
 must(binding,'bind_bling_product_id_v1','vínculo técnico auditável');
 must(binding,"'catalog_source','counter_verified'",'draft Bling declara fonte própria');
@@ -97,4 +111,4 @@ must(writer,"d.catalog_source!=='counter_verified'",'writer valida fonte própri
 mustNot(writer,"if(!Number(i.bling_product_id))throw",'writer não exige vínculo prévio');
 
 for(const s of [core,exec,support,state,interactive,binding,confirmFirst,dispatchTarget,searchRanking]) must(s,'revoke all on function','RPCs revogadas do público');
-console.log('PASS: WhatsApp Sales MVP contract — catálogo próprio, ranking conversacional, IA/admin, dispatcher v3, confirmação antes do Bling e lote de 10 min 07–18 Cuiabá.');
+console.log('PASS: WhatsApp Sales MVP contract — catálogo próprio, IA/admin simples, dispatcher v3, confirmação antes do Bling e lote de 10 min 07–18 Cuiabá.');
