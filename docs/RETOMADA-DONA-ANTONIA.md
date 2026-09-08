@@ -22,21 +22,60 @@ Antes de programar: auditar GitHub e Supabase; auditar Make se o bloco tocar aut
 
 A primeira etapa numerada ainda não concluída é:
 
-> **ETAPA 13 — Financeiro Operacional, Recebimentos e Conciliação.**
+> **ETAPA 13 — Financeiro Operacional, Recebimentos e Conciliação — EM ANDAMENTO.**
 
 Não voltar à Etapa 12 salvo bug/regressão ou decisão nova do proprietário.
 
-Primeiro bloco seguro recomendado da Etapa 13:
+### Etapa 13 já concluída nesta sequência
 
-- ledger operacional imutável/idempotente;
-- expectativa de recebimento por pedido e rota;
-- recebimento por dinheiro/Pix/cartão/link como eventos separados de entrega;
-- fechamento de rota/entregador;
-- divergência esperado × recebido/declarado;
-- `review_required` em incerteza;
-- abstração de conciliação externa sem provider/chamada real inicialmente;
-- read models/Admin atrás de gate OFF;
-- GitHub Actions para reconciliação batch quando fizer sentido.
+**13A — Financial Ledger Operacional V1**
+
+- ledger append-only/idempotente;
+- recebimentos, reversões, caixa de rota e reconciliação estruturados;
+- incerteza em `review_required`;
+- nenhum provider financeiro real;
+- trigger append-only endurecida para `SECURITY INVOKER`.
+
+**13B — Expectativas de recebimento + manifesto financeiro da rota**
+
+- PR #220 integrada;
+- expectativa por pedido `prepaid | on_delivery | mixed | unknown`;
+- saldo, método, valor entregue em dinheiro e troco;
+- manifesto financeiro da rota por dinheiro/Pix/cartão/link;
+- pagamento antecipado coberto deixa de ser cobrado na rota.
+
+**13C — Driver App + contexto financeiro ledger-first**
+
+- PR #221 integrada;
+- merge commit `541224e480502707760f073bb08a980351ae3ace`;
+- migration `stage13_driver_financial_context_v1` aplicada;
+- PWA mostra `JÁ PAGO | COBRAR | REVISAR`;
+- dinheiro na porta -> ledger `operational_confirmed`;
+- Pix/cartão/link na porta -> ledger `observed`, aguardando conciliação;
+- valor divergente bloqueia antes da entrega;
+- `driver_deliver_stop_v3` não chama `confirm_order_payment_v1`;
+- Driver App não confirma pagamento fiscal;
+- PWA continua `enabled=false`;
+- `driver-logistics-v1` foi atualizado apenas no repositório e **não foi implantado**.
+
+Documentos:
+
+- `docs/ETAPA-13-FINANCIAL-LEDGER-V1.md`;
+- `docs/ETAPA-13-COLLECTION-EXPECTATIONS-V1.md`;
+- `docs/ETAPA-13-DRIVER-FINANCIAL-V1.md`.
+
+### Próximo bloco seguro da Etapa 13
+
+Continuar com **conciliação abstrata + read model/Admin financeiro**, ainda totalmente dormente:
+
+1. adapters internos/versionados para Pix/cartão/link sem provider/chamada real inicialmente;
+2. eventos externos normalizados e idempotentes separados do ledger operacional;
+3. matcher determinístico pedido/valor/provider/ref com `matched | unmatched | ambiguous | review_required`;
+4. nenhuma inferência de IA para declarar pagamento conciliado;
+5. read model/Admin de caixa, recebimentos, divergências e rotas atrás de gate OFF;
+6. GitHub Actions para batch/auditoria/reconciliação;
+7. políticas/limites configuráveis;
+8. deixar projeção fiscal determinística para bloco posterior, após conciliação homologada.
 
 O financeiro da Etapa 13 deve expor somente **contexto determinístico** para o futuro `next_best_action`; a IA não decide se pagamento ocorreu nem reconcilia valores por inferência.
 
@@ -57,6 +96,38 @@ whatsapp_flow_data_exchange_enabled=false
 whatsapp_flow_send_enabled=false
 bling_order_sync_enabled=false
 bling_order_homologation_only=true
+```
+
+### Etapa 13 / logística / fiscal — pós 13C
+
+```text
+financial.enabled=false
+financial.execution_mode=off
+financial.canary_percent=0
+driver_financial_context_enabled=false
+driver_collection_recording_enabled=false
+driver_delivery_financial_guard_enabled=false
+logistics.enabled=false
+logistics.execution_mode=off
+logistics.driver_app_enabled=false
+logistics.gps_tracking_enabled=false
+fiscal.enabled=false
+fiscal.execution_mode=off
+bling_invoice_prepare_enabled=false
+bling_invoice_send_enabled=false
+orders=0
+drivers=0
+routes=0
+stops=0
+financial_ledger_entries=0
+financial_payment_expectations=0
+financial_route_collection_manifests=0
+```
+
+Fail-closed 13C confirmado:
+
+```text
+preview_driver_order_collection_v1 -> driver_financial_context_disabled
 ```
 
 ### Handoffs humanos
@@ -92,6 +163,7 @@ Não ativar cenário Make adicional sem necessidade/decisão. `consultar no cpf`
 - não alterar configuração fiscal já existente no Bling;
 - não ativar Instagram/Messenger/Ads;
 - não ativar logística/GPS/Maps/notifications reais;
+- não ativar Driver App real apenas porque a Etapa 13C existe;
 - não ativar compras, pagamentos, conciliação bancária ou qualquer movimentação financeira real;
 - não criar gasto pago/OpenAI/Maps/provider externo apenas porque a fundação existe;
 - não contornar bloqueio de segurança de ferramenta/deploy.
@@ -123,6 +195,7 @@ Regras:
 - `PAID + IN_ROUTE` não é fiscal-ready;
 - entrega falha/ausência/recusa/desistência não gera NF-e;
 - entrega parcial/alterada exige reconciliação antes do fiscal;
+- registro do entregador em dinheiro/Pix/cartão/link não confirma `payment_status` fiscal por si só;
 - IA não decide entrega, pagamento, valor ou elegibilidade fiscal.
 
 Bling/SEFAZ continuam sem dispatcher real autorizado.
@@ -270,14 +343,31 @@ Regras que precisam orientar novas implementações:
 
 ## Segurança / Supabase Advisor
 
-Última auditoria não encontrou alerta crítico novo.
+Auditoria pós-DDL da Etapa 13C não encontrou alerta novo da implementação.
+
+As novas RPCs 13C:
+
+```text
+financial_readiness_v3
+preview_driver_order_collection_v1
+get_driver_route_snapshot_v2
+driver_deliver_stop_v3
+```
+
+estão com:
+
+```text
+anon_execute=false
+authenticated_execute=false
+service_role_execute=true
+```
 
 Persistem:
 
 - INFO `RLS Enabled No Policy` para várias tabelas server-only; isso é compatível com o padrão do projeto porque `anon/authenticated` são revogados e o acesso é service-role;
 - WARN preexistente `Leaked Password Protection Disabled` no Supabase Auth.
 
-Não alterar configuração de Auth automaticamente.
+Não alterar configuração de Auth automaticamente. Referência do aviso: https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
 
 ---
 
@@ -292,8 +382,10 @@ Não alterar configuração de Auth automaticamente.
 
 ## Próxima ação ao receber “continue”
 
-1. reler este arquivo, roadmap, checkpoint da Etapa 12 e plano de IA;
+1. reler este arquivo, roadmap/progresso, documentos 13A/13B/13C e plano de IA;
 2. auditar `main`/PRs recentes e Supabase;
-3. iniciar **Etapa 13** somente com fundação financeira dormente;
-4. não conectar banco/adquirente/Pix/Bling financeiro real no primeiro bloco;
-5. persistir cada rodada em PR + testes + CI + docs + auditoria pós-DDL.
+3. continuar **Etapa 13** com adapters abstratos de conciliação Pix/cartão/link + read model/Admin financeiro, tudo OFF;
+4. não conectar banco/adquirente/Pix/Bling financeiro real nesse bloco;
+5. preferir GitHub Actions para batch/reconciliação/auditoria;
+6. deixar projeção determinística para o gate fiscal como bloco posterior, depois da conciliação homologada;
+7. persistir cada rodada em PR + testes + CI + docs + auditoria pós-DDL.
