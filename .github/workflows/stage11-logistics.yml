@@ -1,0 +1,60 @@
+name: Stage 11 Logistics
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908112000_stage11_logistics_foundation_v1.sql'
+      - 'supabase/migrations/20260908112100_stage11_driver_actions_v1.sql'
+      - 'supabase/functions/admin-logistics-v1/**'
+      - 'supabase/functions/driver-logistics-v1/**'
+      - 'lib/logistics/**'
+      - 'driver-app/**'
+      - 'admin-v3/logistics.js'
+      - 'admin-v3/logistics.css'
+      - 'admin/index.html'
+      - 'admin/config.js'
+      - 'scripts/test-logistics-stage11-v1.mjs'
+      - '.github/workflows/stage11-logistics.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908112000_stage11_logistics_foundation_v1.sql'
+      - 'supabase/migrations/20260908112100_stage11_driver_actions_v1.sql'
+      - 'supabase/functions/admin-logistics-v1/**'
+      - 'supabase/functions/driver-logistics-v1/**'
+      - 'lib/logistics/**'
+      - 'driver-app/**'
+      - 'admin-v3/logistics.js'
+      - 'admin-v3/logistics.css'
+      - 'admin/index.html'
+      - 'admin/config.js'
+      - 'scripts/test-logistics-stage11-v1.mjs'
+      - '.github/workflows/stage11-logistics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Testar contratos da Etapa 11
+        run: node scripts/test-logistics-stage11-v1.mjs
+      - name: Verificar módulos JavaScript
+        run: |
+          node --check lib/logistics/routing-provider-v1.mjs
+          node --check admin-v3/logistics.js
+          node --check driver-app/app.js
+          node --check driver-app/sw.js
+      - name: Verificar API administrativa
+        run: deno check supabase/functions/admin-logistics-v1/index.ts
+      - name: Verificar API do entregador
+        run: deno check supabase/functions/driver-logistics-v1/index.ts
