@@ -54,13 +54,15 @@ try{
   await db.exec(readFileSync('supabase/migrations/20260908010000_whatsapp_flow_transport_foundation_v1.sql','utf8'));
   await db.exec(readFileSync('supabase/migrations/20260908010100_whatsapp_flow_transport_hardening_v1.sql','utf8'));
 
-  let r=await one(`select experience_orchestrator_enabled orchestrator,whatsapp_flow_data_exchange_enabled exchange_enabled,whatsapp_flow_send_enabled send_enabled from public.automation_config where id=1`);
+  let r=await one(`select experience_orchestrator_enabled orchestrator,whatsapp_flow_data_exchange_enabled exchange_enabled,whatsapp_flow_send_enabled send_enabled,whatsapp_flow_max_exchanges_per_session max_exchanges from public.automation_config where id=1`);
   if(r.orchestrator!==false||r.exchange_enabled!==false||r.send_enabled!==false)throw new Error('flow_runtime_must_default_off');
+  if(Number(r.max_exchanges)!==40)throw new Error('flow_exchange_budget_default_wrong');
   r=await one(`select public.get_whatsapp_flow_transport_readiness_v1() x`);
   if(r.x.transport_ready!==false||r.x.send_ready!==false||r.x.private_key_configured!==false)throw new Error('transport_must_not_be_ready_by_default');
+  if(r.x.replay_guard_enabled!==true||r.x.state_machine_enabled!==true||Number(r.x.max_exchanges_per_session)!==40)throw new Error('transport_hardening_readiness_missing');
 
-  const forbidden=await db.query(`select column_name from information_schema.columns where table_schema='public' and table_name='whatsapp_flow_exchange_events' and column_name in ('payload','data','body','flow_token','decrypted_payload','encrypted_flow_data','encrypted_aes_key')`);
-  if(forbidden.rows.length)throw new Error(`exchange_event_must_not_store_payload:${forbidden.rows.map(x=>x.column_name).join(',')}`);
+  const forbidden=await db.query(`select table_name,column_name from information_schema.columns where table_schema='public' and table_name in ('whatsapp_flow_exchange_events','whatsapp_flow_request_guard') and column_name in ('payload','data','body','flow_token','decrypted_payload','encrypted_flow_data','encrypted_aes_key','private_key')`);
+  if(forbidden.rows.length)throw new Error(`flow_audit_must_not_store_payload:${forbidden.rows.map(x=>`${x.table_name}.${x.column_name}`).join(',')}`);
 
   const conv=(await one(`insert into public.conversations(automation_bucket,automation_cohort) values(0,'fixture_flow') returning id`)).id;
   const basket=(await one(`insert into public.basket_templates(name,description,base_price) values('Cesta Flow','Preço comercial próprio',149.90) returning id`)).id;
@@ -90,31 +92,69 @@ try{
   r=await one(`select public.issue_whatsapp_flow_token_v1('${sessionId}'::uuid) result`);
   const token=r.result.flow_token;
   if(!r.result.ok||typeof token!=='string'||token.length<32||r.result.flow_id!=='meta-flow-fixture'||r.result.flow_message_version!=='3')throw new Error('flow_token_issue_failed');
-  const stored=await one(`select flow_token_hash,flow_token_issued_at from public.experience_sessions where id='${sessionId}'::uuid`);
+  let stored=await one(`select flow_token_hash,flow_token_issued_at,flow_current_screen,flow_state_version,flow_exchange_count from public.experience_sessions where id='${sessionId}'::uuid`);
   if(!stored.flow_token_hash||stored.flow_token_hash===token||!stored.flow_token_issued_at)throw new Error('raw_flow_token_must_not_be_stored');
+  if(stored.flow_current_screen!==null||Number(stored.flow_state_version)!==0||Number(stored.flow_exchange_count)!==0)throw new Error('flow_state_must_reset_on_token_issue');
   r=await one(`select public.resolve_whatsapp_flow_token_v1('${token}') result`);
-  if(!r.result.ok||r.result.session_id!==sessionId)throw new Error('flow_token_resolution_failed');
+  if(!r.result.ok||r.result.session_id!==sessionId||Number(r.result.state_version)!==0)throw new Error('flow_token_resolution_failed');
   r=await one(`select count(*)::int n from public.experience_events where event_data::text like '%'||'${token}'||'%'`);
   if(r.n!==0)throw new Error('raw_flow_token_must_not_enter_audit_events');
 
-  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','INIT',null,'{}'::jsonb) result`);
-  if(!r.result.ok||r.result.response.screen!=='BASKET_EDIT'||r.result.response.data.policy.component_prices_visible!==false)throw new Error('flow_init_contract_wrong');
+  const fpInit='a'.repeat(64),fpEdit='b'.repeat(64),fpStale='c'.repeat(64),fpReview='d'.repeat(64);
+  r=await one(`select public.claim_whatsapp_flow_request_v1('${fpInit}','req-init-1','${sessionId}'::uuid,'INIT',null) result`);
+  if(!r.result.ok||r.result.claimed!==true||r.result.replay!==false)throw new Error('first_flow_request_must_be_claimed');
+  r=await one(`select public.claim_whatsapp_flow_request_v1('${fpInit}','req-init-2','${sessionId}'::uuid,'INIT',null) result`);
+  if(!r.result.ok||r.result.claimed!==false||r.result.replay!==true)throw new Error('duplicate_flow_request_must_be_detected');
+
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','INIT',null,'{}'::jsonb,'${fpInit}',false) result`);
+  if(!r.result.ok||r.result.response.screen!=='BASKET_EDIT'||r.result.response.data.policy.component_prices_visible!==false||Number(r.result.state_version)!==1)throw new Error('flow_init_contract_wrong');
   for(const item of r.result.response.data.items){for(const field of ['price','unit_price','line_total','cost','stock'])if(Object.hasOwn(item,field))throw new Error(`flow_init_component_leak:${field}`)}
+  stored=await one(`select flow_current_screen,flow_state_version from public.experience_sessions where id='${sessionId}'::uuid`);
+  if(stored.flow_current_screen!=='BASKET_EDIT'||Number(stored.flow_state_version)!==1)throw new Error('flow_init_state_transition_missing');
+
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','INIT',null,'{}'::jsonb,'${fpInit}',true) result`);
+  if(!r.result.ok||r.result.replayed!==true||r.result.response.screen!=='BASKET_EDIT')throw new Error('replayed_init_must_be_idempotent');
+  stored=await one(`select flow_state_version from public.experience_sessions where id='${sessionId}'::uuid`);
+  if(Number(stored.flow_state_version)!==1)throw new Error('replayed_init_must_not_advance_state');
 
   const selection=JSON.stringify([{product_id:p1,quantity:3},{product_id:p2,quantity:1}]).replaceAll("'","''");
-  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_EDIT',jsonb_build_object('selection','${selection}'::jsonb)) result`);
-  if(!r.result.ok||r.result.response.screen!=='BASKET_REVIEW'||r.result.response.data.write_enabled!==false||!r.result.response.data.validation.valid)throw new Error('valid_selection_must_reach_read_only_review');
-  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_REVIEW','{}'::jsonb) result`);
+  r=await one(`select public.claim_whatsapp_flow_request_v1('${fpEdit}','req-edit-1','${sessionId}'::uuid,'data_exchange','BASKET_EDIT') result`);
+  if(!r.result.claimed)throw new Error('basket_edit_request_must_be_claimed');
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_EDIT',jsonb_build_object('selection','${selection}'::jsonb),'${fpEdit}',false) result`);
+  if(!r.result.ok||r.result.response.screen!=='BASKET_REVIEW'||r.result.response.data.write_enabled!==false||!r.result.response.data.validation.valid||Number(r.result.state_version)!==2)throw new Error('valid_selection_must_reach_read_only_review');
+  stored=await one(`select flow_current_screen,flow_state_version from public.experience_sessions where id='${sessionId}'::uuid`);
+  if(stored.flow_current_screen!=='BASKET_REVIEW'||Number(stored.flow_state_version)!==2)throw new Error('valid_selection_state_transition_missing');
+
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_EDIT',jsonb_build_object('selection','${selection}'::jsonb),'${fpStale}',false) result`);
+  if(r.result.ok!==false||r.result.reason!=='flow_transition_invalid')throw new Error('stale_non_replay_transition_must_be_rejected');
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_EDIT',jsonb_build_object('selection','${selection}'::jsonb),'${fpEdit}',true) result`);
+  if(!r.result.ok||r.result.replayed!==true||r.result.response.screen!=='BASKET_REVIEW'||r.result.response.data.write_enabled!==false)throw new Error('replayed_edit_must_be_safe_and_idempotent');
+  stored=await one(`select flow_state_version from public.experience_sessions where id='${sessionId}'::uuid`);
+  if(Number(stored.flow_state_version)!==2)throw new Error('replayed_edit_must_not_advance_state');
+
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_REVIEW','{}'::jsonb,'${fpReview}',false) result`);
   if(r.result.response.data.write_enabled!==false||r.result.response.data.error_code!=='flow_cart_apply_not_enabled')throw new Error('flow_must_not_apply_cart_in_foundation');
 
+  await db.exec(`update public.conversations set mode='human',human_required=true where id='${conv}'::uuid`);
+  r=await one(`select public.resolve_whatsapp_flow_token_v1('${token}') result`);
+  if(r.result.ok!==false||r.result.reason!=='conversation_requires_human')throw new Error('human_takeover_must_invalidate_flow_runtime');
+  await db.exec(`update public.conversations set mode='ai',human_required=false where id='${conv}'::uuid`);
+
+  await db.exec(`update public.experience_sessions set flow_exchange_count=40 where id='${sessionId}'::uuid`);
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','data_exchange','BASKET_REVIEW','{}'::jsonb,'${'e'.repeat(64)}',false) result`);
+  if(r.result.ok!==false||r.result.reason!=='flow_exchange_limit_reached')throw new Error('flow_exchange_budget_must_fail_closed');
+
   await db.exec(`update public.automation_config set whatsapp_flow_data_exchange_enabled=false where id=1`);
-  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','INIT',null,'{}'::jsonb) result`);
+  r=await one(`select public.handle_whatsapp_flow_exchange_v1('${token}','INIT',null,'{}'::jsonb,'${'f'.repeat(64)}',false) result`);
   if(r.result.ok!==false||r.result.reason!=='whatsapp_flow_data_exchange_disabled')throw new Error('handler_must_recheck_runtime_gate');
 
   const migration=readFileSync('supabase/migrations/20260908010000_whatsapp_flow_transport_foundation_v1.sql','utf8');
+  const hardening=readFileSync('supabase/migrations/20260908010100_whatsapp_flow_transport_hardening_v1.sql','utf8');
   if(!/revoke all on function public\.get_whatsapp_flow_private_key_v1\(\) from public,anon,authenticated/i.test(migration))throw new Error('private_key_rpc_must_be_revoked_from_client_roles');
   if(!/grant execute on function public\.get_whatsapp_flow_private_key_v1\(\) to service_role/i.test(migration))throw new Error('private_key_rpc_must_be_service_role_only');
+  if(!/revoke all on function public\.claim_whatsapp_flow_request_v1\(text,text,uuid,text,text\) from public,anon,authenticated/i.test(hardening))throw new Error('replay_guard_rpc_must_be_service_role_only');
+  if(!/whatsapp_flow_max_exchanges_per_session smallint not null default 40/i.test(hardening))throw new Error('flow_exchange_budget_schema_missing');
   if(/whatsapp_flow_data_exchange_enabled\s*=\s*true/i.test(migration.split('-- Fail closed:')[1]||''))throw new Error('migration_must_not_enable_transport');
 
-  console.log('PASS: WhatsApp Flow transport defaults off, full readiness gates token issue, raw token/private key are not persisted or exposed, basket Flow remains read-only and component prices stay hidden.');
+  console.log('PASS: WhatsApp Flow transport defaults off, full readiness gates token issue, replay guard/state machine/budget fail closed, human takeover wins, raw token/private key/payload are not persisted, basket Flow remains read-only and component prices stay hidden.');
 }finally{await db.close()}
