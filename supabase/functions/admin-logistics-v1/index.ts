@@ -25,17 +25,18 @@ Deno.serve(async(req:Request)=>{
   const action=clean(body?.action||"dashboard",60).toLowerCase();
 
   if(action==="dashboard"){
-    const [{data:readiness,error:readinessError},{data:jobs,error:jobsError},{data:routes,error:routesError},{data:drivers,error:driversError},{data:vehicles,error:vehiclesError},{data:incidents,error:incidentsError}]=await Promise.all([
+    const [{data:readiness,error:readinessError},{data:metrics,error:metricsError},{data:jobs,error:jobsError},{data:routes,error:routesError},{data:drivers,error:driversError},{data:vehicles,error:vehiclesError},{data:incidents,error:incidentsError}]=await Promise.all([
       sb.rpc("logistics_readiness_v1"),
+      sb.rpc("logistics_metrics_v1",{}),
       sb.from("delivery_jobs").select("id,order_id,status,customer_name,address_snapshot,geocode_status,volumes,amount_due,priority,ready_at,created_at").order("priority",{ascending:false}).order("ready_at").limit(100),
       sb.from("delivery_routes").select("id,route_code,route_date,status,driver_id,vehicle_id,optimization_status,planned_start_at,published_at,started_at,completed_at,version_no").order("route_date",{ascending:false}).limit(50),
       sb.from("drivers").select("id,display_name,status,max_active_routes,capabilities,updated_at").order("display_name").limit(100),
       sb.from("vehicles").select("id,code,label,status,vehicle_type,max_stops,max_weight_kg,max_volume_units,updated_at").order("code").limit(100),
       sb.from("delivery_incidents").select("id,delivery_job_id,route_id,stop_id,incident_type,status,notes,created_at").in("status",["open","review_required"]).order("created_at",{ascending:false}).limit(100)
     ]);
-    const error=readinessError||jobsError||routesError||driversError||vehiclesError||incidentsError;
+    const error=readinessError||metricsError||jobsError||routesError||driversError||vehiclesError||incidentsError;
     if(error)return json({ok:false,error:"dashboard_read_failed",detail:error.message},500);
-    return json({ok:true,user:{role:admin.role,display_name:admin.display_name||null},readiness,jobs:jobs||[],routes:routes||[],drivers:drivers||[],vehicles:vehicles||[],incidents:incidents||[],runtime_activation_supported:false,external_routing_supported:false});
+    return json({ok:true,user:{role:admin.role,display_name:admin.display_name||null},readiness,metrics,jobs:jobs||[],routes:routes||[],drivers:drivers||[],vehicles:vehicles||[],incidents:incidents||[],runtime_activation_supported:false,external_routing_supported:false});
   }
 
   if(action==="preview_ready_order"){
@@ -71,7 +72,7 @@ Deno.serve(async(req:Request)=>{
 
   if(action==="save_policy_draft"){
     if(!isOwner)return json({ok:false,error:"owner_required"},403);
-    const allowed=new Set(["approaching_eta_threshold_seconds","minimum_gps_freshness_seconds","minimum_eta_confidence","notification_cooldown_seconds","routing_batch_window_minutes","max_provider_calls_per_route","max_provider_cost_brl_per_route","location_retention_days"]);
+    const allowed=new Set(["approaching_eta_threshold_seconds","minimum_gps_freshness_seconds","minimum_eta_confidence","notification_cooldown_seconds","routing_batch_window_minutes","max_provider_calls_per_route","max_provider_cost_brl_per_route","location_retention_days","proof_of_delivery_mode"]);
     const patch=obj(body?.patch) as Record<string,unknown>,safe:Record<string,unknown>={};
     for(const [k,v] of Object.entries(patch))if(allowed.has(k))safe[k]=v;
     if(!Object.keys(safe).length)return json({ok:false,error:"empty_policy_patch"},400);
