@@ -1,0 +1,49 @@
+name: AI Commercial Decision Policy
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql'
+      - 'supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql'
+      - 'scripts/test-ai-commercial-decision-policy-contract-v1.mjs'
+      - 'scripts/test-ai-commercial-decision-policy-db-v1.mjs'
+      - 'docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md'
+      - '.github/workflows/ai-commercial-decision-policy.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql'
+      - 'supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql'
+      - 'scripts/test-ai-commercial-decision-policy-contract-v1.mjs'
+      - 'scripts/test-ai-commercial-decision-policy-db-v1.mjs'
+      - '.github/workflows/ai-commercial-decision-policy.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  policy-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908062000_ai_action_registry_stage9_v1.sql
+            supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql
+            supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql
+            scripts/test-ai-commercial-decision-policy-contract-v1.mjs
+            scripts/test-ai-commercial-decision-policy-db-v1.mjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/ai-commercial-policy" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático
+        run: node scripts/test-ai-commercial-decision-policy-contract-v1.mjs
+      - name: Policy engine em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/ai-commercial-policy
+        run: node scripts/test-ai-commercial-decision-policy-db-v1.mjs
