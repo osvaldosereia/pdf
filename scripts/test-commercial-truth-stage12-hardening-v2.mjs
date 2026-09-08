@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 
 const expiry=fs.readFileSync('supabase/migrations/20260908120500_stage12_fefo_expiry_idempotency_v3.sql','utf8');
 const replay=fs.readFileSync('supabase/migrations/20260908120600_stage12_reservation_idempotency_fix_v4.sql','utf8');
+const coupon=fs.readFileSync('supabase/migrations/20260908120700_stage12_margin_coupon_hardening_v5.sql','utf8');
 const edge=fs.readFileSync('supabase/functions/admin-commercial-truth-v1/index.ts','utf8');
 
-for(const source of [expiry,replay])assert.doesNotMatch(source,/https?:\/\//i,'hardening SQL must not call external HTTP');
+for(const source of [expiry,replay,coupon])assert.doesNotMatch(source,/https?:\/\//i,'hardening SQL must not call external HTTP');
 assert.match(expiry,/expiry_handling text not null default 'unknown'/);
 assert.match(expiry,/expiry_handling in \('unknown','known','not_required'\)/);
 assert.match(expiry,/physically_verified=true and l\.expiry_handling in \('known','not_required'\)/,'sellable lot stock must exclude unverified/unknown expiry');
@@ -20,6 +21,17 @@ assert.match(replay,/idempotency_conflict/);
 assert.match(replay,/reservation_key_corrupted/);
 assert.doesNotMatch(replay,/min\(product_id\)|min\(order_id\)/,'UUID aggregates min/max must not be used');
 assert.match(replay,/existing_quantity<>p_quantity/,'idempotency replay must bind quantity');
+
+assert.match(coupon,/normalize_inventory_lot_expiry_v1/,'lot expiry normalization trigger missing');
+assert.match(coupon,/commercial_coupon_redemptions/,'coupon usage ledger missing');
+assert.match(coupon,/coupon_total_limit_reached/);
+assert.match(coupon,/coupon_customer_limit_reached/);
+assert.match(coupon,/item_margin_validation_required/,'coupon reservation must require item-level margin proof');
+assert.match(coupon,/reserve_coupon_redemption_v1/);
+assert.match(coupon,/release_coupon_redemption_v1/);
+assert.match(coupon,/effective_unit_cost/,'health report must expose effective cost');
+assert.match(coupon,/max_verified_unit_cost/,'lot truth health must use verified lot cost');
+
 assert.match(edge,/expiryHandling=expiresAt\?"known":requestedExpiryHandling==="not_required"\?"not_required":"unknown"/);
 assert.match(edge,/stock_truth_changed:false/);
 assert.doesNotMatch(edge,/physically_verified:true/,'Admin drafts must not self-verify a lot');
