@@ -1,5 +1,10 @@
 begin;
 
+-- Corrige uma inconsistência antiga: a tabela já possuía trigger set_updated_at,
+-- porém a coluna updated_at não havia sido criada.
+alter table public.basket_template_items
+  add column if not exists updated_at timestamptz not null default now();
+
 -- Cestas sao produtos comerciais com preco proprio. O preco da cesta nunca e
 -- recalculado pela soma dos componentes. Para personalizacao, o delta unitario
 -- fica congelado a partir do preco conhecido do componente no momento desta
