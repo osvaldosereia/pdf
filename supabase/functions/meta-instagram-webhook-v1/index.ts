@@ -5,10 +5,12 @@ const encoder=new TextEncoder();
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{"Content-Type":"application/json","Cache-Control":"no-store"}});
 const clean=(v:unknown,max=500)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max);
 const arr=(v:unknown)=>Array.isArray(v)?v:[];
+const asArrayBuffer=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength) as ArrayBuffer;
 
 async function hmacHex(secret:string,body:Uint8Array){
-  const key=await crypto.subtle.importKey("raw",encoder.encode(secret),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
-  const sig=await crypto.subtle.sign("HMAC",key,body);
+  const secretBytes=encoder.encode(secret);
+  const key=await crypto.subtle.importKey("raw",asArrayBuffer(secretBytes),{name:"HMAC",hash:"SHA-256"},false,["sign"]);
+  const sig=await crypto.subtle.sign("HMAC",key,asArrayBuffer(body));
   return [...new Uint8Array(sig)].map(b=>b.toString(16).padStart(2,"0")).join("");
 }
 function safeEqual(a:string,b:string){
