@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { compileWithOpenAI } from "./openai-compiler.ts";
 
 const CORS={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization,x-client-info,apikey,content-type","Access-Control-Allow-Methods":"POST,OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...CORS,"Content-Type":"application/json","Cache-Control":"no-store"}});
@@ -70,8 +71,22 @@ Deno.serve(async(req:Request)=>{
     const instruction=clean(body?.instruction,4000); if(instruction.length<8)return json({ok:false,error:"instruction_too_short"},400);
     const {data:actionRows,error}=await sb.from("ai_action_registry").select("action_key");
     if(error)return json({ok:false,error:"action_catalog_failed",detail:error.message},500);
-    const draft=deterministicDraft(instruction,new Set((actionRows||[]).map((x:any)=>String(x.action_key))));
-    return json({ok:true,draft,side_effect_performed:false,requires_human_review:true,openai_execution_performed:false,note:"Compiler seguro preparado; integração OpenAI permanece opt-in e não é chamada automaticamente."});
+    const actionKeys=new Set((actionRows||[]).map((x:any)=>String(x.action_key)));
+    const requestedCompiler=clean(body?.compiler||"deterministic",30).toLowerCase();
+    if(requestedCompiler==="openai"){
+      if(!isOwner)return json({ok:false,error:"owner_required_for_paid_compiler"},403);
+      try{
+        const compiled=await compileWithOpenAI({instruction,actionKeys,triggerTypes,strategies,conditionFields,conditionOps});
+        return json({ok:true,draft:compiled.draft,side_effect_performed:false,persisted:false,requires_human_review:true,openai_execution_performed:true,compiler:{provider:compiled.provider,model:compiled.model,input_tokens:compiled.input_tokens,output_tokens:compiled.output_tokens,estimated_cost_usd:compiled.estimated_cost_usd,cost_cap_usd:compiled.cost_cap_usd,response_id:compiled.response_id},note:"Rascunho OpenAI estrito; revisão humana obrigatória e nenhuma persistência/ativação automática."});
+      }catch(e){
+        const reason=clean(e instanceof Error?e.message:e,500);
+        console.warn(JSON.stringify({event:"automation_openai_compiler_blocked",stage:10,reason:reason.split(":")[0],side_effect:false,persisted:false}));
+        return json({ok:false,error:"openai_compiler_unavailable",detail:reason,fallback_available:true,side_effect_performed:false,persisted:false},409);
+      }
+    }
+    if(requestedCompiler!=="deterministic")return json({ok:false,error:"invalid_compiler"},400);
+    const draft=deterministicDraft(instruction,actionKeys);
+    return json({ok:true,draft,side_effect_performed:false,persisted:false,requires_human_review:true,openai_execution_performed:false,compiler:{provider:"deterministic",estimated_cost_usd:0},note:"Fallback determinístico sem custo externo. OpenAI exige solicitação explícita do owner e gate server-side."});
   }
 
   if(op==="recommend_strategy"){
