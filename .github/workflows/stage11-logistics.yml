@@ -65,9 +65,12 @@ jobs:
             supabase/migrations/20260908112400_stage11_delivery_payment_fiscal_gate_v1.sql
             supabase/functions/admin-logistics-v1/
             supabase/functions/driver-logistics-v1/
+            supabase/config.toml
             lib/logistics/
             driver-app/
             admin-v3/logistics.js
+            admin/config.js
+            admin/index.html
             scripts/test-logistics-stage11-v1.mjs
             scripts/test-logistics-stage11-db-v1.mjs
       - uses: actions/setup-node@v4
