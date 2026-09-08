@@ -1,0 +1,30 @@
+name: Dona Antonia Instagram Stage 6 final kill switch
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908060002_instagram_stage6_review_killswitch_v2.sql'
+      - 'scripts/test-instagram-stage6-review-killswitch-v2.mjs'
+      - '.github/workflows/dona-antonia-instagram-stage6-final-killswitch.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908060002_instagram_stage6_review_killswitch_v2.sql'
+      - 'scripts/test-instagram-stage6-review-killswitch-v2.mjs'
+      - '.github/workflows/dona-antonia-instagram-stage6-final-killswitch.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  final-killswitch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Stage 6 review kill switch
+        run: node scripts/test-instagram-stage6-review-killswitch-v2.mjs
