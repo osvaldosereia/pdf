@@ -49,6 +49,12 @@ verify_jwt = true
 [functions.whatsapp-flow-data-exchange-v1]
 verify_jwt = false
 
+# Webhook oficial da Meta para Instagram. A Meta não envia JWT Supabase; o handler valida
+# x-hub-signature-256 com META_APP_SECRET e permanece inoperante enquanto
+# META_INSTAGRAM_WEBHOOK_RUNTIME_ENABLED não for explicitamente true.
+[functions.meta-instagram-webhook-v1]
+verify_jwt = false
+
 [functions.bootstrap-owner-v1]
 verify_jwt = true
 
