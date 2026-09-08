@@ -19,7 +19,7 @@ assert.match(migration,/side_effects_performed',false/);
 assert.match(migration,/revoke all on public\.automation_workflows from anon, authenticated/);
 assert.match(migration,/grant execute on function public\.simulate_automation_workflow_v1.*to service_role/s);
 
-assert.match(fn,/verify_jwt/,{message:'function source should be deployed with verify_jwt externally'});
+assert.match(fn,/admin_users/);
 assert.doesNotMatch(fn,/enabled\s*:\s*true/);
 assert.doesNotMatch(fn,/execution_mode\s*:\s*["']live["']/);
 assert.match(fn,/enabled:false,execution_mode:"off",kill_switch:true,canary_percent:0/);
