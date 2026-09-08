@@ -1,8 +1,11 @@
 import {readFileSync} from 'node:fs';
 
 const path='supabase/migrations/20260908160000_stage12_benefits_guardrails_v1.sql';
+const fixPath='supabase/migrations/20260908160100_stage12_benefits_guardrails_v1_conflict_fix.sql';
 const sql=readFileSync(path,'utf8');
+const fixSql=readFileSync(fixPath,'utf8');
 const lower=sql.toLowerCase();
+const combined=(sql+'\n'+fixSql).toLowerCase();
 
 const required=[
   'benefit_preview_enabled boolean not null default false',
@@ -35,6 +38,8 @@ const required=[
 for(const needle of required){
   if(!lower.includes(needle.toLowerCase()))throw new Error(`missing_required_contract:${needle}`);
 }
+if(!fixSql.includes('target_year'))throw new Error('runtime_fix_must_use_non_conflicting_target_year');
+if(!fixSql.includes('r.benefit_year=target_year'))throw new Error('runtime_fix_must_qualify_annual_limit_comparison');
 
 const forbidden=[
   'update public.orders',
@@ -51,13 +56,14 @@ const forbidden=[
   'make.com',
   'graph.facebook.com',
   'apply_customer_benefit_v1',
-  'create or replace function public.apply_customer_benefit'
+  'create or replace function public.apply_customer_benefit',
+  "set plpgsql.variable_conflict"
 ];
 for(const needle of forbidden){
-  if(lower.includes(needle))throw new Error(`forbidden_side_effect_contract:${needle}`);
+  if(combined.includes(needle))throw new Error(`forbidden_side_effect_or_privileged_contract:${needle}`);
 }
 
 if(/benefit_apply_enabled\s*=\s*true/i.test(sql))throw new Error('apply_gate_must_never_be_enabled_by_migration');
 if(/benefits_enabled\s*=\s*true/i.test(sql))throw new Error('benefits_gate_must_never_be_enabled_by_migration');
 
-console.log('PASS: Stage 12 benefits guardrails are server-only, dormant, annual/idempotent, budget+margin+FEFO guarded, and contain no apply/order/stock/outbound executor.');
+console.log('PASS: Stage 12 benefits guardrails are server-only, dormant, annual/idempotent, budget+margin+FEFO guarded, contain no apply/order/stock/outbound executor, and require no privileged PL/pgSQL setting.');
