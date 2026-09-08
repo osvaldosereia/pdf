@@ -96,10 +96,10 @@ values(
   'current_message_precedence',
   'Mensagem atual tem prioridade absoluta',
   'Determine a intenção principalmente pela mensagem atual. O histórico serve somente para resolver referências ou contexto realmente necessário e nunca pode substituir a intenção atual. Se a mensagem atual for uma saudação, responda à saudação; não continue automaticamente uma intenção antiga. Não ressuscite buscas, carrinhos ou pedidos antigos sem indicação explícita do cliente.',
-  '{}','{}',array['context','safety','sales'],'published',200,1
+  '{}','{}',array['context','safety','sales'],'published',100,1
 )
 on conflict(rule_key,version_no) do update
-  set instruction=excluded.instruction,status='published',priority=200,updated_at=now();
+  set instruction=excluded.instruction,status='published',priority=100,updated_at=now();
 
 revoke all on function public.build_whatsapp_sales_context_v1(uuid,uuid) from public,anon,authenticated;
 grant execute on function public.build_whatsapp_sales_context_v1(uuid,uuid) to service_role;
