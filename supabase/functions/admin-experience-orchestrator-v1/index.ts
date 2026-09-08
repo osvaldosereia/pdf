@@ -33,13 +33,14 @@ Deno.serve(async(req:Request)=>{
   const action=clean(body?.action||"dashboard",60).toLowerCase();
 
   if(action==="dashboard"){
-    const [{data:dashboard,error:dashError},{data:flowReadiness,error:flowError},{data:conversations,error:convError}]=await Promise.all([
+    const [{data:dashboard,error:dashError},{data:flowReadiness,error:flowError},{data:funnel,error:funnelError},{data:conversations,error:convError}]=await Promise.all([
       sb.rpc("get_experience_orchestrator_dashboard_v1"),
       sb.rpc("get_flow_contract_readiness_v1"),
+      sb.rpc("get_experience_funnel_metrics_v1",{p_since:new Date(Date.now()-7*86400000).toISOString()}),
       sb.from("conversations").select("id,channel,mode,status,stage,automation_cohort,human_required,updated_at").order("updated_at",{ascending:false}).limit(20),
     ]);
-    if(dashError||flowError||convError)return json({ok:false,error:"dashboard_failed",detail:dashError?.message||flowError?.message||convError?.message},500);
-    return json({ok:true,user:{id:user.id,role:admin.role,display_name:admin.display_name||null},dashboard,flow_readiness:flowReadiness,conversations:conversations||[]});
+    if(dashError||flowError||funnelError||convError)return json({ok:false,error:"dashboard_failed",detail:dashError?.message||flowError?.message||funnelError?.message||convError?.message},500);
+    return json({ok:true,user:{id:user.id,role:admin.role,display_name:admin.display_name||null},dashboard,flow_readiness:flowReadiness,funnel,conversations:conversations||[]});
   }
 
   if(action==="preview"){
