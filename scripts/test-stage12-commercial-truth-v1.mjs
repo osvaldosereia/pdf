@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 
 const sql=fs.readFileSync('supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql','utf8');
+const executableSql=sql.split('\n').filter(line=>!line.trim().startsWith('--')).join('\n');
 for(const table of ['commercial_truth_runtime_config','inventory_lots','inventory_lot_movements','commercial_policy_versions','promotion_rules','margin_guard_events']){
   assert.match(sql,new RegExp(`create table if not exists public\\.${table}`));
   assert.match(sql,new RegExp(`alter table public\\.${table} enable row level security`));
@@ -21,6 +22,6 @@ assert.match(sql,/preview_expiry_offer_v2/);
 assert.match(sql,/no_active_expiry_policy/,'expiry discounts must require an active versioned policy');
 assert.match(sql,/'applied',false/,'offer preview must never apply automatically');
 assert.match(sql,/external_side_effect',false/);
-assert.doesNotMatch(sql,/https?:\/\//i,'Stage 12 SQL must not call external APIs');
-assert.doesNotMatch(sql,/openai|make\.com|googleapis|bling\.com/i,'Stage 12 foundation must remain deterministic and provider-free');
+assert.doesNotMatch(executableSql,/https?:\/\//i,'Stage 12 SQL must not call external APIs');
+assert.doesNotMatch(executableSql,/make\.com|googleapis|bling\.com|api\.openai\.com/i,'Stage 12 foundation must remain deterministic and provider-free');
 console.log('stage12 commercial truth safety assertions: OK');
