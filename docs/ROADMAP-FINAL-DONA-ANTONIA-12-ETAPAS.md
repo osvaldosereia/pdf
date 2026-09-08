@@ -4,7 +4,7 @@ Atualizado em 07/09/2026.
 
 Este documento SUBSTITUI `docs/ROADMAP-FINAL-DONA-ANTONIA-8-ETAPAS.md` como roadmap principal de conclusão do projeto Dona Antônia. O roadmap anterior permanece apenas como histórico.
 
-O objetivo final agora é uma plataforma própria de comércio conversacional omnichannel, com um único cérebro, CRM e núcleo transacional, servindo WhatsApp, Instagram Direct, Facebook Messenger, Sala de Compra e e-mail, além de um Gestor de Redes Sociais/Meta Ads integrado ao Admin.
+O objetivo final é uma plataforma própria de comércio conversacional omnichannel, com um único cérebro, CRM e núcleo transacional, servindo WhatsApp, Instagram Direct, Facebook Messenger, Sala de Compra e e-mail, além de uma central de crescimento no Admin para redes sociais, Meta Ads e as integrações Google realmente relevantes.
 
 ## Princípios invariáveis
 
@@ -13,6 +13,7 @@ O objetivo final agora é uma plataforma própria de comércio conversacional om
 - canais são adaptadores/renderizadores, não cérebros separados;
 - OpenAI interpreta e conversa; backend decide verdade comercial e transacional;
 - Make continua como ponte fina quando necessário;
+- **GitHub Actions é a primeira opção para tarefas batch, periódicas, geração de arquivos, auditoria, testes, relatórios e sincronizações não urgentes, reduzindo créditos do Make**;
 - eventos entram em formato normalizado antes do motor central;
 - saídas são decisões estruturadas e só depois renderizadas por canal;
 - identidades externas nunca são unificadas por nome; vínculo exige evidência legítima;
@@ -38,9 +39,10 @@ Entregas:
 5. desativar/arquivar rotas temporárias que possam processar produção por engano;
 6. classificar PRs antigas/paralelas e reduzir ambiguidade operacional;
 7. consolidar runbooks, backup, restore, retenção e rollback;
-8. garantir CI verde e documentação autoritativa.
+8. inventariar automações que podem migrar de Make para GitHub Actions;
+9. garantir CI verde e documentação autoritativa.
 
-Critério de saída: ambiente previsível, sem caminhos concorrentes acidentais e com rollback documentado.
+Critério de saída: ambiente previsível, sem caminhos concorrentes acidentais, automações classificadas por custo/criticidade e rollback documentado.
 
 ---
 
@@ -200,15 +202,16 @@ Entregas:
 7. dedupe/idempotência, cap diário, orçamento e kill switch;
 8. SPF/DKIM/DMARC para e-mail;
 9. atribuição campanha → conversa → pedido;
-10. métricas de entrega, resposta, pedido, margem, custo e opt-out.
+10. métricas de entrega, resposta, pedido, margem, custo e opt-out;
+11. usar GitHub Actions para avaliação/snapshots batch quando não houver necessidade de realtime.
 
 Critério de saída: piloto pequeno e controlado antes de escala.
 
 ---
 
-# ETAPA 11 — Gestor de Redes Sociais + Meta Ads dentro do Admin
+# ETAPA 11 — Central de Crescimento no Admin: Social + Meta Ads + Google
 
-Objetivo: transformar o Admin Dona Antônia na central de operação de Instagram, Facebook e anúncios Meta.
+Objetivo: transformar o Admin Dona Antônia na central de operação de aquisição, conteúdo, SEO e mídia paga sem duplicar consoles desnecessariamente.
 
 ## Gestor de conteúdo/social
 
@@ -216,7 +219,7 @@ Objetivo: transformar o Admin Dona Antônia na central de operação de Instagra
 2. calendário editorial;
 3. rascunho, revisão, aprovação, agendamento e publicação de posts/Reels/carrosséis quando suportado;
 4. biblioteca de mídia/criativos;
-5. IA para briefing, legenda, variações, CTA e calendário — sempre como rascunho até política permitir publicação;
+5. IA para briefing, legenda, variações, CTA e calendário — como rascunho até política permitir publicação;
 6. comentários e respostas centralizados;
 7. Direct/Messenger integrados à inbox;
 8. moderação, tags, prioridade e escalonamento;
@@ -227,18 +230,32 @@ Objetivo: transformar o Admin Dona Antônia na central de operação de Instagra
 
 1. conexão de Business/Ad Account/Page/Instagram corretos;
 2. leitura de campanhas, conjuntos, anúncios, criativos e Insights;
-3. dashboard de investimento, conversas, pedidos, CPA, ROAS/receita atribuída quando tecnicamente justificável;
+3. dashboard de investimento, conversas, pedidos, CPA e receita atribuída quando tecnicamente justificável;
 4. criador de campanha em rascunho/pausado;
 5. segmentação, orçamento, datas, objetivo, placement e criativo revisáveis;
 6. Welcome Message Flows / Click-to-Instagram Direct / Click-to-Messenger quando aprovados;
 7. `campaign_id`, `adset_id`, `ad_id`, `creative_id`, `entry_channel` e `entry_flow` preservados na atribuição;
 8. comparação de criativos e sugestões de otimização;
 9. alertas de gasto, anomalia e desempenho;
-10. publicação/ativação e aumento de orçamento protegidos por RBAC, confirmação e limites; IA não pode aumentar gasto livremente;
+10. publicação/ativação e aumento de orçamento protegidos por RBAC, confirmação e limites;
 11. auditoria completa de quem criou, aprovou, publicou, pausou ou alterou orçamento;
 12. kill switch e limites diários/mensais.
 
-Critério de saída: Admin controla operação social e anúncios de forma auditável sem depender do Ads Manager/Meta Business para tarefas rotineiras que a API permita.
+## Google / Crescimento
+
+Incorporar somente ferramentas relevantes descritas em `docs/GOOGLE-GROWTH-STACK-ADMIN-V1.md`:
+
+1. **Search Console**: cliques, impressões, CTR, posição, consultas, páginas, sitemap e alertas de indexação;
+2. **Merchant Center**: aproveitar `merchant.xml`, listagens gratuitas, diagnósticos e consistência de preço/estoque/imagem;
+3. **Google Analytics 4**: funil real do site/Sala e Data API para painel resumido, sem PII;
+4. **Perfil da Empresa**: presença local e área de atendimento compatível com operação delivery, sem inventar loja física;
+5. **PageSpeed/Core Web Vitals**: auditoria técnica automatizada;
+6. **Google Ads**: leitura e gestão controlada de campanhas, custo, conversões e CPA; mídia continua paga;
+7. **Google Tag Manager** apenas se trouxer ganho claro — não é requisito obrigatório.
+
+Tarefas Google de geração, auditoria e snapshots periódicos devem priorizar GitHub Actions. Make não deve ser usado como polling pago quando Action/API direta resolver com segurança.
+
+Critério de saída: Admin responde como estamos sendo encontrados, quais conteúdos/campanhas geram conversa/pedido, quais erros SEO/feed existem e quanto custa adquirir cliente, mantendo ações financeiras protegidas.
 
 ---
 
@@ -249,16 +266,17 @@ Objetivo: homologar tudo e liberar gradualmente.
 Entregas:
 1. regressão completa Node/PGlite/Deno e testes de integração;
 2. segurança, RLS, Vault, secrets, rate limit, replay, idempotência e rollback;
-3. testes reais controlados em WhatsApp, Instagram, Messenger, Sala, e-mail, Bling e Meta Ads;
+3. testes reais controlados em WhatsApp, Instagram, Messenger, Sala, e-mail, Bling, Meta Ads e Google Ads;
 4. App Review/Advanced Access/Business Verification/permissões que ainda dependam da Meta;
-5. DNS/e-mail e demais ações externas;
-6. testes mobile/desktop/WhatsApp Web/Meta inbox;
-7. canary independente por canal;
-8. marketing e Ads em allowlist/baixo volume primeiro;
-9. monitorar qualidade, bloqueios, opt-outs, custo, erros, pedidos e margem;
-10. relatório final de pendências manuais/externas;
-11. rollout gradual por gates, nunca ativação geral simultânea;
-12. declaração `Dona Antônia V1 — Produção Completa` somente após período estável.
+5. Search Console/Merchant/GA4/Perfil da Empresa/Google Ads API e credenciais externas necessárias;
+6. DNS/e-mail e demais ações externas;
+7. testes mobile/desktop/WhatsApp Web/Meta inbox;
+8. canary independente por canal;
+9. marketing e Ads em allowlist/baixo volume primeiro;
+10. monitorar qualidade, bloqueios, opt-outs, custo, erros, pedidos e margem;
+11. relatório final de pendências manuais/externas;
+12. rollout gradual por gates, nunca ativação geral simultânea;
+13. declaração `Dona Antônia V1 — Produção Completa` somente após período estável.
 
 Critério de saída: operação estável, auditável, reversível e com todas as integrações críticas comprovadas.
 
@@ -276,7 +294,7 @@ Critério de saída: operação estável, auditável, reversível e com todas as
 8. Sala/Flow/orquestrador
 9. Lotes/regras/inteligência
 10. Marketing 10 dias
-11. Gestor Social + Meta Ads
+11. Central de Crescimento: Social + Meta Ads + Google
 12. Testes finais + autorizações + liberação
 
 A programação deve avançar em blocos grandes por etapa. Quando uma etapa depender de ação externa, concluir toda a parte programável e seguir para componentes independentes, registrando o bloqueio para o relatório final.
