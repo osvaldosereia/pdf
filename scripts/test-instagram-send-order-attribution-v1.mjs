@@ -11,6 +11,7 @@ import {
 } from '../lib/omnichannel/instagram-send-contract-v1.mjs';
 
 const migration=await readFile('supabase/migrations/20260908043100_channel_order_attribution_link_v1.sql','utf8');
+const review=await readFile('supabase/migrations/20260908043200_instagram_private_reply_review_hardening_v1.sql','utf8');
 const shared=await readFile('supabase/functions/_shared/instagram-send-contract-v1.mjs','utf8');
 const wrapper=await readFile('lib/omnichannel/instagram-send-contract-v1.mjs','utf8');
 const has=(text,re,msg)=>assert.match(text,re,msg);
@@ -80,4 +81,20 @@ has(migration,/after insert or update of conversation_id,occurred_at on public\.
 has(migration,/perform public\.link_order_channel_attribution_v1\(v_order_id\)/i);
 lacks(migration,/net\.http_post|fetch\s*\(|graph\.instagram\.com/i,'order attribution must be local-only');
 
-console.log('Instagram send contracts + order attribution v1: OK');
+// Review de private reply é humano, política revalidada e continua sem envio.
+has(review,/comment\.intent not in \('purchase_interest','question','support'\)/i,'spam/unknown/other must not become outreach candidates');
+has(review,/human_approval_required/i,'eligible comment must require human approval');
+has(review,/review_instagram_private_reply_v1/i);
+has(review,/v_admin\.role not in \('owner','operator'\)/i,'review must be RBAC protected');
+has(review,/private_reply_already_sent/i);
+has(review,/private_reply_not_policy_eligible/i);
+has(review,/instagram_observe_gate_closed/i);
+has(review,/channel_outbound_disabled/i);
+has(review,/status='approved'[\s\S]*blocked_reason='dispatcher_not_released'/i,'approval must remain blocked from transport');
+has(review,/'sent',false/i,'approval response must state that nothing was sent');
+has(review,/instagram_private_reply_review_v1/i);
+has(review,/get_instagram_stage6_metrics_v1/i);
+has(review,/'transport_released',false/i);
+lacks(review,/net\.http_post|fetch\s*\(|graph\.instagram\.com|graph\.facebook\.com/i,'review layer must not contain transport');
+
+console.log('Instagram send contracts + order attribution + review hardening v1: OK');
