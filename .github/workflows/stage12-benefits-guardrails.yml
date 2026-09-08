@@ -1,0 +1,47 @@
+name: Stage 12 Benefits Guardrails
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908160000_stage12_benefits_guardrails_v1.sql'
+      - 'scripts/test-stage12-benefits-guardrails-contract-v1.mjs'
+      - 'scripts/test-stage12-benefits-guardrails-db-v1.mjs'
+      - 'docs/ETAPA-12-BENEFITS-GUARDRAILS-V1.md'
+      - '.github/workflows/stage12-benefits-guardrails.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908160000_stage12_benefits_guardrails_v1.sql'
+      - 'scripts/test-stage12-benefits-guardrails-contract-v1.mjs'
+      - 'scripts/test-stage12-benefits-guardrails-db-v1.mjs'
+      - 'docs/ETAPA-12-BENEFITS-GUARDRAILS-V1.md'
+      - '.github/workflows/stage12-benefits-guardrails.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908160000_stage12_benefits_guardrails_v1.sql
+            scripts/test-stage12-benefits-guardrails-contract-v1.mjs
+            scripts/test-stage12-benefits-guardrails-db-v1.mjs
+            docs/ETAPA-12-BENEFITS-GUARDRAILS-V1.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage12-benefits" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático
+        run: node scripts/test-stage12-benefits-guardrails-contract-v1.mjs
+      - name: Benefícios/aniversário/cupons em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage12-benefits
+        run: node scripts/test-stage12-benefits-guardrails-db-v1.mjs
