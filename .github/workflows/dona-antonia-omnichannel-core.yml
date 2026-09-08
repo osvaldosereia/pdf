@@ -1,0 +1,21 @@
+name: Dona Antonia omnichannel core
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908032000_omnichannel_event_core_v1.sql'
+      - 'scripts/test-omnichannel-event-core-v1.mjs'
+      - '.github/workflows/dona-antonia-omnichannel-core.yml'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  workflow_dispatch:
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate dormant omnichannel contract
+        run: node scripts/test-omnichannel-event-core-v1.mjs

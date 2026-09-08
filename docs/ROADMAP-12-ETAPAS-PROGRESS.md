@@ -14,55 +14,40 @@ Consolidado: canary WhatsApp `live=1%`; Flow/orquestrador desligados; handoffs h
 
 **Status programável: concluída e integrada em `main` pela PR #183. Homologação Bling real permanece pendência externa deliberadamente bloqueada.**
 
-### Implementado e validado
+Produção mantém `bling_order_sync_enabled=false`, homologação allowlist-only, lote máximo 1 e nenhum pedido/job real criado pela etapa. Migrations aplicadas: `20260908024746 order_bling_homologation_foundation_v2` e `20260908024845 order_bling_stock_guard_v1`. Homologação de um único pedido real fica registrada para a Etapa 12 e exige autorização explícita.
 
-- preservada a arquitetura de carrinho/cesta com `fiscal_subtotal`, `other_expenses`, `discount` e total comercial separado;
-- `confirm_cart_order_v2` torna a confirmação replay-safe por carrinho e chave de idempotência; índices únicos impedem pedido duplicado por carrinho/chave;
-- gates Bling próprios: `bling_order_sync_enabled=false`, `bling_order_homologation_only=true`, `bling_order_max_per_run=1`;
-- allowlist server-only `bling_order_homologation_allowlist`; fila e claim de homologação revalidam gate/allowlist;
-- guard transacional de estoque em `order_sync_jobs` por `trg_guard_order_sync_stock_v1`;
-- timeline server-only `order_status_events` e RPC de transição com `delivered`, `cancelled` e `returned`;
-- wrapper `run-bling-order-homologation-v1.mjs` exige confirmação literal `PEDIDO_UNICO_CONTROLADO` em `--apply` e força lote 1;
-- writer existente mantém POST ambíguo em `review`, sem retry cego;
-- CI da PR #183 verde, incluindo contrato da Etapa 2, regressão Node/PGlite, Shopping Room, Deno check das Edge Functions e teste criptográfico Flow;
-- PR #183 integrada em `main` no commit squash `e8519d6e417704e86444a57f98928f593dea64b2`.
+## ETAPA 3 — Núcleo omnichannel e evento normalizado
 
-### Produção — migrations dormentes aplicadas
+**Status programável: implementada nesta rodada em PR própria; Instagram/Messenger permanecem dormentes.**
 
-- `20260908024746 order_bling_homologation_foundation_v2`;
-- `20260908024845 order_bling_stock_guard_v1`.
+### Implementado
 
-Auditoria pós-DDL:
+- `conversations.channel` preparado para `instagram` e `messenger`, preservando `whatsapp`, `web` e `hybrid`;
+- `channel_accounts` centraliza contas por canal e nasce fail-closed: `status=dormant`, inbound/IA/auto-reply/outbound `false`, canary `0%`;
+- `customer_channel_identities` modela E.164, IGSID, PSID, identidade web/e-mail sem unificação automática por nome; novas identidades nascem apenas `observed`;
+- `channel_raw_events` guarda somente hash SHA-256 e referência segura opcional, evitando colocar payload cru no motor central;
+- `normalized_channel_events` implementa contrato comum com canal, conta, usuário externo, mensagem/evento externo, direção, tipo, reply-to, source, referral, timestamp, mídia normalizada e referência ao evento bruto;
+- índices únicos garantem idempotência por canal/conta/mensagem externa ou evento externo;
+- `ingest_normalized_channel_event_v1` é server-only, replay-safe e mantém evento `held` quando o canal não estiver explicitamente habilitado; web permanece compatível com a Sala existente;
+- nenhuma conta Instagram/Messenger é criada/ativada pela migration; nenhuma chamada Meta é feita;
+- CI GitHub Actions valida o contrato e os defaults fail-closed sem gastar créditos Make.
 
-- `whatsapp_release_mode=live` e `whatsapp_live_canary_percent=1` preservados;
-- `experience_orchestrator_enabled=false`, `whatsapp_flow_data_exchange_enabled=false`, `whatsapp_flow_send_enabled=false`;
-- `bling_order_sync_enabled=false`, `bling_order_homologation_only=true`, `bling_order_max_per_run=1`;
-- `claim_order_sync_jobs('stage2-audit',10)` retornou zero enquanto Bling está desligado;
-- `orders=0`, `order_sync_jobs=0`, allowlist Bling=0 e `order_status_events=0`: nenhuma chamada/pedido real Bling foi criada nesta execução;
-- `bling_order_homologation_allowlist` e `order_status_events` estão com RLS habilitado e sem policy pública, no desenho server-only;
-- trigger de estoque `trg_guard_order_sync_stock_v1` está habilitado;
-- Security Advisor pós-DDL não apresentou novo WARN de função exposta; permanecem os INFOs esperados `RLS Enabled No Policy` das tabelas server-only e o WARN de conta `Leaked Password Protection Disabled`.
+### Auditoria desta rodada
 
-### Handoffs e Make pós-DDL
+- GitHub: Etapas 1 e 2 confirmadas em `main` pelo marcador persistente antes da alteração;
+- Make: WhatsApp inbound `6779824` e outbound realtime `7290488` continuam ativos; nenhuma nova automação Make foi criada para a Etapa 3;
+- Supabase: tentativa de leitura nesta rodada foi recusada pelo conector por permissão; por segurança não houve escrita/DDL em produção antes de CI. O estado autoritativo imediatamente anterior permanece canary `live=1%`, três handoffs humanos abertos e Bling/Flow/orquestrador desligados até nova auditoria permitida.
 
-- agora existem **três** handoffs humanos `live_canary_human_control` abertos, buckets `89`, `68` e `10`; todos permanecem `needs_human`, `mode=human`, `human_required=true` e não podem ser retomados automaticamente;
-- Make continua com WhatsApp inbound `6779824` e outbound realtime `7290488` ativos; cenários Bling/teste permanecem inativos.
+### Arquivos
 
-### Critério restante exclusivamente externo/real
+- `supabase/migrations/20260908032000_omnichannel_event_core_v1.sql`
+- `scripts/test-omnichannel-event-core-v1.mjs`
+- `.github/workflows/dona-antonia-omnichannel-core.yml`
 
-- homologar **um único pedido real controlado** no Bling, allowlisted, validando contato, componentes, diferença fiscal, estoque, retorno do `bling_order_id` e conciliação de status;
-- não executar esse teste sem autorização explícita futura. Registrar como pendência externa para o fechamento da Etapa 12, sem bloquear programação das próximas etapas.
+### Regra de integração
 
-### Rollback
-
-1. manter `bling_order_sync_enabled=false` para impedir qualquer claim;
-2. manter allowlist vazia/desabilitada fora da homologação;
-3. nunca reexecutar POST ambíguo no Bling sem reconciliação;
-4. preservar handoffs humanos antes de qualquer recuperação operacional;
-5. não alterar o canary WhatsApp de 1% durante rollback.
+Só integrar/aplicar a migration depois de CI verde. Após DDL, reauditar gates, handoffs, pedidos/jobs e confirmar que Instagram/Messenger continuam sem conta ativa, inbound, IA ou outbound.
 
 ## Próxima etapa
 
-**ETAPA 3 — Núcleo omnichannel e evento normalizado.**
-
-A próxima execução deve começar diretamente pela Etapa 3: ampliar o modelo de canal com segurança, criar contas/identidades por canal e contrato de evento normalizado/idempotente, mantendo Instagram/Messenger totalmente dormentes e sem depender da homologação real Bling.
+Quando a PR da Etapa 3 estiver verde, integrar e aplicar a migration dormente; em seguida a próxima execução deve atacar **ETAPA 4 — Adapters, renderers e gates independentes**, sem depender de permissões Meta externas.
