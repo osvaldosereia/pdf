@@ -35,6 +35,20 @@ verify_jwt = true
 [functions.admin-whatsapp-ops-v1]
 verify_jwt = true
 
+# Orquestrador administrativo: endpoint autenticado e autorizado internamente.
+[functions.admin-experience-orchestrator-v1]
+verify_jwt = true
+
+# Administração de chaves/readiness do Flow: JWT obrigatório + autorização owner no handler.
+[functions.admin-whatsapp-flow-v1]
+verify_jwt = true
+
+# Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
+# JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
+# do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.
+[functions.whatsapp-flow-data-exchange-v1]
+verify_jwt = false
+
 [functions.bootstrap-owner-v1]
 verify_jwt = true
 
