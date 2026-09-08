@@ -57,7 +57,7 @@ begin
     order_id,attribution_event_id,attribution_model,channel,conversation_id,touchpoint_type,occurred_at,metadata
   ) values(
     v_order.id,v_attr.id,'last_touch',v_attr.channel,v_order.conversation_id,v_attr.touchpoint_type,v_attr.occurred_at,
-    jsonb_build_object('source','channel_attribution_events','customer_id',v_order.customer_id)
+    jsonb_build_object('source','channel_attribution_events')
   )
   on conflict(order_id,attribution_model) do update set
     attribution_event_id=excluded.attribution_event_id,
@@ -74,5 +74,57 @@ end;
 $$;
 revoke all on function public.link_order_channel_attribution_v1(uuid) from public,anon,authenticated;
 grant execute on function public.link_order_channel_attribution_v1(uuid) to service_role;
+
+-- Pedido novo/associado a conversa ganha last-touch automaticamente, sem rede ou gasto externo.
+create or replace function public.sync_order_channel_attribution_v1()
+returns trigger
+language plpgsql
+security definer
+set search_path=''
+as $$
+begin
+  perform public.link_order_channel_attribution_v1(new.id);
+  return new;
+end;
+$$;
+revoke all on function public.sync_order_channel_attribution_v1() from public,anon,authenticated;
+grant execute on function public.sync_order_channel_attribution_v1() to service_role;
+
+drop trigger if exists orders_channel_attribution_v1 on public.orders;
+create trigger orders_channel_attribution_v1
+after insert or update of conversation_id on public.orders
+for each row execute function public.sync_order_channel_attribution_v1();
+
+-- Se o touchpoint chegar depois do registro do pedido (webhook/replay fora de ordem),
+-- recalcula somente pedidos da MESMA conversa e cuja data comporte esse touchpoint.
+create or replace function public.refresh_orders_from_channel_attribution_v1()
+returns trigger
+language plpgsql
+security definer
+set search_path=''
+as $$
+declare
+  v_order_id uuid;
+begin
+  if new.conversation_id is null then return new; end if;
+  for v_order_id in
+    select o.id
+      from public.orders o
+     where o.conversation_id=new.conversation_id
+       and new.occurred_at<=o.created_at
+       and new.occurred_at>=o.created_at-interval '30 days'
+  loop
+    perform public.link_order_channel_attribution_v1(v_order_id);
+  end loop;
+  return new;
+end;
+$$;
+revoke all on function public.refresh_orders_from_channel_attribution_v1() from public,anon,authenticated;
+grant execute on function public.refresh_orders_from_channel_attribution_v1() to service_role;
+
+drop trigger if exists channel_attribution_refresh_orders_v1 on public.channel_attribution_events;
+create trigger channel_attribution_refresh_orders_v1
+after insert or update of conversation_id,occurred_at on public.channel_attribution_events
+for each row execute function public.refresh_orders_from_channel_attribution_v1();
 
 commit;
