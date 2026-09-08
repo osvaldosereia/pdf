@@ -1,11 +1,79 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta http-equiv="Cache-Control" content="no-store"><title>Dona Antônia · Inteligência do Atendimento</title><link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02"><link rel="stylesheet" href="../admin-v3/service-intelligence.css?v=20260908-01"></head><body>
-<div class="si-shell"><header class="si-top"><div><div class="eyebrow">Dona Antônia · Admin</div><h1>Inteligência do Atendimento</h1><p>Conhecimento, comportamento, procedimentos, mídia e testes do vendedor do WhatsApp.</p></div><div class="si-actions"><a class="button secondary" href="./">← Admin</a><button id="siRefresh" class="button primary" type="button">Atualizar</button></div></header>
-<div id="siAuthWarning" class="ops-alert hidden">Faça login no Admin principal antes de abrir esta central.</div>
-<section id="siMetrics" class="metrics"></section>
-<nav class="si-tabs"><button class="active" data-tab="knowledge">Conhecimento</button><button data-tab="guidance">Orientações</button><button data-tab="procedure">Procedimentos</button><button data-tab="media">Mídia</button><button data-tab="regression_case">Testes</button><button data-tab="runtime">Publicação</button></nav>
-<div class="si-grid"><section class="panel si-list-panel"><div class="panel-head"><div><div class="eyebrow">Conteúdo</div><h2 id="siListTitle">Conhecimento</h2></div><button id="siNew" class="button primary small" type="button">+ Novo</button></div><div class="search"><span>⌕</span><input id="siSearch" type="search" placeholder="Buscar"></div><div id="siList" class="si-list"></div></section>
-<section class="panel si-editor"><div class="panel-head"><div><div class="eyebrow">Editor</div><h2 id="siEditorTitle">Novo conhecimento</h2></div><span id="siStatus" class="badge">draft</span></div><form id="siForm"></form><div class="si-editor-actions"><button id="siSave" class="button primary" type="button">Salvar rascunho</button><button id="siPublish" class="button secondary" type="button">Publicar</button><button id="siArchive" class="button secondary" type="button">Arquivar</button></div></section></div>
-<section class="panel si-preview"><div class="panel-head"><div><div class="eyebrow">Validação</div><h2>Prévia do cérebro publicado</h2></div><button id="siPreview" class="button secondary small" type="button">Gerar prévia</button></div><pre id="siPreviewBody">A prévia mostra exatamente o pacote de conhecimento/orientações/procedimentos entregue ao worker.</pre></section>
-<div id="toastRegion" class="toasts" aria-live="polite"></div></div>
-<script src="./config.js?v=20260908-02"></script><script src="../admin-v3/service-intelligence.js?v=20260908-01"></script></body></html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>Dona Antônia · Inteligência do Atendimento</title>
+  <link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02">
+  <link rel="stylesheet" href="../admin-v3/service-intelligence.css?v=20260908-02">
+</head>
+<body>
+<div class="si-shell">
+  <header class="si-top">
+    <div>
+      <div class="eyebrow">Dona Antônia · WhatsApp</div>
+      <h1>Como a IA atende</h1>
+      <p>Cadastre aqui somente o que a IA precisa saber para atender e vender bem.</p>
+    </div>
+    <div class="si-actions">
+      <a class="button secondary" href="./">← Admin</a>
+      <button id="siRefresh" class="button secondary" type="button">Atualizar</button>
+    </div>
+  </header>
+
+  <div id="siAuthWarning" class="ops-alert hidden">Faça login no Admin principal antes de abrir esta tela.</div>
+
+  <section id="siMetrics" class="metrics"></section>
+
+  <section class="si-simple-help">
+    <strong>É simples:</strong> escolha uma área, escreva a orientação e publique. Preço, estoque e fotos dos produtos continuam vindo automaticamente do cadastro feito pelo contador.
+  </section>
+
+  <nav class="si-tabs" aria-label="Áreas da inteligência">
+    <button class="active" data-tab="knowledge">O que a IA deve saber</button>
+    <button data-tab="guidance">Como a IA deve atender</button>
+    <button data-tab="procedure">Regras importantes</button>
+  </nav>
+
+  <div class="si-grid">
+    <section class="panel si-list-panel">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">Cadastrados</div>
+          <h2 id="siListTitle">O que a IA deve saber</h2>
+        </div>
+        <button id="siNew" class="button primary small" type="button">+ Adicionar</button>
+      </div>
+      <div class="search"><span>⌕</span><input id="siSearch" type="search" placeholder="Buscar"></div>
+      <div id="siList" class="si-list"></div>
+    </section>
+
+    <section class="panel si-editor">
+      <div class="panel-head">
+        <div>
+          <div class="eyebrow">Editar</div>
+          <h2 id="siEditorTitle">Nova informação</h2>
+        </div>
+        <span id="siStatus" class="badge">Rascunho</span>
+      </div>
+      <form id="siForm"></form>
+      <div class="si-editor-actions">
+        <button id="siSave" class="button primary" type="button">Salvar</button>
+        <button id="siPublish" class="button secondary" type="button">Publicar</button>
+        <button id="siArchive" class="button secondary" type="button">Arquivar</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="si-note">
+    <strong>Não cadastre aqui:</strong> preço atual, estoque atual ou dados do Bling. Essas informações vêm do sistema automaticamente para evitar respostas erradas.
+  </section>
+
+  <div id="toastRegion" class="toasts" aria-live="polite"></div>
+</div>
+<script src="./config.js?v=20260908-02"></script>
+<script src="../admin-v3/service-intelligence.js?v=20260908-02"></script>
+</body>
+</html>
