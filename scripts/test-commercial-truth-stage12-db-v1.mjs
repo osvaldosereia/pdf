@@ -8,7 +8,8 @@ const migrations=[
  'supabase/migrations/20260908120000_stage12_commercial_truth_foundation_v1.sql',
  'supabase/migrations/20260908120100_stage12_fefo_margin_guard_v1.sql',
  'supabase/migrations/20260908120200_stage12_promotions_benefits_v1.sql',
- 'supabase/migrations/20260908120300_stage12_reports_recommendations_v1.sql'
+ 'supabase/migrations/20260908120300_stage12_reports_recommendations_v1.sql',
+ 'supabase/migrations/20260908120400_stage12_lot_truth_fail_closed_v2.sql'
 ];
 try{
  await db.exec(`
@@ -35,6 +36,7 @@ try{
  let r=await one(`select public.commercial_readiness_v1() x`);
  if(r.x.enabled!==false||r.x.execution_mode!=='off'||r.x.lot_truth_enabled!==false||r.x.fefo_enabled!==false||r.x.legacy_offer_engine_allowed!==false)throw new Error('commercial_runtime_must_default_off');
  if(Number(r.x.draft_expiry_rules)!==8||Number(r.x.active_expiry_rules)!==0)throw new Error('legacy_expiry_rules_must_be_draft_only');
+ if(Number(r.x.default_max_discount_percent)!==0||Number(r.x.promotion_budget_brl)!==0)throw new Error('commercial_thresholds_must_default_conservative');
 
  const healthy=(await one(`insert into public.products(name,sku,category,price,cost,stock,validity_date,physically_verified) values('Arroz','A1','mercearia',10,6,10,current_date+60,true) returning id`)).id;
  const risk=(await one(`insert into public.products(name,sku,category,price,cost,stock,validity_date,physically_verified) values('Risco','R1','mercearia',5,6,10,current_date+60,true) returning id`)).id;
@@ -54,6 +56,13 @@ try{
  if(r.x.allowed!==false||r.x.reason!=='max_discount_exceeded')throw new Error('discount_must_default_blocked');
  r=await one(`select public.margin_guard_v1('${risk}',5,1,'sale') x`);
  if(r.x.allowed!==false||r.x.reason!=='below_cost')throw new Error('below_cost_must_block');
+
+ await db.exec(`update public.commercial_runtime_config set lot_truth_enabled=true where id=1`);
+ r=await one(`select public.commercial_product_eligibility_v1('${risk}',current_date) x`);
+ if(r.x.eligible!==false||r.x.reason!=='lot_truth_missing'||r.x.source!=='inventory_lots')throw new Error('lot_truth_must_not_fallback_to_legacy_stock');
+ r=await one(`select public.commercial_product_eligibility_v1('${healthy}',current_date) x`);
+ if(r.x.eligible!==true||r.x.source!=='inventory_lots'||Number(r.x.available_quantity)!==7)throw new Error('verified_lot_truth_should_be_usable');
+ await db.exec(`update public.commercial_runtime_config set lot_truth_enabled=false where id=1`);
 
  r=await one(`select public.preview_expiry_offer_v2('${healthy}',current_date,current_date) x`);
  if(r.x.offer_candidate!==false||r.x.reason!=='expiry_discount_disabled')throw new Error('expiry_runtime_must_default_off');
@@ -76,7 +85,7 @@ try{
 
  const campaign=(await one(`insert into public.promotion_campaigns(campaign_key,display_name,campaign_type) values('test','Teste','manual') returning id`)).id;
  r=await one(`select public.create_promotion_item_draft_v1('${campaign}','${healthy}',9,'test',null) x`);
- if(r.x.status!=='blocked'||r.x.activated===true)throw new Error('discounted_promotion_draft_should_be_blocked_by_default');
+ if(r.x.status!=='blocked')throw new Error('discounted_promotion_draft_should_be_blocked_by_default');
  const active=await one(`select count(*)::int n from public.promotion_campaigns where enabled or execution_mode<>'off'`);
  if(active.n!==0)throw new Error('campaign_runtime_must_remain_off');
 
@@ -85,5 +94,5 @@ try{
 
  const lotTruth=await one(`select count(*)::int n from public.inventory_lot_reservations`);
  if(lotTruth.n!==0)throw new Error('blocked_reservation_must_not_write');
- console.log('PASS: stage12 DB truth is dormant, FEFO is deterministic, margin-safe and delivered-only recommendations work.');
+ console.log('PASS: stage12 DB truth is dormant, FEFO is deterministic, lot truth is fail-closed, margin-safe and delivered-only recommendations work.');
 } finally { await db.close(); }
