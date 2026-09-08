@@ -19,7 +19,9 @@ language sql stable security definer set search_path='' as $$
   from c order by c.category
 $$;
 
-create or replace function public.create_whatsapp_basket_extras_session_v1(p_conversation_id uuid,p_categories text[])
+-- A versão anterior recebia p_sections; removemos a assinatura antes de recriar.
+drop function if exists public.create_whatsapp_basket_extras_session_v1(uuid,text[]);
+create function public.create_whatsapp_basket_extras_session_v1(p_conversation_id uuid,p_categories text[])
 returns jsonb language plpgsql security definer set search_path='' as $$
 declare
   c public.conversations%rowtype;
@@ -101,17 +103,23 @@ declare
   n text:=translate(lower(trim(regexp_replace(coalesce(p_message,''),'\s+',' ','g'))),'áàãâéêíóôõúç','aaaaeeiooouc');
   payment boolean:=false;
   delivery_time boolean:=false;
+  delivery_fee boolean:=false;
 begin
   payment := n ~ '(forma(s)? de pagamento|como (posso )?pagar|pagamento|cartao|credito|debito|pix|dinheiro|alelo|sodexo|pluxee|puxee|caju|cajur|flash|ifood|boleto|30 dias|trinta dias)';
   delivery_time := n ~ '(que horas|qual horario|horario da entrega|hora da entrega|quando chega|que hora chega|periodo da entrega)';
+  delivery_fee := n ~ '(taxa de entrega|frete|cobra entrega|cobram entrega|entrega e gratis|entrega gratis)';
 
   if payment then
     return jsonb_build_object(
       'matched',true,
       'kind','payment',
       'handoff',false,
-      'reply',E'FORMAS DE PAGAMENTO\n\n• Cartão de Crédito em 3x sem juros\n• Cartão de Débito\n• Pix e Dinheiro\n• Cartão Alimentação Alelo, Sodexo, Pluxee, Caju, Flash e iFood.\n\nPor enquanto não vendemos para 30 dias ou no boleto.\n\nNão cobramos taxa de entrega.'
+      'reply',E'FORMAS DE PAGAMENTO\n\n• Cartão de Crédito em 3x sem juros\n• Cartão de Débito\n• Pix e Dinheiro\n• Cartão Alimentação Alelo, Sodexo, Puxee, Cajur, Flash e Ifood.\n\nPor enquanto não vendemos pra 30 dias ou no Boleto.'
     );
+  end if;
+
+  if delivery_fee then
+    return jsonb_build_object('matched',true,'kind','delivery_fee','handoff',false,'reply','Não cobramos taxa de entrega.');
   end if;
 
   if delivery_time then
@@ -119,7 +127,7 @@ begin
       'matched',true,
       'kind','delivery_time',
       'handoff',true,
-      'reply','As entregas são feitas por rota e o horário depende do bairro. Vou transferir você para o atendimento humano para confirmar o horário da sua entrega.'
+      'reply','As entregas são por rota e o horário depende do bairro. Vou transferir você para o atendimento humano.'
     );
   end if;
 
@@ -156,14 +164,13 @@ begin
   );
 end $$;
 
--- Inteligência publicada com as regras comerciais exatas.
 update public.service_guidance_rules
 set title='Formas de pagamento',
-    instruction='Quando perguntarem formas de pagamento, boleto ou 30 dias, informe: Cartão de Crédito em 3x sem juros; Cartão de Débito; Pix e Dinheiro; Cartão Alimentação Alelo, Sodexo, Pluxee, Caju, Flash e iFood. Por enquanto não vendemos para 30 dias nem no boleto. Não cobramos taxa de entrega.',
+    instruction='Se perguntarem formas de pagamento, boleto ou 30 dias, responda exatamente: Cartão de Crédito em 3x sem juros; Cartão de Débito; Pix e Dinheiro; Cartão Alimentação Alelo, Sodexo, Puxee, Cajur, Flash e Ifood. Por enquanto não vendemos pra 30 dias ou no Boleto.',
     behavior_tags=array['mvp_whatsapp','payment','fixed_policy'],channel_scope=array['whatsapp'],priority=100,status='published',updated_at=now()
 where rule_key='basic_payment_policy';
 insert into public.service_guidance_rules(rule_key,title,instruction,behavior_tags,channel_scope,intent_scope,stage_scope,priority,status)
-select 'basic_payment_policy','Formas de pagamento','Quando perguntarem formas de pagamento, boleto ou 30 dias, informe: Cartão de Crédito em 3x sem juros; Cartão de Débito; Pix e Dinheiro; Cartão Alimentação Alelo, Sodexo, Pluxee, Caju, Flash e iFood. Por enquanto não vendemos para 30 dias nem no boleto. Não cobramos taxa de entrega.',array['mvp_whatsapp','payment','fixed_policy'],array['whatsapp'],array[]::text[],array[]::text[],100,'published'
+select 'basic_payment_policy','Formas de pagamento','Se perguntarem formas de pagamento, boleto ou 30 dias, responda exatamente: Cartão de Crédito em 3x sem juros; Cartão de Débito; Pix e Dinheiro; Cartão Alimentação Alelo, Sodexo, Puxee, Cajur, Flash e Ifood. Por enquanto não vendemos pra 30 dias ou no Boleto.',array['mvp_whatsapp','payment','fixed_policy'],array['whatsapp'],array[]::text[],array[]::text[],100,'published'
 where not exists(select 1 from public.service_guidance_rules where rule_key='basic_payment_policy');
 
 update public.service_guidance_rules
