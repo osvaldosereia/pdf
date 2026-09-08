@@ -1,0 +1,113 @@
+name: Stage 13E Financial Projection
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908200000_stage13_financial_projection_policy_v1.sql'
+      - 'supabase/migrations/20260908201000_stage13_financial_policy_admin_hardening_v2.sql'
+      - 'supabase/functions/admin-financial-policy-v1/**'
+      - 'supabase/functions/admin-financial-v1/**'
+      - 'admin-v3/financial-admin.js'
+      - 'admin-v3/financial-policy-admin.js'
+      - 'admin-v3/financial-policy-admin.css'
+      - 'scripts/test-stage13e-financial-projection-contract-v1.mjs'
+      - 'scripts/test-stage13e-financial-projection-db-v1.mjs'
+      - 'scripts/run-stage13-financial-batch-audit-v1.mjs'
+      - 'docs/ETAPA-13E-FINANCIAL-PROJECTION-POLICIES-V1.md'
+      - '.github/workflows/stage13e-financial-projection.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908200000_stage13_financial_projection_policy_v1.sql'
+      - 'supabase/migrations/20260908201000_stage13_financial_policy_admin_hardening_v2.sql'
+      - 'supabase/functions/admin-financial-policy-v1/**'
+      - 'supabase/functions/admin-financial-v1/**'
+      - 'admin-v3/financial-admin.js'
+      - 'admin-v3/financial-policy-admin.js'
+      - 'admin-v3/financial-policy-admin.css'
+      - 'scripts/test-stage13e-financial-projection-contract-v1.mjs'
+      - 'scripts/test-stage13e-financial-projection-db-v1.mjs'
+      - 'scripts/run-stage13-financial-batch-audit-v1.mjs'
+      - 'docs/ETAPA-13E-FINANCIAL-PROJECTION-POLICIES-V1.md'
+      - '.github/workflows/stage13e-financial-projection.yml'
+  workflow_dispatch:
+    inputs:
+      live_readonly_audit:
+        description: 'Executar auditoria somente leitura contra o Supabase usando secrets já configurados'
+        required: true
+        default: false
+        type: boolean
+      limit:
+        description: 'Máximo de itens por preview batch'
+        required: true
+        default: '100'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  stage13e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908200000_stage13_financial_projection_policy_v1.sql
+            supabase/migrations/20260908201000_stage13_financial_policy_admin_hardening_v2.sql
+            supabase/functions/admin-financial-v1/index.ts
+            supabase/functions/admin-financial-policy-v1/index.ts
+            admin/config.js
+            admin-v3/financial-admin.js
+            admin-v3/financial-policy-admin.js
+            admin-v3/financial-policy-admin.css
+            scripts/test-stage13e-financial-projection-contract-v1.mjs
+            scripts/test-stage13e-financial-projection-db-v1.mjs
+            scripts/run-stage13-financial-batch-audit-v1.mjs
+            docs/ETAPA-13E-FINANCIAL-PROJECTION-POLICIES-V1.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage13e" --no-save @electric-sql/pglite@0.5.8
+      - name: Contratos estáticos
+        run: node scripts/test-stage13e-financial-projection-contract-v1.mjs
+      - name: Banco isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage13e
+        run: node scripts/test-stage13e-financial-projection-db-v1.mjs
+      - name: Validar JavaScript Admin e batch
+        run: |
+          node --check admin-v3/financial-admin.js
+          node --check admin-v3/financial-policy-admin.js
+          node --check scripts/run-stage13-financial-batch-audit-v1.mjs
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Validar Edge Functions
+        run: deno check supabase/functions/admin-financial-v1/index.ts supabase/functions/admin-financial-policy-v1/index.ts
+
+  live-readonly-audit:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.live_readonly_audit == true }}
+    needs: stage13e
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            scripts/run-stage13-financial-batch-audit-v1.mjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Auditoria Supabase somente leitura
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          FINANCIAL_AUDIT_LIMIT: ${{ inputs.limit }}
+        run: node scripts/run-stage13-financial-batch-audit-v1.mjs
