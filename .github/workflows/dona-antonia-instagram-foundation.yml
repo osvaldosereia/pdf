@@ -1,0 +1,34 @@
+name: Dona Antonia Instagram foundation
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/instagram-runtime-v1.mjs'
+      - 'scripts/test-instagram-runtime-v1.mjs'
+      - 'scripts/test-instagram-direct-foundation-v1.mjs'
+      - 'supabase/migrations/20260908053500_instagram_direct_comment_foundation_v1.sql'
+      - 'supabase/functions/meta-instagram-webhook-v1/**'
+      - 'supabase/config.toml'
+      - '.github/workflows/dona-antonia-instagram-foundation.yml'
+      - 'docs/INSTAGRAM-DIRECT-COMMENTS-DECISION-V1.md'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  workflow_dispatch:
+jobs:
+  instagram-foundation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate parser and policy gates
+        run: node scripts/test-instagram-runtime-v1.mjs
+      - name: Validate database and webhook safety invariants
+        run: node scripts/test-instagram-direct-foundation-v1.mjs
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check signed Meta webhook
+        run: deno check supabase/functions/meta-instagram-webhook-v1/index.ts
