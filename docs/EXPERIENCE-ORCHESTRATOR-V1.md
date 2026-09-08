@@ -94,6 +94,33 @@ Regras principais:
 - upsell respeita `fast_checkout` e `upsell_declined`;
 - qualquer interface não habilitada recua para conversa.
 
+## Ponte com o motor comercial
+
+RPC:
+
+`plan_sales_experience_v1(conversation_id)`
+
+Mantém duas decisões separadas:
+
+```text
+plan_next_sales_move
+  ↓
+decide O QUE fazer comercialmente
+  ↓
+plan_next_experience_v1
+  ↓
+decide COMO apresentar a próxima decisão
+```
+
+Mapeamento inicial:
+
+- `checkout` → experiência determinística de checkout;
+- `help_choose` → conversa ou Flow de montagem quando futuramente habilitado;
+- `offer_suggestions` → conversa, carrossel ou Flow de upsell conforme flags e contexto;
+- fallback → conversa.
+
+Essa função é somente leitura. Não registra `offered`, não aumenta pressão comercial e não cria sessão.
+
 ## Sessões de experiência
 
 Tabela: `experience_sessions`.
@@ -106,9 +133,35 @@ Características:
 - expiração;
 - resultado estruturado;
 - provider session opcional;
-- conclusão idempotente.
+- abertura/conclusão/abandono idempotentes.
 
-Eventos são auditados em `experience_events`.
+Lifecycle:
+
+- `create_experience_session_v1` → `offered`;
+- `mark_experience_session_open_v1` → `open`;
+- `complete_experience_session_v1` → `completed`;
+- `abandon_experience_session_v1` → `abandoned`;
+- `expire_experience_sessions_v1` → `expired`.
+
+Eventos são auditados em `experience_events` sem depender de OpenAI.
+
+## Métricas de funil
+
+RPC:
+
+`get_experience_funnel_metrics_v1(since)`
+
+Por definição mede:
+
+- sessões;
+- aberturas;
+- conclusões;
+- abandonos;
+- expirações;
+- taxa de abertura;
+- taxa de conclusão.
+
+Essas métricas serão a base para o teste futuro **IA sem Flow vs IA + Flow**, junto a conversão em pedido, ticket médio, tempo de fechamento, mensagens e tokens/custo.
 
 ## Contrato do Flow de cesta
 
@@ -169,6 +222,7 @@ Recursos preparados:
 - configuração JSON de rascunho;
 - edição de definição de experiência;
 - readiness do contrato Flow;
+- funil dos últimos 7 dias;
 - kill switch global owner-only com confirmação de alto atrito.
 
 O módulo visual `admin-v3/experience-orchestrator.js` está pré-integrado, porém:
@@ -216,9 +270,13 @@ O canary deve continuar sendo observado separadamente.
 - todas as features default off;
 - seleção Flow quando explicitamente habilitado em fixture;
 - carrossel vs Sala;
+- ponte motor comercial → interface sem efeitos colaterais;
 - precedência humana;
 - supressão de upsell;
-- idempotência de sessão e conclusão;
+- idempotência de criação, abertura e conclusão;
+- abandono idempotente;
+- recuperação de sessão expirada;
+- métricas de funil;
 - bloqueio de sessão com kill switch off;
 - contrato de cesta sem vazamento de preços/custo/estoque;
 - validação de quantidade e snapshot completo.
