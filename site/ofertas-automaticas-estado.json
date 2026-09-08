@@ -1,22 +1,8 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-08T03:31:54.104Z",
+  "ultima_execucao": "2026-09-08T04:31:18.433Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
-    {
-      "produto_key": "1775915390332",
-      "codigo": "636012W",
-      "nome": "Monange Hidratante Facial Hidra Antissinais com Ácido Hialurônico 80g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 22.9,
-      "preco_oferta": 20.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1775915390332-1788227033986-54dkw"
-    },
     {
       "produto_key": "1775922855196",
       "codigo": "978274J",
@@ -100,20 +86,6 @@
       "inicio": "2026-09-02",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1775922855202-1788323642822-i38zu"
-    },
-    {
-      "produto_key": "1775924628185",
-      "codigo": "155503S",
-      "nome": "Máquina de Acabamento Dragão sem Fio 100g",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.91,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1775924628185-1788555170803-1blco"
     },
     {
       "produto_key": "1775940331072",
@@ -522,6 +494,20 @@
       "historico_id": "oferta-1775968438856-1788838314104-yxgtq"
     },
     {
+      "produto_key": "1775968438858",
+      "codigo": "161010D",
+      "nome": "Novex Kit Shampoo e Condicionador Meus Cachinhos 300ml cada",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 21.9,
+      "preco_oferta": 20.37,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1775968438858-1788841878433-3ecev"
+    },
+    {
       "produto_key": "1775968438859",
       "codigo": "327874S",
       "nome": "Pomodori Molho La Pastina com Tomates em Cubos Pomadori 400g",
@@ -632,20 +618,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1775971741047-1788831421054-npytv"
-    },
-    {
-      "produto_key": "1775971741048",
-      "codigo": "612324W",
-      "nome": "Seda Kit Shampoo e Condicionador Ceramidas 300ml + 190ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1775971741048-1788506982373-q5eib"
     },
     {
       "produto_key": "1775971741051",
@@ -872,20 +844,6 @@
       "historico_id": "oferta-1776028741999-1788290643496-uc6v4"
     },
     {
-      "produto_key": "1776029030828",
-      "codigo": "561824U",
-      "nome": "Shampoo Lola Cosmetics Óleo de Argan 250ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 23.9,
-      "preco_oferta": 22.23,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776029030828-1788542642571-k84pa"
-    },
-    {
       "produto_key": "1776029277487",
       "codigo": "190859X",
       "nome": "Lola Cosmetics Condicionador Morte Súbita 250ml",
@@ -984,20 +942,6 @@
       "historico_id": "oferta-1776032632363-1788719276872-elv8i"
     },
     {
-      "produto_key": "1776032632365",
-      "codigo": "355421Z",
-      "nome": "Monange Hidratante Corporal Coty Antissinais Hialu 400ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.41,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776032632365-1788225132124-uby65"
-    },
-    {
       "produto_key": "1776032632366",
       "codigo": "488846M",
       "nome": "NIVEA Tônico Facial Controle do Brilho",
@@ -1010,20 +954,6 @@
       "inicio": "2026-09-01",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776032632366-1788315168978-z4msv"
-    },
-    {
-      "produto_key": "1776032632367",
-      "codigo": "210555C",
-      "nome": "Monange Água Micelar Facial com Ácido Hialurônico 200ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 17.91,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776032632367-1788219171545-1bdoq"
     },
     {
       "produto_key": "1776033355676",
@@ -1122,6 +1052,20 @@
       "inicio": "2026-09-01",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776044389123-1788266279937-9xqte"
+    },
+    {
+      "produto_key": "1776044389124",
+      "codigo": "172190G",
+      "nome": "NIVEA Sabonete Líquido Óleo de Banho 200ml",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 36.9,
+      "preco_oferta": 34.69,
+      "desconto_percentual": 5.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776044389124-1788841878433-bkawl"
     },
     {
       "produto_key": "1776045441745",
@@ -1474,34 +1418,6 @@
       "historico_id": "oferta-1776338123136-1788745247517-c9ju1"
     },
     {
-      "produto_key": "1776338123167",
-      "codigo": "767225K",
-      "nome": "Colgate Fio Dental Total Menta 50m",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.63,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123167-1788499663166-he1fm"
-    },
-    {
-      "produto_key": "1776338123177",
-      "codigo": "965620J",
-      "nome": "Shampoo TRESemmé Hidratação Profunda 650ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 34.9,
-      "preco_oferta": 32.46,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123177-1788564188601-4og60"
-    },
-    {
       "produto_key": "1776338123180",
       "codigo": "P0143",
       "nome": "Espátula para Inox Plástico 10cm cada",
@@ -1530,20 +1446,6 @@
       "historico_id": "oferta-1776338123221-1788784757699-x8a28"
     },
     {
-      "produto_key": "1776338123254",
-      "codigo": "97862086",
-      "nome": "Phebo Sabonete Toque de Lavanda 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123254-1788539335569-t8ku4"
-    },
-    {
       "produto_key": "1776338123268",
       "codigo": "P530",
       "nome": "Drops Halls Menta Lyptus 28g",
@@ -1570,20 +1472,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338123270-1788715325620-4jfec"
-    },
-    {
-      "produto_key": "1776338123278",
-      "codigo": "97897670",
-      "nome": "Phebo Sabonete Amazonian 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123278-1788514209756-lvpco"
     },
     {
       "produto_key": "1776338123294",
@@ -1626,20 +1514,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338123336-1788701064815-84swc"
-    },
-    {
-      "produto_key": "1776338123348",
-      "codigo": "594750I",
-      "nome": "Escova Dental Colgate Classic Clean Macia c/ 4 un",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 14.9,
-      "preco_oferta": 13.71,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123348-1788521284893-vb8dp"
     },
     {
       "produto_key": "1776338123512",
@@ -1796,20 +1670,6 @@
       "historico_id": "oferta-1776338123633-1788758917670-zfx1a"
     },
     {
-      "produto_key": "1776338123643",
-      "codigo": "P433",
-      "nome": "Macarrão Badotti Sêmola Espaguete 400g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.79,
-      "preco_oferta": 2.51,
-      "desconto_percentual": 10.04,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123643-1788506982373-nvj8t"
-    },
-    {
       "produto_key": "1776338123663",
       "codigo": "P374",
       "nome": "Tábua de Corte Plástico Cores Variadas 25X17Cm 1un",
@@ -1866,20 +1726,6 @@
       "historico_id": "oferta-1776338123772-1788240519097-9xzt6"
     },
     {
-      "produto_key": "1776338123773",
-      "codigo": "P329",
-      "nome": "Seda Shampoo Cachos Definidos Unidade",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123773-1788521284893-64v2j"
-    },
-    {
       "produto_key": "1776338123812",
       "codigo": "69555319",
       "nome": "Saco Forte Saco para Lixo 30 litros com 10 unidades",
@@ -1908,20 +1754,6 @@
       "historico_id": "oferta-1776338123831-1788831421054-ku7bu"
     },
     {
-      "produto_key": "1776338123834",
-      "codigo": "P0251",
-      "nome": "Pá de Lixo Guirado com Cabo Curto Plástico 1un",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.9,
-      "preco_oferta": 3.67,
-      "desconto_percentual": 5.9,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123834-1788528475446-c9qng"
-    },
-    {
       "produto_key": "1776338123850",
       "codigo": "C0158",
       "nome": "Brigitta Café Filtro 102 - 30 Folhas",
@@ -1934,20 +1766,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338123850-1788593178522-x9xjt"
-    },
-    {
-      "produto_key": "1776338123851",
-      "codigo": "702633X",
-      "nome": "OMO Lava-Roupas Líquido Ciclo Rápido Ação Cuidado 1,4L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 28.9,
-      "preco_oferta": 26.88,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338123851-1788525506412-z0tv7"
     },
     {
       "produto_key": "1776338123859",
@@ -2328,20 +2146,6 @@
       "historico_id": "oferta-1776338124227-1788549695620-pa7v6"
     },
     {
-      "produto_key": "1776338124263",
-      "codigo": "P332",
-      "nome": "Seda Shampoo Toque de 300ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338124263-1788539335569-mn70y"
-    },
-    {
       "produto_key": "1776338124270",
       "codigo": "880338S",
       "nome": "Colgate Creme Dental Sensitive Pro Alivio Imediato 90g",
@@ -2496,20 +2300,6 @@
       "historico_id": "oferta-1776338124533-1788603176110-l07fe"
     },
     {
-      "produto_key": "1776338124551",
-      "codigo": "P568",
-      "nome": "Prendedor de Roupa Varal de Plástico - Cores Variadas 18 Prendedores",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 12.9,
-      "preco_oferta": 12,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338124551-1788555170803-ev2s6"
-    },
-    {
       "produto_key": "1776338124553",
       "codigo": "696286E",
       "nome": "Cor&Ton Tintura 8.0 Louro Claro 1un",
@@ -2538,20 +2328,6 @@
       "historico_id": "oferta-1776338124594-1788784757699-pjzv6"
     },
     {
-      "produto_key": "1776338124615",
-      "codigo": "97961822",
-      "nome": "Phebo Sabonete Naturale 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338124615-1788525506412-yziut"
-    },
-    {
       "produto_key": "1776338124626",
       "codigo": "P382",
       "nome": "Caneca de Plástico Infantil com 480ml",
@@ -2566,20 +2342,6 @@
       "historico_id": "oferta-1776338124626-1788683476639-lzlcc"
     },
     {
-      "produto_key": "1776338124631",
-      "codigo": "73970090",
-      "nome": "Pano De Rosto Algodão 1 un - Cores Variadas 20X30Cm",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.5,
-      "preco_oferta": 2.35,
-      "desconto_percentual": 6,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338124631-1788535673072-2wurs"
-    },
-    {
       "produto_key": "1776338124645",
       "codigo": "P0266",
       "nome": "Rayovac Pilha Palito AAA 4 Unidades",
@@ -2592,20 +2354,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338124645-1788600346257-yarfe"
-    },
-    {
-      "produto_key": "1776338124679",
-      "codigo": "P0212",
-      "nome": "Polylar Limpa Alumínio Maça 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.9,
-      "preco_oferta": 3.67,
-      "desconto_percentual": 5.9,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338124679-1788557065575-lq44v"
     },
     {
       "produto_key": "1776338124687",
@@ -2944,20 +2692,6 @@
       "historico_id": "oferta-1776338125349-1788780419825-cg8lt"
     },
     {
-      "produto_key": "1776338125355",
-      "codigo": "P4845",
-      "nome": "Pinho Sol Desinfetante Original 1 Litro",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.89,
-      "desconto_percentual": 5.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338125355-1788555170803-tfxiv"
-    },
-    {
       "produto_key": "1776338125361",
       "codigo": "P0302",
       "nome": "Saco Pano Pratic Branco Alvejado 45x70 Unidade",
@@ -3278,20 +3012,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776338125987-1788791348259-80crf"
-    },
-    {
-      "produto_key": "1776338126013",
-      "codigo": "412307W",
-      "nome": "Salon Line Kit Shampoo e Condicionador Hidra Óleo de Coco 300ml cada",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126013-1788496311043-r1v1m"
     },
     {
       "produto_key": "1776338126026",
@@ -3616,20 +3336,6 @@
       "historico_id": "oferta-1776338126667-1788267171251-agyvu"
     },
     {
-      "produto_key": "1776338126668",
-      "codigo": "791971C",
-      "nome": "Escova Dental Escova de Dente Adulto Macia Swiscare Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.19,
-      "preco_oferta": 2.93,
-      "desconto_percentual": 8.15,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126668-1788525506412-xgpdz"
-    },
-    {
       "produto_key": "1776338126669",
       "codigo": "P0004",
       "nome": "Absorvente Intimus com Abas - 8 Unidades",
@@ -3700,20 +3406,6 @@
       "historico_id": "oferta-1776338126801-1788719276872-vmgym"
     },
     {
-      "produto_key": "1776338126807",
-      "codigo": "P0136",
-      "nome": "Escova de Banho Silicone Dispenser Color Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 8.9,
-      "preco_oferta": 8.19,
-      "desconto_percentual": 7.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126807-1788517680744-ppkt9"
-    },
-    {
       "produto_key": "1776338126825",
       "codigo": "P10CSSD",
       "nome": "Cor&Ton Tintura 3.0 Castanho Escuro 1un",
@@ -3754,20 +3446,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338126864-1788245022900-w4q5a"
-    },
-    {
-      "produto_key": "1776338126885",
-      "codigo": "P0126",
-      "nome": "Oeste Desinfetante Lavanda Unidade",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.5,
-      "preco_oferta": 6.11,
-      "desconto_percentual": 6,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126885-1788506982373-by71c"
     },
     {
       "produto_key": "1776338126887",
@@ -3812,20 +3490,6 @@
       "historico_id": "oferta-1776338126949-1788690282233-zpudb"
     },
     {
-      "produto_key": "1776338126956",
-      "codigo": "493275T",
-      "nome": "Monange Hidratante Firmador Q10 Vitamina C 400ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 22.9,
-      "preco_oferta": 20.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126956-1788233711618-5qq3o"
-    },
-    {
       "produto_key": "1776338126964",
       "codigo": "P426",
       "nome": "Doce Dia Açúcar Cristal 2kg",
@@ -3838,20 +3502,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338126964-1788603867446-pabkd"
-    },
-    {
-      "produto_key": "1776338126968",
-      "codigo": "521057V",
-      "nome": "Shampoo TRESemmé Blindagem Antiumidade 650ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 34.9,
-      "preco_oferta": 32.46,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338126968-1788557065575-0tbpf"
     },
     {
       "produto_key": "1776338126981",
@@ -3924,20 +3574,6 @@
       "historico_id": "oferta-1776338127006-1788603867446-7rdrq"
     },
     {
-      "produto_key": "1776338127021",
-      "codigo": "70027257",
-      "nome": "Reforçadão Saco para Lixo Reforçado 50 litros com 5 unidades",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 8.9,
-      "preco_oferta": 8.37,
-      "desconto_percentual": 5.96,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127021-1788572014533-3c6j3"
-    },
-    {
       "produto_key": "1776338127057",
       "codigo": "13775365",
       "nome": "Copo Americano 190ml",
@@ -3950,20 +3586,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338127057-1788698022343-6mi8g"
-    },
-    {
-      "produto_key": "1776338127060",
-      "codigo": "97720189",
-      "nome": "Phebo Sabonete Odor de Rosas 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127060-1788528475446-ewyi8"
     },
     {
       "produto_key": "1776338127081",
@@ -4022,18 +3644,18 @@
       "historico_id": "oferta-1776338127140-1788597030628-m15of"
     },
     {
-      "produto_key": "1776338127148",
-      "codigo": "70023105",
-      "nome": "Reforçadão Saco para Lixo Reforçado 50 litros com 10 unidades",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
+      "produto_key": "1776338127216",
+      "codigo": "336749T",
+      "nome": "Colgate Enxaguante Bucal Total 12 Gengiva Reforcada 500ml",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
       "origem": "campanha_automatica",
-      "preco_normal": 8.9,
-      "preco_oferta": 8.37,
-      "desconto_percentual": 5.96,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127148-1788560734827-bsvqy"
+      "preco_normal": 18.9,
+      "preco_oferta": 17.39,
+      "desconto_percentual": 7.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338127216-1788841878433-zmo12"
     },
     {
       "produto_key": "1776338127241",
@@ -4106,34 +3728,6 @@
       "historico_id": "oferta-1776338127278-1788722504775-eo9hn"
     },
     {
-      "produto_key": "1776338127282",
-      "codigo": "759551O",
-      "nome": "Colgate Enxaguante Bucal Total Carvao Ativado 500ml",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 18.9,
-      "preco_oferta": 17.39,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127282-1788496311043-u4rjy"
-    },
-    {
-      "produto_key": "1776338127301",
-      "codigo": "97621308",
-      "nome": "Phebo Sabonete Raiz do Oriente 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127301-1788535673072-um47c"
-    },
-    {
       "produto_key": "1776338127332",
       "codigo": "P0283",
       "nome": "Farnese Sabonete Framboesa e Baunilha 85g",
@@ -4160,20 +3754,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338127425-1788603176110-zk8zu"
-    },
-    {
-      "produto_key": "1776338127455",
-      "codigo": "652838A",
-      "nome": "Salon Line Kit Shampoo e Condicionador Hidra Restauração 300ml cada",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 26.9,
-      "preco_oferta": 25.02,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127455-1788499663166-xlxls"
     },
     {
       "produto_key": "1776338127460",
@@ -4218,34 +3798,6 @@
       "historico_id": "oferta-1776338127530-1788776960355-n88k0"
     },
     {
-      "produto_key": "1776338127549",
-      "codigo": "502681E",
-      "nome": "Palmolive Sabonete Karité e Vitamina 85g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.8,
-      "preco_oferta": 2.63,
-      "desconto_percentual": 6.07,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127549-1788499663166-hclz6"
-    },
-    {
-      "produto_key": "1776338127585",
-      "codigo": "P0125",
-      "nome": "Oeste Desinfetante Eucalipto Unidade",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.5,
-      "preco_oferta": 6.11,
-      "desconto_percentual": 6,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127585-1788504117625-zrobq"
-    },
-    {
       "produto_key": "1776338127605",
       "codigo": "P0288",
       "nome": "NIVEA Sabonete Hidr Erva-Doce 85g",
@@ -4258,20 +3810,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776338127605-1788795256802-jfwmj"
-    },
-    {
-      "produto_key": "1776338127627",
-      "codigo": "158525H",
-      "nome": "OMO Lava-Roupas Líquido Ciclo Rápido Ação Cuidado 1,4L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 28.9,
-      "preco_oferta": 26.88,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127627-1788528475446-qf1zm"
     },
     {
       "produto_key": "1776338127709",
@@ -4288,20 +3826,6 @@
       "historico_id": "oferta-1776338127709-1788801927194-cfb64"
     },
     {
-      "produto_key": "1776338127753",
-      "codigo": "97781860",
-      "nome": "Phebo Sabonete Lima da Pérsia 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127753-1788521284893-6vdjt"
-    },
-    {
       "produto_key": "1776338127758",
       "codigo": "P484",
       "nome": "Vinagre de Alcool Neval 750ml",
@@ -4314,34 +3838,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338127758-1788628912156-97zji"
-    },
-    {
-      "produto_key": "1776338127769",
-      "codigo": "P327",
-      "nome": "Seda Shampoo Liso Perfeito Unidade",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127769-1788532039964-bh73x"
-    },
-    {
-      "produto_key": "1776338127787",
-      "codigo": "494079I",
-      "nome": "Monange Hidratante Firmador Q10 Vitamina 400ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.41,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127787-1788230278225-944p9"
     },
     {
       "produto_key": "1776338127845",
@@ -4428,20 +3924,6 @@
       "historico_id": "oferta-1776338127960-1788597030628-vb7ul"
     },
     {
-      "produto_key": "1776338127974",
-      "codigo": "P0022",
-      "nome": "Aparelho de Barbear Descartável Gillette Prestobarba Cabeça Móvel Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.9,
-      "preco_oferta": 3.59,
-      "desconto_percentual": 7.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338127974-1788546605945-12b4o"
-    },
-    {
       "produto_key": "1776338127988",
       "codigo": "P404",
       "nome": "Petisqueiras Plástica Cores Diversas 25X6Cm 1un",
@@ -4498,20 +3980,6 @@
       "historico_id": "oferta-1776338128020-1788722504775-n8bh5"
     },
     {
-      "produto_key": "1776338128024",
-      "codigo": "P395",
-      "nome": "Rodo de Pia Cabo Plástico Unidade",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.8,
-      "preco_oferta": 6.39,
-      "desconto_percentual": 6.03,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128024-1788579035697-xivma"
-    },
-    {
       "produto_key": "1776338128025",
       "codigo": "P0252",
       "nome": "Paraná Palito Dental com Unidade",
@@ -4524,20 +3992,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338128025-1788593178522-i7uk8"
-    },
-    {
-      "produto_key": "1776338128044",
-      "codigo": "P0021",
-      "nome": "Gillette Aparelho de Barbear Prestobarba Cabeça Fixa Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.9,
-      "preco_oferta": 3.59,
-      "desconto_percentual": 7.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128044-1788542642571-ocro6"
     },
     {
       "produto_key": "1776338128103",
@@ -4624,20 +4078,6 @@
       "historico_id": "oferta-1776338128158-1788590266223-4mmp6"
     },
     {
-      "produto_key": "1776338128163",
-      "codigo": "P0109",
-      "nome": "Curativos Salvelox Trad Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.9,
-      "preco_oferta": 5.43,
-      "desconto_percentual": 7.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128163-1788506982373-7hez3"
-    },
-    {
       "produto_key": "1776338128174",
       "codigo": "P0121",
       "nome": "Descascador de Legumes Plástico Branco 12,5cm",
@@ -4666,34 +4106,6 @@
       "historico_id": "oferta-1776338128196-1788603867446-930rk"
     },
     {
-      "produto_key": "1776338128222",
-      "codigo": "72392694",
-      "nome": "Pedra Sanitária Desodorizante Genial 1un",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.49,
-      "preco_oferta": 2.34,
-      "desconto_percentual": 6.02,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128222-1788553618653-m4ntw"
-    },
-    {
-      "produto_key": "1776338128234",
-      "codigo": "501657Y",
-      "nome": "Palmolive Sabonete Sensação Purificante 85g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.8,
-      "preco_oferta": 2.63,
-      "desconto_percentual": 6.07,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128234-1788511173037-qpzbi"
-    },
-    {
       "produto_key": "1776338128235",
       "codigo": "P0141",
       "nome": "Escova Sanitária sem base Unidade",
@@ -4720,20 +4132,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338128269-1788686833409-45sv7"
-    },
-    {
-      "produto_key": "1776338128321",
-      "codigo": "522665T",
-      "nome": "Palmolive Sabonete Nutrição Cremosa Leite e Petalas de Rosa 85g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.8,
-      "preco_oferta": 2.63,
-      "desconto_percentual": 6.07,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128321-1788504117625-r6q8w"
     },
     {
       "produto_key": "1776338128371",
@@ -4946,20 +4344,6 @@
       "historico_id": "oferta-1776338128673-1788331601786-qdb8p"
     },
     {
-      "produto_key": "1776338128681",
-      "codigo": "P331",
-      "nome": "Seda Shampoo Luminoso UV 300ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128681-1788535673072-xsmrf"
-    },
-    {
       "produto_key": "1776338128714",
       "codigo": "P0312",
       "nome": "Barla Talco Pés 80g",
@@ -5016,6 +4400,20 @@
       "historico_id": "oferta-1776338128799-1788719276872-n61l6"
     },
     {
+      "produto_key": "1776338128813",
+      "codigo": "287733R",
+      "nome": "Elseve Tratamento Capilar Glycolic Gloss Kit 5 Produtos",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 129.9,
+      "preco_oferta": 116.91,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-15T23:59:59-04:00",
+      "historico_id": "oferta-1776338128813-1788841878433-dojzr"
+    },
+    {
       "produto_key": "1776338128840",
       "codigo": "326805S",
       "nome": "Creme para Pentear Skala Uva 1kg",
@@ -5042,48 +4440,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338128891-1788245022900-5x9nz"
-    },
-    {
-      "produto_key": "1776338128937",
-      "codigo": "863723F",
-      "nome": "Shampoo Palmolive Naturals Neutro 650ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 18.9,
-      "preco_oferta": 17.58,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128937-1788553618653-2wm8h"
-    },
-    {
-      "produto_key": "1776338128983",
-      "codigo": "654043O",
-      "nome": "Máscara Capilar Inoar Argan Oil Hidratação 500g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 38.9,
-      "preco_oferta": 35.01,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128983-1788182969092-v181z"
-    },
-    {
-      "produto_key": "1776338128995",
-      "codigo": "98009020",
-      "nome": "Phebo Sabonete Frescor da Manha 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338128995-1788517680744-5go07"
     },
     {
       "produto_key": "1776338129010",
@@ -5154,6 +4510,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338129032-1788693769749-6a5cd"
+    },
+    {
+      "produto_key": "1776338129033",
+      "codigo": "P0295",
+      "nome": "Minuano Lava Roupa Sabão em Pó Azul Econ Sh 400g",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 5.49,
+      "preco_oferta": 5.11,
+      "desconto_percentual": 6.92,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338129033-1788841878433-foe4s"
     },
     {
       "produto_key": "1776338129122",
@@ -5268,20 +4638,6 @@
       "historico_id": "oferta-1776338129208-1788733469901-7idkf"
     },
     {
-      "produto_key": "1776338129231",
-      "codigo": "C0089",
-      "nome": "Leão Leo Ch Mate 100g",
-      "categoria": "CAFÉ DA MANHÃ",
-      "regra_id": "regra-1785205019989",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.99,
-      "preco_oferta": 5.65,
-      "desconto_percentual": 5.68,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129231-1788504117625-l0jd4"
-    },
-    {
       "produto_key": "1776338129256",
       "codigo": "243006E",
       "nome": "Skala Creme para Pentear Babosa 1kg",
@@ -5308,20 +4664,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338129300-1788693769749-qfeoy"
-    },
-    {
-      "produto_key": "1776338129356",
-      "codigo": "P377",
-      "nome": "Prendedor de Roupa Varal de Plástico Oval Color 18 Prendedores",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 12.9,
-      "preco_oferta": 12,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129356-1788557065575-9fe9e"
     },
     {
       "produto_key": "1776338129363",
@@ -5406,20 +4748,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338129521-1788600346257-2dlwj"
-    },
-    {
-      "produto_key": "1776338129538",
-      "codigo": "476585O",
-      "nome": "Shampoo Neutrox Clássico 500ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 18.9,
-      "preco_oferta": 17.58,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129538-1788549695620-mqtjv"
     },
     {
       "produto_key": "1776338129592",
@@ -5604,34 +4932,6 @@
       "historico_id": "oferta-1776338129874-1788676688128-5bry3"
     },
     {
-      "produto_key": "1776338129877",
-      "codigo": "632748X",
-      "nome": "OMO Lava-Roupas Líquido Ciclo Rápido Ação Cuidado 1,4L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 29.9,
-      "preco_oferta": 27.81,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129877-1788532039964-t5cb5"
-    },
-    {
-      "produto_key": "1776338129905",
-      "codigo": "52fwe",
-      "nome": "SURF Lava Roupa Sabão Líquido Coco 900ml",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 14.9,
-      "preco_oferta": 13.86,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129905-1788564188601-kzofb"
-    },
-    {
       "produto_key": "1776338129934",
       "codigo": "870699N",
       "nome": "Whiskas Molho Ração Úmida Frango ao para Gatos Adultos 85g",
@@ -5644,20 +4944,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776338129934-1788600346257-7lvja"
-    },
-    {
-      "produto_key": "1776338129936",
-      "codigo": "P521",
-      "nome": "Fio Dental Hillo 75m + 100m",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 12.9,
-      "preco_oferta": 11.87,
-      "desconto_percentual": 7.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338129936-1788535673072-yubpl"
     },
     {
       "produto_key": "1776338130017",
@@ -5786,20 +5072,6 @@
       "historico_id": "oferta-1776338130283-1788715325620-az4z6"
     },
     {
-      "produto_key": "1776338130291",
-      "codigo": "72375371",
-      "nome": "Pano de Prato Ecológico Alta Absorção Cor Cru 70X45Cm",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.9,
-      "preco_oferta": 5.55,
-      "desconto_percentual": 5.93,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130291-1788532039964-ldjl3"
-    },
-    {
       "produto_key": "1776338130292",
       "codigo": "P0120",
       "nome": "Descanso de Panela Bambu Quadrado Color 13X13Cm",
@@ -5812,20 +5084,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338130292-1788708235541-cub4v"
-    },
-    {
-      "produto_key": "1776338130297",
-      "codigo": "P0253",
-      "nome": "Pano Microfibra Copalimpa - Cores Diversas 35X40 Cm",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.8,
-      "preco_oferta": 4.51,
-      "desconto_percentual": 6.04,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130297-1788539335569-mu2j2"
     },
     {
       "produto_key": "1776338130348",
@@ -5898,20 +5156,6 @@
       "historico_id": "oferta-1776338130370-1788614619980-dilir"
     },
     {
-      "produto_key": "1776338130382",
-      "codigo": "356673J",
-      "nome": "NIVEA Sabonete Manteiga de Karité & Lima da Persia 80g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.9,
-      "preco_oferta": 4.61,
-      "desconto_percentual": 5.92,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130382-1788496311043-xbu5c"
-    },
-    {
       "produto_key": "1776338130409",
       "codigo": "C0067",
       "nome": "Café Caboclo Vacuo 250g",
@@ -5980,20 +5224,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776338130506-1788787789049-rytak"
-    },
-    {
-      "produto_key": "1776338130512",
-      "codigo": "515718V",
-      "nome": "Seda Shampoo Hidratao Diaria Unidade",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130512-1788528475446-oukqg"
     },
     {
       "produto_key": "1776338130542",
@@ -6136,20 +5366,6 @@
       "historico_id": "oferta-1776338130648-1788758917670-vww91"
     },
     {
-      "produto_key": "1776338130687",
-      "codigo": "P447",
-      "nome": "Remmus Desinfetante Amazon Verde Unidade",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.99,
-      "preco_oferta": 5.63,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130687-1788575646817-5fu49"
-    },
-    {
       "produto_key": "1776338130704",
       "codigo": "P387",
       "nome": "Lacre para Embalagem Coração Color 5 Peças",
@@ -6162,34 +5378,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338130704-1788733469901-0x5tg"
-    },
-    {
-      "produto_key": "1776338130721",
-      "codigo": "P0137",
-      "nome": "Escova Dental Escova de Dente Kess Basic Macia Unidade",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.19,
-      "preco_oferta": 2.93,
-      "desconto_percentual": 8.15,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130721-1788528475446-8fzqt"
-    },
-    {
-      "produto_key": "1776338130740",
-      "codigo": "361862Y",
-      "nome": "Shampoo TRESemmé Reconstrução e Força 650ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 34.9,
-      "preco_oferta": 32.46,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338130740-1788569941581-0olzx"
     },
     {
       "produto_key": "1776338130782",
@@ -6542,20 +5730,6 @@
       "historico_id": "oferta-1776338131215-1788679611513-ic08l"
     },
     {
-      "produto_key": "1776338131226",
-      "codigo": "930618H",
-      "nome": "Shampoo Neutrox Clássico 300ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 14.9,
-      "preco_oferta": 13.86,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338131226-1788546605945-uf1dz"
-    },
-    {
       "produto_key": "1776338131248",
       "codigo": "P0227",
       "nome": "Skala Loo Proteinas de Leite 400ml",
@@ -6682,20 +5856,6 @@
       "historico_id": "oferta-1776338131507-1788585971620-3yqdq"
     },
     {
-      "produto_key": "1776338131527",
-      "codigo": "P189N",
-      "nome": "Phebo Sabonete Patchouly 90g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.99,
-      "preco_oferta": 4.69,
-      "desconto_percentual": 6.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338131527-1788532039964-hx2aj"
-    },
-    {
       "produto_key": "1776338131534",
       "codigo": "90157741",
       "nome": "Protex Sabonete Nutri Protect - Glicerina + Vitamina e 85g",
@@ -6750,20 +5910,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338131599-1788618236111-ikj59"
-    },
-    {
-      "produto_key": "1776338131629",
-      "codigo": "455881A",
-      "nome": "Shampoo TRESemmé Detox Capilar 650ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 34.9,
-      "preco_oferta": 32.46,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338131629-1788560734827-vp1s7"
     },
     {
       "produto_key": "1776338131645",
@@ -7032,20 +6178,6 @@
       "historico_id": "oferta-1776338132001-1788240519097-8ljxg"
     },
     {
-      "produto_key": "1776338132015",
-      "codigo": "P0105",
-      "nome": "Sorriso Creme Dental Dental Tripla 70g",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 3.29,
-      "preco_oferta": 3.03,
-      "desconto_percentual": 7.9,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132015-1788557065575-yzch7"
-    },
-    {
       "produto_key": "1776338132020",
       "codigo": "644982O",
       "nome": "Kolene Shampoo Original 300ml",
@@ -7100,20 +6232,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338132029-1788736989903-t6tne"
-    },
-    {
-      "produto_key": "1776338132102",
-      "codigo": "P538967",
-      "nome": "Gradavel Purificcador de Ar Talco 400ml",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 13.9,
-      "preco_oferta": 12.79,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132102-1788549695620-6ifp5"
     },
     {
       "produto_key": "1776338132137",
@@ -7256,20 +6374,6 @@
       "historico_id": "oferta-1776338132267-1788708235541-fa1d9"
     },
     {
-      "produto_key": "1776338132268",
-      "codigo": "P1N45",
-      "nome": "Creme Dental Colgate Total 12 Anti-Tártaro 180g",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 13.7,
-      "preco_oferta": 12.6,
-      "desconto_percentual": 8.03,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132268-1788504117625-ufgjc"
-    },
-    {
       "produto_key": "1776338132302",
       "codigo": "340495E",
       "nome": "Cor&Ton Tintura 8.1 Louro Cinza Claro 1un",
@@ -7282,20 +6386,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-14T23:59:59-04:00",
       "historico_id": "oferta-1776338132302-1788773798895-shk5s"
-    },
-    {
-      "produto_key": "1776338132326",
-      "codigo": "300202T",
-      "nome": "Seda Shampoo Ceramidas 325ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.72,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132326-1788525506412-m41sb"
     },
     {
       "produto_key": "1776338132336",
@@ -7382,20 +6472,6 @@
       "historico_id": "oferta-1776338132464-1788686833409-zsaxs"
     },
     {
-      "produto_key": "1776338132465",
-      "codigo": "83719006",
-      "nome": "Oeste Sabão Pó - Mãxima Performance 800g",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.99,
-      "preco_oferta": 5.57,
-      "desconto_percentual": 7.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132465-1788511173037-ga4ej"
-    },
-    {
       "produto_key": "1776338132472",
       "codigo": "P0280",
       "nome": "Albany Sabonete Rosa Aveludada 80g",
@@ -7478,20 +6554,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338132530-1788621903432-ys55p"
-    },
-    {
-      "produto_key": "1776338132554",
-      "codigo": "83714689",
-      "nome": "Oeste Sabão Pó - Lavanda 800g",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.99,
-      "preco_oferta": 5.57,
-      "desconto_percentual": 7.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776338132554-1788506982373-x0vie"
     },
     {
       "produto_key": "1776338132584",
@@ -7674,34 +6736,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1776433444996-1788747163548-imcur"
-    },
-    {
-      "produto_key": "1776434293041",
-      "codigo": "34293041",
-      "nome": "Enxaguante Bucal Carmed Fini Minhocas 250ml",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 18.9,
-      "preco_oferta": 17.39,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776434293041-1788514209756-uazii"
-    },
-    {
-      "produto_key": "1776434295471",
-      "codigo": "34295471",
-      "nome": "Enxaguante Bucal Carmed Fini Beijos 250ml",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 18.9,
-      "preco_oferta": 17.39,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776434295471-1788511173037-dluc5"
     },
     {
       "produto_key": "1776434858132",
@@ -8068,20 +7102,6 @@
       "historico_id": "oferta-1776542768880-1788304999450-p8kkc"
     },
     {
-      "produto_key": "1776652241062",
-      "codigo": "948795N",
-      "nome": "OMO Sabão em Pó Lavagem Perfeita 2,2kg",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 36.9,
-      "preco_oferta": 34.32,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776652241062-1788542642571-p3mi9"
-    },
-    {
       "produto_key": "1776652426023",
       "codigo": "569747O",
       "nome": "OMO Lava-Roupas Líquido Lavagem Perfeita 1,8L",
@@ -8094,48 +7114,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776652426023-1788380906722-crwpt"
-    },
-    {
-      "produto_key": "1776652791338",
-      "codigo": "698545D",
-      "nome": "OMO Sabão em Pó Sanitiza & Higieniza 2,2kg",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 36.9,
-      "preco_oferta": 34.32,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776652791338-1788546605945-3jcg9"
-    },
-    {
-      "produto_key": "1776653370379",
-      "codigo": "263771Z",
-      "nome": "OMO Lava-Roupas em Pó Puro Cuidado 2,2kg",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 36.9,
-      "preco_oferta": 34.32,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776653370379-1788521284893-zyufm"
-    },
-    {
-      "produto_key": "1776690819394",
-      "codigo": "7897042020140",
-      "nome": "Skala Kit Shampoo e Condicionador 12 em 1 - 325ml + 200ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 18.51,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776690819394-1788572014533-boyrs"
     },
     {
       "produto_key": "1776691211320",
@@ -8164,34 +7142,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776691749775-1788747163548-3pt9u"
-    },
-    {
-      "produto_key": "1776692298364",
-      "codigo": "7897042020331",
-      "nome": "Skala Kit Shampoo e Condicionador Melancia - 325ml + 200ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 18.51,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776692298364-1788575646817-42co2"
-    },
-    {
-      "produto_key": "1776692595524",
-      "codigo": "7897042020720",
-      "nome": "Skala Kit Shampoo e Condicionador Cereja - 325ml + 200ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 18.51,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776692595524-1788579035697-a4mq7"
     },
     {
       "produto_key": "1776692808795",
@@ -8248,48 +7198,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776693836655-1788819883600-58adj"
-    },
-    {
-      "produto_key": "1776695585113",
-      "codigo": "7892840822477",
-      "nome": "Salgadinho Elma Chips Torcida Churrasco 35g",
-      "categoria": "SALGADINHOS E PETISCOS",
-      "regra_id": "regra-1785205174617",
-      "origem": "campanha_automatica",
-      "preco_normal": 1.9,
-      "preco_oferta": 1.79,
-      "desconto_percentual": 5.79,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776695585113-1788499663166-eh8b7"
-    },
-    {
-      "produto_key": "1776696075983",
-      "codigo": "7892840822491",
-      "nome": "Salgadinho Elma Chips Torcida Pão de Alho 35g",
-      "categoria": "SALGADINHOS E PETISCOS",
-      "regra_id": "regra-1785205174617",
-      "origem": "campanha_automatica",
-      "preco_normal": 1.9,
-      "preco_oferta": 1.79,
-      "desconto_percentual": 5.79,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776696075983-1788504117625-dlzdy"
-    },
-    {
-      "produto_key": "1776696259822",
-      "codigo": "7892840822521",
-      "nome": "Salgadinho Elma Chips Torcida Queijo 35g",
-      "categoria": "SALGADINHOS E PETISCOS",
-      "regra_id": "regra-1785205174617",
-      "origem": "campanha_automatica",
-      "preco_normal": 1.9,
-      "preco_oferta": 1.79,
-      "desconto_percentual": 5.79,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776696259822-1788506982373-9o6m6"
     },
     {
       "produto_key": "1776697036291",
@@ -8458,34 +7366,6 @@
       "inicio": "2026-09-04",
       "fim": "2026-09-11T23:59:59-04:00",
       "historico_id": "oferta-1776710347231-1787495248101-erjmp"
-    },
-    {
-      "produto_key": "1776714117897",
-      "codigo": "14117897",
-      "nome": "Máscara Capilar Lola Cosmetics Densidade 230g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 27.9,
-      "preco_oferta": 25.11,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776714117897-1788186632464-a65vx"
-    },
-    {
-      "produto_key": "1776714516745",
-      "codigo": "14516745",
-      "nome": "Lola Cosmetics Óleo Reparador Danos Vorazes 50ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 21.9,
-      "preco_oferta": 19.71,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1776714516745-1788161829125-5u7o7"
     },
     {
       "produto_key": "1776715398817",
@@ -8780,20 +7660,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1777399420204-1788722504775-b3w1d"
-    },
-    {
-      "produto_key": "1777411704715",
-      "codigo": "P-BFI8",
-      "nome": "Lola Cosmetics Transicao Creme Texturizador 500g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 29.9,
-      "preco_oferta": 26.91,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1777411704715-1788172123862-0qoqa"
     },
     {
       "produto_key": "1777420035942",
@@ -9174,20 +8040,6 @@
       "historico_id": "oferta-1777423058306-1788485645884-tnt23"
     },
     {
-      "produto_key": "1777552354075",
-      "codigo": "P-07YV",
-      "nome": "Lola Cosmetics Plot Twist Nut Butter Cream 480g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 31.9,
-      "preco_oferta": 28.71,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1777552354075-1788168929272-1jlyi"
-    },
-    {
       "produto_key": "1777553818464",
       "codigo": "p009s3",
       "nome": "Lola Cosmetics Shampoo Meu Cacho Minha Vida 500ml",
@@ -9200,20 +8052,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1777553818464-1788812877122-kzat8"
-    },
-    {
-      "produto_key": "1777553998950",
-      "codigo": "P-8831",
-      "nome": "Lola Cosmetics Óleo Pinga Acai e Pracaxi 50ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.41,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1777553998950-1788154082286-chgvc"
     },
     {
       "produto_key": "1777554705881",
@@ -9298,20 +8136,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1778004013614-1788763992616-hjlyy"
-    },
-    {
-      "produto_key": "1778004312037",
-      "codigo": "04312037",
-      "nome": "Urbano Macarrão Parafuso Zero Glúten 500g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.9,
-      "preco_oferta": 6.21,
-      "desconto_percentual": 10,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778004312037-1788499663166-8nlez"
     },
     {
       "produto_key": "1778004569460",
@@ -9538,34 +8362,6 @@
       "historico_id": "oferta-1778008073576-1788745247517-7vvfe"
     },
     {
-      "produto_key": "1778009542716",
-      "codigo": "P-ZQ8W",
-      "nome": "Made In Melu Lip Oil Nectar do Paraíso Gloss Labial Unidade",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.41,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778009542716-1788175571448-fa77m"
-    },
-    {
-      "produto_key": "1778009762162",
-      "codigo": "09762162",
-      "nome": "Melu Lip Oil Nectar do Paraíso Gloss Labial Unidade",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 22.9,
-      "preco_oferta": 20.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778009762162-1788218666701-u6wth"
-    },
-    {
       "produto_key": "1778010792396",
       "codigo": "P-38IY",
       "nome": "BETA Hidratante Labial com Cor - Vermelho Rubi 9,5g cada",
@@ -9592,20 +8388,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-14T23:59:59-04:00",
       "historico_id": "oferta-1778011964904-1788838314104-gvpj3"
-    },
-    {
-      "produto_key": "17785082675421077830",
-      "codigo": "559778V",
-      "nome": "Lola Cosmetics Óleo Bemdita Ghee de Mamao 50ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 29.9,
-      "preco_oferta": 26.91,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17785082675421077830-1788150813403-mpy0y"
     },
     {
       "produto_key": "17785082675421089032",
@@ -9636,60 +8418,18 @@
       "historico_id": "oferta-17785082675421109983-1788787789049-rejxr"
     },
     {
-      "produto_key": "1778508267542156709",
-      "codigo": "P-O6CY",
-      "nome": "Max Love Melu Lip Oil Nectar do Paraíso Gloss Labial 5ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
+      "produto_key": "177850826754256242",
+      "codigo": "P-F0QU",
+      "nome": "Harpic Desinfetante e Desodorizador Sanitário 10x - 500ml",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
       "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.31,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778508267542156709-1788201158474-rwcyc"
-    },
-    {
-      "produto_key": "1778508267542171677",
-      "codigo": "P-QYRZ",
-      "nome": "Max Love Melu Lip Oil Nectar do Paraíso Gloss Labial 5ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.31,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778508267542171677-1788215177903-5bymd"
-    },
-    {
-      "produto_key": "177850826754252766",
-      "codigo": "P-NP6Y",
-      "nome": "Lola Cosmetics Óleo Pinga Patua e Moringa Unidade",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 23.9,
-      "preco_oferta": 21.51,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177850826754252766-1788159090670-6dmj2"
-    },
-    {
-      "produto_key": "1778508267542541057",
-      "codigo": "P-WV1U",
-      "nome": "Lola Cosmetics Rapunzel Milk Leave-in Spray 250ml",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 27.9,
-      "preco_oferta": 25.11,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1778508267542541057-1788171181314-jz8of"
+      "preco_normal": 14.9,
+      "preco_oferta": 14.01,
+      "desconto_percentual": 5.97,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-177850826754256242-1788841878433-faxu4"
     },
     {
       "produto_key": "177850826754266287",
@@ -9718,20 +8458,6 @@
       "inicio": "2026-09-01",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-177850826754294160-1788310898844-twvpq"
-    },
-    {
-      "produto_key": "177850826754295841",
-      "codigo": "P-A698",
-      "nome": "Lola Cosmetics Plot Twist Buriti Pudding 480g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 31.9,
-      "preco_oferta": 28.71,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177850826754295841-1788165479573-41k83"
     },
     {
       "produto_key": "177850826754299996",
@@ -9916,20 +8642,6 @@
       "historico_id": "oferta-177850826754575748-1788766792079-ycwkb"
     },
     {
-      "produto_key": "17785082675458368508",
-      "codigo": "416578X",
-      "nome": "OMO Lava Roupa Sabão Líquido Ultra Power 1,8L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 32.9,
-      "preco_oferta": 30.6,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17785082675458368508-1788517680744-dn5f0"
-    },
-    {
       "produto_key": "17785082675458513925",
       "codigo": "P0209",
       "nome": "Piquitucho Lenço Umedecido 60 lenços",
@@ -10000,20 +8712,6 @@
       "historico_id": "oferta-17785082675459542414-1788784757699-4r2mf"
     },
     {
-      "produto_key": "17785082675459622138",
-      "codigo": "60686086",
-      "nome": "Prendedor de Cabelo Plastico Preto",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.5,
-      "preco_oferta": 2.32,
-      "desconto_percentual": 7.2,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17785082675459622138-1788553618653-aga1t"
-    },
-    {
       "produto_key": "17785082675459642019",
       "codigo": "63312035",
       "nome": "Presilha Cobra Bronze Unidade",
@@ -10056,20 +8754,6 @@
       "historico_id": "oferta-17785082675459722408-1788593178522-tw4xa"
     },
     {
-      "produto_key": "177851005548097225",
-      "codigo": "0554800381",
-      "nome": "OMO Lava Roupa Sabão em Pó Lavanda 800g",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.79,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177851005548097225-1788514209756-u1jmt"
-    },
-    {
       "produto_key": "177878946107515578",
       "codigo": "4610750104",
       "nome": "Brilhante Sabão em Pó - Perfume e Cuidado - Lava Roupas 1,6kg",
@@ -10098,34 +8782,6 @@
       "historico_id": "oferta-177878989822677097-1788736989903-jbio4"
     },
     {
-      "produto_key": "177879002588245853",
-      "codigo": "0258820562",
-      "nome": "OMO Lava-Roupas Líquido Lavagem Perfeita 3L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 45.9,
-      "preco_oferta": 42.69,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177879002588245853-1788535673072-gvphw"
-    },
-    {
-      "produto_key": "177879018497725148",
-      "codigo": "1849770972",
-      "nome": "OMO Lava-Roupas Líquido Puro Cuidado 3L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 45.9,
-      "preco_oferta": 42.69,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177879018497725148-1788539335569-nn31q"
-    },
-    {
       "produto_key": "177884333190222700",
       "codigo": "3319020659",
       "nome": "Downy Amaciante Concentrado Vero Tropical 3L",
@@ -10152,48 +8808,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-177884345901395057-1788798541441-gtjrm"
-    },
-    {
-      "produto_key": "177884423879005731",
-      "codigo": "P-ZASL",
-      "nome": "Máscara de Tratamento TRESemmé Detox Capilar 400g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 27.9,
-      "preco_oferta": 25.11,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177884423879005731-1788193734032-wg84n"
-    },
-    {
-      "produto_key": "177884423879015570",
-      "codigo": "P-T14H",
-      "nome": "Máscara de Tratamento TRESemmé Pro-Hidratação Ativa 400g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 27.9,
-      "preco_oferta": 25.11,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177884423879015570-1788197063086-bp9u5"
-    },
-    {
-      "produto_key": "177884423879136830",
-      "codigo": "P-ON1M",
-      "nome": "Máscara de Tratamento TRESemmé Brilho Lamelar 400g",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 27.9,
-      "preco_oferta": 25.11,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177884423879136830-1788190098013-1d7oa"
     },
     {
       "produto_key": "177884514938964892",
@@ -10406,20 +9020,6 @@
       "historico_id": "oferta-177887322453169723-1788819883600-wxqo8"
     },
     {
-      "produto_key": "177887332885863376",
-      "codigo": "3288580334",
-      "nome": "VAL Pimenta Geleia de Vermelha 260g",
-      "categoria": "CAFÉ DA MANHÃ",
-      "regra_id": "regra-1785205019989",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 18.79,
-      "desconto_percentual": 5.58,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177887332885863376-1788499663166-nijop"
-    },
-    {
       "produto_key": "177887541930591329",
       "codigo": "4193050354",
       "nome": "Dove Kit Shampoo e Condicionador 350ml + 175ml",
@@ -10488,48 +9088,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-177887842676379918-1788780419825-o2djf"
-    },
-    {
-      "produto_key": "177887947261482934",
-      "codigo": "4726140601",
-      "nome": "Pato Limpeza Profunda Gel Marine 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.95,
-      "desconto_percentual": 5.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177887947261482934-1788546605945-gd9q8"
-    },
-    {
-      "produto_key": "177887962991723666",
-      "codigo": "6299170161",
-      "nome": "Pato Limpeza Profunda Gel Lavanda 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.95,
-      "desconto_percentual": 5.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177887962991723666-1788542642571-xsir7"
-    },
-    {
-      "produto_key": "177887966550122879",
-      "codigo": "6655010592",
-      "nome": "Pato Limpeza Profunda Gel Pinho 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.95,
-      "desconto_percentual": 5.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177887966550122879-1788549695620-ws19y"
     },
     {
       "produto_key": "177887980126862634",
@@ -10756,20 +9314,6 @@
       "historico_id": "oferta-177930302203806717-1788704656077-i4kcg"
     },
     {
-      "produto_key": "177930302203826591",
-      "codigo": "P-IRMN",
-      "nome": "Johnson’s Fio Dental Reach Essencial Menta 100m",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 15.9,
-      "preco_oferta": 14.63,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177930302203826591-1788553618653-v85jc"
-    },
-    {
       "produto_key": "177930334888402225",
       "codigo": "P-4KDT",
       "nome": "Desodorante NIVEA Antitranspirante Roll On Dry Comfort 50ml",
@@ -10922,62 +9466,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-177938614516773996-1788283493261-4wqki"
-    },
-    {
-      "produto_key": "177945500250563384",
-      "codigo": "0025050325",
-      "nome": "Oeste Detergente Lava Loua - Limão 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.69,
-      "preco_oferta": 2.53,
-      "desconto_percentual": 5.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177945500250563384-1788511173037-92x0q"
-    },
-    {
-      "produto_key": "177945508335393474",
-      "codigo": "0833530162",
-      "nome": "Oeste Detergente Lava Louça - Maça 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.69,
-      "preco_oferta": 2.53,
-      "desconto_percentual": 5.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177945508335393474-1788521284893-bgum5"
-    },
-    {
-      "produto_key": "177945514639228712",
-      "codigo": "1463920331",
-      "nome": "Oeste Detergente Lava Louça - Coco 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.69,
-      "preco_oferta": 2.53,
-      "desconto_percentual": 5.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177945514639228712-1788517680744-w73nj"
-    },
-    {
-      "produto_key": "177945517054489505",
-      "codigo": "1705440266",
-      "nome": "Oeste Detergente Lava Louça - Marine 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.69,
-      "preco_oferta": 2.53,
-      "desconto_percentual": 5.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177945517054489505-1788525506412-o2v1v"
     },
     {
       "produto_key": "177945533732768449",
@@ -11218,20 +9706,6 @@
       "historico_id": "oferta-1779474694690162247-1788729763200-r0jje"
     },
     {
-      "produto_key": "177947469469093135",
-      "codigo": "P-D5DF",
-      "nome": "Minuano Sabão em Pó Sabão Pó Roxo Sh 400g",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 5.29,
-      "preco_oferta": 4.92,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177947469469093135-1788499663166-b5937"
-    },
-    {
       "produto_key": "1779474694691283419",
       "codigo": "P-03YS",
       "nome": "FOFO Amac Conc Azul Tudão 1,5 LITRO",
@@ -11260,20 +9734,6 @@
       "historico_id": "oferta-177955023802584435-1788377083804-jz0v4"
     },
     {
-      "produto_key": "177955035608227885",
-      "codigo": "3560820971",
-      "nome": "Monbijou Amaciante Classico 1,7 litros",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 9.9,
-      "preco_oferta": 9.21,
-      "desconto_percentual": 6.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177955035608227885-1788504117625-bk0i1"
-    },
-    {
       "produto_key": "177956387066301324",
       "codigo": "P-RWMG",
       "nome": "Liza Molho para Salada Queijos Ervas e Especiarias 234ml",
@@ -11286,20 +9746,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-177956387066301324-1788708235541-d5zbw"
-    },
-    {
-      "produto_key": "177956446936207419",
-      "codigo": "P-AXAS",
-      "nome": "Shampoo Pom Camomila 200ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 14.9,
-      "preco_oferta": 13.86,
-      "desconto_percentual": 6.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177956446936207419-1788555170803-80eko"
     },
     {
       "produto_key": "177956446936312415",
@@ -11610,62 +10056,6 @@
       "historico_id": "oferta-177973097654206577-1788514209756-hz32g"
     },
     {
-      "produto_key": "177973106236854517",
-      "codigo": "0623680668",
-      "nome": "Seda Kit Shampoo e Condicionador Cachos Definidos 300ml + 190ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177973106236854517-1788504117625-l486a"
-    },
-    {
-      "produto_key": "177973124442423563",
-      "codigo": "2444240814",
-      "nome": "Seda Kit Shampoo e Condicionador Liso Perfeito 300ml + 190ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177973124442423563-1788514209756-zmv6c"
-    },
-    {
-      "produto_key": "177973132575167948",
-      "codigo": "3257510444",
-      "nome": "Seda Kit Shampoo e Condicionador Toque de 300ml + 190ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177973132575167948-1788517680744-bz4is"
-    },
-    {
-      "produto_key": "177973137327994863",
-      "codigo": "3732790940",
-      "nome": "Seda Kit Shampoo e Condicionador Glicol + Vitamina C 300ml + 190ml",
-      "categoria": "SHAMPOO E CONDICIONADOR",
-      "regra_id": "regra-1785205192100",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 23.16,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177973137327994863-1788511173037-og8fx"
-    },
-    {
       "produto_key": "177973182996505803",
       "codigo": "P-7OI3",
       "nome": "Lola Cosmetics Shampoo Xapadinha Antiquebra 250ml",
@@ -11692,20 +10082,6 @@
       "inicio": "2026-09-04",
       "fim": "2026-09-11T23:59:59-04:00",
       "historico_id": "oferta-17797319512497261-1788542642571-28t7b"
-    },
-    {
-      "produto_key": "177973224134082307",
-      "codigo": "2413400519",
-      "nome": "Palmolive Sabonete Nutrição Luminosa 85g",
-      "categoria": "SABONETE",
-      "regra_id": "regra-1785205164829",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.8,
-      "preco_oferta": 2.63,
-      "desconto_percentual": 6.07,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177973224134082307-1788506982373-sm1sm"
     },
     {
       "produto_key": "177981630828323885",
@@ -11776,20 +10152,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-177988672808055249-1788344958829-uv75y"
-    },
-    {
-      "produto_key": "177988782897559742",
-      "codigo": "8289750043",
-      "nome": "Da Roz Macarrão Talharini 500g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 12.9,
-      "preco_oferta": 11.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-177988782897559742-1788504117625-l22jc"
     },
     {
       "produto_key": "177996685556679557",
@@ -12422,34 +10784,6 @@
       "historico_id": "oferta-178034810109971072-1788715325620-23oer"
     },
     {
-      "produto_key": "178034914205443082",
-      "codigo": "1420540671",
-      "nome": "Minuano Detergente Lava-Louças Clear 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.9,
-      "preco_oferta": 2.73,
-      "desconto_percentual": 5.86,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-178034914205443082-1788496311043-cfc5q"
-    },
-    {
-      "produto_key": "178034932183013446",
-      "codigo": "3218300402",
-      "nome": "Minuano Detergente Lava-Louças Neutro 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.9,
-      "preco_oferta": 2.73,
-      "desconto_percentual": 5.86,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-178034932183013446-1788499663166-xlme3"
-    },
-    {
       "produto_key": "178034953162936333",
       "codigo": "5316290481",
       "nome": "Assolan Bucha de Lavar Louça 1un",
@@ -12714,20 +11048,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-178170748057254087-1788656887376-nxjk0"
-    },
-    {
-      "produto_key": "1785766055393709",
-      "codigo": "P490-COPIA-49677",
-      "nome": "FEIJÃO CARIOCA DONA DÊ 1KG",
-      "categoria": "MERCEARIA BÁSICA",
-      "regra_id": "regra-1785205122760",
-      "origem": "campanha_automatica",
-      "preco_normal": 8.49,
-      "preco_oferta": 8.15,
-      "desconto_percentual": 4,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1785766055393709-1788499663166-l33bn"
     },
     {
       "produto_key": "1785768243600818",
@@ -13374,20 +11694,6 @@
       "historico_id": "oferta-17859510882689137-1788603176110-43iyk"
     },
     {
-      "produto_key": "1785951214362_43f4",
-      "codigo": "7899674045881",
-      "nome": "Desodorante Aerossol Above Men Extreme Invisible Black 72H 250 ml",
-      "categoria": "DESODORANTE",
-      "regra_id": "regra-1785205065492",
-      "origem": "campanha_automatica",
-      "preco_normal": 12.9,
-      "preco_oferta": 12.13,
-      "desconto_percentual": 5.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-178595121436243f4-1788499663166-976qx"
-    },
-    {
       "produto_key": "1786109037486_5f2f",
       "codigo": "7899706170819",
       "nome": "Shampoo Elseve Longo dos Sonhos Salvador 400ml",
@@ -13444,34 +11750,6 @@
       "historico_id": "oferta-1786368227096699d-1788618236111-jvyut"
     },
     {
-      "produto_key": "1786368427739_cec3",
-      "codigo": "7896022203870",
-      "nome": "Lasanha Pré-Cozida Galo 200g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.49,
-      "preco_oferta": 5.84,
-      "desconto_percentual": 10.02,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786368427739cec3-1788511173037-992xr"
-    },
-    {
-      "produto_key": "1786368701668_a44c",
-      "codigo": "7896005271377",
-      "nome": "Lasanha Tradicional Petybon 200g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 6.9,
-      "preco_oferta": 6.21,
-      "desconto_percentual": 10,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786368701668a44c-1788517680744-ekpny"
-    },
-    {
       "produto_key": "1786369085404_a9e4",
       "codigo": "7891300909963",
       "nome": "Extrato de Tomate Salsaretti Bowl 300 g",
@@ -13484,62 +11762,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1786369085404a9e4-1788780419825-pe0x4"
-    },
-    {
-      "produto_key": "1786369496815_0951",
-      "codigo": "8004690040201",
-      "nome": "Macarrão Penne Italiano Rigate 500g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 11.9,
-      "preco_oferta": 10.71,
-      "desconto_percentual": 10,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17863694968150951-1788525506412-xxx2u"
-    },
-    {
-      "produto_key": "1786369659448_b9ed",
-      "codigo": "8004690040065",
-      "nome": "Macarrão Italiano LINGUINE  500 g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 8.9,
-      "preco_oferta": 8.01,
-      "desconto_percentual": 10,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786369659448b9ed-1788521284893-fdw26"
-    },
-    {
-      "produto_key": "1786370118992_0cf4",
-      "codigo": "7897721410057",
-      "nome": "Macarrão Petybon com Ovos Ninho 500g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 7.49,
-      "preco_oferta": 6.74,
-      "desconto_percentual": 10.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17863701189920cf4-1788528475446-z1dxf"
-    },
-    {
-      "produto_key": "1786370267837_faaf",
-      "codigo": "7896423702705",
-      "nome": "Cabelo de Anjo com Ovos 500g",
-      "categoria": "MACARRÃO E MOLHOS",
-      "regra_id": "regra-1785205113340",
-      "origem": "campanha_automatica",
-      "preco_normal": 7.29,
-      "preco_oferta": 6.56,
-      "desconto_percentual": 10.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786370267837faaf-1788514209756-ulinb"
     },
     {
       "produto_key": "1786371387505_b35b",
@@ -13682,34 +11904,6 @@
       "historico_id": "oferta-1786455189221e351-1788679611513-1pdoj"
     },
     {
-      "produto_key": "1786459678160_a8f6",
-      "codigo": "7891151039796",
-      "nome": "Pastilha Drops Freegells Menta Mentol 27,9g",
-      "categoria": "BALAS E CHICLETES",
-      "regra_id": "regra-1785202804573",
-      "origem": "campanha_automatica",
-      "preco_normal": 1.99,
-      "preco_oferta": 1.79,
-      "desconto_percentual": 10.05,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786459678160a8f6-1788499663166-z6bcd"
-    },
-    {
-      "produto_key": "1786460002392_30f8",
-      "codigo": "7898247312788",
-      "nome": "Sal Rosa do Himalaia Fino Empório Nut's 120 g",
-      "categoria": "MERCEARIA BÁSICA",
-      "regra_id": "regra-1785205122760",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.9,
-      "preco_oferta": 4.7,
-      "desconto_percentual": 4.08,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-178646000239230f8-1788504117625-1ktmx"
-    },
-    {
       "produto_key": "1786467098148_31ae",
       "codigo": "7899674044198",
       "nome": "Espuma de Barbear Above Men Elements Carvão Ativado 250ml",
@@ -13736,20 +11930,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1786467244581135e-1788643370681-fo421"
-    },
-    {
-      "produto_key": "1786467627817_a0ab",
-      "codigo": "7899674025029",
-      "nome": "DESODORANTE ANTITRANSPIRANTE AEROSOL CLUBES FLAMENGO 150 ml",
-      "categoria": "DESODORANTE",
-      "regra_id": "regra-1785205065492",
-      "origem": "campanha_automatica",
-      "preco_normal": 11.9,
-      "preco_oferta": 11.19,
-      "desconto_percentual": 5.97,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786467627817a0ab-1788504117625-5ht6c"
     },
     {
       "produto_key": "1786468651990_8ad0",
@@ -13864,48 +12044,6 @@
       "historico_id": "oferta-178671489484181a4-1788294459900-ll0nd"
     },
     {
-      "produto_key": "1786714984554_c4a2",
-      "codigo": "7897517924270",
-      "nome": "Escova de Cabelo Ricca Oval Almofadada Pink 1 unidade",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 16.9,
-      "preco_oferta": 15.21,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786714984554c4a2-1788204139034-77mt3"
-    },
-    {
-      "produto_key": "1786715194740_dbd6",
-      "codigo": "7896025543089",
-      "nome": "Escova de Cabelo Uso Diário Raquete Diamond Marco Boni",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 22.9,
-      "preco_oferta": 20.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1786715194740dbd6-1788208059627-c9qoz"
-    },
-    {
-      "produto_key": "1786715342239_4bf7",
-      "codigo": "7896025524989",
-      "nome": "Escova Profissional Thermal Ceramic Yellow 12mm",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 21.9,
-      "preco_oferta": 19.71,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17867153422394bf7-1788211587934-1v62i"
-    },
-    {
       "produto_key": "1786718454749_524a",
       "codigo": "7896038306039",
       "nome": "Arroz Parboilizado Urbano Seleção Especial 5 kg",
@@ -14002,20 +12140,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-178679958282140b6-1788798541441-ut2gz"
-    },
-    {
-      "produto_key": "1786800854596_9dbc",
-      "codigo": "7896110011615",
-      "nome": "Fralda Personal Baby Protect & Sec Tamanho P Pacote com 44 unidades",
-      "categoria": "BEBÊ",
-      "regra_id": "regra-1785202788822",
-      "origem": "campanha_automatica",
-      "preco_normal": 26.9,
-      "preco_oferta": 25.1,
-      "desconto_percentual": 6.69,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17868008545969dbc-1788499663166-8uqme"
     },
     {
       "produto_key": "1786800942905_aaf7",
@@ -14130,20 +12254,6 @@
       "historico_id": "oferta-17870594853530792-1788603176110-glgjv"
     },
     {
-      "produto_key": "1787059910250_045a",
-      "codigo": "7891150105850",
-      "nome": "Comfort Segredos 10 Bridgerton Amaciante de Roupas Concentrado 1,5L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 29.9,
-      "preco_oferta": 27.81,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787059910250045a-1788496311043-shk63"
-    },
-    {
       "produto_key": "1787061017564_9b2a",
       "codigo": "7898964012282",
       "nome": "Amaciante de Roupas Carinhoso Remmus 5L",
@@ -14214,20 +12324,6 @@
       "historico_id": "oferta-1787062667647bf8d-1788798541441-immbv"
     },
     {
-      "produto_key": "1787064126981_db90",
-      "codigo": "1787064126981_db90",
-      "nome": "Geladinho Mikito's Sortidos 10 unidades",
-      "categoria": "CAFÉ DA MANHÃ",
-      "regra_id": "regra-1785205019989",
-      "origem": "campanha_automatica",
-      "preco_normal": 4.5,
-      "preco_oferta": 4.25,
-      "desconto_percentual": 5.56,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787064126981db90-1788506982373-6m5jo"
-    },
-    {
       "produto_key": "1787227895690_1f0a",
       "codigo": "7896098902417",
       "nome": "Amaciante de Roupas Ypê Ultra Primavera 2L",
@@ -14268,34 +12364,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-17872285450275ce2-1788715325620-l6vdm"
-    },
-    {
-      "produto_key": "1787228645615_751e",
-      "codigo": "7896404605490",
-      "nome": "Água Sanitária Girando Sol Cloro Ativo 2L",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 7.69,
-      "preco_oferta": 7.23,
-      "desconto_percentual": 5.98,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787228645615751e-1788564188601-bycjr"
-    },
-    {
-      "produto_key": "1787228728990_e5e8",
-      "codigo": "7896098902042",
-      "nome": "Detergente Líquido Ypê Capim-Limão 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.99,
-      "preco_oferta": 2.81,
-      "desconto_percentual": 6.02,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787228728990e5e8-1788569941581-5xn09"
     },
     {
       "produto_key": "1787229000258_2ce8",
@@ -14648,20 +12716,6 @@
       "historico_id": "oferta-1787238916831965b-1788784757699-i1geh"
     },
     {
-      "produto_key": "1787318416719_6185",
-      "codigo": "898055158872",
-      "nome": "Leite em Pó Integral Instantâneo Piracanjuba 380 g",
-      "categoria": "CAFÉ DA MANHÃ",
-      "regra_id": "regra-1785205019989",
-      "origem": "campanha_automatica",
-      "preco_normal": 19.9,
-      "preco_oferta": 18.79,
-      "desconto_percentual": 5.58,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-17873184167196185-1788511173037-vtxcy"
-    },
-    {
       "produto_key": "1787319035410_524a",
       "codigo": "7896048284129",
       "nome": "Azeite de Oliva Extra Virgem Castelo 500 ml",
@@ -14704,20 +12758,6 @@
       "historico_id": "oferta-178740412936586a7-1788758917670-e0h14"
     },
     {
-      "produto_key": "1787405634897_e11d",
-      "codigo": "7896333200018",
-      "nome": "FARINHA DE MILHO FLOCADA CUSCUZ Bonomilho 500g",
-      "categoria": "MERCEARIA BÁSICA",
-      "regra_id": "regra-1785205122760",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.89,
-      "preco_oferta": 2.77,
-      "desconto_percentual": 4.15,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787405634897e11d-1788506982373-pzssj"
-    },
-    {
       "produto_key": "1787406728770_06dc",
       "codigo": "7898594710329",
       "nome": "Amanda Bolacha Recheada sabor Flocos 100g",
@@ -14758,34 +12798,6 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1787577556304e50e-1788704656077-c0xn5"
-    },
-    {
-      "produto_key": "1787583676839_c0f6",
-      "codigo": "7500435156547",
-      "nome": "Downy Amaciante Perfume Concentrado Brisa de Verão 3L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 49.9,
-      "preco_oferta": 46.41,
-      "desconto_percentual": 6.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-1787583676839c0f6-1788549695620-ktazh"
-    },
-    {
-      "produto_key": "1787584644727_33af",
-      "codigo": "7891010604349",
-      "nome": "Carefree Tododia Protetor Diário Sem Fragrância 80 Protetores",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 24.9,
-      "preco_oferta": 22.91,
-      "desconto_percentual": 7.99,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-178758464472733af-1788539335569-4m3wg"
     },
     {
       "produto_key": "1787584801609_f201",
@@ -14914,20 +12926,6 @@
       "historico_id": "oferta-6194017200509-1788773798895-bkykl"
     },
     {
-      "produto_key": "77891150025102",
-      "codigo": "77891150025102",
-      "nome": "Sabão Líquido Omo Lavagem Perfeita 5L",
-      "categoria": "LAVANDERIA",
-      "regra_id": "regra-1785205096285",
-      "origem": "campanha_automatica",
-      "preco_normal": 58.97,
-      "preco_oferta": 54.84,
-      "desconto_percentual": 7,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-77891150025102-1788560734827-5dbi2"
-    },
-    {
       "produto_key": "7891035001673",
       "codigo": "veja.desinfetantemulti.1",
       "nome": "Desinfetante Multisuperficies Veja Power Action Lavanda 1L",
@@ -15052,20 +13050,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-7897005104979-1788763992616-krlxr"
-    },
-    {
-      "produto_key": "7897517925642",
-      "codigo": "7897517925642",
-      "nome": "Escova Dental Kess Pro 6580 Extra Macia Multicor com 3 unidades",
-      "categoria": "HIGIENE",
-      "regra_id": "regra-1785205082552",
-      "origem": "campanha_automatica",
-      "preco_normal": 9.49,
-      "preco_oferta": 8.73,
-      "desconto_percentual": 8.01,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-7897517925642-1788532039964-gcn4d"
     },
     {
       "produto_key": "7898215152439",
@@ -15234,20 +13218,6 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-p1r78-1788603176110-yoy35"
-    },
-    {
-      "produto_key": "P-21QA",
-      "codigo": "P-21QA",
-      "nome": "Marco Boni Unidade",
-      "categoria": "BELEZA",
-      "regra_id": "regra-1785202557027",
-      "origem": "campanha_automatica",
-      "preco_normal": 22.9,
-      "preco_oferta": 20.61,
-      "desconto_percentual": 10,
-      "inicio": "2026-08-31",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-p21qa-1788179979561-n1mre"
     },
     {
       "produto_key": "P-24US",
@@ -15724,20 +13694,6 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-produto1784820410616-1788834912360-xo103"
-    },
-    {
-      "produto_key": "produto_1784821795023",
-      "codigo": "oeste.detergente.clear.500",
-      "nome": "Oeste Detergente Lava Louça - Clear 500ml",
-      "categoria": "LIMPEZA",
-      "regra_id": "regra-1785205105033",
-      "origem": "campanha_automatica",
-      "preco_normal": 2.69,
-      "preco_oferta": 2.53,
-      "desconto_percentual": 5.95,
-      "inicio": "2026-09-04",
-      "fim": "2026-09-07T23:59:59-04:00",
-      "historico_id": "oferta-produto1784821795023-1788514209756-28vk8"
     },
     {
       "produto_key": "produto_1784822558484",
@@ -17784,7 +15740,7 @@
       "regra_id": "regra-1785205096285"
     },
     "1776338129033": {
-      "ultima_oferta_em": "2026-09-04T00:59:41.322Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785205096285"
     },
     "1776338131340": {
@@ -17960,7 +15916,7 @@
       "regra_id": "regra-1785205096285"
     },
     "177850826754256242": {
-      "ultima_oferta_em": "2026-09-03T09:31:14.449Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785205105033"
     },
     "17785082675458214250": {
@@ -18196,7 +16152,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1776338128813": {
-      "ultima_oferta_em": "2026-08-26T19:58:17.417Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785202557027"
     },
     "178015830336459135": {
@@ -18612,7 +16568,7 @@
       "regra_id": "regra-1785205192100"
     },
     "1775968438858": {
-      "ultima_oferta_em": "2026-09-03T16:29:43.243Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785205192100"
     },
     "1776338129099": {
@@ -18932,7 +16888,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338127216": {
-      "ultima_oferta_em": "2026-09-04T03:31:34.296Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785205082552"
     },
     "1776338123931": {
@@ -20680,7 +18636,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1776044389124": {
-      "ultima_oferta_em": "2026-09-04T03:31:34.296Z",
+      "ultima_oferta_em": "2026-09-08T04:31:18.433Z",
       "regra_id": "regra-1785205164829"
     },
     "1776338130382": {
@@ -21541,23 +19497,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788161828565",
-      "executado_em": "2026-08-31T07:37:09.125Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 10,
-        "ofertas_nao_criadas": 13,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788165479011",
       "executado_em": "2026-08-31T08:37:59.573Z",
@@ -24935,6 +22874,23 @@
         "ofertas_nao_criadas": 17,
         "ofertas_encerradas": 0,
         "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788841877856",
+      "executado_em": "2026-09-08T04:31:18.433Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 6,
+        "ofertas_nao_criadas": 17,
+        "ofertas_encerradas": 152,
+        "vencidos": 152,
         "ofertas_reativadas": 0,
         "reativacoes_com_falha": 0,
         "banners_reativados": 0,
