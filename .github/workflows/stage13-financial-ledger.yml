@@ -1,0 +1,47 @@
+name: Stage 13 Financial Ledger
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql'
+      - 'scripts/test-stage13-financial-ledger-contract-v1.mjs'
+      - 'scripts/test-stage13-financial-ledger-db-v1.mjs'
+      - 'docs/ETAPA-13-FINANCIAL-LEDGER-V1.md'
+      - '.github/workflows/stage13-financial-ledger.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql'
+      - 'scripts/test-stage13-financial-ledger-contract-v1.mjs'
+      - 'scripts/test-stage13-financial-ledger-db-v1.mjs'
+      - 'docs/ETAPA-13-FINANCIAL-LEDGER-V1.md'
+      - '.github/workflows/stage13-financial-ledger.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  financial-ledger-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql
+            scripts/test-stage13-financial-ledger-contract-v1.mjs
+            scripts/test-stage13-financial-ledger-db-v1.mjs
+            docs/ETAPA-13-FINANCIAL-LEDGER-V1.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage13-financial" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático
+        run: node scripts/test-stage13-financial-ledger-contract-v1.mjs
+      - name: Ledger e fechamento de rota em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage13-financial
+        run: node scripts/test-stage13-financial-ledger-db-v1.mjs
