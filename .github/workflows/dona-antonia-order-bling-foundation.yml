@@ -1,0 +1,34 @@
+name: Dona Antonia order + Bling foundation
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908030000_order_bling_homologation_foundation_v2.sql'
+      - 'scripts/bling-order-writer-v1.mjs'
+      - 'scripts/run-bling-order-homologation-v1.mjs'
+      - 'scripts/test-order-bling-homologation-foundation-v2.mjs'
+      - '.github/workflows/dona-antonia-order-bling-foundation.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908030000_order_bling_homologation_foundation_v2.sql'
+      - 'scripts/bling-order-writer-v1.mjs'
+      - 'scripts/run-bling-order-homologation-v1.mjs'
+      - 'scripts/test-order-bling-homologation-foundation-v2.mjs'
+      - '.github/workflows/dona-antonia-order-bling-foundation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate fail-closed order/Bling contract
+        run: node scripts/test-order-bling-homologation-foundation-v2.mjs
