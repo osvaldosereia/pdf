@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908130000_stage12_wms_foundation_v1.sql'
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'supabase/functions/warehouse-ops-v1/**'
+      - 'supabase/config.toml'
       - 'lib/fulfillment/**'
       - 'warehouse-app/**'
       - 'scripts/test-wms-stage12-v1.mjs'
@@ -14,6 +17,9 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908130000_stage12_wms_foundation_v1.sql'
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'supabase/functions/warehouse-ops-v1/**'
+      - 'supabase/config.toml'
       - 'lib/fulfillment/**'
       - 'warehouse-app/**'
       - 'scripts/test-wms-stage12-v1.mjs'
@@ -25,26 +31,32 @@ permissions:
 jobs:
   safety-contract:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 1
           sparse-checkout-cone-mode: false
           sparse-checkout: |
+            supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql
             supabase/migrations/20260908130000_stage12_wms_foundation_v1.sql
+            supabase/functions/warehouse-ops-v1/
+            supabase/config.toml
             lib/fulfillment/
             warehouse-app/
             scripts/test-wms-stage12-v1.mjs
             scripts/test-wms-stage12-db-v1.mjs
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: '22'
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
       - name: Instalar PostgreSQL isolado
         run: npm install --prefix "$RUNNER_TEMP/stage12" --no-save @electric-sql/pglite@0.5.8
       - name: Contratos WMS
         run: node scripts/test-wms-stage12-v1.mjs
-      - name: Migration isolada
+      - name: Commercial Truth + WMS em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/stage12
         run: node scripts/test-wms-stage12-db-v1.mjs
@@ -52,4 +64,10 @@ jobs:
         run: |
           node --check lib/fulfillment/pick-plan-v1.mjs
           node --check warehouse-app/app.js
+          node --check warehouse-app/config.js
           node --check warehouse-app/sw.js
+      - name: Verificar autenticação da API mobile
+        run: |
+          grep -q '\[functions.warehouse-ops-v1\]' supabase/config.toml
+          grep -A2 '\[functions.warehouse-ops-v1\]' supabase/config.toml | grep -q 'verify_jwt = true'
+          deno check supabase/functions/warehouse-ops-v1/index.ts
