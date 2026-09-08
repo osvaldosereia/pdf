@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql'
+      - 'supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql'
       - 'scripts/test-ai-commercial-decision-policy-contract-v1.mjs'
       - 'scripts/test-ai-commercial-decision-policy-db-v1.mjs'
       - 'docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md'
@@ -12,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql'
+      - 'supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql'
       - 'scripts/test-ai-commercial-decision-policy-contract-v1.mjs'
       - 'scripts/test-ai-commercial-decision-policy-db-v1.mjs'
       - '.github/workflows/ai-commercial-decision-policy.yml'
@@ -31,6 +33,7 @@ jobs:
           sparse-checkout: |
             supabase/migrations/20260908062000_ai_action_registry_stage9_v1.sql
             supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql
+            supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql
             scripts/test-ai-commercial-decision-policy-contract-v1.mjs
             scripts/test-ai-commercial-decision-policy-db-v1.mjs
       - uses: actions/setup-node@v5
