@@ -58,8 +58,8 @@ Deno.serve(async(req:Request)=>{
       .select("product_id,rank,quantity,metadata,product:products(id,name,price,image_url,category,stock)").eq("catalog_session_id",session.id).order("rank");
     if(itemsError)return json({ok:false,error:"items_failed"},500);
     let cart:any=null;if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
-    const items=(rows||[]).map((r:any)=>({product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),image_url:r.product?.image_url||null,category:r.product?.category||null,stock:Number(r.product?.stock||0),quantity:Number(r.quantity||0),section:r.metadata?.section||null}));
-    return json({ok:true,flow,session:{id:session.id,title:session.title,expires_at:session.expires_at,sections:session.metadata?.sections||[]},basket,items,cart});
+    const items=(rows||[]).map((r:any)=>({product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),image_url:r.product?.image_url||null,category:r.product?.category||r.metadata?.category||null,stock:Number(r.product?.stock||0),quantity:Number(r.quantity||0)}));
+    return json({ok:true,flow,session:{id:session.id,title:session.title,expires_at:session.expires_at,categories:session.metadata?.categories||[]},basket,items,cart});
   }
 
   if(action==="set_quantity"){
