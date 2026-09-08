@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-08T02:35:12.360Z",
+  "ultima_execucao": "2026-09-08T03:31:54.104Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -506,6 +506,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1775966798610-1788686833409-y9157"
+    },
+    {
+      "produto_key": "1775968438856",
+      "codigo": "679049B",
+      "nome": "Novex Kit Shampoo e Condicionador Doutor Ricino 300ml cada",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 21.9,
+      "preco_oferta": 20.37,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1775968438856-1788838314104-yxgtq"
     },
     {
       "produto_key": "1775968438859",
@@ -1640,6 +1654,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338123512-1788662152982-8vaii"
+    },
+    {
+      "produto_key": "1776338123516",
+      "codigo": "932517Y",
+      "nome": "Colgate Enxaguante Bucal Total 12 Anti Tartaro 500ml",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.39,
+      "desconto_percentual": 7.99,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338123516-1788838314104-u72qd"
     },
     {
       "produto_key": "1776338123519",
@@ -7606,6 +7634,20 @@
       "historico_id": "oferta-1776338132906-1788736989903-3txvw"
     },
     {
+      "produto_key": "1776338132979",
+      "codigo": "P0322",
+      "nome": "Guirado Vassoura Genial com Cabo 1un",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 9.9,
+      "preco_oferta": 9.31,
+      "desconto_percentual": 5.96,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776338132979-1788838314104-z7oyv"
+    },
+    {
       "produto_key": "1776338132989",
       "codigo": "P440",
       "nome": "Arroz Tio Bonini Unidade 5kg",
@@ -7940,6 +7982,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1776533376256-1788784757699-ua621"
+    },
+    {
+      "produto_key": "1776533669705",
+      "codigo": "33669705",
+      "nome": "NIVEA Sabonete Líquido Intimo Suave 250ml",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 19.9,
+      "preco_oferta": 18.71,
+      "desconto_percentual": 5.98,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-1776533669705-1788838314104-bzogc"
     },
     {
       "produto_key": "1776534743607",
@@ -9524,6 +9580,20 @@
       "historico_id": "oferta-1778010792396-1788726328042-mfuv0"
     },
     {
+      "produto_key": "1778011964904",
+      "codigo": "P-AEUJ",
+      "nome": "Sérum Capilar Elseve Elixir Prolongador de Gloss Glycolic Gloss 100ml",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 29.9,
+      "preco_oferta": 26.91,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-14T23:59:59-04:00",
+      "historico_id": "oferta-1778011964904-1788838314104-gvpj3"
+    },
+    {
       "produto_key": "17785082675421077830",
       "codigo": "559778V",
       "nome": "Lola Cosmetics Óleo Bemdita Ghee de Mamao 50ml",
@@ -11006,6 +11076,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-177946088488524164-1788704656077-rh0hq"
+    },
+    {
+      "produto_key": "17794623564220212",
+      "codigo": "P-V2EF",
+      "nome": "Minuano Amaciante de Roupa Soft Azul 2 LITROS",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 10.9,
+      "preco_oferta": 10.14,
+      "desconto_percentual": 6.97,
+      "inicio": "2026-09-07",
+      "fim": "2026-09-10T23:59:59-04:00",
+      "historico_id": "oferta-17794623564220212-1788838314104-37sz7"
     },
     {
       "produto_key": "177946235642215607",
@@ -17696,7 +17780,7 @@
       "regra_id": "regra-1785205096285"
     },
     "17794623564220212": {
-      "ultima_oferta_em": "2026-09-03T23:23:30.737Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785205096285"
     },
     "1776338129033": {
@@ -17720,7 +17804,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1776338132979": {
-      "ultima_oferta_em": "2026-09-03T08:36:14.853Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785205105033"
     },
     "produto_1784906133515": {
@@ -18108,7 +18192,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1778011964904": {
-      "ultima_oferta_em": "2026-08-26T19:00:04.814Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785202557027"
     },
     "1776338128813": {
@@ -18524,7 +18608,7 @@
       "regra_id": "regra-1785202788822"
     },
     "1775968438856": {
-      "ultima_oferta_em": "2026-09-03T15:31:14.445Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785205192100"
     },
     "1775968438858": {
@@ -18844,7 +18928,7 @@
       "regra_id": "regra-1785205065492"
     },
     "1776338123516": {
-      "ultima_oferta_em": "2026-09-04T02:35:31.401Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785205082552"
     },
     "1776338127216": {
@@ -20592,7 +20676,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1776533669705": {
-      "ultima_oferta_em": "2026-09-04T02:35:31.401Z",
+      "ultima_oferta_em": "2026-09-08T03:31:54.104Z",
       "regra_id": "regra-1785205164829"
     },
     "1776044389124": {
@@ -21457,23 +21541,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788159090251",
-      "executado_em": "2026-08-31T06:51:30.670Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 11,
-        "ofertas_nao_criadas": 12,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788161828565",
       "executado_em": "2026-08-31T07:37:09.125Z",
@@ -24849,6 +24916,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 7,
         "ofertas_nao_criadas": 16,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788838313536",
+      "executado_em": "2026-09-08T03:31:54.104Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 6,
+        "ofertas_nao_criadas": 17,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
