@@ -1,9 +1,8 @@
 name: CanecaFácil · retenção das artes
 
+# Legado: mantido apenas para execução manual deliberada.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '23 * * * *'
 
 permissions:
   contents: read
