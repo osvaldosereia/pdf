@@ -1,0 +1,21 @@
+name: Test Stage 8 channel-aware orchestrator
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/experience-routing-v1.mjs'
+      - 'supabase/migrations/20260908052000_stage8_channel_aware_orchestrator_v1.sql'
+      - 'scripts/test-experience-routing-v1.mjs'
+      - 'scripts/test-stage8-channel-aware-db-v1.mjs'
+      - '.github/workflows/test-stage8-channel-aware.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: node scripts/test-experience-routing-v1.mjs
+      - run: node scripts/test-stage8-channel-aware-db-v1.mjs
