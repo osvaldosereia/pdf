@@ -1,166 +1,19 @@
-name: Sincronizar Firebase para Bling
-run-name: Bling V3 · ${{ github.event_name }} · ${{ github.event_name == 'workflow_dispatch' && inputs.mode || github.event_name == 'schedule' && 'production' || github.event.client_payload.mode || 'dry-run' }}
+name: LEGADO DESATIVADO · Sincronizar Firebase para Bling
 
+# Desativado em 08/09/2026 durante a consolidação do novo projeto Dona Antônia.
+# O fluxo novo mantém Bling fail-closed/homologation-only e não deve usar este
+# sincronizador antigo automaticamente. O histórico completo permanece no Git.
 on:
   workflow_dispatch:
-    inputs:
-      mode:
-        description: "dry-run confere sem gravar; production aplica no Bling"
-        required: true
-        default: dry-run
-        type: choice
-        options: [dry-run, production]
-      max_products:
-        description: "0 processa todos; use 1 no primeiro teste em production"
-        required: false
-        default: "0"
-        type: string
-      sync_stock:
-        description: "yes concilia o saldo físico do depósito padrão"
-        required: true
-        default: "no"
-        type: choice
-        options: ['no', 'yes']
-  repository_dispatch:
-    types: [bling-sync]
-  schedule:
-    - cron: "23 */3 * * *"
-  push:
-    branches: [main]
-    paths:
-      - "scripts/sincronizar-bling-v3.mjs"
-      - "scripts/bling-sync-core.mjs"
-      - "scripts/bling-sync-core.test.mjs"
-      - ".github/workflows/sincronizar-bling.yml"
 
 permissions:
-  contents: write
-
-concurrency:
-  group: bling-product-sync
-  cancel-in-progress: false
+  contents: read
 
 jobs:
-  sync:
+  desativado:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
-    env:
-      FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-      BLING_CLIENT_ID: ${{ secrets.BLING_CLIENT_ID }}
-      BLING_CLIENT_SECRET: ${{ secrets.BLING_CLIENT_SECRET }}
-      BLING_REFRESH_TOKEN: ${{ secrets.BLING_REFRESH_TOKEN }}
-      SYNC_MODE: ${{ github.event_name == 'schedule' && 'production' || github.event_name == 'workflow_dispatch' && inputs.mode || github.event.client_payload.mode || 'dry-run' }}
-      MAX_PRODUCTS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_products || github.event.client_payload.max_products || '0' }}
-      SYNC_STOCK: ${{ github.event_name == 'schedule' && 'yes' || github.event_name == 'workflow_dispatch' && inputs.sync_stock || github.event.client_payload.sync_stock || 'no' }}
     steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-
-      - name: Validar sincronizador V3
+      - name: Informar estado
         run: |
-          node --check scripts/sincronizar-bling-v3.mjs
-          node --check scripts/bling-sync-core.mjs
-          node --test scripts/bling-sync-core.test.mjs
-          grep -q "method: 'PUT'" scripts/sincronizar-bling-v3.mjs
-          grep -q "/situacoes" scripts/sincronizar-bling-v3.mjs
-          grep -q "payload.situacao" scripts/bling-sync-core.mjs
-          grep -q "codigo-remapeado" scripts/bling-sync-core.mjs
-          grep -q "isValidGtin" scripts/sincronizar-bling-v3.mjs
-          grep -q "setStatus(row.id, 'I'" scripts/sincronizar-bling-v3.mjs
-
-      - name: Sincronizar produtos com segurança
-        id: sync
-        continue-on-error: true
-        env:
-          BLING_REFRESH_TOKEN_FILE: ${{ runner.temp }}/bling-refresh-token
-          BLING_REPORT_FILE: bling-sync-report.json
-        shell: bash
-        run: |
-          set -o pipefail
-          if [ "$SYNC_MODE" = "production" ]; then
-            node scripts/sincronizar-bling-v3.mjs --apply --state .automation/bling-sync-state.json 2>&1 | tee bling-sync.log
-          else
-            node scripts/sincronizar-bling-v3.mjs --state .automation/bling-sync-state.json 2>&1 | tee bling-sync.log
-          fi
-
-      - name: Guardar refresh token renovado
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GH_SECRETS_TOKEN }}
-          BLING_REFRESH_TOKEN_FILE: ${{ runner.temp }}/bling-refresh-token
-        shell: bash
-        run: |
-          if [ ! -s "$BLING_REFRESH_TOKEN_FILE" ]; then exit 0; fi
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Configure GH_SECRETS_TOKEN para guardar o refresh token renovado."
-            exit 1
-          fi
-          gh secret set BLING_REFRESH_TOKEN --repo "$GITHUB_REPOSITORY" --body "$(cat "$BLING_REFRESH_TOKEN_FILE")"
-
-      - name: Guardar estado da sincronização
-        if: always() && env.SYNC_MODE == 'production' && hashFiles('.automation/bling-sync-state.json') != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .automation/bling-sync-state.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "chore: atualiza estado da sincronização Bling V3"
-          for tentativa in 1 2 3 4 5; do
-            if git push origin HEAD:main; then exit 0; fi
-            git fetch origin main
-            git rebase origin/main
-            sleep $((tentativa * 2))
-          done
-          exit 1
-
-      - name: Publicar relatório da execução
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: relatorio-bling-v3-${{ github.run_id }}
-          path: |
-            bling-sync-report.json
-            bling-sync.log
-          if-no-files-found: warn
-          retention-days: 30
-
-      - name: Registrar última validação
-        if: always() && github.event_name != 'schedule' && hashFiles('bling-sync-report.json') != ''
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p .automation
-          cp bling-sync-report.json .automation/bling-last-run.json
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .automation/bling-last-run.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "chore: registra validação Bling V3"
-          for tentativa in 1 2 3 4 5; do
-            if git push origin HEAD:main; then exit 0; fi
-            git fetch origin main
-            git rebase origin/main
-            sleep $((tentativa * 2))
-          done
-          exit 1
-
-      - name: Resumo
-        if: always()
-        shell: bash
-        run: |
-          if [ -f bling-sync-report.json ]; then
-            echo '## Sincronização Firebase → Bling V3' >> "$GITHUB_STEP_SUMMARY"
-            echo '```json' >> "$GITHUB_STEP_SUMMARY"
-            cat bling-sync-report.json >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Confirmar resultado
-        if: steps.sync.outcome == 'failure'
-        run: exit 1
+          echo "Workflow legado desativado."
+          echo "Use somente a arquitetura Bling homologation-only do novo projeto Dona Antônia."
