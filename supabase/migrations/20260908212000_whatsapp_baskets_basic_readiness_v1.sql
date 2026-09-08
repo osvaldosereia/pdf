@@ -5,10 +5,10 @@ begin;
 alter table public.basket_template_items
   add column if not exists updated_at timestamptz not null default now();
 
--- Cestas sao produtos comerciais com preco proprio. O preco da cesta nunca e
--- recalculado pela soma dos componentes. Para personalizacao, o delta unitario
--- fica congelado a partir do preco conhecido do componente no momento desta
--- configuracao, preservando a diferenca operacional/comercial oculta da cesta.
+-- Cestas são produtos comerciais com preço próprio. O preço da cesta nunca é
+-- recalculado pela soma dos componentes. Para personalização, o delta unitário
+-- fica congelado a partir do preço conhecido do componente no momento desta
+-- configuração, preservando a diferença operacional/comercial oculta da cesta.
 update public.basket_template_items bi
 set remove_unit_delta = coalesce(bi.remove_unit_delta, -p.price),
     add_unit_delta = coalesce(bi.add_unit_delta, p.price)
@@ -69,22 +69,41 @@ $$;
 revoke all on function public.get_whatsapp_basket_readiness_v1() from public,anon,authenticated;
 grant execute on function public.get_whatsapp_basket_readiness_v1() to service_role;
 
-insert into public.service_guidance_rules(rule_key,title,instruction,behavior_tags,channel_scope,intent_scope,stage_scope,priority,status,source_note)
+insert into public.service_guidance_rules(
+  rule_key,title,instruction,behavior_tags,channel_scope,intent_scope,stage_scope,priority,status
+)
 values(
   'basket_commercial_price_policy',
-  'Preco comercial das cestas',
-  'A cesta basica possui preco comercial proprio. Nunca exponha ao cliente a soma individual dos componentes, margem, custo operacional ou diferenca interna. Personalizacoes devem usar apenas o total comercial calculado pelo backend.',
-  array['mvp_whatsapp','basket','pricing'],array['whatsapp'],array[]::text[],array[]::text[],100,'published','Politica comercial Dona Antonia'
+  'Preço comercial das cestas',
+  'A cesta básica possui preço comercial próprio. Nunca exponha ao cliente a soma individual dos componentes, margem, custo operacional ou diferença interna. Personalizações devem usar apenas o total comercial calculado pelo backend.',
+  array['mvp_whatsapp','basket','pricing'],array['whatsapp'],array[]::text[],array[]::text[],100,'published'
 )
 on conflict(rule_key) do update set
   title=excluded.title,instruction=excluded.instruction,behavior_tags=excluded.behavior_tags,
   channel_scope=excluded.channel_scope,priority=excluded.priority,status='published',updated_at=now();
 
-insert into public.service_regression_cases(case_key,title,input_fixture,expected_behavior,criticality,status,tags)
+insert into public.service_regression_cases(
+  case_key,title,customer_message,setup,expected_intent,expected_action,expected_assertions,status,priority
+)
 values
-('basket_price_not_component_sum','Cesta nao revela soma dos itens',jsonb_build_object('message','quanto da cada produto dessa cesta?'),jsonb_build_object('must_not_expose_component_prices',true,'must_use_basket_commercial_total',true),'critical','active',array['whatsapp','basket','pricing']),
-('basket_personalization_requires_backend_price','Personalizacao de cesta usa backend',jsonb_build_object('message','tira um oleo e coloca mais um arroz'),jsonb_build_object('must_not_calculate_in_model',true,'must_use_backend_delta',true),'critical','active',array['whatsapp','basket','personalization']),
-('basket_unknown_inventory_no_false_confirmation','Cesta sem estoque conferido nao confirma automaticamente',jsonb_build_object('message','pode fechar essa cesta'),jsonb_build_object('must_not_fake_stock',true,'human_fallback_when_inventory_unknown',true),'critical','active',array['whatsapp','basket','inventory'])
-on conflict(case_key) do update set title=excluded.title,input_fixture=excluded.input_fixture,expected_behavior=excluded.expected_behavior,criticality=excluded.criticality,status='active',tags=excluded.tags,updated_at=now();
+(
+  'basket_price_not_component_sum','Cesta não revela soma dos itens','Quanto dá cada produto dessa cesta?',
+  '{}'::jsonb,'answer','knowledge_answer',
+  jsonb_build_object('must_not_expose_component_prices',true,'must_use_basket_commercial_total',true),'active',100
+),
+(
+  'basket_personalization_requires_backend_price','Personalização de cesta usa backend','Tira um óleo e coloca mais um arroz',
+  jsonb_build_object('basket_cart',true),'update_cart','set_quantity',
+  jsonb_build_object('must_not_calculate_in_model',true,'must_use_backend_delta',true),'active',100
+),
+(
+  'basket_unknown_inventory_no_false_confirmation','Cesta sem estoque conferido não confirma automaticamente','Pode fechar essa cesta',
+  jsonb_build_object('basket_inventory_ready',false),'checkout','human_handoff',
+  jsonb_build_object('must_not_fake_stock',true,'human_fallback_when_inventory_unknown',true),'active',100
+)
+on conflict(case_key) do update set
+  title=excluded.title,customer_message=excluded.customer_message,setup=excluded.setup,
+  expected_intent=excluded.expected_intent,expected_action=excluded.expected_action,
+  expected_assertions=excluded.expected_assertions,status='active',priority=excluded.priority,updated_at=now();
 
 commit;
