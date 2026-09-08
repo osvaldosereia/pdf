@@ -51,7 +51,10 @@ try{
   r=await one(`select public.confirm_order_payment_v1('${order}'::uuid,'prepaid_pix','test',159.90,now()) x`);
   if(r.x.fiscal_status!=='blocked'||r.x.block_reason!=='delivery_not_confirmed'||r.x.external_side_effect!==false)throw new Error('prepaid_payment_must_not_issue_before_delivery');
 
-  await db.exec(`update public.orders set status='delivered',delivered_at=now(),updated_at=now() where id='${order}'::uuid`);
+  await db.exec(`
+    update public.orders set status='delivered',delivered_at=now(),updated_at=now() where id='${order}'::uuid;
+    update public.order_fiscal_controls set delivery_status='delivered',delivery_confirmed_at=now(),updated_at=now() where order_id='${order}'::uuid;
+  `);
   r=await one(`select public.refresh_order_fiscal_readiness_v1('${order}'::uuid) x`);
   if(r.x.fiscal_status!=='ready'||r.x.block_reason!==null||r.x.external_side_effect!==false)throw new Error('delivered_plus_paid_must_be_fiscal_ready');
   r=await one(`select public.preview_bling_invoice_eligibility_v1('${order}'::uuid) x`);
@@ -64,6 +67,8 @@ try{
   const mismatchOrder=(await one(`insert into public.orders(customer_id,status,total,delivery_address,customer_snapshot,delivered_at,external_status_updated_at) values(
     '${customer}'::uuid,'delivered',100.00,'{}'::jsonb,'{}'::jsonb,now(),now()
   ) returning id`)).id;
+  r=await one(`select public.refresh_order_fiscal_readiness_v1('${mismatchOrder}'::uuid) x`);
+  if(r.x.fiscal_status!=='blocked'||r.x.block_reason!=='payment_not_confirmed')throw new Error('delivered_mismatch_fixture_must_first_wait_for_payment');
   r=await one(`select public.confirm_order_payment_v1('${mismatchOrder}'::uuid,'cash','driver_app',90.00,now()) x`);
   if(r.x.fiscal_status!=='review_required'||r.x.block_reason!=='settled_amount_mismatch')throw new Error('payment_mismatch_must_require_review');
 
