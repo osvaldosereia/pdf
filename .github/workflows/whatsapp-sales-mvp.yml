@@ -19,6 +19,7 @@ on:
       - 'scripts/test-whatsapp-official-resources-v1.mjs'
       - 'scripts/test-whatsapp-product-quantity-step-v1.mjs'
       - 'scripts/test-whatsapp-release-pregate-v1.mjs'
+      - 'scripts/test-whatsapp-basket-return-link-v1.mjs'
       - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin/config.js'
@@ -44,6 +45,7 @@ on:
       - 'scripts/test-whatsapp-official-resources-v1.mjs'
       - 'scripts/test-whatsapp-product-quantity-step-v1.mjs'
       - 'scripts/test-whatsapp-release-pregate-v1.mjs'
+      - 'scripts/test-whatsapp-basket-return-link-v1.mjs'
       - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin/config.js'
@@ -76,6 +78,7 @@ jobs:
           node scripts/test-whatsapp-sales-mvp-launch-readiness-v1.mjs
           node scripts/test-whatsapp-basket-showcase-swap-v1.mjs
           node scripts/test-whatsapp-release-pregate-v1.mjs
+          node scripts/test-whatsapp-basket-return-link-v1.mjs
       - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
@@ -85,6 +88,7 @@ jobs:
           node --check admin-v3/service-intelligence.js
           node --check admin-v3/product-categories-inline.js
           node --check cesta/app.js
+          node --check cesta/whatsapp-return.js
           node --check scripts/bling-order-writer-v1.mjs
       - name: Deno check Edge Functions
         uses: denoland/setup-deno@v2
