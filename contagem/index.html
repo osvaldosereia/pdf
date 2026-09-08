@@ -10,16 +10,45 @@
   <link rel="stylesheet" href="../contagem-v2/style.css?v=20260907-06">
   <link rel="stylesheet" href="../contagem-v2/kiosk-mode.css?v=20260907-03">
   <link rel="stylesheet" href="./product-edit-controls.css?v=20260907-01">
+  <link rel="stylesheet" href="./fast-mode.css?v=20260908-01">
 </head>
 <body>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
-    <div class="top-actions"><a class="ghost" href="../admin/" style="text-decoration:none">Admin</a><button id="syncQueueButton" class="ghost" type="button">Pendências <b id="pendingBadge">0</b></button><button id="logoutButton" class="ghost hidden" type="button">Sair</button></div>
+    <div class="top-actions"><button id="modeToggleButton" class="mode-toggle hidden" type="button">⚡ Leitura rápida</button><a class="ghost" href="../admin/" style="text-decoration:none">Admin</a><button id="syncQueueButton" class="ghost" type="button">Pendências <b id="pendingBadge">0</b></button><button id="logoutButton" class="ghost hidden" type="button">Sair</button></div>
   </header>
   <main class="shell">
     <section id="loginCard" class="card login-card"><div class="eyebrow">Acesso protegido</div><h1>Entrar na contagem</h1><p>Use o mesmo acesso do Admin Dona Antônia.</p><form id="loginForm" class="stack"><label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label><label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label><button id="loginButton" class="primary" type="submit">Entrar</button></form><div id="loginStatus" class="note"></div></section>
     <div id="app" class="hidden">
       <section class="status-row"><div><span class="dot" id="connectionDot"></span><strong id="connectionLabel">Conectando…</strong><small id="userLabel"></small></div><div class="counter"><b id="sessionCount">0</b><span>contados</span></div></section>
+
+      <div id="fastMode" class="fast-mode hidden">
+        <section class="card fast-hero">
+          <div class="fast-head"><div><div class="eyebrow">Modo 2</div><h1>Leitura rápida</h1></div><div class="fast-catalog"><span>Catálogo</span><b id="fastCatalogBadge">0</b></div></div>
+          <div class="fast-scan-wrap"><label for="fastScanInput">Leitor de código de barras</label><input id="fastScanInput" class="fast-scan-input" type="text" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="Leia o EAN"></div>
+          <div id="fastLastRead" class="fast-last-read ok"><span id="fastLastState">PRONTO</span><strong id="fastLastName">Pronto para ler</strong><b id="fastLastQty"></b></div>
+          <div id="fastStatus" class="note">Ative o modo rápido e comece a ler.</div>
+        </section>
+
+        <section class="fast-metrics">
+          <div class="fast-metric"><b id="fastTotalUnits">0</b><span>unidades</span></div>
+          <div class="fast-metric"><b id="fastDistinctCount">0</b><span>produtos</span></div>
+          <div class="fast-metric"><b id="fastUnknownCount">0</b><span>pendências</span></div>
+        </section>
+
+        <section class="card">
+          <div class="fast-section-head"><div><h2>Produtos lidos</h2><small>Repetiu o EAN = soma +1</small></div><button id="fastRefreshCatalogButton" class="secondary" type="button">Atualizar catálogo</button></div>
+          <div id="fastCountedList" class="fast-counted-list"><div class="fast-empty">Leia o primeiro produto. Cada nova leitura soma +1.</div></div>
+        </section>
+
+        <section id="fastUnknownSection" class="card fast-unknown-card">
+          <div class="fast-section-head"><div><h2>Não cadastrados / não localizados</h2><small><b id="fastUnknownUnits">0</b> leitura(s) aguardando revisão</small></div></div>
+          <div id="fastUnknownList" class="fast-unknown-list"><div class="fast-empty">Nenhuma pendência.</div></div>
+        </section>
+
+        <div class="fast-actions"><button id="fastClearButton" class="secondary" type="button">Limpar lidos</button><button id="fastFinishButton" class="primary big" type="button">Salvar contagem</button></div>
+      </div>
+
       <section class="card scanner-card"><div class="section-head"><div><div class="eyebrow">Leitura</div><h2>EAN</h2></div><button id="cameraButton" class="secondary" type="button">📷 Câmera</button></div><div class="search-row"><input id="eanInput" inputmode="none" autocomplete="off" readonly placeholder="EAN"><button id="searchButton" class="primary" type="button">Buscar</button></div><div id="cameraPanel" class="camera-panel hidden"><video id="video" playsinline muted autoplay></video><div class="scan-guide"><span></span></div><button id="closeCameraButton" class="danger floating-close" type="button">Fechar câmera</button></div><div id="lookupStatus" class="note">Câmera ligada.</div></section>
       <section id="productCard" class="card product-card hidden"><div class="product-head"><img id="productImage" alt="Produto" loading="eager"><div><div class="eyebrow">Produto encontrado</div><h1 id="productName">Aguardando leitura</h1><p id="productMeta">Leia o EAN ou pesquise pelo nome.</p></div></div><div class="old-values"><div><span>Estoque anterior</span><strong id="oldStock">—</strong></div><div><span>Validade anterior</span><strong id="oldValidity">—</strong></div><div><span>Local</span><strong id="oldLocation">—</strong></div></div><div class="form-grid count-fields"><label class="large">Estoque<input id="stockInput" type="text" inputmode="none" readonly placeholder="0"></label><label>Validade<input id="validityInput" type="text" inputmode="none" readonly placeholder="dd/mm/aaaa"></label><label>Preço custo<input id="costInput" type="text" inputmode="none" readonly placeholder="0,00"></label><label>Preço venda<input id="priceInput" type="text" inputmode="none" readonly placeholder="0,00"></label><label>Gôndola<input id="gondolaInput" type="text" inputmode="none" readonly placeholder="—"></label><label>Prateleira<input id="shelfInput" type="text" inputmode="none" readonly placeholder="—"></label></div><div id="saveStatus" class="note"></div><div class="sticky-actions"><button id="skipButton" class="secondary" type="button">Pular</button><button id="saveButton" class="primary big" type="button">Salvar e próximo</button></div></section>
       <section id="notFoundCard" class="card hidden"><div class="eyebrow">Produto não encontrado</div><h2 id="notFoundCode">EAN</h2><p>Esse código não foi localizado no cadastro antigo.</p><div class="actions"><button id="retryButton" class="secondary" type="button">Tentar novamente</button><a id="openLegacyCadastro" class="primary link-button" href="../cadastro/">Abrir cadastro</a></div></section>
@@ -33,5 +62,6 @@
   <script src="../contagem-v2/stock-zero-guard.js?v=20260907-01"></script>
   <script src="../contagem-v2/kiosk-mode.js?v=20260907-03"></script>
   <script src="./product-edit-controls.js?v=20260907-01"></script>
+  <script src="./fast-mode.js?v=20260908-01"></script>
 </body>
 </html>
