@@ -57,7 +57,8 @@ try{
   assert.equal(bundle.enabled,true);assert.ok(bundle.guidance.length>=6);assert.ok(bundle.procedures.length>=3);
   assert.ok(bundle.guidance.some(x=>String(x.instruction).includes('contador')),'bundle publicado contém regra do catálogo próprio');
 
-  await db.exec(`insert into public.messages(conversation_id,direction,message_type,body_text,ai_interpretation,raw_event) values('${ids.conversation_id}','inbound','text','quero arroz','{}','{"source":"whatsapp"}')`);
+  // A interpretação de linguagem natural pertence ao worker de IA. O contexto SQL recebe a consulta já reduzida.
+  await db.exec(`insert into public.messages(conversation_id,direction,message_type,body_text,ai_interpretation,raw_event) values('${ids.conversation_id}','inbound','text','arroz','{}','{"source":"whatsapp"}')`);
   const mid=(await one(`select id from public.messages where conversation_id='${ids.conversation_id}' order by created_at desc limit 1`)).id;
   const ctx=await jsonVal(`select public.build_whatsapp_sales_context_v1('${ids.conversation_id}','${mid}') x`);
   assert.equal(ctx.catalog_source,'counter_verified');assert.equal(ctx.cart.items.length,1);assert.equal(ctx.product_candidates.length,1);assert.equal(ctx.intelligence.enabled,true);
