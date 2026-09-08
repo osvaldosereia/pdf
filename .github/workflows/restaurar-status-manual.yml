@@ -1,13 +1,9 @@
 name: Preservar status manual dos produtos
 run-name: Status manual · ${{ github.event_name }}
 
+# Legado: mantido apenas para execução manual deliberada.
 on:
-  workflow_run:
-    workflows: ["Processar ofertas automáticas"]
-    types: [completed]
   workflow_dispatch:
-  schedule:
-    - cron: "20 * * * *"
 
 permissions:
   contents: read
