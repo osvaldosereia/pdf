@@ -198,7 +198,8 @@ Documento: `docs/ETAPA-13-COLLECTION-EXPECTATIONS-V1.md`.
 
 **13C — Driver App + contexto financeiro ledger-first**
 
-- PR #221 em validação nesta rodada;
+- PR #221 integrada — merge commit `541224e480502707760f073bb08a980351ae3ace`;
+- migration `stage13_driver_financial_context_v1` aplicada ao Supabase;
 - `JÁ PAGO | COBRAR | REVISAR` por parada;
 - saldo/método/troco determinísticos no PWA;
 - dinheiro recebido pelo entregador -> ledger `operational_confirmed`;
@@ -206,21 +207,39 @@ Documento: `docs/ETAPA-13-COLLECTION-EXPECTATIONS-V1.md`.
 - valor divergente bloqueia antes da entrega;
 - `driver_deliver_stop_v3` não chama `confirm_order_payment_v1`;
 - pagamento do domínio fiscal não é confirmado pelo Driver App;
-- PWA permanece `enabled=false` e Edge Function não é implantada automaticamente.
+- PWA permanece `enabled=false` e Edge Function não foi implantada.
 
 Documento: `docs/ETAPA-13-DRIVER-FINANCIAL-V1.md`.
 
-### Estado de runtime preservado
+CI 13C, regressão da Etapa 11 e regressão geral ficaram verdes para o código mesclado. Security Advisor pós-DDL sem alerta novo da 13C.
+
+### Estado de runtime preservado após 13C
 
 ```text
 financial.enabled=false
 financial.execution_mode=off
 financial.canary_percent=0
+driver_financial_context_enabled=false
+driver_collection_recording_enabled=false
+driver_delivery_financial_guard_enabled=false
 logistics.enabled=false
 logistics.driver_app_enabled=false
 fiscal.enabled=false
 bling_invoice_prepare_enabled=false
 bling_invoice_send_enabled=false
+orders=0
+drivers=0
+routes=0
+stops=0
+financial_ledger_entries=0
+financial_payment_expectations=0
+financial_route_collection_manifests=0
+```
+
+Fail-closed confirmado:
+
+```text
+preview_driver_order_collection_v1 -> driver_financial_context_disabled
 ```
 
 ### O que ainda falta para concluir a Etapa 13
