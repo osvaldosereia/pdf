@@ -2,7 +2,7 @@
   'use strict';
   const C=window.DA_ADMIN_V3_CONFIG||{};
   const AUTH_KEY='da_admin_v3_auth';
-  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[ch]));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   const n=v=>new Intl.NumberFormat('pt-BR').format(Number(v||0));
   const pct=v=>v===null||v===undefined?'—':`${new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2}).format(Number(v))}%`;
   const fmt=v=>{if(!v)return '—';const d=new Date(v);return Number.isNaN(d.getTime())?'—':d.toLocaleString('pt-BR')};
@@ -23,7 +23,7 @@
   }
   function toast(message,kind=''){const region=document.getElementById('toastRegion');if(!region)return;const x=document.createElement('div');x.className=`toast ${kind}`.trim();x.textContent=message;region.appendChild(x);setTimeout(()=>x.remove(),kind==='error'?6500:3500)}
   function actionLabel(v){return ({conversation:'Conversa',deterministic:'Resposta oficial',carousel:'Carrossel',whatsapp_flow:'WhatsApp Flow',shopping_room:'Sala de Compra',human:'Humano'})[v]||v||'—'}
-  function statusBadge(v){const s=String(v||'');const kind=s==='active'?'success':s==='ready'?'info':s==='draft'?'warning':'muted';return `<span class="exp-badge ${kind}">${esc(s||'—')}</span>`}
+  function statusBadge(v){const s=String(v||'');const kind=s==='active'||s==='running'?'success':s==='ready'?'info':s==='draft'?'warning':'muted';return `<span class="exp-badge ${kind}">${esc(s||'—')}</span>`}
   function metric(value,label,help){return `<article class="exp-metric"><strong>${esc(value)}</strong><span>${esc(label)}</span><small>${esc(help)}</small></article>`}
   function shell(){return `
     <section class="exp-shell">
@@ -37,6 +37,7 @@
         <section class="exp-card"><header><div><small>Readiness</small><h3>Contrato do Flow de cesta</h3></div></header><div id="expFlowReadiness" class="exp-list"><div class="empty">Carregando…</div></div></section>
         <section class="exp-card"><header><div><small>Últimos 7 dias</small><h3>Funil por experiência</h3></div></header><div id="expFunnel" class="exp-list"><div class="empty">Nenhuma sessão.</div></div></section>
       </div>
+      <section class="exp-card"><header><div><small>A/B controlado</small><h3>Experimentos preparados</h3></div><span class="exp-badge muted">somente leitura</span></header><div id="expExperiments" class="exp-list"><div class="empty">Nenhum experimento.</div></div></section>
       <section class="exp-card"><header><div><small>Simulador sem efeitos</small><h3>Qual interface seria escolhida?</h3></div></header>
         <form id="expPreviewForm" class="exp-form">
           <label>Conversa<select id="expConversation" required></select></label>
@@ -70,6 +71,8 @@
       <div class="exp-row"><div><strong>Exposição de componentes</strong><small>Preço individual permanece oculto por contrato.</small></div>${readiness.component_prices_visible?'<span class="exp-badge warning">revisar</span>':'<span class="exp-badge success">seguro</span>'}</div>`;
     const funnel=data.funnel?.definitions||[];
     root.querySelector('#expFunnel').innerHTML=funnel.length?funnel.map(x=>`<div class="exp-row"><div><strong>${esc(x.slug)}</strong><small>${n(x.sessions)} sessões · ${n(x.completed)} concluídas · ${n(x.abandoned)} abandonos · ${n(x.expired)} expiradas</small></div><div><span class="exp-badge info">abertura ${esc(pct(x.open_rate))}</span><span class="exp-badge ${Number(x.completion_rate||0)>=70?'success':'muted'}">conclusão ${esc(pct(x.completion_rate))}</span></div></div>`).join(''):'<div class="empty">Nenhuma sessão no período.</div>';
+    const experiments=data.experiments?.experiments||[];
+    root.querySelector('#expExperiments').innerHTML=experiments.length?experiments.map(x=>{const variants=(x.variants||[]).map(v=>v.key).join(' vs ');return `<div class="exp-row"><div><strong>${esc(x.name)}</strong><small>${esc(x.objective)}</small><small>${esc(variants)} · alocação ${n(x.allocation_percent)}% · ${n(x.assignments)} assignment(s)</small></div><div>${statusBadge(x.status)}</div></div>`}).join(''):'<div class="empty">Nenhum experimento preparado.</div>';
     const conv=data.conversations||[];root.querySelector('#expConversation').innerHTML=conv.length?conv.map(c=>`<option value="${esc(c.id)}">${esc(c.channel)} · ${esc(c.stage||c.status)} · ${esc(c.automation_cohort||'sem cohort')} · ${esc(c.id.slice(0,8))}</option>`).join(''):'<option value="">Nenhuma conversa disponível</option>';
     const events=d.recent_events||[];root.querySelector('#expEvents').innerHTML=events.length?events.map(e=>`<div class="exp-row"><div><strong>${esc(e.event_type)}</strong><small>${esc(actionLabel(e.interface_type))} · ${esc(e.cohort||'—')} · ${fmt(e.created_at)}</small></div></div>`).join(''):'<div class="empty">Nenhum evento de experiência registrado.</div>';
   }
