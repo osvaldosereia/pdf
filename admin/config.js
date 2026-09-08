@@ -5,6 +5,8 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   whatsappOpsEdgeFunction: 'admin-whatsapp-ops-v1',
   experienceOrchestratorEdgeFunction: 'admin-experience-orchestrator-v1',
   experienceOrchestratorUiEnabled: false,
+  automationBuilderEdgeFunction: 'admin-automation-builder-v1',
+  automationBuilderUiEnabled: false,
   countAppUrl: '../contagem/',
-  build: '20260908-admin-orchestrator-foundation-01'
+  build: '20260908-admin-automation-builder-foundation-01'
 });
