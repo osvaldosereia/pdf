@@ -1,0 +1,4 @@
+.paper.items-only-mode #summarySubtotalRow,
+.paper.items-only-mode #summaryDiscountRow{
+  display:none!important;
+}
