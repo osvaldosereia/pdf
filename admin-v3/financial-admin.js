@@ -29,14 +29,15 @@
 
   function renderShell(root){
     root.innerHTML=`
-      <div class="fin-head"><div><div class="eyebrow">Etapa 13D</div><h2>Central Financeira</h2><p>Ledger, expectativas, eventos externos e conciliação determinística. Nenhum provider real nesta versão.</p></div><button id="finRefresh" class="button secondary small" type="button">Atualizar</button></div>
+      <div class="fin-head"><div><div class="eyebrow">Etapa 13</div><h2>Central Financeira</h2><p>Ledger, expectativas, eventos externos e conciliação determinística. Nenhum provider real nesta versão.</p></div><button id="finRefresh" class="button secondary small" type="button">Atualizar</button></div>
       <div id="finBanner" class="ops-alert safe">Módulo financeiro dormente.</div>
       <div id="finMetrics" class="metrics"></div>
       <div class="fin-grid">
         <section class="panel"><div class="panel-head"><div><div class="eyebrow">Conciliação</div><h2>Eventos externos recentes</h2></div></div><div id="finEvents" class="list"><div class="empty">Sem dados.</div></div></section>
         <section class="panel"><div class="panel-head"><div><div class="eyebrow">Matcher</div><h2>Avaliações recentes</h2></div></div><div id="finMatches" class="list"><div class="empty">Sem dados.</div></div></section>
       </div>
-      <section class="panel"><div class="panel-head"><div><div class="eyebrow">Exceções</div><h2>Casos de conciliação abertos</h2></div></div><div id="finCases" class="list"><div class="empty">Sem dados.</div></div></section>`;
+      <section class="panel"><div class="panel-head"><div><div class="eyebrow">Exceções</div><h2>Casos de conciliação abertos</h2></div></div><div id="finCases" class="list"><div class="empty">Sem dados.</div></div></section>
+      <div id="financialPolicyAdminMount"></div>`;
     $('finRefresh').onclick=load;
   }
 
@@ -76,6 +77,16 @@
     finally{state.loading=false}
   }
 
-  async function mount(root){if(state.mounted||!root)return;state.mounted=true;renderShell(root);await load()}
+  function mountPolicyModule(){
+    const root=$('financialPolicyAdminMount');if(!root)return;
+    if(!document.querySelector('link[data-financial-policy-admin]')){
+      const link=document.createElement('link');link.rel='stylesheet';link.href='../admin-v3/financial-policy-admin.css?v=20260908-01';link.dataset.financialPolicyAdmin='1';document.head.appendChild(link);
+    }
+    if(!document.querySelector('script[data-financial-policy-admin]')){
+      const script=document.createElement('script');script.src='../admin-v3/financial-policy-admin.js?v=20260908-01';script.dataset.financialPolicyAdmin='1';script.onload=()=>window.DAFinancialPolicyAdmin?.mount(root);document.body.appendChild(script);
+    }else window.DAFinancialPolicyAdmin?.mount(root);
+  }
+
+  async function mount(root){if(state.mounted||!root)return;state.mounted=true;renderShell(root);mountPolicyModule();await load()}
   window.DAFinancialAdmin=Object.freeze({mount});
 })();
