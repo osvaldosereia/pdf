@@ -48,6 +48,7 @@ try{
     );
   `);
   await db.exec(readFileSync('supabase/migrations/20260908153000_stage12_label_recall_control_tower_v1.sql','utf8'));
+  await db.exec(readFileSync('supabase/migrations/20260908153100_stage12_label_recall_control_tower_v1_fix.sql','utf8'));
 
   let cfg=await one(`select * from public.operational_control_runtime_config where id=1`);
   for(const k of ['enabled','label_preview_enabled','label_recording_enabled','label_dispatch_enabled','recall_preview_enabled','recall_case_enabled','recall_quarantine_enabled','control_tower_enabled','sla_preview_enabled','sla_exception_recording_enabled'])if(cfg[k]!==false)throw new Error(`unsafe_default_${k}`);
