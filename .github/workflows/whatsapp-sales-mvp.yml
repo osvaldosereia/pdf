@@ -37,6 +37,7 @@ jobs:
           node scripts/test-whatsapp-objective-service-v1.mjs
           node scripts/test-whatsapp-official-resources-v1.mjs
           node scripts/test-whatsapp-product-quantity-step-v1.mjs
+          node scripts/test-whatsapp-sales-mvp-checkout-address-first-v1.mjs
       - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
