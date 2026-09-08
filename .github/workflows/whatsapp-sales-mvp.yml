@@ -1,5 +1,22 @@
 name: Dona Antonia WhatsApp Sales MVP
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908210*.sql'
+      - 'supabase/migrations/20260908211*.sql'
+      - 'supabase/functions/conversation-worker-v3/**'
+      - 'supabase/functions/admin-service-intelligence-v1/**'
+      - 'scripts/bling-order-writer-v1.mjs'
+      - 'scripts/test-whatsapp-sales-mvp-*.mjs'
+      - 'scripts/test-whatsapp-current-message-precedence-v1.mjs'
+      - 'scripts/test-whatsapp-objective-service-v1.mjs'
+      - 'scripts/test-whatsapp-official-resources-v1.mjs'
+      - 'scripts/test-whatsapp-product-quantity-step-v1.mjs'
+      - 'admin/index.html'
+      - 'admin/inteligencia.html'
+      - 'admin-v3/service-intelligence.*'
+      - '.github/workflows/whatsapp-sales-mvp.yml'
   pull_request:
     paths:
       - 'supabase/migrations/20260908210*.sql'
