@@ -28,7 +28,7 @@ Deno.serve(async(req:Request)=>{
     const [{data:readiness,error:readinessError},{data:metrics,error:metricsError},{data:jobs,error:jobsError},{data:routes,error:routesError},{data:drivers,error:driversError},{data:vehicles,error:vehiclesError},{data:incidents,error:incidentsError}]=await Promise.all([
       sb.rpc("logistics_readiness_v1"),
       sb.rpc("logistics_metrics_v1",{}),
-      sb.from("delivery_jobs").select("id,order_id,status,customer_name,address_snapshot,geocode_status,volumes,amount_due,priority,ready_at,created_at").order("priority",{ascending:false}).order("ready_at").limit(100),
+      sb.from("delivery_jobs").select("id,order_id,status,customer_name,address_snapshot,geocode_status,latitude,longitude,volumes,amount_due,priority,ready_at,created_at").order("priority",{ascending:false}).order("ready_at").limit(100),
       sb.from("delivery_routes").select("id,route_code,route_date,status,driver_id,vehicle_id,optimization_status,planned_start_at,published_at,started_at,completed_at,version_no").order("route_date",{ascending:false}).limit(50),
       sb.from("drivers").select("id,display_name,status,max_active_routes,capabilities,updated_at").order("display_name").limit(100),
       sb.from("vehicles").select("id,code,label,status,vehicle_type,max_stops,max_weight_kg,max_volume_units,updated_at").order("code").limit(100),
@@ -36,7 +36,7 @@ Deno.serve(async(req:Request)=>{
     ]);
     const error=readinessError||metricsError||jobsError||routesError||driversError||vehiclesError||incidentsError;
     if(error)return json({ok:false,error:"dashboard_read_failed",detail:error.message},500);
-    return json({ok:true,user:{role:admin.role,display_name:admin.display_name||null},readiness,metrics,jobs:jobs||[],routes:routes||[],drivers:drivers||[],vehicles:vehicles||[],incidents:incidents||[],runtime_activation_supported:false,external_routing_supported:false});
+    return json({ok:true,user:{role:admin.role,display_name:admin.display_name||null},readiness,metrics,jobs:jobs||[],routes:routes||[],drivers:drivers||[],vehicles:vehicles||[],incidents:incidents||[],runtime_activation_supported:false,route_publish_supported:false,external_routing_supported:false});
   }
 
   if(action==="preview_ready_order"){
@@ -44,6 +44,21 @@ Deno.serve(async(req:Request)=>{
     const {data,error}=await sb.rpc("preview_delivery_job_from_ready_order_v1",{p_order_id:orderId});
     if(error)return json({ok:false,error:"preview_failed",detail:error.message},400);
     return json({ok:true,preview:data,side_effect_performed:false});
+  }
+
+  if(action==="draft_route"){
+    if(!isOwner)return json({ok:false,error:"owner_required"},403);
+    const raw=Array.isArray(body?.job_ids)?body.job_ids:[];
+    const jobIds=[...new Set(raw.map(uuid).filter(Boolean))];
+    if(!jobIds.length||jobIds.length>200)return json({ok:false,error:"invalid_job_ids"},400);
+    const driverId=body?.driver_id?uuid(body.driver_id):null,vehicleId=body?.vehicle_id?uuid(body.vehicle_id):null;
+    if(body?.driver_id&&!driverId)return json({ok:false,error:"invalid_driver_id"},400);
+    if(body?.vehicle_id&&!vehicleId)return json({ok:false,error:"invalid_vehicle_id"},400);
+    const routeDate=clean(body?.route_date,20)||new Date().toISOString().slice(0,10);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(routeDate))return json({ok:false,error:"invalid_route_date"},400);
+    const {data,error}=await sb.rpc("create_delivery_route_draft_v1",{p_job_ids:jobIds,p_driver_id:driverId,p_vehicle_id:vehicleId,p_route_date:routeDate,p_actor_id:userData.user.id,p_reason:clean(body?.reason,200)||"admin_draft"});
+    if(error)return json({ok:false,error:"route_draft_failed",detail:error.message},400);
+    return json({ok:true,draft:data,published:false,external_side_effect:false});
   }
 
   if(action==="save_driver_draft"){
@@ -76,7 +91,6 @@ Deno.serve(async(req:Request)=>{
     const patch=obj(body?.patch) as Record<string,unknown>,safe:Record<string,unknown>={};
     for(const [k,v] of Object.entries(patch))if(allowed.has(k))safe[k]=v;
     if(!Object.keys(safe).length)return json({ok:false,error:"empty_policy_patch"},400);
-    // Gates operacionais e provider permanecem deliberadamente OFF nesta etapa.
     Object.assign(safe,{enabled:false,execution_mode:"off",job_creation_enabled:false,routing_enabled:false,driver_app_enabled:false,gps_tracking_enabled:false,notifications_enabled:false,external_provider_enabled:false,provider_name:"none",canary_percent:0,updated_at:new Date().toISOString(),updated_by:userData.user.id});
     const {data,error}=await sb.from("logistics_runtime_config").update(safe).eq("id",1).select().single();
     if(error)return json({ok:false,error:"policy_draft_failed",detail:error.message},400);
