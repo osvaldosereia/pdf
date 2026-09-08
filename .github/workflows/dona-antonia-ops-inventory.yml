@@ -1,0 +1,30 @@
+name: Audit Dona Antonia operational inventory
+
+on:
+  pull_request:
+    paths:
+      - 'ops/dona-antonia/**'
+      - 'scripts/audit-make-inventory-v1.mjs'
+      - '.github/workflows/dona-antonia-ops-inventory.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'ops/dona-antonia/**'
+      - 'scripts/audit-make-inventory-v1.mjs'
+      - '.github/workflows/dona-antonia-ops-inventory.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate Make inventory and cost policy
+        run: node scripts/audit-make-inventory-v1.mjs
