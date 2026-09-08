@@ -137,15 +137,18 @@ test('node and edge workers share one deterministic conversation core',()=>{
   assert.equal(nodeCore.trim(),"export * from '../../supabase/functions/_shared/conversation-core-v1.mjs';");
 });
 
-test('admin exposes observability, handoff and emergency stop but no live-release button',()=>{
+test('admin exposes unified human inbox and emergency stop without one-click AI resume or live release',()=>{
   has(adminHtml,/data-route="whatsapp"/);
-  has(adminHtml,/Atendimento IA/);
+  has(adminHtml,/Atendimento IA/,'legacy route remains compatible in static HTML');
+  has(adminJs,/Inbox omnichannel/,'runtime UI must expose the unified inbox');
   has(adminJs,/claim_handoff/);
   has(adminJs,/resolve_handoff/);
-  has(adminJs,/resume_ai/);
+  has(adminJs,/operator_reply/,'claimed human handoff can answer from Admin through the guarded operator queue');
+  has(adminJs,/IA não foi retomada automaticamente/,'resolution must visibly preserve human/AI safety');
   has(adminJs,/emergency_stop/);
+  assert.doesNotMatch(adminJs,/data-wa-resume/,'unified inbox must not offer accidental resolve+AI shortcut');
   assert.doesNotMatch(adminHtml,/LIBERAR_ATENDIMENTO_REAL/);
-  assert.doesNotMatch(adminJs,/configure_release/,'live rollout must not be one-click UI in v1');
+  assert.doesNotMatch(adminJs,/configure_release/,'live rollout must not be one-click UI');
 });
 
 test('admin operations edge is JWT/admin gated and live change is owner-only',()=>{
