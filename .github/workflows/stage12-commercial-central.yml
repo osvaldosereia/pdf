@@ -1,0 +1,64 @@
+name: Stage 12 Commercial Central
+
+on:
+  pull_request:
+    paths:
+      - 'admin/index.html'
+      - 'admin/config.js'
+      - 'admin-v3/commercial-truth.js'
+      - 'admin-v3/commercial-truth.css'
+      - 'lib/commercial/**'
+      - 'scripts/commercial-snapshot-v1.mjs'
+      - 'scripts/test-stage12-commercial-central-v1.mjs'
+      - '.github/workflows/stage12-commercial-central.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'admin/index.html'
+      - 'admin/config.js'
+      - 'admin-v3/commercial-truth.js'
+      - 'admin-v3/commercial-truth.css'
+      - 'lib/commercial/**'
+      - 'scripts/commercial-snapshot-v1.mjs'
+      - 'scripts/test-stage12-commercial-central-v1.mjs'
+      - '.github/workflows/stage12-commercial-central.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            admin/index.html
+            admin/config.js
+            admin-v3/commercial-truth.js
+            admin-v3/commercial-truth.css
+            lib/commercial/
+            scripts/commercial-snapshot-v1.mjs
+            scripts/test-stage12-commercial-central-v1.mjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Contratos da Central Comercial
+        run: node scripts/test-stage12-commercial-central-v1.mjs
+      - name: Sintaxe
+        run: |
+          node --check admin-v3/commercial-truth.js
+          node --check lib/commercial/commercial-snapshot-v1.mjs
+          node --check scripts/commercial-snapshot-v1.mjs
+      - name: Snapshot determinístico de fixture
+        run: |
+          cat > "$RUNNER_TEMP/commercial-input.json" <<'JSON'
+          {"lots":[],"products":[],"delivered_items":[],"margin_events":[]}
+          JSON
+          SNAPSHOT_NOW=2026-09-08T12:00:00Z node scripts/commercial-snapshot-v1.mjs --input "$RUNNER_TEMP/commercial-input.json" --output "$RUNNER_TEMP/commercial-snapshot.json"
+          grep -q '"external_side_effect": false' "$RUNNER_TEMP/commercial-snapshot.json"
+          grep -q '"version": "stage12-commercial-snapshot-v1"' "$RUNNER_TEMP/commercial-snapshot.json"
