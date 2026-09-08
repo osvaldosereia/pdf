@@ -6,7 +6,7 @@ on:
       - 'supabase/migrations/20260908210*.sql'
       - 'supabase/migrations/20260908211*.sql'
       - 'supabase/migrations/20260908223*.sql'
-      - 'supabase/migrations/20260908230*.sql'
+      - 'supabase/migrations/2026090823*.sql'
       - 'supabase/functions/conversation-worker-v3/**'
       - 'supabase/functions/admin-service-intelligence-v1/**'
       - 'supabase/functions/basket-shop-v1/**'
@@ -20,6 +20,7 @@ on:
       - 'scripts/test-whatsapp-product-quantity-step-v1.mjs'
       - 'scripts/test-whatsapp-release-pregate-v1.mjs'
       - 'scripts/test-whatsapp-basket-return-link-v1.mjs'
+      - 'scripts/test-whatsapp-interactive-escape-fix-v1.mjs'
       - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin/config.js'
@@ -32,7 +33,7 @@ on:
       - 'supabase/migrations/20260908210*.sql'
       - 'supabase/migrations/20260908211*.sql'
       - 'supabase/migrations/20260908223*.sql'
-      - 'supabase/migrations/20260908230*.sql'
+      - 'supabase/migrations/2026090823*.sql'
       - 'supabase/functions/conversation-worker-v3/**'
       - 'supabase/functions/admin-service-intelligence-v1/**'
       - 'supabase/functions/basket-shop-v1/**'
@@ -46,6 +47,7 @@ on:
       - 'scripts/test-whatsapp-product-quantity-step-v1.mjs'
       - 'scripts/test-whatsapp-release-pregate-v1.mjs'
       - 'scripts/test-whatsapp-basket-return-link-v1.mjs'
+      - 'scripts/test-whatsapp-interactive-escape-fix-v1.mjs'
       - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin/config.js'
@@ -79,6 +81,7 @@ jobs:
           node scripts/test-whatsapp-basket-showcase-swap-v1.mjs
           node scripts/test-whatsapp-release-pregate-v1.mjs
           node scripts/test-whatsapp-basket-return-link-v1.mjs
+          node scripts/test-whatsapp-interactive-escape-fix-v1.mjs
       - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
