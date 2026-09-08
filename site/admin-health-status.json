@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-08T04:34:21.835Z",
+  "checkedAt": "2026-09-08T05:31:41.556Z",
   "baseUrl": "https://donaantonia.com.br",
   "ok": false,
   "checks": [
@@ -11,7 +11,7 @@
     {
       "name": "Entrada /producao aponta para o Admin oficial",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788842064100"
+      "detail": "OK · https://donaantonia.com.br/producao/?_health=1788845504480"
     },
     {
       "name": "Atalho /admin aponta para o Admin oficial",
@@ -21,7 +21,7 @@
     {
       "name": "Admin oficial carregado",
       "ok": true,
-      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788842064704"
+      "detail": "OK · https://donaantonia.com.br/producao-v2/?_health=1788845505242"
     },
     {
       "name": "Módulos ativos do Admin estão publicados",
@@ -56,17 +56,17 @@
     {
       "name": "Runtime do Admin carrega lista e cadastro completo",
       "ok": true,
-      "detail": "2009 produto(s) em 237 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
+      "detail": "2009 produto(s) em 397 ms · cadastro Leite Piracanjuba Semidesnatado Zero Lactose 1 Litro"
     },
     {
       "name": "Pedidos usam consulta limitada no Firebase",
       "ok": true,
-      "detail": "12 pedido(s) retornado(s) em 233 ms · limite solicitado 12 · chaves OK"
+      "detail": "12 pedido(s) retornado(s) em 212 ms · limite solicitado 12 · chaves OK"
     },
     {
       "name": "Versão do catálogo válida",
       "ok": true,
-      "detail": "catalog-14d23ec15ce30a4e · público 1626 · admin 2009"
+      "detail": "catalog-b2960532a7aa5b87 · público 1626 · admin 2009"
     },
     {
       "name": "Banners permanecem removidos",
@@ -90,8 +90,8 @@
     },
     {
       "name": "Rotina horária de ofertas atualizada",
-      "ok": false,
-      "detail": "1.0h desde a execução · status sucesso · 152 expirada(s) ainda ativa(s)"
+      "ok": true,
+      "detail": "0.1h desde a execução · status sucesso · 0 expirada(s) ainda ativa(s)"
     },
     {
       "name": "Arquitetura por rota do Admin",
@@ -116,11 +116,6 @@
       "detail": "Conteúdo ausente: producao-v2, admin-produtivo.html"
     },
     {
-      "name": "Rotina horária de ofertas atualizada",
-      "ok": false,
-      "detail": "1.0h desde a execução · status sucesso · 152 expirada(s) ainda ativa(s)"
-    },
-    {
       "name": "Arquitetura por rota do Admin",
       "ok": false,
       "detail": "O teste local da arquitetura por rota falhou. Consulte admin-architecture.log no artefato do workflow."
@@ -134,11 +129,11 @@
   "warnings": [],
   "workflow": {
     "event": "schedule",
-    "runId": "34187399371",
+    "runId": "34190876063",
     "attempt": "1",
-    "sourceSha": "944a7818ffe0679f5194175e971dd9aa01316c39",
+    "sourceSha": "ab4bc0df089f454dc93306c35506f355a061c539",
     "architecture": "failure",
     "mugStudio": "failure",
-    "publishedAt": "2026-09-08T04:34:29.015Z"
+    "publishedAt": "2026-09-08T05:31:49.858Z"
   }
 }
