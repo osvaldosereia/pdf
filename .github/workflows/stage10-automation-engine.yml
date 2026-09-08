@@ -1,0 +1,29 @@
+name: Stage 10 Automation Engine
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908070000_automation_engine_stage10_v1.sql'
+      - 'supabase/functions/admin-automation-builder-v1/**'
+      - 'scripts/test-automation-engine-stage10-v1.mjs'
+      - '.github/workflows/stage10-automation-engine.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908070000_automation_engine_stage10_v1.sql'
+      - 'supabase/functions/admin-automation-builder-v1/**'
+      - 'scripts/test-automation-engine-stage10-v1.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/test-automation-engine-stage10-v1.mjs
