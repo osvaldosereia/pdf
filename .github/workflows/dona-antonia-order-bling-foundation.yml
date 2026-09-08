@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908030000_order_bling_homologation_foundation_v2.sql'
+      - 'supabase/migrations/20260908030100_order_bling_stock_guard_v1.sql'
       - 'scripts/bling-order-writer-v1.mjs'
       - 'scripts/run-bling-order-homologation-v1.mjs'
       - 'scripts/test-order-bling-homologation-foundation-v2.mjs'
@@ -12,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908030000_order_bling_homologation_foundation_v2.sql'
+      - 'supabase/migrations/20260908030100_order_bling_stock_guard_v1.sql'
       - 'scripts/bling-order-writer-v1.mjs'
       - 'scripts/run-bling-order-homologation-v1.mjs'
       - 'scripts/test-order-bling-homologation-foundation-v2.mjs'
