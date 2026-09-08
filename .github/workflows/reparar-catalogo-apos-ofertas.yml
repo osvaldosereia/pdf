@@ -1,81 +1,16 @@
-name: Reparar catálogo após ofertas
+name: LEGADO DESATIVADO · Reparar catálogo após ofertas
 
+# Desativado em 08/09/2026 junto com o motor antigo de ofertas.
+# O histórico permanece no Git; nenhuma cadeia automática deve partir deste arquivo.
 on:
-  workflow_run:
-    workflows: ["Processar ofertas automáticas"]
-    types: [completed]
   workflow_dispatch:
 
 permissions:
-  contents: write
-
-concurrency:
-  group: reparar-catalogo-apos-ofertas
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  reparar:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+  desativado:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: main
-          fetch-depth: 0
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-      - name: Gerar catálogo oficial filtrado
-        env:
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          FIREBASE_AUTH_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}
-          PRODUCTS_HOME_PATH: site/produtos-home.json
-          PRODUCTS_ADMIN_PATH: site/produtos-admin.json
-          CATALOG_VERSION_PATH: catalog-version.json
-        run: node scripts/sincronizar-produtos-home-firebase.mjs
-      - name: Compactar e validar
-        env:
-          PRODUCTS_HOME_PATH: site/produtos-home.json
-          PRODUCTS_ADMIN_PATH: site/produtos-admin.json
-          CATALOG_VERSION_PATH: catalog-version.json
-        run: |
-          node scripts/estabilizar-catalogo-publico.mjs
-          node -e "const v=require('./catalog-version.json'); if(!v.version || !v.productCount || v.productCount > v.adminProductCount) process.exit(1)"
-      - name: Publicar catálogo corrigido
-        shell: bash
-        env:
-          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
-          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-          FIREBASE_AUTH_TOKEN: ${{ secrets.FIREBASE_AUTH_TOKEN }}
-          PRODUCTS_HOME_PATH: site/produtos-home.json
-          PRODUCTS_ADMIN_PATH: site/produtos-admin.json
-          CATALOG_VERSION_PATH: catalog-version.json
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add site/produtos-home.json site/produtos-admin.json catalog-version.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Repara catálogo público após processamento de ofertas"
-          for tentativa in 1 2 3 4 5; do
-            if git push origin HEAD:main; then exit 0; fi
-
-            echo "O catálogo mudou no main; regenerando sobre a versão mais recente."
-            git fetch origin main
-            git reset --hard origin/main
-            node scripts/sincronizar-produtos-home-firebase.mjs
-            node scripts/estabilizar-catalogo-publico.mjs
-            node -e "const v=require('./catalog-version.json'); if(!v.version || !v.productCount || v.productCount > v.adminProductCount) process.exit(1)"
-            git add site/produtos-home.json site/produtos-admin.json
-            if git diff --cached --quiet; then
-              git restore catalog-version.json
-              echo "Outro processo já publicou o mesmo catálogo."
-              exit 0
-            fi
-            git add catalog-version.json
-            git commit -m "Repara catálogo público após processamento de ofertas"
-            sleep $((tentativa * 2))
-          done
-          exit 1
+      - name: Informar estado
+        run: echo "Workflow legado de reparo pós-ofertas desativado."
