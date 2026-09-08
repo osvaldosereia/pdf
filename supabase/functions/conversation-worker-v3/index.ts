@@ -8,6 +8,7 @@ const clean=(v:unknown,max=500)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g,
 const money=(v:unknown)=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const uuid=(v:unknown)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clean(v,80))?clean(v,80):"";
 const arr=(v:unknown)=>Array.isArray(v)?v:[];
+const norm=(v:unknown)=>String(v??"").normalize("NFD").replace(/\p{Diacritic}/gu,"").toLowerCase().replace(/\s+/g," ").trim();
 async function sha256Hex(value:string){const d=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(value));return Array.from(new Uint8Array(d)).map(b=>b.toString(16).padStart(2,"0")).join("")}
 function bytesToBase64(bytes:Uint8Array){let binary="";for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
 function safeErrorCode(error:unknown){const m=error instanceof Error?error.message:"worker_failed";return /^[a-z_]+(?:_\d+)?$/.test(m)?m:"provider_or_sales_failed"}
@@ -48,7 +49,11 @@ function itemTitle(name:string){const s=clean(name,60);return s.length<=24?s:`${
 function productListInteractive(products:any[],body:string,action="add"){
   return {type:"list",body:{text:clean(body,1024)},action:{button:"Escolher",sections:[{title:"Opções",rows:products.slice(0,10).map(p=>({id:`da_${action}_product:${p.id}`,title:itemTitle(p.name),description:clean(`${money(p.price)} · ${p.packaging||p.brand||"Disponível"}`,72)}))}]}};
 }
+function basketListInteractive(baskets:any[]){
+  return {type:"list",body:{text:"Escolha uma das nossas 9 cestas básicas:"},action:{button:"Ver cestas",sections:[{title:"Cestas básicas",rows:baskets.slice(0,9).map((b:any)=>({id:`da_basket:${b.id}`,title:itemTitle(b.display_name||b.name),description:money(b.base_price)}))}]}};
+}
 function confirmInteractive(body:string){return {type:"button",body:{text:clean(body,1024)},action:{buttons:[{type:"reply",reply:{id:"da_confirm_order",title:"Confirmar pedido"}},{type:"reply",reply:{id:"da_cart",title:"Revisar pedido"}},{type:"reply",reply:{id:"da_human",title:"Falar com equipe"}}]}}}
+function basketCustomerInteractive(body:string){return {type:"button",body:{text:clean(body,1024)},action:{buttons:[{type:"reply",reply:{id:"da_basket_customer_confirm",title:"Confirmar dados"}},{type:"reply",reply:{id:"da_basket_customer_change",title:"Alterar dados"}},{type:"reply",reply:{id:"da_human",title:"Falar com equipe"}}]}}}
 function cartText(cart:any){
   const items=arr(cart?.items);if(!items.length)return "Seu carrinho está vazio.";
   const lines=items.slice(0,30).map((i:any)=>`• ${Number(i.quantity)}× ${clean(i.name,80)}${i.unit_price==null?"":` — ${money(i.line_total)}`}`);
@@ -56,6 +61,23 @@ function cartText(cart:any){
 }
 function completeAddress(a:any){return Boolean(clean(a?.street)&&clean(a?.number)&&clean(a?.city))}
 function mergeAddress(a:any,b:any){const out:any={};for(const k of ["street","number","complement","neighborhood","city","state","postal_code","reference"]){out[k]=clean(b?.[k]||a?.[k],160)}return out}
+function categoryText(categories:any[]){return `Escolha as categorias que quer ver e responda com os números ou nomes. Pode escolher várias de uma vez:\n\n${categories.map((c:any,i:number)=>`${i+1}. ${clean(c.category,80)}`).join("\n")}`}
+function selectCategories(message:string,categories:any[]){
+  const out:any[]=[];const seen=new Set<string>();const n=norm(message);
+  for(const m of message.matchAll(/\b(\d{1,2})\b/g)){const idx=Number(m[1])-1;if(idx>=0&&idx<categories.length){const c=categories[idx];if(!seen.has(c.category)){seen.add(c.category);out.push(c)}}}
+  for(const c of categories){if(n.includes(norm(c.category))&&!seen.has(c.category)){seen.add(c.category);out.push(c)}}
+  return out;
+}
+function parseBasketCustomer(message:string){
+  const raw=String(message||"");const fields:any={};
+  const labels:any={nome:"name",rua:"street",quadra:"block",casa:"house",bairro:"neighborhood",localizador:"locator"};
+  const re=/(nome|rua|quadra|casa|bairro|localizador)\s*:\s*([^\n;|]+)/gi;
+  for(const m of raw.matchAll(re)){fields[labels[norm(m[1])]]=clean(m[2],180)}
+  return fields;
+}
+function customerPrompt(){return "Para finalizar, envie estes dados em uma única mensagem, um por linha:\n\nNome: \nRua: \nQuadra: \nCasa: \nBairro: \nLocalizador: ";}
+function customerStatusText(st:any){const u=st?.customer||{},a=st?.address||{};return `Encontrei seu cadastro:\n\nNome: ${clean(u.name,100)}\nRua: ${clean(a.street,100)}\nQuadra: ${clean(a.block||"—",80)}\nCasa: ${clean(a.house,60)}\nBairro: ${clean(a.neighborhood,100)}\nLocalizador: ${clean(a.locator||"—",120)}\n\nOs dados estão corretos?`}
+function dateBR(v:any){const s=clean(v,20);if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return s;const [y,m,d]=s.split("-");return `${d}/${m}/${y}`}
 
 Deno.serve(async(req:Request)=>{
   if(req.method!=="POST")return json({ok:false,error:"method_not_allowed"},405);
@@ -97,6 +119,17 @@ Deno.serve(async(req:Request)=>{
     const top=rows[0],second=rows[1];const decisive=rows.length===1||Number(top.score)>=90&&(Number(top.score)-Number(second?.score||0)>=8);
     return {product:decisive?top:null,ambiguous:!decisive,candidates:rows};
   };
+  const handoffBasket=async()=>{
+    const {data:reqData,error:reqError}=await sb.rpc("prepare_whatsapp_basket_handoff_v1",{p_conversation_id:job.conversation_id});if(reqError)throw new Error("basket_handoff_prepare_failed");
+    const changed=arr(reqData?.basket_selection).some((x:any)=>Boolean(x.changed));
+    const totalLabel=changed?"Subtotal atual":"Total";
+    const note=changed?"\nA equipe vai conferir as alterações feitas na composição da cesta antes de finalizar.":"";
+    const text=`Pedido recebido para conferência.\n\nCesta: ${clean(reqData?.basket_name,100)}\n${totalLabel}: ${money(reqData?.total)}\nEntrega prevista: ${dateBR(reqData?.delivery_date)}\nTaxa de entrega: R$ 0,00${note}\n\nVou transferir você para o atendimento humano para finalizar.`;
+    await queueReply(text,"text",null,null,"basket_ready_for_human",reqData,1);
+    await sb.rpc("clear_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id});
+    await sb.rpc("queue_human_handoff_v1",{p_conversation_id:job.conversation_id,p_reason:"basket_order_ready",p_message_id:job.message_id,p_priority:2,p_summary:`Cesta pronta para finalizar: ${clean(reqData?.basket_name,80)}`,p_context:{source:"whatsapp_basket_basic_v1",request_id:reqData?.request_id,total:reqData?.total,delivery_date:reqData?.delivery_date}});
+    return reqData;
+  };
 
   try{
     if(job.job_type==="transcription"){
@@ -114,6 +147,74 @@ Deno.serve(async(req:Request)=>{
     const {data:ctx,error:ctxError}=await sb.rpc("build_whatsapp_sales_context_v1",{p_conversation_id:job.conversation_id,p_message_id:job.message_id});if(ctxError||!ctx)throw new Error("sales_context_failed");
     const interactiveId=clean(ctx?.message?.interactive?.id,256);
     const stateAddress=ctx?.sales_state?.pending_delivery_address||{};
+    const currentText=String(ctx?.message?.text||"");
+    const awaiting=clean(ctx?.sales_state?.awaiting,80);
+
+    // Políticas comerciais fixas: respondidas antes da IA.
+    const {data:policy}=await sb.rpc("get_whatsapp_basic_policy_reply_v1",{p_message:currentText});
+    if(policy?.matched){
+      await queueReply(String(policy.reply||""),"text",null,null,`fixed_${clean(policy.kind,40)}`,policy,1);
+      if(policy.handoff)await sb.rpc("queue_human_handoff_v1",{p_conversation_id:job.conversation_id,p_reason:"delivery_time_question",p_message_id:job.message_id,p_priority:2,p_summary:"Cliente perguntou o horário da entrega; horário depende da rota/bairro.",p_context:{source:"whatsapp_basic_policy"}});
+      await finishSales({plan:{intent:"answer",deterministic:true},action_result:policy},{model:"deterministic_policy"},null);return json({ok:true,status:"done",action:`fixed_${policy.kind}`},200);
+    }
+
+    // Retorno do catálogo externo da cesta.
+    const {data:basketFlow}=await sb.rpc("get_whatsapp_basket_flow_state_v1",{p_conversation_id:job.conversation_id});
+    const pendingReturn=basketFlow?.pending_return;
+    if(pendingReturn?.intent==="extras"){
+      const {data:categories,error:catError}=await sb.rpc("get_whatsapp_basket_product_categories_v1");if(catError)throw new Error("basket_categories_failed");
+      await sb.rpc("consume_whatsapp_basket_return_v1",{p_session_id:pendingReturn.session_id});
+      await sb.rpc("update_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id,p_awaiting:"basket_categories",p_last_action:"basket_categories"});
+      await queueReply(categoryText(arr(categories)),"text",null,null,"basket_category_list",{categories},1);
+      await finishSales({plan:{intent:"baskets",deterministic:true},action_result:{categories}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_categories"},200);
+    }
+    if(pendingReturn?.intent==="order"||pendingReturn?.intent==="extras_done"){
+      await sb.rpc("consume_whatsapp_basket_return_v1",{p_session_id:pendingReturn.session_id});
+      const st=basketFlow?.customer_status||{};
+      if(st.registered){
+        const txt=customerStatusText(st);
+        await queueReply(txt,"interactive",null,basketCustomerInteractive(txt),"basket_confirm_customer",st,1);
+        await finishSales({plan:{intent:"checkout",deterministic:true},action_result:{customer_status:st}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_confirm_customer"},200);
+      }
+      await sb.rpc("update_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id,p_awaiting:"basket_customer_data",p_last_action:"basket_customer_data"});
+      await queueReply(customerPrompt(),"text",null,null,"basket_request_customer",{},1);
+      await finishSales({plan:{intent:"checkout",deterministic:true},action_result:{needs_customer_data:true}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_request_customer"},200);
+    }
+
+    // Respostas esperadas pelo fluxo simples da cesta.
+    if(awaiting==="basket_categories"){
+      const {data:categories,error:catError}=await sb.rpc("get_whatsapp_basket_product_categories_v1");if(catError)throw new Error("basket_categories_failed");
+      const selected=selectCategories(currentText,arr(categories));
+      if(!selected.length){await queueReply(`Não consegui identificar as categorias.\n\n${categoryText(arr(categories))}`,"text",null,null,"basket_category_retry",{},1);await finishSales({plan:{intent:"clarify",deterministic:true},action_result:{}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_category_retry"},200)}
+      const {data:session,error:sessionError}=await sb.rpc("create_whatsapp_basket_extras_session_v1",{p_conversation_id:job.conversation_id,p_categories:selected.map((x:any)=>x.category)});if(sessionError)throw new Error("basket_extras_session_failed");
+      await sb.rpc("update_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id,p_awaiting:"",p_last_action:"basket_extras_link"});
+      await queueReply(`Montei a vitrine somente com: ${selected.map((x:any)=>x.category).join(", ")}.\n\nAbra aqui para escolher os produtos:\n${session.url}`,"text",null,null,"basket_extras_link",session,1);
+      await finishSales({plan:{intent:"baskets",deterministic:true},action_result:session},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_extras_link"},200);
+    }
+    if(awaiting==="basket_customer_data"){
+      const f=parseBasketCustomer(currentText);
+      if(!f.name||!f.street||!f.house||!f.neighborhood||!f.locator){await queueReply(`Ainda faltou algum dado. Envie exatamente assim, um por linha:\n\n${customerPrompt()}`,"text",null,null,"basket_customer_retry",{},1);await finishSales({plan:{intent:"clarify",deterministic:true},action_result:{}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_customer_retry"},200)}
+      const {data:saved,error:saveError}=await sb.rpc("save_whatsapp_basket_customer_v1",{p_conversation_id:job.conversation_id,p_name:f.name,p_street:f.street,p_block:f.block||"",p_house:f.house,p_neighborhood:f.neighborhood,p_locator:f.locator});if(saveError)throw new Error("basket_customer_save_failed");
+      const ready=await handoffBasket();
+      await finishSales({plan:{intent:"checkout",deterministic:true},action_result:{customer:saved,request:ready}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_handoff"},200);
+    }
+
+    if(interactiveId.startsWith("da_basket:")){
+      const bid=uuid(interactiveId.slice("da_basket:".length));if(!bid)throw new Error("invalid_basket_selection");
+      const {data:session,error:sessionError}=await sb.rpc("create_whatsapp_basket_session_v1",{p_conversation_id:job.conversation_id,p_basket_id:bid});if(sessionError)throw new Error("basket_session_failed");
+      await queueReply(`Você escolheu ${clean(session.basket_name,100)} — ${money(session.basket_price)}.\n\nVeja a foto e os produtos da cesta aqui:\n${session.url}`,"text",null,null,"basket_selected",session,1);
+      await finishSales({plan:{intent:"baskets",interactive:true},action_result:session},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_selected"},200);
+    }
+    if(interactiveId==="da_basket_customer_confirm"){
+      const {data:confirmed,error:confirmError}=await sb.rpc("confirm_whatsapp_basket_customer_v1",{p_conversation_id:job.conversation_id});if(confirmError)throw new Error("basket_customer_confirm_failed");
+      const ready=await handoffBasket();
+      await finishSales({plan:{intent:"checkout",interactive:true},action_result:{customer:confirmed,request:ready}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_handoff"},200);
+    }
+    if(interactiveId==="da_basket_customer_change"){
+      await sb.rpc("update_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id,p_awaiting:"basket_customer_data",p_last_action:"basket_customer_data"});
+      await queueReply(customerPrompt(),"text",null,null,"basket_request_customer",{},1);
+      await finishSales({plan:{intent:"checkout",interactive:true},action_result:{change_customer:true}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"basket_request_customer"},200);
+    }
 
     if(interactiveId.startsWith("da_add_product:")){
       const pid=uuid(interactiveId.slice("da_add_product:".length));if(!pid)throw new Error("invalid_product_selection");
@@ -135,6 +236,14 @@ Deno.serve(async(req:Request)=>{
     if(interactiveId==="da_human"){
       await sb.rpc("queue_human_handoff_v1",{p_conversation_id:job.conversation_id,p_reason:"customer_requested_human",p_message_id:job.message_id,p_priority:2,p_summary:"Cliente pediu atendimento humano no MVP de vendas.",p_context:{source:"whatsapp_sales_mvp"}});
       await finishSales({plan:{intent:"human",interactive:true},action_result:{handoff:true}},{model:"deterministic_interactive"},null);return json({ok:true,status:"done",action:"human"},200);
+    }
+
+    // Qualquer pergunta sobre cesta mostra imediatamente as 9 opções.
+    if(/\bcestas?\b/i.test(norm(currentText))){
+      const {data:baskets,error:basketError}=await sb.rpc("get_whatsapp_simple_baskets_v1");if(basketError)throw new Error("basket_search_failed");
+      const list=arr(baskets);if(!list.length)throw new Error("baskets_unavailable");
+      await queueReply("Escolha uma das nossas 9 cestas básicas:","interactive",null,basketListInteractive(list),"show_baskets",{baskets:list},1);
+      await finishSales({plan:{intent:"baskets",deterministic:true},action_result:{baskets:list}},{model:"deterministic_basket"},null);return json({ok:true,status:"done",action:"show_baskets"},200);
     }
 
     if(!openaiKey)throw new Error("openai_key_missing");
@@ -178,8 +287,8 @@ Deno.serve(async(req:Request)=>{
       const address=completeAddress(mergedAddress)?mergedAddress:stateAddress;const {data:order,error}=await sb.rpc("confirm_whatsapp_sales_order_v1",{p_conversation_id:job.conversation_id,p_message_id:job.message_id,p_delivery_address:address});
       if(error){if(String(error.message).includes("delivery_address_required")){await sb.rpc("update_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id,p_awaiting:"delivery_address"});await queueReply("Só falta o endereço de entrega: rua, número e cidade.","text",null,null,"request_address",{},plan.confidence)}else if(String(error.message).includes("explicit_order_confirmation_required")){const cart=await getCart();await queueReply(cartText(cart),"interactive",null,confirmInteractive(`${cartText(cart)}\n\nConfirme o pedido abaixo.`),"request_confirmation",cart,plan.confidence)}else throw new Error("order_confirm_failed")}else{actionResult=order;await sb.rpc("clear_whatsapp_sales_state_v1",{p_conversation_id:job.conversation_id});await queueReply(`Pedido confirmado. Total: ${money(order.total)}.`,"text",null,null,"confirm_order",order,plan.confidence)}
     } else if(plan.intent==="baskets"){
-      const {data:baskets,error}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("is_active",true).eq("is_whatsapp_active",true).order("sort_order").limit(10);if(error)throw new Error("basket_search_failed");actionResult={baskets:baskets||[]};
-      if(!baskets?.length)await queueReply("Ainda não há cestas liberadas no catálogo de atendimento. Posso montar seu pedido com os produtos já conferidos.","text",null,null,"baskets_unavailable",actionResult,plan.confidence);else await queueReply((baskets||[]).map((b:any)=>`• ${clean(b.name,80)} — ${money(b.base_price)}`).join("\n"),"text",null,null,"show_baskets",actionResult,plan.confidence);
+      const {data:baskets,error}=await sb.rpc("get_whatsapp_simple_baskets_v1");if(error)throw new Error("basket_search_failed");actionResult={baskets:baskets||[]};
+      if(!baskets?.length)await queueReply("Ainda não há cestas liberadas no atendimento.","text",null,null,"baskets_unavailable",actionResult,plan.confidence);else if(cfg.whatsapp_sales_interactive_enabled)await queueReply("Escolha uma das nossas 9 cestas básicas:","interactive",null,basketListInteractive(baskets),"show_baskets",actionResult,plan.confidence);else await queueReply((baskets||[]).map((b:any)=>`• ${clean(b.display_name||b.name,80)} — ${money(b.base_price)}`).join("\n"),"text",null,null,"show_baskets",actionResult,plan.confidence);
     } else if(plan.intent==="answer"){
       const reply=clean(plan.reply_text,900);if(!reply)await queueReply("Essa informação ainda não está cadastrada na minha base. Posso chamar a equipe para confirmar.","text",null,null,"knowledge_missing",{},plan.confidence);else await queueReply(reply,"text",null,null,"knowledge_answer",{},plan.confidence);
     } else if(plan.intent==="human"){
