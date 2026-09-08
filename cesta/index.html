@@ -6,11 +6,11 @@
   <meta name="theme-color" content="#f36b21">
   <title>Dona Antônia · Sua cesta</title>
   <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="./styles.css?v=3">
+  <link rel="stylesheet" href="./styles.css?v=4">
 </head>
 <body>
   <header class="topbar">
-    <div class="brand-mark">DA</div>
+    <img class="brand-logo" src="/img/logoantonia5.png" alt="Dona Antônia">
     <div><strong>Dona Antônia</strong><span id="pageSubtitle">Sua cesta</span></div>
   </header>
 
@@ -29,10 +29,10 @@
       </div>
       <div class="section-heading">
         <div><span class="eyebrow">Composição</span><h2>Produtos da cesta</h2></div>
-        <p>Ajuste quantidades ou toque em Trocar. A personalização é feita aqui, fora do WhatsApp, e os produtos da cesta não exibem valor individual.</p>
+        <p>Aumente, diminua ou retire produtos. Os componentes não mostram valor individual; o total da cesta é atualizado na barra inferior.</p>
       </div>
       <div id="basketItems" class="basket-list"></div>
-      <p class="review-note">Alterações e substituições ficam registradas para conferência da equipe.</p>
+      <p class="review-note">As alterações ficam registradas junto com a cesta para conferência da equipe.</p>
     </section>
 
     <section id="extrasView" class="hidden">
@@ -46,9 +46,16 @@
     </section>
   </main>
 
-  <footer id="basketActions" class="bottom-bar hidden">
-    <button id="orderBtn" class="btn btn-primary">Encomendar</button>
-    <button id="extrasBtn" class="btn btn-secondary">Adicionar mais produtos</button>
+  <footer id="basketActions" class="bottom-bar basket-bottom hidden">
+    <div class="total-box basket-total-box">
+      <span>Total da cesta</span>
+      <strong id="basketTotal">R$ 0,00</strong>
+      <small id="basketPricingNote" class="pricing-note hidden">Ajuste precisa de conferência</small>
+    </div>
+    <div class="basket-action-buttons">
+      <button id="orderBtn" class="btn btn-primary">Encomendar</button>
+      <button id="extrasBtn" class="btn btn-secondary">Adicionar mais produtos</button>
+    </div>
   </footer>
 
   <footer id="extrasActions" class="bottom-bar extras-bottom hidden">
@@ -65,6 +72,6 @@
   </dialog>
 
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=3" defer></script>
+  <script src="./app.js?v=4" defer></script>
 </body>
 </html>
