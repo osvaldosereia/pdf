@@ -1,6 +1,6 @@
 # RETOMADA — Projeto Dona Antônia
 
-Atualizado em **07/09/2026 — primeiro canary real WhatsApp `live=1%` ATIVO**.
+Atualizado em **07/09/2026 local / 08/09/2026 UTC — canary real WhatsApp `live=1%` ATIVO; PR #175 endurecida e CI verde**.
 
 Este é o arquivo **autoritativo** para retomar o projeto. Antes de qualquer alteração, auditar GitHub, Supabase e Make. Não planejar do zero.
 
@@ -16,7 +16,98 @@ Este é o arquivo **autoritativo** para retomar o projeto. Antes de qualquer alt
 - `docs/WHATSAPP-BRIDGE-V3.md`;
 - `docs/SALA-COMPRA-MOTOR-COMERCIAL-V1.md`;
 - `docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md` — futuro Gestor/Roteirista de Inteligência;
-- `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md` — análise dos relatórios de Flow/Magalu e estratégia aprovada para aperfeiçoamento futuro.
+- `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md` — análise dos relatórios de Flow/Magalu e estratégia aprovada para aperfeiçoamento futuro;
+- `docs/WHATSAPP-FLOW-TRANSPORT-V1.md` — fundação criptografada + replay guard + máquina de estados do Flow, ainda dormente.
+
+---
+
+# MARCO MAIS RECENTE — PR #175 / FLOW DORMENTE
+
+PR aberta:
+
+`#175 — Dona Antônia: fundação criptografada do WhatsApp Flow Data Exchange`
+
+Branch:
+
+`codex/whatsapp-flow-transport-foundation-20260908`
+
+## Falha `deno check` encontrada e corrigida
+
+A falha específica vinha da tipagem mais estrita do WebCrypto no Deno 2.x: valores `Uint8Array<ArrayBufferLike>` usados como `BufferSource` em `crypto.subtle.importKey/decrypt/encrypt/digest` deixaram de satisfazer o type-check em alguns pontos.
+
+Correção principal:
+
+`a93c7b712d1153846288aca376f3a431a093b2cc` — `fix: normalizar BufferSource no WebCrypto Deno 2.9`
+
+Complemento de teste:
+
+`a63607ec0dec42e3d0f0dbdc4c83aa7b77d190c6` — `test: normalizar BufferSource no round-trip Flow`
+
+A solução normaliza cada entrada WebCrypto para um `ArrayBuffer` próprio antes da chamada criptográfica. Depois disso o `deno check` das Edge Functions e o `deno test` de `crypto.test.ts` passaram.
+
+## CI residual do Admin isolado corretamente
+
+O workflow genérico `Testar Admin V2 definitivo` também aparecia vermelho no mesmo SHA, mas a causa era um conjunto de validações legadas de `/admin`, Criador de Canecas e Caneca Print, sem relação funcional com o Flow.
+
+A PR acionava esse workflow apenas porque havia alterado `admin/config.js` para adicionar uma configuração que o frontend atual nem consumia. O arquivo foi restaurado exatamente ao conteúdo de `main` no commit:
+
+`c16f465969abd940029e4665c9d318b811fb8584` — `ci: isolar PR Flow do Admin legado`
+
+Assim a PR deixou de carregar uma alteração desnecessária em `admin/**` e o workflow legado deixou de ser um falso bloqueio desta entrega.
+
+## Hardening adicional implementado
+
+Commit funcional validado:
+
+`57eb48963b5c14665a17700bd37666b4ddaf9b38` — replay/state machine/budget Flow.
+
+A fundação agora inclui, ainda sem ativação:
+
+- `whatsapp_flow_request_guard` com fingerprint SHA-256 do envelope criptografado;
+- nenhuma persistência de body, `flow_token`, `encrypted_flow_data`, chave ou payload descriptografado no guard;
+- replay explícito `claimed/replay` com TTL de 24 horas;
+- `flow_current_screen`;
+- `flow_state_version`;
+- `flow_last_request_fingerprint`;
+- budget padrão `whatsapp_flow_max_exchanges_per_session = 40`;
+- transição válida `INIT → BASKET_EDIT → BASKET_REVIEW`;
+- salto/stale transition rejeitado com `flow_transition_invalid`;
+- replay reconhecido reconstrói resposta read-only sem avançar estado novamente;
+- takeover humano rechecado sob lock imediatamente antes da regra de negócio;
+- budget excedido falha fechado;
+- `BASKET_REVIEW` continua com `write_enabled=false` e `flow_cart_apply_not_enabled`;
+- nenhum carrinho, pedido ou Bling é alterado.
+
+CI do commit funcional `57eb489` passou integralmente:
+
+- testes anteriores de WhatsApp;
+- banco local/PGlite;
+- orquestrador/experimentos;
+- `test-whatsapp-flow-transport-v1.mjs` com replay/state machine/budget;
+- Shopping Room tests;
+- `node --check`;
+- `deno check` de todas as Edge Functions relevantes;
+- `deno test supabase/functions/whatsapp-flow-data-exchange-v1/crypto.test.ts`.
+
+## Estado das migrations/produção do Flow
+
+As migrations da PR #175 **não estão aplicadas em produção** neste marco:
+
+```text
+20260908010000 = não aplicada
+20260908010100 = não aplicada
+```
+
+Portanto o hardening está somente na PR/código. Nenhum endpoint Flow novo foi ativado para cliente.
+
+Produção continua com:
+
+```text
+experience_orchestrator_enabled = false
+whatsapp live canary = 1%
+```
+
+Não aumentar canary, não publicar Flow, não registrar/chavear Data Exchange na Meta e não ativar Bling sem etapa de homologação/autorização correspondente.
 
 ---
 
@@ -32,7 +123,7 @@ Corte do inbound:
 2026-09-07T23:48:18.455344+00:00
 ```
 
-Produção imediatamente após abertura:
+Produção:
 
 ```text
 whatsapp_release_mode = live
@@ -43,6 +134,8 @@ ai_enabled = true
 conversation_worker_enabled = true
 conversation_worker_dispatch_enabled = true
 human_fallback_enabled = true
+experience_orchestrator_enabled = false
+emergency_stop_reason = null
 ```
 
 Make:
@@ -50,27 +143,61 @@ Make:
 ```text
 inbound 6779824 = active
 outbound 7290488 = active
+legacy outbound 7290290 = inactive
 ```
 
-Auditoria imediata pós-abertura:
+## Auditoria real mais recente do canary
+
+Desde o cutover:
 
 ```text
-ai_active = 0
-ai_review = 0
-outbound_active = 0
-outbound_review = 0
-handoffs_active = 0
-messages_since_cutover = 0
-ai_jobs_since_cutover = 0
-outbound_jobs_since_cutover = 0
-handoffs_since_cutover = 0
-orders_since_cutover = 0
-order_sync_since_cutover = 0
+messages = 3
+inbound = 3
+outbound messages = 0
+conversations = 1
+cohort = human_control
+bucket = 89
+ai_jobs = 0
+outbound_jobs = 0
+handoffs = 1
+handoffs open = 1
+orders = 0
+order_sync = 0
+ai_usage_events = 0
+input_tokens = 0
+output_tokens = 0
+estimated_ai_cost = 0
+critical_ops_events = 0
 ```
+
+A conversa real observada está corretamente em:
+
+```text
+conversation.status = needs_human
+mode = human
+human_required = true
+handoff.status = open
+handoff.reason = live_canary_human_control
+priority = 2
+```
+
+Tipos inbound observados, sem registrar PII nesta documentação:
+
+```text
+text
+location
+other
+```
+
+O bucket `89` está fora do 1%, portanto o sistema fez exatamente o esperado: ingeriu, preservou a conversa e transferiu para controle humano **sem criar job de IA e sem outbound automático**.
+
+**Não assumir, resolver ou fechar automaticamente esse handoff. Preservar o atendimento humano já aberto.**
+
+No Make, as execuções inbound observadas após o cutover ficaram `success`; o cenário outbound event-driven não teve execução no período auditado, coerente com `human_control`.
 
 ### Próxima ação exata
 
-**Monitorar os primeiros eventos reais do canary.**
+**Continuar monitorando os primeiros eventos reais do canary e manter a PR #175 somente como fundação dormente até revisão/merge seguro.**
 
 Em cada rodada:
 
@@ -78,12 +205,13 @@ Em cada rodada:
 2. identificar cohort `ai_canary` ou `human_control`;
 3. conferir Worker V2/jobs IA;
 4. conferir outbound Meta/receipt;
-5. conferir `human_handoffs`;
+5. conferir `human_handoffs` e preservar qualquer atendimento humano em andamento;
 6. conferir erros/review_required;
 7. conferir tokens/custos;
 8. confirmar `orders=0`, `order_sync=0` e Bling fora;
-9. se houver comportamento duvidoso, usar emergency stop;
-10. **não aumentar acima de 1% sem nova avaliação explícita**.
+9. conferir `experience_orchestrator_enabled=false` e nenhum gate Flow ativo;
+10. se houver comportamento duvidoso, usar emergency stop;
+11. **não aumentar acima de 1% sem nova avaliação explícita**.
 
 Não fechar o canary automaticamente só porque não houve mensagem imediata. Não expandir o percentual sem evidência real suficiente.
 
@@ -246,9 +374,11 @@ Nunca voltar para transcrição → resposta direta.
 - job é processado por ID exato;
 - gates rechecados antes de gasto externo;
 - fallback humano permanece ativo;
+- atendimento humano aberto nunca é tomado de volta automaticamente por IA/Flow;
 - emergency stop deve cortar inbound/auto/IA/worker/dispatcher;
 - nenhum segredo ou telefone real no GitHub/docs;
 - mídias privadas;
+- Flow/Data Exchange/orquestração nova deve nascer dormente por feature flag;
 - **Bling continua desligado durante o canary de atendimento**.
 
 ---
@@ -259,7 +389,7 @@ Admin `Atendimento IA` já possui observabilidade, filas, tokens, custo auditáv
 
 Custo desconhecido nunca deve aparecer como US$ 0: usar `não precificado` até existir cálculo válido.
 
-Futuro aprovado, ainda não implementar agora:
+Futuro aprovado:
 
 `docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md`
 
@@ -271,7 +401,7 @@ Futuramente incluir conhecimento, FAQs, guidance, procedimentos, regras rígidas
 
 ---
 
-# FLOW / COMÉRCIO CONVERSACIONAL — PLANEJAMENTO APROVADO
+# FLOW / COMÉRCIO CONVERSACIONAL — PLANEJAMENTO E FUNDAÇÃO
 
 A pesquisa entregue pelo proprietário foi analisada e consolidada em:
 
@@ -281,7 +411,7 @@ Decisão:
 
 **incorporar WhatsApp Flow ao roadmap como interface especializada, não como substituto do chat ou da Sala.**
 
-Arquitetura conceitual futura:
+Arquitetura conceitual:
 
 ```text
 Orquestrador Comercial
@@ -292,20 +422,23 @@ Orquestrador Comercial
 → humano para exceções
 ```
 
-Prioridades futuras, somente depois de o canary atual estar estável:
+A fundação técnica criptografada está na PR #175, mas continua dormente e não foi aplicada/ativada em produção.
+
+Prioridades futuras, sem alterar o canary atual:
 
 1. Flow 1 de personalização de cesta;
 2. preservar preço comercial próprio da cesta e ocultar preços individuais dos componentes;
 3. Flow reutilizável com sessão/payload dinâmicos, não Flow novo por cliente;
-4. medir IA sem Flow vs IA + Flow;
-5. carrossel para curadoria curta;
-6. Sala de Compra para variedade/fotos/comparação;
-7. Flow 2 de upsell somente depois de Flow 1 comprovado e sempre opcional;
-8. integrar regras de seleção de interface ao futuro Gestor/Roteirista de Inteligência do Admin;
-9. usar Flow para reduzir mensagens/tokens em tarefas multi-escolha, sem chamar LLM a cada campo;
-10. validar documentação oficial vigente da Meta imediatamente antes da implementação.
+4. replay guard + máquina de estados antes de qualquer escrita — já programados na PR #175;
+5. medir IA sem Flow vs IA + Flow;
+6. carrossel para curadoria curta;
+7. Sala de Compra para variedade/fotos/comparação;
+8. Flow 2 de upsell somente depois de Flow 1 comprovado e sempre opcional;
+9. integrar regras de seleção de interface ao futuro Gestor/Roteirista de Inteligência do Admin;
+10. usar Flow para reduzir mensagens/tokens em tarefas multi-escolha, sem chamar LLM a cada campo;
+11. validar documentação oficial vigente da Meta imediatamente antes da homologação externa.
 
-Não alterar o canary `live=1%` por causa desta análise. Não misturar primeiro piloto de Flow com primeira homologação real de pedido Bling.
+Não alterar o canary `live=1%` por causa desta implementação. Não misturar primeiro piloto de Flow com primeira homologação real de pedido Bling.
 
 ---
 
@@ -351,4 +484,4 @@ Somente depois de canary estável e revisado:
 
 ## Instrução para novo chat
 
-> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/CANARY-LIVE-1PCT-20260907.md`, `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md`, `docs/HOMOLOGACAO-OBSERVE-CANARY-PREFLIGHT-20260907.md` e `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md`. Audite Supabase e Make imediatamente. O primeiro canary REAL `live=1%` está ativo. Monitore eventos, cohorts, jobs, outbound, handoffs e erros. Não aumente o canary sem nova avaliação explícita. Bling continua fora. A estratégia de Flow está aprovada apenas para aperfeiçoamento futuro e não deve alterar o canary atual.
+> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/CANARY-LIVE-1PCT-20260907.md`, `docs/WHATSAPP-FLOW-TRANSPORT-V1.md`, `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md`, `docs/HOMOLOGACAO-OBSERVE-CANARY-PREFLIGHT-20260907.md` e `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md`. Audite Supabase e Make imediatamente. O canary REAL `live=1%` está ativo. O primeiro evento real caiu em `human_control` e possui handoff humano aberto, que deve ser preservado. Monitore eventos, cohorts, jobs, outbound, handoffs e erros. Não aumente o canary sem nova avaliação explícita. Bling continua fora. A PR #175 contém a fundação Flow criptografada + replay guard + máquina de estados, mas tudo permanece dormente e as migrations ainda não foram aplicadas em produção.

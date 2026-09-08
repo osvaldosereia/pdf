@@ -23,7 +23,7 @@
   }
   function toast(message,kind=''){const region=document.getElementById('toastRegion');if(!region)return;const x=document.createElement('div');x.className=`toast ${kind}`.trim();x.textContent=message;region.appendChild(x);setTimeout(()=>x.remove(),kind==='error'?6500:3500)}
   function actionLabel(v){return ({conversation:'Conversa',deterministic:'Resposta oficial',carousel:'Carrossel',whatsapp_flow:'WhatsApp Flow',shopping_room:'Sala de Compra',human:'Humano'})[v]||v||'—'}
-  function statusBadge(v){const s=String(v||'');const kind=s==='active'||s==='running'?'success':s==='ready'?'info':s==='draft'?'warning':'muted';return `<span class="exp-badge ${kind}">${esc(s||'—')}</span>`}
+  function statusBadge(v){const s=String(v||'');const kind=s==='active'||s==='running'||s==='valid'?'success':s==='ready'?'info':s==='draft'||s==='pending'?'warning':s==='invalid'?'warning':'muted';return `<span class="exp-badge ${kind}">${esc(s||'—')}</span>`}
   function metric(value,label,help){return `<article class="exp-metric"><strong>${esc(value)}</strong><span>${esc(label)}</span><small>${esc(help)}</small></article>`}
   function shell(){return `
     <section class="exp-shell">
@@ -34,7 +34,7 @@
         <section class="exp-card"><header><div><small>WhatsApp Flows</small><h3>Definições preparadas</h3></div></header><div id="expDefinitions" class="exp-list"><div class="empty">Carregando…</div></div></section>
       </div>
       <div class="exp-grid">
-        <section class="exp-card"><header><div><small>Readiness</small><h3>Contrato do Flow de cesta</h3></div></header><div id="expFlowReadiness" class="exp-list"><div class="empty">Carregando…</div></div></section>
+        <section class="exp-card"><header><div><small>Readiness</small><h3>Flow de personalização</h3></div><span class="exp-badge muted">sem ativação</span></header><div id="expFlowReadiness" class="exp-list"><div class="empty">Carregando…</div></div></section>
         <section class="exp-card"><header><div><small>Últimos 7 dias</small><h3>Funil por experiência</h3></div></header><div id="expFunnel" class="exp-list"><div class="empty">Nenhuma sessão.</div></div></section>
       </div>
       <section class="exp-card"><header><div><small>A/B controlado</small><h3>Experimentos preparados</h3></div><span class="exp-badge muted">somente leitura</span></header><div id="expExperiments" class="exp-list"><div class="empty">Nenhum experimento.</div></div></section>
@@ -54,6 +54,7 @@
   function render(data){
     last=data;const d=data.dashboard||{},cfg=d.config||{},m=d.metrics_24h||{};
     const readiness=data.flow_readiness?.basket_personalization_v1||{};
+    const transport=data.flow_transport||{};
     root.querySelector('#expMetrics').innerHTML=[
       metric(cfg.orchestrator_enabled?'LIGADO':'DESLIGADO','Kill switch','Não existe ativação por botão nesta fase'),
       metric(n((d.features||[]).filter(x=>x.enabled).length),'Features ligadas','Todas nasceram desligadas'),
@@ -66,8 +67,14 @@
     const defs=d.definitions||[];
     root.querySelector('#expDefinitions').innerHTML=defs.length?defs.map(x=>`<div class="exp-row"><div><strong>${esc(x.slug)}</strong><small>${esc(x.purpose)}</small><small>${esc(x.provider||'interno')} · schema v${n(x.schema_version)}${x.provider_id?' · provider configurado':''}</small></div><div>${statusBadge(x.status)}<button class="row-button" data-exp-definition="${esc(x.id)}" type="button">Editar</button></div></div>`).join(''):'<div class="empty">Nenhuma definição cadastrada.</div>';
     root.querySelector('#expFlowReadiness').innerHTML=`
-      <div class="exp-row"><div><strong>Contrato interno</strong><small>Payload/validação de personalização sem preço individual dos componentes.</small></div>${readiness.contract_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge warning">pendente</span>'}</div>
-      <div class="exp-row"><div><strong>Transporte Meta</strong><small>Provider ID + definição pronta/publicada. Não ativa rollout.</small></div>${readiness.transport_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge muted">não configurado</span>'}</div>
+      <div class="exp-row"><div><strong>Contrato interno</strong><small>Payload/validação de cesta sem preço individual dos componentes.</small></div>${readiness.contract_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge warning">pendente</span>'}</div>
+      <div class="exp-row"><div><strong>Chave privada</strong><small>Deve permanecer somente no Vault; o navegador nunca recebe a chave privada.</small></div>${transport.private_key_configured?'<span class="exp-badge success">Vault</span>':'<span class="exp-badge muted">não configurada</span>'}</div>
+      <div class="exp-row"><div><strong>Chave pública na Meta</strong><small>Assinatura/registro do provider precisa ser validado antes de habilitar Data Exchange.</small></div>${statusBadge(transport.meta_signature_status||'unknown')}</div>
+      <div class="exp-row"><div><strong>Data Exchange</strong><small>RSA-OAEP/SHA-256 + AES-128-GCM. Runtime permanece desligado nesta fase.</small></div>${transport.data_exchange_enabled?'<span class="exp-badge warning">ligado</span>':'<span class="exp-badge muted">off</span>'}</div>
+      <div class="exp-row"><div><strong>Replay guard</strong><small>Fingerprint SHA-256 do envelope criptografado; nenhuma carga útil é persistida.</small></div>${transport.replay_guard_enabled?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge muted">indisponível</span>'}</div>
+      <div class="exp-row"><div><strong>Máquina de estados</strong><small>Bloqueia salto de tela e impede replay de avançar a sessão novamente.</small></div>${transport.state_machine_enabled?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge muted">indisponível</span>'}</div>
+      <div class="exp-row"><div><strong>Budget por sessão</strong><small>Limite fail-closed antes de qualquer futura escrita transacional.</small></div><span class="exp-badge info">${n(transport.max_exchanges_per_session||0)} trocas</span></div>
+      <div class="exp-row"><div><strong>Envio de Flow</strong><small>Exige provider ID, definição pronta e todos os gates anteriores.</small></div>${transport.send_ready?'<span class="exp-badge success">pronto</span>':'<span class="exp-badge muted">bloqueado</span>'}</div>
       <div class="exp-row"><div><strong>Exposição de componentes</strong><small>Preço individual permanece oculto por contrato.</small></div>${readiness.component_prices_visible?'<span class="exp-badge warning">revisar</span>':'<span class="exp-badge success">seguro</span>'}</div>`;
     const funnel=data.funnel?.definitions||[];
     root.querySelector('#expFunnel').innerHTML=funnel.length?funnel.map(x=>`<div class="exp-row"><div><strong>${esc(x.slug)}</strong><small>${n(x.sessions)} sessões · ${n(x.completed)} concluídas · ${n(x.abandoned)} abandonos · ${n(x.expired)} expiradas</small></div><div><span class="exp-badge info">abertura ${esc(pct(x.open_rate))}</span><span class="exp-badge ${Number(x.completion_rate||0)>=70?'success':'muted'}">conclusão ${esc(pct(x.completion_rate))}</span></div></div>`).join(''):'<div class="empty">Nenhuma sessão no período.</div>';
