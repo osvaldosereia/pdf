@@ -31,6 +31,10 @@ try{
   `);
 
   await db.exec(readFileSync('supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql','utf8'));
+  await db.exec(readFileSync('supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql','utf8'));
+
+  const guard=await one(`select p.prosecdef,has_function_privilege('anon','public.prevent_financial_append_only_mutation_v1()','EXECUTE') anon_exec,has_function_privilege('authenticated','public.prevent_financial_append_only_mutation_v1()','EXECUTE') authenticated_exec from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname='prevent_financial_append_only_mutation_v1'`);
+  assert.equal(guard.prosecdef,false);assert.equal(guard.anon_exec,false);assert.equal(guard.authenticated_exec,false);
 
   let ready=await scalarJson(`select public.financial_readiness_v1() x`);
   assert.equal(ready.enabled,false);
@@ -94,5 +98,5 @@ try{
   assert.equal(num(ready.route_close_evaluations),1);
   assert.equal(num(ready.reconciliation_cases),1);
 
-  console.log('PASS: Stage 13 financial ledger validates fail-closed gates, immutable/idempotent receipts, reversal, route cash closure and review cases without fiscal/logistics mutation.');
+  console.log('PASS: Stage 13 financial ledger validates secure append-only trigger, fail-closed gates, immutable/idempotent receipts, reversal, route cash closure and review cases without fiscal/logistics mutation.');
 } finally { await db.close(); }
