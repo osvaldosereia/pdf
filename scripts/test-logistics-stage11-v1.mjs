@@ -7,6 +7,7 @@ const foundation=fs.readFileSync('supabase/migrations/20260908112000_stage11_log
 const driverActions=fs.readFileSync('supabase/migrations/20260908112100_stage11_driver_actions_v1.sql','utf8');
 const policy=fs.readFileSync('supabase/migrations/20260908112200_stage11_logistics_policy_v2.sql','utf8');
 const routes=fs.readFileSync('supabase/migrations/20260908112300_stage11_route_drafts_notifications_v3.sql','utf8');
+const fiscal=fs.readFileSync('supabase/migrations/20260908112400_stage11_delivery_payment_fiscal_gate_v1.sql','utf8');
 const adminFn=fs.readFileSync('supabase/functions/admin-logistics-v1/index.ts','utf8');
 const driverFn=fs.readFileSync('supabase/functions/driver-logistics-v1/index.ts','utf8');
 const sbConfig=fs.readFileSync('supabase/config.toml','utf8');
@@ -20,7 +21,7 @@ for(const table of ['logistics_runtime_config','drivers','vehicles','delivery_jo
   assert.match(foundation,new RegExp(`create table if not exists public\\.${table}`),`${table} missing`);
   assert.match(foundation,new RegExp(`alter table public\\.${table} enable row level security`),`${table} RLS missing`);
 }
-for(const source of [foundation,driverActions,policy,routes])assert.doesNotMatch(source,/https?:\/\//i,'SQL migrations must not call external HTTP');
+for(const source of [foundation,driverActions,policy,routes,fiscal])assert.doesNotMatch(source,/https?:\/\//i,'SQL migrations must not call external HTTP');
 assert.match(foundation,/enabled boolean not null default false/);
 assert.match(foundation,/execution_mode text not null default 'off'/);
 assert.match(foundation,/job_creation_enabled boolean not null default false/);
@@ -54,6 +55,28 @@ assert.match(driverActions,/arrival_confirmation_required/,'delivery requires ex
 assert.match(driverActions,/update public\.orders(?:\s+[a-z][a-z0-9_]*)? set status='out_for_delivery'/i,'route start must reflect in commercial order');
 assert.match(driverActions,/update public\.orders(?:\s+[a-z][a-z0-9_]*)? set status='delivered'/i,'delivery must reflect in commercial order');
 assert.doesNotMatch(driverActions,/geofence/i,'geofence must not auto-complete delivery');
+
+for(const table of ['fiscal_runtime_config','order_fiscal_controls','fiscal_issue_jobs']){
+  assert.match(fiscal,new RegExp(`create table if not exists public\\.${table}`),`${table} missing`);
+  assert.match(fiscal,new RegExp(`alter table public\\.${table} enable row level security`),`${table} RLS missing`);
+}
+assert.match(fiscal,/bling_invoice_prepare_enabled boolean not null default false/);
+assert.match(fiscal,/bling_invoice_send_enabled boolean not null default false/);
+assert.match(fiscal,/require_delivery_confirmation boolean not null default true/);
+assert.match(fiscal,/require_payment_confirmation boolean not null default true/);
+assert.match(fiscal,/fiscal_status text not null default 'blocked'/);
+assert.match(fiscal,/delivery_not_confirmed/);
+assert.match(fiscal,/payment_not_confirmed/);
+assert.match(fiscal,/settled_amount_mismatch/);
+assert.match(fiscal,/prepare_bling_invoice_issue_job_v1/);
+assert.match(fiscal,/fiscal_runtime_disabled/);
+assert.match(fiscal,/dispatcher_implemented',false/);
+assert.match(fiscal,/external_side_effect boolean not null default false/);
+assert.match(fiscal,/max_attempts integer not null default 1 check \(max_attempts = 1\)/);
+assert.match(fiscal,/unique\(order_id, fiscal_version\)/);
+assert.match(fiscal,/create or replace function public\.driver_deliver_stop_v2/);
+assert.match(fiscal,/p_payment_status text default 'pending'/);
+assert.doesNotMatch(fiscal,/fetch\s*\(/i,'fiscal migration must not contain transport calls');
 
 assert.match(policy,/proof_of_delivery_mode text not null default 'driver_confirmation'/);
 assert.match(policy,/delivery_photo_required/);
@@ -93,7 +116,10 @@ assert.match(driverFn,/auth\.getUser\(token\)/);
 assert.match(driverFn,/driver_runtime_disabled/);
 assert.match(driverFn,/gps_tracking_disabled/);
 assert.match(driverFn,/client_event_id/);
-assert.match(driverFn,/driver_deliver_stop_v1/);
+assert.match(driverFn,/driver_deliver_stop_v2/);
+assert.match(driverFn,/payment_status/);
+assert.match(driverFn,/confirmed_payment_requires_valid_method_and_amount/);
+assert.doesNotMatch(driverFn,/bling|sefaz/i,'driver transport must not call fiscal providers');
 
 assert.match(adminConfig,/logisticsUiEnabled:\s*false/);
 assert.match(adminHtml,/id="logisticsNav" class="nav hidden"/);
@@ -132,4 +158,4 @@ assert.equal(capacity.reason,'vehicle_capacity_exceeded');
 assert.equal(applyLockedNextInvariant([{id:'s1',sequence_no:1,status:'locked_next',locked:true}],[{id:'s1',sequence_no:2}]).reason,'locked_stop_moved');
 assert.equal(applyLockedNextInvariant([{id:'s1',sequence_no:1,status:'locked_next',locked:true}],[{id:'s1',sequence_no:1}]).ok,true);
 
-console.log('stage11 logistics safety assertions: OK');
+console.log('stage11 logistics + fiscal gate safety assertions: OK');

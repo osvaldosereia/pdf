@@ -6,6 +6,7 @@ const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,
 const clean=(v:unknown,max=300)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max);
 const uuid=(v:unknown)=>{const s=clean(v,80);return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s)?s:""};
 const eventId=(v:unknown)=>{const s=clean(v,160);return /^[A-Za-z0-9._:-]{8,160}$/.test(s)?s:""};
+const paymentMethod=(v:unknown)=>{const s=clean(v,40).toLowerCase();return ['cash','pix','card','payment_link','prepaid_pix','prepaid_link','other'].includes(s)?s:""};
 
 Deno.serve(async(req:Request)=>{
   if(req.method==="OPTIONS")return new Response("ok",{headers:CORS});
@@ -50,7 +51,22 @@ Deno.serve(async(req:Request)=>{
   if(action==="delivered"){
     const stopId=uuid(body?.stop_id),clientEventId=eventId(body?.client_event_id);if(!stopId||!clientEventId)return json({ok:false,error:"stop_id_and_client_event_id_required"},400);
     const proof=(body?.proof&&typeof body.proof==="object"&&!Array.isArray(body.proof))?body.proof:{};
-    const {data,error}=await sb.rpc("driver_deliver_stop_v1",{p_auth_user_id:userId,p_stop_id:stopId,p_client_event_id:clientEventId,p_proof:proof});
+    const paymentStatus=clean(body?.payment_status||'pending',20).toLowerCase();
+    if(!['pending','confirmed'].includes(paymentStatus))return json({ok:false,error:"invalid_payment_status"},400);
+    const method=paymentStatus==='confirmed'?paymentMethod(body?.payment_method):null;
+    const settledAmount=paymentStatus==='confirmed'?Number(body?.settled_amount):null;
+    if(paymentStatus==='confirmed'&&(!method||!Number.isFinite(settledAmount)||Number(settledAmount)<0))return json({ok:false,error:"confirmed_payment_requires_valid_method_and_amount"},400);
+    const source=clean(body?.payment_source||'driver_app',40).toLowerCase()||'driver_app';
+    const {data,error}=await sb.rpc("driver_deliver_stop_v2",{
+      p_auth_user_id:userId,
+      p_stop_id:stopId,
+      p_client_event_id:clientEventId,
+      p_proof:proof,
+      p_payment_status:paymentStatus,
+      p_payment_method:method,
+      p_settled_amount:settledAmount,
+      p_payment_source:source
+    });
     if(error)return json({ok:false,error:"delivery_confirmation_failed",detail:error.message},400);
     return json(data);
   }
