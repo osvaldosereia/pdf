@@ -100,7 +100,7 @@ async function act(action,stopId,extra={}){try{const result=await dispatchOrQueu
 async function deliverCovered(stop){try{const result=await act('delivered',stop.id,{proof:{method:'driver_confirmation'}});if(result?.queued)showNotice('Entrega salva offline; nenhuma confirmação financeira foi antecipada.');else showNotice('Entrega registrada. O financeiro permanece separado da confirmação fiscal.')}catch{}}
 async function fail(stopId){const incident=prompt('Motivo: customer_absent, address_issue, payment_issue, vehicle_issue, delay, damage, safety ou other','customer_absent')||'other';const notes=prompt('Observação curta (opcional)','')||'';try{await dispatchOrQueue({action:'failed',stop_id:stopId,incident_type:incident,notes});await loadRoute()}catch(e){alert(`Falha ao registrar ocorrência: ${e.message}`)}}
 
-function parseMoneyInput(v){const normalized=String(v||'').trim().replace(/\./g,'').replace(',','.');const n=Number(normalized);return Number.isFinite(n)&&n>=0?Math.round(n*100):null}
+function parseMoneyInput(v){const normalized=String(v||'').trim().replace(',','.');const n=Number(normalized);return Number.isFinite(n)&&n>=0?Math.round(n*100):null}
 function refreshChange(){
   const stop=state.collectionStop,f=stop?.financial,method=$('#collectionMethod').value,isCash=method==='cash';
   $('#cashTenderLabel').classList.toggle('hidden',!isCash);
