@@ -24206,6 +24206,66 @@
       "blingStatus": "I",
       "syncedAt": "2026-09-07T21:28:04.396Z",
       "deletedAt": null
+    },
+    "1788817023716_6df1": {
+      "version": 3,
+      "fingerprint": "6fa1e92b1938c48413f31786a8799b50938af7297399df957348bba6a8543874",
+      "blingId": 16702676121,
+      "codigo": "7897751900252",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:55.895Z",
+      "deletedAt": null
+    },
+    "1788817077115_9bbf": {
+      "version": 3,
+      "fingerprint": "8fb45aee6e74a449ee51a1e7ebc1f54944e92dc8d7f89cebd20c0ec4d7ef8cc8",
+      "blingId": 16702676122,
+      "codigo": "7897751900535",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:56.272Z",
+      "deletedAt": null
+    },
+    "1788817147101_54ed": {
+      "version": 3,
+      "fingerprint": "47697d85566acada2a0599b6a2d871d1f9e10152ba8f73ebfc97ebb8cdeecdea",
+      "blingId": 16702676123,
+      "codigo": "7897751900092",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:56.676Z",
+      "deletedAt": null
+    },
+    "1788818609061_4e74": {
+      "version": 3,
+      "fingerprint": "ed1efa11d85203b6e7e7569c205995c33a31a2ad6d0109ebfcae28ca32545610",
+      "blingId": 16702676125,
+      "codigo": "7891150100367",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:57.098Z",
+      "deletedAt": null
+    },
+    "1788818794944_0784": {
+      "version": 3,
+      "fingerprint": "59a12d10103d7c72054f87472dc3c62a529e92f74f0e02e50bf0764f4e6b8c3c",
+      "blingId": 16702676127,
+      "codigo": "7891150100350",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:57.513Z",
+      "deletedAt": null
+    },
+    "1788819148804_63a2": {
+      "version": 3,
+      "fingerprint": "d204500f9b360054385cfbb9914431c113628d7597f82f71be5d28115153ff9b",
+      "blingId": 16702676128,
+      "codigo": "7891010247423",
+      "localStatus": "present",
+      "blingStatus": "I",
+      "syncedAt": "2026-09-08T01:04:57.936Z",
+      "deletedAt": null
     }
   }
 }
