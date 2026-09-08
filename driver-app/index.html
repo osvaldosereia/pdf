@@ -6,14 +6,35 @@
 <link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<div id="disabledView" class="shell disabled"><div class="card"><div class="badge">DA</div><h1>App do Entregador</h1><p>Módulo preparado, porém ainda não liberado para operação real.</p><small>Etapa 11 · runtime logístico OFF</small></div></div>
+<div id="disabledView" class="shell disabled"><div class="card"><div class="badge">DA</div><h1>App do Entregador</h1><p>Módulo preparado, porém ainda não liberado para operação real.</p><small>Etapa 13C · logística e financeiro continuam OFF</small></div></div>
 <div id="app" class="shell hidden">
 <header><div><strong>Dona Antônia</strong><small id="driverName">Entregador</small></div><div id="networkState" class="pill">online</div></header>
 <main>
 <section id="loginPanel" class="card"><h1>Entrar</h1><label>E-mail<input id="email" type="email" autocomplete="username"></label><label>Senha<input id="password" type="password" autocomplete="current-password"></label><button id="loginBtn">Entrar</button><div id="loginStatus" class="status"></div></section>
-<section id="routePanel" class="hidden"><div class="card route-head"><div><span class="eyebrow">Rota atual</span><h1 id="routeCode">—</h1><p id="routeSummary">Sem rota carregada.</p></div><button id="startRouteBtn" class="primary hidden">Começar rota</button></div><div id="stops"></div></section>
+<section id="routePanel" class="hidden"><div class="card route-head"><div><span class="eyebrow">Rota atual</span><h1 id="routeCode">—</h1><p id="routeSummary">Sem rota carregada.</p><div id="collectionSummary" class="route-money hidden"></div></div><button id="startRouteBtn" class="primary hidden">Começar rota</button></div><div id="notice" class="notice hidden"></div><div id="stops"></div></section>
 </main>
 <footer id="syncFooter" class="hidden"><span id="queueCount">0 pendências offline</span><button id="syncBtn">Sincronizar</button></footer>
+</div>
+<div id="collectionSheet" class="sheet hidden" role="dialog" aria-modal="true" aria-labelledby="collectionTitle">
+  <div class="sheet-card">
+    <div class="sheet-head"><div><span class="eyebrow">Recebimento na entrega</span><h2 id="collectionTitle">Confirmar cobrança</h2></div><button id="cancelCollectionBtn" class="icon-btn" aria-label="Fechar">×</button></div>
+    <div id="collectionOrderInfo" class="collection-order"></div>
+    <label>Forma recebida
+      <select id="collectionMethod">
+        <option value="cash">Dinheiro</option>
+        <option value="pix">Pix</option>
+        <option value="card">Cartão</option>
+        <option value="payment_link">Link de pagamento</option>
+        <option value="other">Outro</option>
+      </select>
+    </label>
+    <label>Valor da venda recebido<input id="collectionAmount" type="text" readonly></label>
+    <label id="cashTenderLabel">Valor entregue pelo cliente<input id="cashTender" type="number" min="0" step="0.01" inputmode="decimal"></label>
+    <div id="changePreview" class="change-preview"></div>
+    <div id="collectionStatus" class="status"></div>
+    <button id="confirmCollectionBtn" class="primary wide">Confirmar recebimento e entrega</button>
+    <p class="sheet-help">O registro do entregador é operacional. Pix/cartão/link continuam aguardando conciliação; nenhuma NF-e é liberada por este botão.</p>
+  </div>
 </div>
 <script src="./config.js"></script><script type="module" src="./app.js"></script>
 </body></html>
