@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "updated_at": "2026-09-08T02:35:00Z",
+  "policy": {
+    "batch_preferred": "github_actions",
+    "make_role": "thin_realtime_bridge_only",
+    "temporary_test_legacy_must_be_inactive": true
+  },
+  "scenarios": [
+    {"id":6779824,"name":"Dona Antônia - WhatsApp Inbound Controlado v1","classification":"production_realtime_bridge","expected_active":true,"keep_in_make":true,"reason":"Webhook oficial WhatsApp inbound em tempo real; Make funciona como ponte fina para Meta e mídia."},
+    {"id":7290488,"name":"Dona Antônia - WhatsApp Outbound Event-Driven v3","classification":"production_realtime_bridge","expected_active":true,"keep_in_make":true,"reason":"Entrega outbound em tempo real acionada por evento do backend, inclusive TTS/upload Meta."},
+    {"id":7290290,"name":"LEGACY - NÃO USAR - WhatsApp Outbound HTTP v1","classification":"legacy","expected_active":false,"keep_in_make":false,"migration_target":"none_archive_reference"},
+    {"id":7289886,"name":"Dona Antônia - TTS Marin Humanizada OFICIAL","classification":"test_on_demand","expected_active":false,"keep_in_make":false,"migration_target":"backend_or_github_actions_if_batch"},
+    {"id":7289758,"name":"Dona Antônia - TESTE Áudio OpenAI WhatsApp 1018","classification":"test_on_demand","expected_active":false,"keep_in_make":false,"migration_target":"none"},
+    {"id":7274385,"name":"Dona Antônia - Importar Produtos Bling (temporário)","classification":"temporary_bling","expected_active":false,"keep_in_make":false,"migration_target":"github_actions_or_direct_api"},
+    {"id":7274320,"name":"Dona Antônia - Sync Produtos Bling → Supabase","classification":"temporary_bling","expected_active":false,"keep_in_make":false,"migration_target":"github_actions_or_direct_api"},
+    {"id":7274337,"name":"Dona Antônia - TESTE Saída 1018","classification":"test_on_demand","expected_active":false,"keep_in_make":false,"migration_target":"none"},
+    {"id":7268750,"name":"CHAT - TEMP Learn Bridge","classification":"temporary","expected_active":false,"keep_in_make":false,"migration_target":"none"},
+    {"id":7269163,"name":"Dona Antônia - Início Cliente Bling (Teste)","classification":"temporary_bling","expected_active":false,"keep_in_make":false,"migration_target":"backend_direct_api"},
+    {"id":7272741,"name":"Dona Antônia - TESTE FINAL Bling por telefone","classification":"temporary_bling","expected_active":false,"keep_in_make":false,"migration_target":"none"},
+    {"id":7268657,"name":"CHAT - Admin Bridge","classification":"shared_admin_realtime","expected_active":true,"keep_in_make":true,"reason":"Ponte realtime compartilhada; não foi alterada nesta consolidação por não ser exclusiva da Dona Antônia."}
+  ]
+}
