@@ -20,6 +20,7 @@ on:
       - 'scripts/test-logistics-stage11-v1.mjs'
       - 'scripts/test-logistics-stage11-db-v1.mjs'
       - 'docs/ETAPA-11-LOGISTICA-V1.md'
+      - 'docs/DECISAO-FISCAL-ENTREGA-PAGAMENTO-NFE-V1.md'
       - '.github/workflows/stage11-logistics.yml'
   push:
     branches: [main]
@@ -41,6 +42,7 @@ on:
       - 'scripts/test-logistics-stage11-v1.mjs'
       - 'scripts/test-logistics-stage11-db-v1.mjs'
       - 'docs/ETAPA-11-LOGISTICA-V1.md'
+      - 'docs/DECISAO-FISCAL-ENTREGA-PAGAMENTO-NFE-V1.md'
       - '.github/workflows/stage11-logistics.yml'
 
 permissions:
@@ -52,6 +54,22 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908112000_stage11_logistics_foundation_v1.sql
+            supabase/migrations/20260908112100_stage11_driver_actions_v1.sql
+            supabase/migrations/20260908112200_stage11_logistics_policy_v2.sql
+            supabase/migrations/20260908112300_stage11_route_drafts_notifications_v3.sql
+            supabase/migrations/20260908112400_stage11_delivery_payment_fiscal_gate_v1.sql
+            supabase/functions/admin-logistics-v1/
+            supabase/functions/driver-logistics-v1/
+            lib/logistics/
+            driver-app/
+            admin-v3/logistics.js
+            scripts/test-logistics-stage11-v1.mjs
+            scripts/test-logistics-stage11-db-v1.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
