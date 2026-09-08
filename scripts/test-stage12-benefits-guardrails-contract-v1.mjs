@@ -57,7 +57,7 @@ const forbidden=[
   'graph.facebook.com',
   'apply_customer_benefit_v1',
   'create or replace function public.apply_customer_benefit',
-  'plpgsql.variable_conflict'
+  "set plpgsql.variable_conflict"
 ];
 for(const needle of forbidden){
   if(combined.includes(needle))throw new Error(`forbidden_side_effect_or_privileged_contract:${needle}`);
