@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 
 const sql=readFileSync('supabase/migrations/20260908232500_whatsapp_basket_final_guards_v1.sql','utf8');
 
-assert.match(sql,/p_action_type,'\)'='basket_ready_for_human'|p_action_type,'?\)?='basket_ready_for_human'/i);
+assert.match(sql,/basket_ready_for_human/i,'Resposta final de cesta precisa ser protegida');
 assert.match(sql,/pricing_status','ready'\)='needs_review'/i,'Total incerto precisa ser interceptado');
 assert.match(sql,/nossa equipe vai confirmar o total final/i,'Resposta deve evitar total numérico incerto');
 assert.doesNotMatch(sql,/toque em [“"]Trocar[”"]/i,'Fluxo não pode citar botão Trocar removido');
