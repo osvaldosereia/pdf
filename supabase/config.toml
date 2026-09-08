@@ -43,8 +43,11 @@ verify_jwt = true
 [functions.admin-whatsapp-flow-v1]
 verify_jwt = true
 
-# Dispatcher da Etapa 10: apenas observe/dry-run, autenticado, sem execução de action
-# e com external_side_effect=false obrigatório.
+# Builder e dispatcher da Etapa 10 são administrativos, dormentes e autenticados.
+[functions.admin-automation-builder-v1]
+verify_jwt = true
+
+# Dispatcher: apenas observe/dry-run, sem execução de action e external_side_effect=false.
 [functions.automation-dispatcher-v1]
 verify_jwt = true
 
