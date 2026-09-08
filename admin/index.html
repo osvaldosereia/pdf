@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="../admin-v3/enhancements.css?v=20260907-02">
   <link rel="stylesheet" href="../admin-v3/customer-intelligence.css?v=20260907-01">
   <link rel="stylesheet" href="../admin-v3/whatsapp-ops.css?v=20260907-01">
+  <link rel="stylesheet" href="../admin-v3/experience-orchestrator.css?v=20260908-01">
 </head>
 <body>
   <section id="loginView" class="login-shell">
@@ -89,6 +90,7 @@
             </section>
           </div>
           <section class="panel"><div class="panel-head"><div><div class="eyebrow">Auditoria</div><h2>Eventos recentes</h2></div></div><div id="waOpsEvents" class="list"><div class="empty">Carregando…</div></div></section>
+          <section id="experienceOrchestratorMount" class="hidden" aria-label="Orquestrador de interfaces"></section>
         </section>
 
         <section class="view" data-view="counts"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="countRows" class="list"></div></section></section>
@@ -101,10 +103,17 @@
   <div id="modalBackdrop" class="modal-backdrop hidden"></div>
   <section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section>
   <div id="toastRegion" class="toasts" aria-live="polite"></div>
-  <script src="./config.js?v=20260907-02"></script>
+  <script src="./config.js?v=20260908-01"></script>
   <script src="../admin-v3/app.js?v=20260907-03"></script>
   <script src="../admin-v3/enhancements.js?v=20260907-02"></script>
   <script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script>
   <script src="../admin-v3/whatsapp-ops.js?v=20260907-01"></script>
+  <script src="../admin-v3/experience-orchestrator.js?v=20260908-01"></script>
+  <script>
+    if(window.DA_ADMIN_V3_CONFIG?.experienceOrchestratorUiEnabled){
+      const mount=document.getElementById('experienceOrchestratorMount');
+      if(mount&&window.DAExperienceOrchestrator){mount.classList.remove('hidden');window.DAExperienceOrchestrator.mount(mount)}
+    }
+  </script>
 </body>
 </html>
