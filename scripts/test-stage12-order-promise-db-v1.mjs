@@ -37,7 +37,7 @@ try{
   r=await one(`select public.preview_cart_promise_v1('${cart}','2027-01-15','{"city":"Cuiaba","district":"Centro"}'::jsonb) x`);
   if(r.x.result!=='review'||!r.x.reasons.some(x=>x.code==='capacity_rule_missing')) throw new Error('missing_capacity_must_review');
 
-  await db.exec(`insert into public.order_promise_daily_capacity(capacity_date,status,fulfillment_max_orders,fulfillment_max_item_units,delivery_max_stops,available_drivers) values('2027-01-15','active',5,10,5,1)`);
+  await db.exec(`insert into public.order_promise_daily_capacity(capacity_date,status,fulfillment_max_orders,fulfillment_max_item_units,delivery_max_stops,available_drivers) values('2027-01-15','active',5,10,4,1)`);
   r=await one(`select public.preview_cart_promise_v1('${cart}','2027-01-15','{"city":"Cuiaba","district":"Centro"}'::jsonb) x`);
   if(r.x.result!=='eligible'||r.x.promiseable!==true||Number(r.x.total_item_units)!==2) throw new Error('eligible_promise_failed');
   if(r.x.line_results.length!==1||r.x.line_results[0].allocations.length!==1||r.x.line_results[0].allocations[0].lot_code!=='GOOD') throw new Error('fefo_delivery_date_or_verified_lot_failed');
