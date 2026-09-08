@@ -38,6 +38,7 @@ jobs:
           node --check contagem/product-edit-controls.js
           node --check contagem/fast-mode.js
           node --check contagem/fast-mode-compat.js
+          node --check contagem/fast-mode-tabs.js
           node --check scripts/bling-stock-writer-v1.mjs
       - name: Validar tela operacional
         run: |
@@ -46,6 +47,10 @@ jobs:
           grep -q 'product-edit-controls.js' contagem/index.html
           grep -q 'fast-mode.js' contagem/index.html
           grep -q 'fast-mode-compat.js' contagem/index.html
+          grep -q 'fast-mode-tabs.js' contagem/index.html
+          grep -q 'countModeTabs' contagem/index.html
+          grep -q 'detailModeTab' contagem/index.html
+          grep -q 'fastModeTab' contagem/index.html
           grep -q 'modeToggleButton' contagem/index.html
           grep -q 'fastScanInput' contagem/index.html
           grep -q 'fastFinishButton' contagem/index.html
