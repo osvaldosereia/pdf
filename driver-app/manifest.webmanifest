@@ -1,0 +1,11 @@
+{
+  "name":"Dona Antônia · Entregas",
+  "short_name":"DA Entregas",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#eef4ef",
+  "theme_color":"#173f2a",
+  "description":"App operacional do entregador Dona Antônia. Runtime desativado por padrão.",
+  "icons":[]
+}

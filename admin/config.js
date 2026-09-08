@@ -7,6 +7,9 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   experienceOrchestratorUiEnabled: false,
   automationBuilderEdgeFunction: 'admin-automation-builder-v1',
   automationBuilderUiEnabled: false,
+  logisticsEdgeFunction: 'admin-logistics-v1',
+  logisticsUiEnabled: false,
+  driverAppUrl: '../driver-app/',
   countAppUrl: '../contagem/',
-  build: '20260908-admin-automation-builder-foundation-01'
+  build: '20260908-stage11-logistics-foundation-01'
 });

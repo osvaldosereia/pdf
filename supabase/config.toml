@@ -51,6 +51,14 @@ verify_jwt = true
 [functions.automation-dispatcher-v1]
 verify_jwt = true
 
+# Etapa 11: Central logística administrativa. JWT + getUser + admin_users; sem ativação de runtime.
+[functions.admin-logistics-v1]
+verify_jwt = true
+
+# Etapa 11: app do entregador. JWT obrigatório; handler valida auth_user_id do driver e rota atribuída.
+[functions.driver-logistics-v1]
+verify_jwt = true
+
 # Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
 # JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
 # do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.
