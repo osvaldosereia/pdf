@@ -10,6 +10,8 @@ const n=v=>Number(v??0);
 try{
   await db.exec(`
     create role anon; create role authenticated; create role service_role bypassrls;
+    create table public.automation_config(id smallint primary key default 1);
+    insert into public.automation_config(id) values(1);
     create table public.customers(id uuid primary key default gen_random_uuid(),name text,primary_whatsapp_e164 text,preferred_reply text default 'auto',order_count integer default 0,last_order_at timestamptz);
     create table public.conversations(id uuid primary key default gen_random_uuid(),customer_id uuid references public.customers(id),status text default 'open',stage text default 'new',mode text default 'ai',service_window_expires_at timestamptz default now()+interval '24 hours',fast_checkout boolean default false,upsell_declined boolean default false,updated_at timestamptz default now());
     create table public.products(id uuid primary key default gen_random_uuid(),sku text,gtin text,name text not null,brand text,category text,packaging text,price numeric,stock numeric,image_url text,gondola text,shelf text,sort_order integer,physically_verified boolean default false,is_active boolean default true,description_short text,metadata jsonb default '{}'::jsonb,updated_at timestamptz default now());
@@ -19,6 +21,9 @@ try{
     create table public.messages(id uuid primary key default gen_random_uuid(),conversation_id uuid references public.conversations(id),direction text,message_type text,body_text text,transcript text,raw_event jsonb default '{}'::jsonb,ai_interpretation jsonb default '{}'::jsonb,created_at timestamptz default now());
     create table public.substitution_groups(id uuid primary key default gen_random_uuid(),code text,status text,version_no integer default 1);
     create table public.substitution_group_items(id uuid primary key default gen_random_uuid(),group_id uuid references public.substitution_groups(id),product_id uuid references public.products(id),status text);
+    create table public.ai_jobs(id uuid primary key default gen_random_uuid(),message_id uuid references public.messages(id),job_type text,status text default 'pending',locked_by text,attempts integer default 0,error_message text,result jsonb default '{}'::jsonb,updated_at timestamptz default now());
+    create table public.ai_usage_events(id uuid primary key default gen_random_uuid(),job_id uuid references public.ai_jobs(id),attempt integer,status text,model text,provider_request_id text,input_tokens integer,output_tokens integer,audio_seconds numeric,estimated_cost_usd numeric,pricing_version text,finished_at timestamptz);
+    create table public.room_media(id uuid primary key default gen_random_uuid(),message_id uuid references public.messages(id),processing_status text,processing_error text);
     create or replace function public.recalculate_cart(p_cart_id uuid) returns jsonb language plpgsql as $$
     declare t numeric; begin
       select coalesce(sum(quantity*unit_price),0) into t from public.cart_items where cart_id=p_cart_id and quantity>0;
