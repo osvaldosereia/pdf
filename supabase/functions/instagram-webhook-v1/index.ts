@@ -114,6 +114,7 @@ Deno.serve(async(req:Request)=>{
       const value=asObj(change.value),from=asObj(value.from),media=asObj(value.media);
       const commentId=clean(value.id||value.comment_id,500),externalUserId=clean(from.id,200);
       if(!commentId||!externalUserId){ignored++;continue}
+      if(externalUserId===externalAccountId){ignored++;continue} // nunca cria private reply para comentário da própria conta profissional
       const intent=classifyInstagramCommentIntentV1(value.text);
       const referral={
         media_id:clean(media.id||value.media_id,500)||null,
