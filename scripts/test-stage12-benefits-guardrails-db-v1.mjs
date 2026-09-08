@@ -53,6 +53,7 @@ try{
     $$;
   `);
   await db.exec(readFileSync('supabase/migrations/20260908160000_stage12_benefits_guardrails_v1.sql','utf8'));
+  await db.exec(readFileSync('supabase/migrations/20260908160100_stage12_benefits_guardrails_v1_conflict_fix.sql','utf8'));
 
   let r=await one(`select public.stage12_benefits_readiness_v1() x`);
   for(const k of ['enabled','benefits_enabled','benefit_preview_enabled','benefit_recording_enabled','benefit_reservation_enabled','benefit_apply_enabled','delivered_purchase_evidence_enabled'])if(r.x[k]!==false)throw new Error(`unsafe_default_${k}`);
