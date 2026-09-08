@@ -1,0 +1,51 @@
+name: Human Service Center
+
+on:
+  pull_request:
+    paths:
+      - 'admin/config.js'
+      - 'admin-v3/human-service-center.js'
+      - 'admin-v3/human-service-center.css'
+      - 'supabase/functions/admin-whatsapp-ops-v1/index.ts'
+      - 'scripts/test-human-service-center-v1.mjs'
+      - 'docs/CENTRAL-ATENDIMENTO-HUMANO-COPILOTO-IA-2026-09-08.md'
+      - '.github/workflows/human-service-center-v1.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'admin/config.js'
+      - 'admin-v3/human-service-center.js'
+      - 'admin-v3/human-service-center.css'
+      - 'supabase/functions/admin-whatsapp-ops-v1/index.ts'
+      - 'scripts/test-human-service-center-v1.mjs'
+      - 'docs/CENTRAL-ATENDIMENTO-HUMANO-COPILOTO-IA-2026-09-08.md'
+      - '.github/workflows/human-service-center-v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  human-service-center:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            admin/config.js
+            admin-v3/human-service-center.js
+            admin-v3/human-service-center.css
+            supabase/functions/admin-whatsapp-ops-v1/index.ts
+            scripts/test-human-service-center-v1.mjs
+            docs/CENTRAL-ATENDIMENTO-HUMANO-COPILOTO-IA-2026-09-08.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Validar JavaScript
+        run: |
+          node --check admin/config.js
+          node --check admin-v3/human-service-center.js
+      - name: Contrato da central humana
+        run: node scripts/test-human-service-center-v1.mjs
