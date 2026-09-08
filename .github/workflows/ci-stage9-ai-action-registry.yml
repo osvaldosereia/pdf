@@ -1,0 +1,30 @@
+name: CI Stage 9 - AI Action Registry
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908062000_ai_action_registry_stage9_v1.sql'
+      - 'supabase/functions/admin-ai-action-registry-v1/**'
+      - 'scripts/test-ai-action-registry-stage9-v1.mjs'
+      - '.github/workflows/ci-stage9-ai-action-registry.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908062000_ai_action_registry_stage9_v1.sql'
+      - 'supabase/functions/admin-ai-action-registry-v1/**'
+      - 'scripts/test-ai-action-registry-stage9-v1.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  stage9-registry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test fail-closed registry contract
+        run: node scripts/test-ai-action-registry-stage9-v1.mjs
