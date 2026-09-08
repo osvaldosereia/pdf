@@ -1,0 +1,45 @@
+name: Dona Antonia WhatsApp Sales MVP
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908210*.sql'
+      - 'supabase/functions/conversation-worker-v3/**'
+      - 'supabase/functions/admin-service-intelligence-v1/**'
+      - 'scripts/bling-order-writer-v1.mjs'
+      - 'scripts/test-whatsapp-sales-mvp-*.mjs'
+      - 'admin/inteligencia.html'
+      - 'admin-v3/service-intelligence.*'
+      - '.github/workflows/whatsapp-sales-mvp.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/whatsapp-sales-mvp" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático do MVP
+        run: node scripts/test-whatsapp-sales-mvp-contract-v1.mjs
+      - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
+        run: node scripts/test-whatsapp-sales-mvp-db-v1.mjs
+      - name: Validar JavaScript do Admin e writer
+        run: |
+          node --check admin-v3/service-intelligence.js
+          node --check scripts/bling-order-writer-v1.mjs
+      - name: Deno check Edge Functions
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: |
+          deno check supabase/functions/conversation-worker-v3/index.ts
+          deno check supabase/functions/admin-service-intelligence-v1/index.ts
+      - name: Regressão crítica do worker existente
+        run: node --test scripts/conversation-worker-v1.test.mjs
