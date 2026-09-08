@@ -36,6 +36,22 @@ Deno.serve(async(req:Request)=>{
   const flow=clean(session.metadata?.flow,40);
   if(!["basket_basic_v1","basket_extras_v1"].includes(flow))return json({ok:false,error:"wrong_catalog_flow"},404);
 
+  if(action==="categories"){
+    if(flow!=="basket_basic_v1")return json({ok:false,error:"basket_session_required"},400);
+    const {data,error}=await sb.rpc("get_whatsapp_product_categories_v1");
+    if(error)return json({ok:false,error:"categories_failed"},500);
+    return json({ok:true,categories:data||[]});
+  }
+
+  if(action==="create_extras"){
+    if(flow!=="basket_basic_v1")return json({ok:false,error:"basket_session_required"},400);
+    const categories=Array.isArray(body?.categories)?body.categories.map((x:any)=>clean(x,100)).filter(Boolean).slice(0,40):[];
+    if(!categories.length)return json({ok:false,error:"categories_required"},400);
+    const {data,error}=await sb.rpc("create_whatsapp_basket_extras_by_categories_v1",{p_conversation_id:session.conversation_id,p_categories:categories});
+    if(error)return json({ok:false,error:"extras_session_failed",detail:clean(error.message,160)},400);
+    return json({ok:true,result:data});
+  }
+
   if(action==="open"){
     await sb.from("catalog_sessions").update({last_opened_at:new Date().toISOString(),last_activity_at:new Date().toISOString()}).eq("id",session.id);
     let basket:any=null;
@@ -73,11 +89,11 @@ Deno.serve(async(req:Request)=>{
 
   if(action==="return"){
     const intent=clean(body?.intent,30).toLowerCase();
-    const allowed=flow==="basket_basic_v1"?["order","extras"]:["extras_done"];
+    const allowed=flow==="basket_basic_v1"?["order"]:["extras_done"];
     if(!allowed.includes(intent))return json({ok:false,error:"invalid_return_intent"},400);
     const {data,error}=await sb.rpc("mark_whatsapp_basket_return_v1",{p_public_token:token,p_intent:intent});
     if(error)return json({ok:false,error:"return_failed"},400);
-    const message=intent==="order"?"Quero encomendar a cesta que escolhi.":intent==="extras"?"Quero adicionar mais produtos à minha cesta.":"Terminei de escolher os produtos adicionais da minha cesta.";
+    const message=intent==="order"?"Quero encomendar a cesta que escolhi.":"Terminei de escolher os produtos adicionais da minha cesta. Pode finalizar meu pedido.";
     return json({ok:true,intent,whatsapp_url:await whatsappUrl(sb,session.conversation_id,message),message,result:data});
   }
 
