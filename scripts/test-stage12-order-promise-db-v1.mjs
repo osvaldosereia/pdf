@@ -18,7 +18,7 @@ try{
 
   let cfg=await one(`select * from public.order_promise_runtime_config where id=1`);
   for(const k of ['enabled','preview_enabled','evaluation_recording_enabled','commitment_write_enabled','inventory_reservation_on_commit_enabled','change_control_enabled']) if(cfg[k]!==false) throw new Error(`unsafe_default_${k}`);
-  if(cfg.execution_mode!=='off'||cfg.canary_percent!==0) throw new Error('unsafe_runtime_default');
+  if(cfg.execution_mode!=='off'||Number(cfg.canary_percent)!==0) throw new Error('unsafe_runtime_default');
 
   const p=(await one(`insert into public.products(sku,name,gtin) values('ARROZ5','Arroz 5kg','7891000') returning id`)).id;
   await db.exec(`
@@ -65,14 +65,14 @@ try{
   if(r.x.replay!==true) throw new Error('evaluation_idempotency_failed');
 
   r=await one(`select public.preview_order_change_control_v1('${order}') x`);
-  if(r.x.lock_state!=='editable'||r.x.direct_change_allowed!==true||r.x.order_version!==1) throw new Error('editable_change_state_failed');
+  if(r.x.lock_state!=='editable'||r.x.direct_change_allowed!==true||Number(r.x.order_version)!==1) throw new Error('editable_change_state_failed');
   r=await one(`select public.create_order_change_request_v1('${order}',1,'{"items":[{"product_id":"${p}","quantity":3}]}'::jsonb,'admin',null,'Cliente pediu ajuste','change:${order}:0001') x`);
   if(r.x.error!=='order_change_control_disabled') throw new Error('change_control_gate_failed');
 
   await db.exec(`update public.order_promise_runtime_config set execution_mode='homologation',change_control_enabled=true where id=1`);
   r=await one(`select public.create_order_change_request_v1('${order}',1,'{"items":[{"product_id":"${p}","quantity":3}]}'::jsonb,'admin',null,'Cliente pediu ajuste','change:${order}:0001') x`);
   if(r.x.status!=='draft'||r.x.order_mutated!==false) throw new Error('editable_request_must_be_draft_only');
-  if((await one(`select quantity q from public.order_items where order_id='${order}'`)).q!==2) throw new Error('change_request_mutated_order');
+  if(Number((await one(`select quantity q from public.order_items where order_id='${order}'`)).q)!==2) throw new Error('change_request_mutated_order');
 
   await db.exec(`insert into public.fulfillment_orders(order_id,status) values('${order}','pending')`);
   r=await one(`select public.preview_order_change_control_v1('${order}') x`);
@@ -89,6 +89,6 @@ try{
   if(r.x.error!=='order_change_closed') throw new Error('closed_order_change_allowed');
 
   const counts=await one(`select (select count(*)::int from public.order_promise_evaluations) evals,(select count(*)::int from public.order_change_requests) changes`);
-  if(counts.evals!==1||counts.changes!==2) throw new Error('unexpected_audit_counts');
+  if(Number(counts.evals)!==1||Number(counts.changes)!==2) throw new Error('unexpected_audit_counts');
   console.log('PASS: Stage 12 Order Promise is deterministic/fail-closed and Change Control prevents silent post-fulfillment mutation.');
 }finally{await db.close();}
