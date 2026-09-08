@@ -28,81 +28,112 @@ Produção preservada: WhatsApp `live=1%`; Flow/orquestrador/Bling desligados; 3
 
 ## ETAPA 6 — Instagram Direct + comentários → private reply → Direct
 
-**Status programável: fundação dormente implementada em branch própria; nenhuma conexão/subscription/deploy Meta realizado.**
+**Status programável: implementação dormente completa na PR #189; aguardando CI final/merge e aplicação somente das migrations locais. Nenhuma conexão/subscription/deploy Meta realizado.**
 
-### Política e segurança
+### Política atual codificada
 
-Snapshot documentado em `docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md` e implementado em `supabase/functions/_shared/instagram-policy-v1.mjs`:
+`docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md` e `supabase/functions/_shared/instagram-policy-v1.mjs` registram o snapshot revisado em 08/09/2026:
 
-- conta profissional é pré-requisito externo;
-- permissões de mensagens/comentários ficam registradas como pré-requisito de homologação, sem token ou App Review nesta etapa;
-- no máximo um private reply por comentário;
-- janela conservadora de até 7 dias para comentário;
-- Live permanece bloqueado sem verificação de transmissão ativa;
-- continuação após private reply exige resposta real do destinatário quando aplicável, com janela conservadora de 24h depois da resposta;
-- quick replies registram limite de 13 itens e título de 20 caracteres para futura renderização;
-- compartilhamento futuro só pode referenciar mídia da conta profissional;
-- regras devem ser revalidadas contra documentação Meta imediatamente antes de homologação real.
+- Instagram profissional é pré-requisito externo;
+- máximo de 1 private reply por comentário;
+- janela de até 7 dias;
+- Live bloqueado sem confirmação de transmissão ativa;
+- follow-up só após resposta real do destinatário quando aplicável, com janela conservadora de 24h;
+- quick replies: máximo 13 itens, título até 20 caracteres;
+- compartilhamento futuro de post exige mídia pertencente à conta profissional;
+- regras devem ser revalidadas imediatamente antes de homologação real.
 
 ### Banco dormente
 
-Migration `supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql` cria, server-only/RLS:
+Migration `20260908043000_instagram_direct_comment_foundation_v1.sql`:
 
-- `channel_attribution_events`: comentário/Direct/post/Reel/Story/Live/ad + campaign/adset/ad/creative;
-- `instagram_comment_events`: comentário normalizado, intenção, elegibilidade e deadline de private reply;
-- `instagram_private_reply_jobs`: um candidato por comentário, somente `held`/`draft` nesta fundação, sem dispatcher Meta;
-- `instagram_conversation_windows`: última entrada, private reply futuro, resposta do destinatário e janela de continuidade;
-- índice único de conversa Instagram aberta por conta/IGSID;
-- `record_instagram_attribution_v1`;
-- `record_instagram_comment_event_v1`;
-- `evaluate_instagram_private_reply_candidate_v1`;
-- `ensure_instagram_direct_human_v1`.
+- `channel_attribution_events` para comentário/Direct/post/Reel/Story/Live/ad e IDs de campanha;
+- `instagram_comment_events` normalizado e idempotente;
+- `instagram_private_reply_jobs`, sem dispatcher;
+- `instagram_conversation_windows`;
+- Direct inbound humano-primeiro em `ensure_instagram_direct_human_v1`;
+- IGSID nasce `observed`; CRM só reutiliza identidade `verified`;
+- conversa Instagram nova nasce `needs_human`, `mode=human`, `human_required=true`, cohort `human_control`;
+- nenhuma criação automática de `channel_accounts`, nenhuma abertura de IA/outbound e nenhuma chamada Graph.
 
-`ensure_instagram_direct_human_v1` é humano-primeiro:
+Migration `20260908043100_channel_order_attribution_link_v1.sql`:
 
-- exige `channel_accounts` Instagram já existente e explicitamente em `observe`/`active` com inbound ligado;
-- sem esse gate, evento continua held;
-- IGSID nasce apenas `observed`; cliente só é reutilizado se identidade já estiver `verified`;
-- conversa nova nasce `status=needs_human`, `mode=human`, `human_required=true`, cohort `human_control`;
-- cria handoff `instagram_direct_human_first` se necessário;
-- não liga IA, auto-reply ou outbound.
+- cria `order_channel_attribution_links` server-only/RLS;
+- last-touch usa exclusivamente a mesma `conversation_id` do pedido;
+- touchpoint precisa ser anterior ao pedido e estar dentro de 30 dias;
+- não há fallback por nome, telefone, e-mail ou `customer_id` isolado;
+- trigger no pedido cria/recalcula vínculo local;
+- trigger no touchpoint cobre webhook/replay fora de ordem;
+- nenhuma rede externa é chamada.
 
-A migration não contém `net.http_post`, não chama Graph API, não cria `channel_accounts` e não altera `automation_config`.
+Migration `20260908043200_instagram_private_reply_review_hardening_v1.sql`:
+
+- somente `purchase_interest`, `question` e `support` podem virar candidato elegível;
+- `spam`, `other` e `unknown` ficam bloqueados para evitar abordagem privada indevida;
+- candidato elegível exige revisão humana;
+- `review_instagram_private_reply_v1` exige admin `owner/operator` e revalida intenção, janela, Live e gates da conta;
+- aprovação termina em `status=approved`, `blocked_reason=dispatcher_not_released`, `sent=false`;
+- cancelamento não envia nada;
+- cria `instagram_private_reply_review_v1` e `get_instagram_stage6_metrics_v1` com `transport_released=false` fixo;
+- não existe `fetch`, `net.http_post` ou Graph API nessa camada.
+
+### Contratos de apresentação, sem transporte
+
+`supabase/functions/_shared/instagram-send-contract-v1.mjs` + wrapper Node preparam JSON puro para:
+
+- texto;
+- private reply por `comment_id`;
+- quick replies;
+- Generic Template/carrossel e botões;
+- compartilhamento de post próprio via `MEDIA_SHARE`.
+
+O módulo declara `transportReleased=false` e não contém token, URL Graph ou função de envio.
 
 ### Webhook dormente
 
-`supabase/functions/instagram-webhook-v1/index.ts` foi versionado, mas **não deve ser implantado nesta etapa**:
+`supabase/functions/instagram-webhook-v1/index.ts` está versionado, mas **não deve ser implantado nesta etapa**:
 
-- GET implementa verificação Meta somente quando `META_INSTAGRAM_VERIFY_TOKEN` estiver configurado;
-- POST exige `META_APP_SECRET` e valida `x-hub-signature-256` HMAC-SHA256 antes de processar;
-- guarda apenas SHA-256/referência do payload em `channel_raw_events`; não persiste payload cru na fundação;
-- ignora conta Instagram desconhecida; nunca auto-cadastra conta Meta;
-- normaliza Direct/comentários via `ingest_normalized_channel_event_v1`;
-- Direct inbound segue para handoff humano;
-- comentário usa classificador determinístico `purchase_interest`, `question`, `support`, `spam`, `other` e cria somente candidato/draft;
-- nenhum endpoint de Send API/private reply existe no handler.
+- GET de verificação somente se verify token externo estiver configurado;
+- POST exige HMAC `x-hub-signature-256` contra `META_APP_SECRET`;
+- persiste somente hash/referência do payload bruto;
+- conta Instagram precisa existir previamente; conta desconhecida é ignorada;
+- normaliza Direct/comentários;
+- Direct inbound chama apenas o fluxo humano-primeiro;
+- comentário classifica intenção e cria somente candidato/draft;
+- não há Send API/private reply outbound.
 
-`supabase/config.toml` declara `verify_jwt=false` apenas para esse webhook futuro porque a Meta não envia JWT Supabase; a autenticação custom HMAC continua obrigatória no handler. Nenhuma Edge Function Instagram foi deployada e nenhuma subscription foi criada.
+`supabase/config.toml` registra `verify_jwt=false` apenas para esse callback futuro, pois a autenticação real será a assinatura Meta. A função não foi deployada e nenhuma subscription foi criada.
 
-### CI
+### CI da PR #189
 
-- `scripts/test-instagram-direct-comment-foundation-v1.mjs`: política, janela, Live, follow-up, intenção, idempotência, RLS, human-first e ausência de outbound/auto-cadastro Meta;
-- `.github/workflows/dona-antonia-instagram-dormant-foundation.yml`: contrato Node + `deno check` do webhook;
-- regressões existentes de núcleo omnichannel/runtime continuam acionadas pelos arquivos compartilhados quando aplicável.
+- `scripts/test-instagram-direct-comment-foundation-v1.mjs`;
+- `scripts/test-instagram-send-order-attribution-v1.mjs`;
+- `.github/workflows/dona-antonia-instagram-dormant-foundation.yml` roda ambos e `deno check`;
+- regressões de worker, núcleo omnichannel, runtime e CRM/inbox continuam sendo exigidas quando acionadas.
 
-### Pendências externas deliberadas da Etapa 6
+### Produção — invariantes obrigatórios antes/depois de DDL
 
-Para cumprir a parte real da etapa futuramente ainda serão necessários, com nova autorização e revisão de política vigente:
+- WhatsApp `live=1%`, sem aumento;
+- Flow/Data Exchange/orquestrador desligados;
+- Bling desligado;
+- 3 handoffs humanos atuais preservados;
+- `channel_accounts` sem Instagram real;
+- zero private reply/Direct real enviado;
+- cenário Make `6508939` de publicação Instagram continua inativo.
+
+### Pendências externas deliberadas da própria Etapa 6
+
+A parte real continua bloqueada por autorização/permissões externas e deve permanecer assim nesta execução:
 
 1. conta/app/business Meta corretos;
 2. permissões/App Review/Advanced Access/Business Verification aplicáveis;
 3. secrets fora do repositório;
-4. cadastro de `channel_accounts` começando em `dormant`;
+4. cadastro controlado de `channel_accounts` começando em `dormant`;
 5. deploy + subscription do webhook;
 6. homologação `observe` e humano-primeiro;
 7. somente depois canary IA Instagram independente;
 8. dispatcher real de private reply/Direct após autorização específica.
 
-## Próximo ponto
+## Próximo ponto — SOMENTE ETAPA 6
 
-Abrir PR da fundação dormente da Etapa 6, exigir CI verde, integrar, auditar novamente produção e aplicar **somente a migration de banco dormente**. Não deployar `instagram-webhook-v1`, não criar subscription Meta, não cadastrar conta Instagram real, não enviar private reply e não alterar WhatsApp `live=1%`.
+Fechar CI da PR #189, corrigir qualquer falha, integrar somente quando tudo estiver verde, auditar produção, aplicar as três migrations dormentes em ordem, reauditar RLS/gates/handoffs/zero contas Meta/zero envios e criar checkpoint documental da Etapa 6. **Não iniciar a Etapa 7 nesta execução.**
