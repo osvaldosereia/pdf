@@ -14,6 +14,7 @@ const migration=await readFile('supabase/migrations/20260908043100_channel_order
 const review=await readFile('supabase/migrations/20260908043200_instagram_private_reply_review_hardening_v1.sql','utf8');
 const shared=await readFile('supabase/functions/_shared/instagram-send-contract-v1.mjs','utf8');
 const wrapper=await readFile('lib/omnichannel/instagram-send-contract-v1.mjs','utf8');
+const edge=await readFile('supabase/functions/instagram-webhook-v1/index.ts','utf8');
 const has=(text,re,msg)=>assert.match(text,re,msg);
 const lacks=(text,re,msg)=>assert.doesNotMatch(text,re,msg);
 
@@ -62,7 +63,7 @@ lacks(shared,/\bfetch\s*\(/,'send contracts must not perform HTTP');
 lacks(shared,/net\.http_post/i,'send contracts must not perform DB HTTP');
 lacks(shared,/access[_-]?token|bearer\s+/i,'send contracts must not contain credentials');
 lacks(shared,/graph\.instagram\.com|graph\.facebook\.com/i,'send contracts must not embed Meta endpoints');
-has(shared,/transportReleased:false/,'transport must be explicitly dormant');
+has(shared,/transportReleased:false/,'send contracts must be explicitly dormant');
 
 // Atribuição pedido <- conversa usa somente conversation_id e last-touch temporal.
 has(migration,/create table if not exists public\.order_channel_attribution_links/i);
@@ -82,7 +83,7 @@ has(migration,/perform public\.link_order_channel_attribution_v1\(v_order_id\)/i
 lacks(migration,/net\.http_post|fetch\s*\(|graph\.instagram\.com/i,'order attribution must be local-only');
 
 // Review de private reply é humano, política revalidada e continua sem envio.
-has(review,/comment\.intent not in \('purchase_interest','question','support'\)/i,'spam/unknown/other must not become outreach candidates');
+has(review,/v_comment\.intent not in \('purchase_interest','question','support'\)/i,'spam/unknown/other must not become outreach candidates');
 has(review,/human_approval_required/i,'eligible comment must require human approval');
 has(review,/review_instagram_private_reply_v1/i);
 has(review,/v_admin\.role not in \('owner','operator'\)/i,'review must be RBAC protected');
@@ -96,5 +97,8 @@ has(review,/instagram_private_reply_review_v1/i);
 has(review,/get_instagram_stage6_metrics_v1/i);
 has(review,/'transport_released',false/i);
 lacks(review,/net\.http_post|fetch\s*\(|graph\.instagram\.com|graph\.facebook\.com/i,'review layer must not contain transport');
+
+// Comentários feitos pela própria conta profissional nunca geram candidato privado.
+has(edge,/if\(externalUserId===externalAccountId\)\{ignored\+\+;continue\}/,'professional account self-comments must be ignored');
 
 console.log('Instagram send contracts + order attribution + review hardening v1: OK');
