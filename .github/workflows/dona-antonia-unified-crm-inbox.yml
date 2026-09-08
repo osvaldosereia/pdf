@@ -1,0 +1,48 @@
+name: Dona Antonia unified CRM + inbox
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908040000_unified_crm_inbox_v1.sql'
+      - 'supabase/functions/admin-whatsapp-ops-v1/index.ts'
+      - 'admin-v3/whatsapp-ops.js'
+      - 'scripts/test-unified-crm-inbox-v1.mjs'
+      - '.github/workflows/dona-antonia-unified-crm-inbox.yml'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908040000_unified_crm_inbox_v1.sql'
+      - 'supabase/functions/admin-whatsapp-ops-v1/index.ts'
+      - 'admin-v3/whatsapp-ops.js'
+      - 'scripts/test-unified-crm-inbox-v1.mjs'
+      - '.github/workflows/dona-antonia-unified-crm-inbox.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate unified CRM/inbox fail-closed contract
+        run: node scripts/test-unified-crm-inbox-v1.mjs
+      - name: Check Admin JavaScript syntax
+        run: node --check admin-v3/whatsapp-ops.js
+
+  deno-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Check Admin Edge Function
+        run: deno check supabase/functions/admin-whatsapp-ops-v1/index.ts
