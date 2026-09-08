@@ -1,0 +1,46 @@
+name: Stage 12 Commercial Truth
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'scripts/test-stage12-commercial-truth-v1.mjs'
+      - 'scripts/test-stage12-commercial-truth-db-v1.mjs'
+      - 'docs/ETAPA-12-VERDADE-COMERCIAL-V1.md'
+      - '.github/workflows/stage12-commercial-truth.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'scripts/test-stage12-commercial-truth-v1.mjs'
+      - 'scripts/test-stage12-commercial-truth-db-v1.mjs'
+      - 'docs/ETAPA-12-VERDADE-COMERCIAL-V1.md'
+      - '.github/workflows/stage12-commercial-truth.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql
+            scripts/test-stage12-commercial-truth-v1.mjs
+            scripts/test-stage12-commercial-truth-db-v1.mjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage12" --no-save @electric-sql/pglite@0.5.8
+      - name: Validar contrato fail-closed
+        run: node scripts/test-stage12-commercial-truth-v1.mjs
+      - name: Aplicar migration e testar FEFO/margem
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage12
+        run: node scripts/test-stage12-commercial-truth-db-v1.mjs
