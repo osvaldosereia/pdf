@@ -65,7 +65,7 @@ async function loadRoute(){if(!state.session)return;try{state.snapshot=await edg
 
 function stopGps(){if(state.gpsWatch!=null){navigator.geolocation?.clearWatch(state.gpsWatch);state.gpsWatch=null}}
 function startGps(){
-  const snap=state.snapshot?.snapshot||state.snapshot;if(!cfg.enabled||snap?.route?.status!=='active'||!navigator.geolocation)return;
+  const snap=state.snapshot?.snapshot||state.snapshot;if(!cfg.enabled||!cfg.gpsEnabled||snap?.route?.status!=='active'||!navigator.geolocation)return;
   stopGps();let last=0;
   state.gpsWatch=navigator.geolocation.watchPosition(async pos=>{
     if(Date.now()-last<Number(cfg.gpsIntervalSeconds||30)*1000)return;last=Date.now();
