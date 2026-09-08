@@ -59,6 +59,10 @@ verify_jwt = true
 [functions.driver-logistics-v1]
 verify_jwt = true
 
+# Etapa 12: fulfillment/WMS mobile. JWT obrigatório; handler valida usuário em operations_staff.
+[functions.fulfillment-mobile-v1]
+verify_jwt = true
+
 # Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
 # JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
 # do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.
