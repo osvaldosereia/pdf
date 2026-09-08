@@ -1,0 +1,99 @@
+name: Testar vitrine e catálogo v12
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - index.html
+      - index-pagespeed-test.html
+      - scripts/build-storefront-v12-test.mjs
+      - scripts/run-storefront-v12-test.mjs
+      - scripts/test-storefront-v12-static.mjs
+      - scripts/test-storefront-v12-browser.mjs
+      - .github/workflows/test-storefront-v12.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: storefront-v12-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 1
+          persist-credentials: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Validar scripts
+        run: |
+          node --check scripts/build-storefront-v12-test.mjs
+          node --check scripts/run-storefront-v12-test.mjs
+          node --check scripts/test-storefront-v12-static.mjs
+          node --check scripts/test-storefront-v12-browser.mjs
+
+      - name: Gerar página isolada de teste
+        run: node scripts/run-storefront-v12-test.mjs
+
+      - name: Executar validações estáticas
+        run: node scripts/test-storefront-v12-static.mjs
+
+      - name: Disponibilizar HTML para teste manual
+        uses: actions/upload-artifact@v4
+        with:
+          name: index-storefront-v12-test
+          path: index-pagespeed-test.html
+          if-no-files-found: error
+
+      - name: Instalar navegador de teste
+        run: |
+          npm install --no-save playwright@1.54.1
+          npx playwright install --with-deps chromium
+
+      - name: Testar catálogo em navegador real
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 -m http.server 4173 > /tmp/storefront-v12-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid || true' EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/index-pagespeed-test.html >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/test-storefront-v12-browser.mjs 2>&1 | tee /tmp/storefront-v12-browser.log
+
+      - name: Guardar diagnóstico do navegador
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storefront-v12-diagnostics
+          path: |
+            /tmp/storefront-v12-browser.log
+            /tmp/storefront-v12-server.log
+          if-no-files-found: warn
+
+      - name: Confirmar que o index oficial não mudou
+        if: always()
+        run: git diff --exit-code -- index.html
+
+      - name: Salvar somente a página de teste na branch
+        if: github.event_name == 'pull_request' && success()
+        shell: bash
+        run: |
+          git add index-pagespeed-test.html
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Gerar página de teste da vitrine v12'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
