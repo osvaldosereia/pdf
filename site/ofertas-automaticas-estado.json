@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-08T08:35:59.713Z",
+  "ultima_execucao": "2026-09-08T09:30:16.627Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -2552,6 +2552,20 @@
       "historico_id": "oferta-1776338124900-1788593178522-zs5vi"
     },
     {
+      "produto_key": "1776338124936",
+      "codigo": "25884009",
+      "nome": "Palmolive Condicionador Detox 350ml",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 13.9,
+      "preco_oferta": 12.93,
+      "desconto_percentual": 6.98,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338124936-1788859816627-sti1x"
+    },
+    {
       "produto_key": "1776338124992",
       "codigo": "P0170",
       "nome": "Lápis Grafite para Lapiseira 2,0mm Hb Unidade",
@@ -4258,6 +4272,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1776338128196-1788603867446-930rk"
+    },
+    {
+      "produto_key": "1776338128234",
+      "codigo": "501657Y",
+      "nome": "Palmolive Sabonete Sensação Purificante 85g",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.8,
+      "preco_oferta": 2.63,
+      "desconto_percentual": 6.07,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338128234-1788859816627-03jr4"
     },
     {
       "produto_key": "1776338128235",
@@ -6990,6 +7018,20 @@
       "historico_id": "oferta-1776433444996-1788747163548-imcur"
     },
     {
+      "produto_key": "1776434295471",
+      "codigo": "34295471",
+      "nome": "Enxaguante Bucal Carmed Fini Beijos 250ml",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.39,
+      "desconto_percentual": 7.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776434295471-1788859816627-s6rh9"
+    },
+    {
       "produto_key": "1776434858132",
       "codigo": "34858132",
       "nome": "Carmed Gel Dental Fini Minhoca 70g",
@@ -8698,6 +8740,20 @@
       "historico_id": "oferta-17785082675421109983-1788787789049-rejxr"
     },
     {
+      "produto_key": "1778508267542136874",
+      "codigo": "P-NXCC",
+      "nome": "Essence Óleo Labial Juicy Bomb Party 01 Pessego Unidade",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 18.9,
+      "preco_oferta": 17.01,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-15T23:59:59-04:00",
+      "historico_id": "oferta-1778508267542136874-1788859816627-1jvh0"
+    },
+    {
       "produto_key": "177850826754256242",
       "codigo": "P-F0QU",
       "nome": "Harpic Desinfetante e Desodorizador Sanitário 10x - 500ml",
@@ -10054,6 +10110,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1779474694690162247-1788729763200-r0jje"
+    },
+    {
+      "produto_key": "177947469469093135",
+      "codigo": "P-D5DF",
+      "nome": "Minuano Sabão em Pó Sabão Pó Roxo Sh 400g",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 5.29,
+      "preco_oferta": 4.92,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-177947469469093135-1788859816627-zu1dq"
     },
     {
       "produto_key": "1779474694691283419",
@@ -12184,6 +12254,20 @@
       "historico_id": "oferta-1786369085404a9e4-1788780419825-pe0x4"
     },
     {
+      "produto_key": "1786370267837_faaf",
+      "codigo": "7896423702705",
+      "nome": "Cabelo de Anjo com Ovos 500g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 7.29,
+      "preco_oferta": 6.56,
+      "desconto_percentual": 10.01,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1786370267837faaf-1788859816627-700o1"
+    },
+    {
       "produto_key": "1786371387505_b35b",
       "codigo": "7897744503842",
       "nome": "Limpa Ambientes Algodão Concentrado 120ml",
@@ -13540,6 +13624,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-7896007554096-1788698022343-h66qy"
+    },
+    {
+      "produto_key": "7896040704625",
+      "codigo": "7896040704625",
+      "nome": "Limpador Casa & Perfume Agradable 500ml",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 5.99,
+      "preco_oferta": 5.63,
+      "desconto_percentual": 6.01,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-7896040704625-1788859816627-m1wf0"
     },
     {
       "produto_key": "7896102504293",
@@ -16468,7 +16566,7 @@
       "regra_id": "regra-1785205096285"
     },
     "177947469469093135": {
-      "ultima_oferta_em": "2026-09-04T05:27:43.166Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205096285"
     },
     "177955035608227885": {
@@ -16488,7 +16586,7 @@
       "regra_id": "regra-1785205105033"
     },
     "7896040704625": {
-      "ultima_oferta_em": "2026-09-03T14:30:31.445Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205105033"
     },
     "produto_1784905456885": {
@@ -17008,7 +17106,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1778508267542136874": {
-      "ultima_oferta_em": "2026-08-27T02:01:50.362Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785202557027"
     },
     "178015707132272421": {
@@ -17268,7 +17366,7 @@
       "regra_id": "regra-1785205192100"
     },
     "1776338124936": {
-      "ultima_oferta_em": "2026-09-03T20:26:57.786Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205192100"
     },
     "1776690601226": {
@@ -17808,7 +17906,7 @@
       "regra_id": "regra-1785205065492"
     },
     "1776434295471": {
-      "ultima_oferta_em": "2026-09-04T08:39:33.037Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205082552"
     },
     "1776434293041": {
@@ -19220,7 +19318,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1776338128234": {
-      "ultima_oferta_em": "2026-09-04T08:39:33.037Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205164829"
     },
     "1776338123278": {
@@ -19584,7 +19682,7 @@
       "regra_id": "regra-1785205105033"
     },
     "1786370267837_faaf": {
-      "ultima_oferta_em": "2026-09-04T09:30:09.756Z",
+      "ultima_oferta_em": "2026-09-08T09:30:16.627Z",
       "regra_id": "regra-1785205113340"
     },
     "1786371676052_a844": {
@@ -20057,23 +20155,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788175570961",
-      "executado_em": "2026-08-31T11:26:11.448Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 7,
-        "ofertas_nao_criadas": 16,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "github-1788179979073",
       "executado_em": "2026-08-31T12:39:39.561Z",
@@ -23449,6 +23530,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 8,
         "ofertas_nao_criadas": 15,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788859816109",
+      "executado_em": "2026-09-08T09:30:16.627Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 7,
+        "ofertas_nao_criadas": 16,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
