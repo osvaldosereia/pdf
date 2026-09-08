@@ -4,8 +4,7 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   edgeFunction: 'admin-ops-v1',
   whatsappOpsEdgeFunction: 'admin-whatsapp-ops-v1',
   experienceOrchestratorEdgeFunction: 'admin-experience-orchestrator-v1',
-  whatsappFlowAdminEdgeFunction: 'admin-whatsapp-flow-v1',
   experienceOrchestratorUiEnabled: false,
   countAppUrl: '../contagem/',
-  build: '20260908-whatsapp-flow-transport-foundation-01'
+  build: '20260908-admin-orchestrator-foundation-01'
 });
