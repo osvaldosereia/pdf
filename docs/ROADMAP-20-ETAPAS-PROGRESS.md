@@ -36,10 +36,10 @@ Ler sempre junto com `docs/RETOMADA-DONA-ANTONIA.md`. Os documentos antigos de 1
 **PARTE PROGRAMÁVEL SEGURA CONCLUÍDA E DORMENTE.** Transporte/conta real não liberados.
 
 ## ETAPA 7 — Facebook Messenger + centralização Meta
-**PRÓXIMA ETAPA.** Desenvolver somente fundação segura/dormente enquanto credenciais/contas reais não estiverem autorizadas.
+**PARTE PROGRAMÁVEL EM INTEGRAÇÃO.** Fundação dormente preparada em branch/PR: parser Page/Messenger, PSID, postbacks/referrals, gates independentes, renderers Messenger, atribuição Meta, migration server-only/RLS, readiness `transport_implemented=false`, CI e documentação. Concluir somente após CI/merge e aplicação auditada da migration; nenhuma conta, token, subscription, Graph/Send API ou transporte real é autorizado.
 
 ## ETAPA 8 — Sala de Compra + WhatsApp Flow + Orquestrador channel-aware
-**PENDENTE.**
+**PENDENTE.** Próxima somente depois do fechamento programável/auditado da Etapa 7.
 
 ## ETAPA 9 — AI Action Registry + Governança de Autonomia
 **PENDENTE.**

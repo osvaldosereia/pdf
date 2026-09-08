@@ -1,0 +1,34 @@
+name: Dona Antonia Stage 7 Messenger
+
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/messenger-runtime-v1.mjs'
+      - 'scripts/test-messenger-stage7-foundation-v1.mjs'
+      - 'supabase/migrations/20260908071000_messenger_stage7_foundation_v1.sql'
+      - '.github/workflows/dona-antonia-stage7-messenger.yml'
+      - 'docs/MESSENGER-STAGE7-FOUNDATION-V1.md'
+  push:
+    branches: [main]
+    paths:
+      - 'lib/omnichannel/messenger-runtime-v1.mjs'
+      - 'scripts/test-messenger-stage7-foundation-v1.mjs'
+      - 'supabase/migrations/20260908071000_messenger_stage7_foundation_v1.sql'
+
+jobs:
+  stage7:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax
+        run: node --check lib/omnichannel/messenger-runtime-v1.mjs && node --check scripts/test-messenger-stage7-foundation-v1.mjs
+      - name: Runtime contracts
+        run: node scripts/test-messenger-stage7-foundation-v1.mjs
+      - name: SQL safety invariants
+        run: |
+          grep -qi "transport_send_enabled boolean not null default false" supabase/migrations/20260908071000_messenger_stage7_foundation_v1.sql
+          grep -qi "revoke all on public.messenger_channel_controls from public, anon, authenticated" supabase/migrations/20260908071000_messenger_stage7_foundation_v1.sql
+          grep -qi "'transport_implemented', false" supabase/migrations/20260908071000_messenger_stage7_foundation_v1.sql
