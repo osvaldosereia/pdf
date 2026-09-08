@@ -63,6 +63,10 @@ verify_jwt = true
 [functions.admin-commercial-truth-v1]
 verify_jwt = true
 
+# Etapa 12: operação de armazém/fulfillment. JWT obrigatório; handler valida warehouse_staff.
+[functions.warehouse-ops-v1]
+verify_jwt = true
+
 # Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
 # JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
 # do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.
