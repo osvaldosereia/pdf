@@ -7,11 +7,13 @@ const support=r('supabase/migrations/20260908210200_whatsapp_sales_worker_suppor
 const state=r('supabase/migrations/20260908210300_whatsapp_sales_state_v1.sql');
 const interactive=r('supabase/migrations/20260908210400_whatsapp_sales_interactive_ingest_v1.sql');
 const binding=r('supabase/migrations/20260908210500_bling_shadow_product_binding_v1.sql');
+const confirmFirst=r('supabase/migrations/20260908210600_whatsapp_confirm_first_bling_batch_v1.sql');
 const worker=r('supabase/functions/conversation-worker-v3/index.ts');
 const admin=r('supabase/functions/admin-service-intelligence-v1/index.ts');
 const ui=r('admin-v3/service-intelligence.js');
 const page=r('admin/inteligencia.html');
 const writer=r('scripts/bling-order-writer-v1.mjs');
+const blingWorkflow=r('.github/workflows/bling-order-writer-v1.yml');
 const has=(s,re,msg)=>assert.match(s,re,msg);
 const lacks=(s,re,msg)=>assert.doesNotMatch(s,re,msg);
 
@@ -34,6 +36,23 @@ has(exec,/protocol_version',4/i,'protocolo outbound v4');
 lacks(exec,/carousel/i,'carrossel proibido');
 has(interactive,/v_interactive_id like 'da\\_%'/i,'botões/listas comerciais retornam ao worker');
 has(state,/pending_delivery_address/i,'estado multietapa guarda endereço');
+
+has(confirmFirst,/Primeiro e definitivamente: cria o pedido interno/i,'venda é concluída antes da retaguarda');
+has(confirmFirst,/queue_bling_order_backoffice_v1/i,'Bling entra em fila local');
+has(confirmFirst,/Nenhuma chamada ao Bling ocorre aqui/i,'checkout não chama Bling');
+has(confirmFirst,/'customer_sale_status','confirmed'/i,'cliente recebe estado de venda confirmada');
+has(confirmFirst,/'bling',null/i,'Bling não aparece como requisito da experiência');
+has(confirmFirst,/not c\.bling_order_sync_enabled or not c\.whatsapp_sales_bling_submit_enabled/i,'worker Bling exige dois gates');
+has(confirmFirst,/default 10/i,'intervalo padrão é 10 minutos');
+has(confirmFirst,/default '07:00'/i,'janela começa 07h');
+has(confirmFirst,/default '18:00'/i,'janela termina 18h');
+has(confirmFirst,/default 'America\/Cuiaba'/i,'timezone explícito');
+
+has(blingWorkflow,/cron: '\*\/10 11-21 \* \* \*'/i,'agenda cobre 07:00–17:50 Cuiabá');
+has(blingWorkflow,/cron: '0 22 \* \* \*'/i,'agenda inclui rodada das 18:00');
+has(blingWorkflow,/TZ=America\/Cuiaba date \+%H%M/i,'workflow valida hora local');
+has(blingWorkflow,/github\.event_name == 'schedule' && 'apply'/i,'agenda automática roda apply');
+has(blingWorkflow,/cancel-in-progress: false/i,'lotes não se atropelam');
 
 has(support,/resolver corretamente a necessidade/i,'objetivo comercial correto seedado');
 has(support,/menor número de mensagens necessário/i,'baixa carga cognitiva');
@@ -66,7 +85,7 @@ has(writer,/class AmbiguousError/i,'efeito externo incerto vai para revisão');
 has(writer,/catalog_source.*counter_verified/s,'writer valida fonte própria');
 lacks(writer,/if\(!Number\(i\.bling_product_id\)\)throw/i,'writer não exige vínculo prévio');
 
-for(const s of [core,exec,support,state,interactive,binding]){
+for(const s of [core,exec,support,state,interactive,binding,confirmFirst]){
   has(s,/revoke all on function/i,'RPCs revogadas do público');
 }
 console.log('whatsapp sales MVP contract: ok');
