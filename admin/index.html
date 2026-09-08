@@ -1,119 +1,14 @@
 <!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#173f2a">
-  <meta name="robots" content="noindex,nofollow">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-  <title>Dona Antônia · Admin</title>
-  <link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02">
-  <link rel="stylesheet" href="../admin-v3/enhancements.css?v=20260907-02">
-  <link rel="stylesheet" href="../admin-v3/customer-intelligence.css?v=20260907-01">
-  <link rel="stylesheet" href="../admin-v3/whatsapp-ops.css?v=20260907-01">
-  <link rel="stylesheet" href="../admin-v3/experience-orchestrator.css?v=20260908-01">
-</head>
-<body>
-  <section id="loginView" class="login-shell">
-    <form id="loginForm" class="login-card">
-      <div class="logo">DA</div><div class="eyebrow">Central operacional</div><h1>Dona Antônia</h1>
-      <p>Admin oficial de produtos, estoque, cestas, pedidos e atendimento.</p>
-      <label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label>
-      <label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label>
-      <button id="loginButton" class="button primary" type="submit">Entrar</button><div id="loginStatus" class="status-text"></div>
-    </form>
-  </section>
-
-  <div id="adminApp" class="app hidden">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand"><span>DA</span><div><strong>Dona Antônia</strong><small>Admin</small></div></div>
-      <nav id="nav">
-        <button class="nav active" data-route="dashboard" type="button"><span>IN</span>Visão geral</button>
-        <button class="nav" data-route="products" type="button"><span>PR</span>Produtos conferidos</button>
-        <button class="nav" data-route="baskets" type="button"><span>CE</span>Cestas básicas</button>
-        <button class="nav" data-route="customers" type="button"><span>CL</span>Clientes</button>
-        <button class="nav" data-route="whatsapp" type="button"><span>IA</span>Atendimento IA</button>
-        <button class="nav" data-route="counts" type="button"><span>CT</span>Contagens</button>
-        <button class="nav" data-route="queue" type="button"><span>BQ</span>Fila Bling</button>
-        <a class="nav link" href="../contagem/"><span>📷</span>Abrir contagem</a>
-      </nav>
-      <div class="side-bottom"><div><strong id="sideUser">Usuário</strong><small id="sideRole"></small></div><button id="logoutButton" type="button">Sair</button></div>
-    </aside>
-
-    <div class="workspace">
-      <header class="topbar"><button id="menuButton" class="icon mobile-only" type="button">☰</button><div><h1 id="pageTitle">Visão geral</h1><p id="pageSubtitle">Estado operacional do sistema.</p></div><button id="refreshButton" class="button secondary" type="button">Atualizar</button></header>
-      <main>
-        <section class="view active" data-view="dashboard">
-          <div id="metrics" class="metrics"></div>
-          <div class="grid-two">
-            <section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário</div><h2>Contagens recentes</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="recentCounts" class="list"></div></section>
-            <section class="panel"><div class="panel-head"><div><div class="eyebrow">Integração</div><h2>Erros Bling</h2></div></div><div id="recentErrors" class="list"></div></section>
-          </div>
-        </section>
-
-        <section class="view" data-view="products">
-          <div class="toolbar"><div class="search"><span>⌕</span><input id="productSearch" type="search" placeholder="Nome, EAN, SKU ou marca"></div>
-            <select id="productStatus"><option value="">Todos</option><option value="whatsapp">WhatsApp ativos</option><option value="offer">Ofertas</option><option value="upsell">Upsell</option><option value="no-stock">Sem estoque</option><option value="inactive">Inativos</option></select>
-            <select id="productSync"><option value="">Toda sincronização</option><option value="pending_bling">Pendente Bling</option><option value="synced">Sincronizado</option><option value="error_bling">Erro Bling</option></select>
-            <select id="productExpiry" aria-label="Validade"><option value="">Todas as validades</option><option value="expired">Vencidos</option><option value="30">Vencem em até 30 dias · regra 30%</option><option value="60">Vencem entre 31 e 60 dias · regra 20%</option><option value="missing">Sem validade cadastrada</option></select>
-            <select id="productSort" aria-label="Ordenação"><option value="">Conferidos recentemente</option><option value="name">Nome</option><option value="expiry">Validade mais próxima</option><option value="stock">Menor estoque</option><option value="price">Menor preço</option></select>
-            <input id="productCategory" type="search" placeholder="Categoria" aria-label="Categoria">
-            <input id="productBrand" type="search" placeholder="Marca" aria-label="Marca">
-            <input id="productGondola" type="search" placeholder="Gôndola" aria-label="Gôndola">
-            <input id="productShelf" type="search" placeholder="Prateleira" aria-label="Prateleira">
-          </div>
-          <section class="panel table-panel"><div class="table-summary"><strong id="productCount">0 produtos</strong><span id="productPage"></span></div><div class="table-wrap"><table><thead><tr><th>Produto</th><th>EAN / SKU</th><th>Estoque</th><th>Validade</th><th>WhatsApp</th><th>Sync</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div><div class="pager"><button id="prevProducts" class="button secondary small" type="button">Anterior</button><button id="nextProducts" class="button secondary small" type="button">Próxima</button></div></section>
-        </section>
-
-        <section class="view" data-view="baskets">
-          <div class="toolbar baskets-toolbar"><div class="search"><span>⌕</span><input id="basketSearch" type="search" placeholder="Buscar cesta"></div><button id="newBasketButton" class="button primary" type="button">+ Nova cesta</button></div>
-          <section class="panel"><div class="panel-head"><div><div class="eyebrow">Catálogo comercial</div><h2>Cestas básicas</h2></div><span id="basketSummary" class="muted"></span></div><div id="basketRows" class="basket-grid"><div class="empty">Abra esta seção para carregar as cestas.</div></div></section>
-        </section>
-
-        <section class="view" data-view="customers">
-          <div class="toolbar"><div class="search"><span>⌕</span><input id="customerSearch" type="search" placeholder="Nome ou WhatsApp"></div><select id="customerModeFilter"><option value="">Todos os perfis</option><option value="catalog_first">Catálogo primeiro</option><option value="hybrid">Híbrido</option><option value="whatsapp_only">Somente WhatsApp</option></select></div>
-          <section class="panel table-panel"><div class="table-summary"><strong id="customerCount">0 clientes</strong><span id="customerPage"></span></div><div class="table-wrap"><table class="customer-table"><thead><tr><th>Cliente</th><th>Perfil</th><th>Compras</th><th>Última compra</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div><div class="pager"><button id="prevCustomers" class="button secondary small" type="button">Anterior</button><button id="nextCustomers" class="button secondary small" type="button">Próxima</button></div></section>
-        </section>
-
-        <section class="view" data-view="whatsapp">
-          <div class="ops-alert" id="waReleaseBanner">Atendimento geral fechado. Carregando estado operacional…</div>
-          <div id="waOpsMetrics" class="metrics"></div>
-          <div class="grid-two">
-            <section class="panel">
-              <div class="panel-head"><div><div class="eyebrow">Fallback humano</div><h2>Atendimentos que precisam da equipe</h2></div><span id="waHandoffCount" class="muted"></span></div>
-              <div id="waHandoffRows" class="list"><div class="empty">Carregando…</div></div>
-            </section>
-            <section class="panel">
-              <div class="panel-head"><div><div class="eyebrow">Segurança</div><h2>Controle operacional</h2></div></div>
-              <div id="waOpsState" class="ops-state"></div>
-              <div class="ops-danger-zone"><strong>Parada de emergência</strong><p>Fecha inbound, IA, worker e respostas automáticas imediatamente. Não reenvia mensagens incertas.</p><button id="waEmergencyStop" class="button danger" type="button">Parar atendimento automático</button></div>
-            </section>
-          </div>
-          <section class="panel"><div class="panel-head"><div><div class="eyebrow">Auditoria</div><h2>Eventos recentes</h2></div></div><div id="waOpsEvents" class="list"><div class="empty">Carregando…</div></div></section>
-          <section id="experienceOrchestratorMount" class="hidden" aria-label="Orquestrador de interfaces"></section>
-        </section>
-
-        <section class="view" data-view="counts"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="countRows" class="list"></div></section></section>
-
-        <section class="view" data-view="queue"><div class="toolbar"><select id="queueStatus"><option value="">Todos</option><option value="pending">Pendentes</option><option value="processing">Processando</option><option value="done">Concluídos</option><option value="error">Erros</option><option value="cancelled">Cancelados</option></select><button id="reloadQueue" class="button secondary" type="button">Recarregar fila</button></div><section class="panel"><div id="queueRows" class="list"></div></section></section>
-      </main>
-    </div>
-  </div>
-
-  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
-  <section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section>
-  <div id="toastRegion" class="toasts" aria-live="polite"></div>
-  <script src="./config.js?v=20260908-01"></script>
-  <script src="../admin-v3/app.js?v=20260907-03"></script>
-  <script src="../admin-v3/enhancements.js?v=20260907-02"></script>
-  <script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script>
-  <script src="../admin-v3/whatsapp-ops.js?v=20260907-01"></script>
-  <script src="../admin-v3/experience-orchestrator.js?v=20260908-01"></script>
-  <script>
-    if(window.DA_ADMIN_V3_CONFIG?.experienceOrchestratorUiEnabled){
-      const mount=document.getElementById('experienceOrchestratorMount');
-      if(mount&&window.DAExperienceOrchestrator){mount.classList.remove('hidden');window.DAExperienceOrchestrator.mount(mount)}
-    }
-  </script>
-</body>
-</html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#173f2a"><meta name="robots" content="noindex,nofollow"><meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0"><title>Dona Antônia · Admin</title><link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02"><link rel="stylesheet" href="../admin-v3/enhancements.css?v=20260907-02"><link rel="stylesheet" href="../admin-v3/customer-intelligence.css?v=20260907-01"><link rel="stylesheet" href="../admin-v3/whatsapp-ops.css?v=20260907-01"><link rel="stylesheet" href="../admin-v3/experience-orchestrator.css?v=20260908-01"><link rel="stylesheet" href="../admin-v3/automation-builder.css?v=20260908-01"></head><body>
+<section id="loginView" class="login-shell"><form id="loginForm" class="login-card"><div class="logo">DA</div><div class="eyebrow">Central operacional</div><h1>Dona Antônia</h1><p>Admin oficial de produtos, estoque, cestas, pedidos e atendimento.</p><label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label><label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label><button id="loginButton" class="button primary" type="submit">Entrar</button><div id="loginStatus" class="status-text"></div></form></section>
+<div id="adminApp" class="app hidden"><aside class="sidebar" id="sidebar"><div class="brand"><span>DA</span><div><strong>Dona Antônia</strong><small>Admin</small></div></div><nav id="nav"><button class="nav active" data-route="dashboard" type="button"><span>IN</span>Visão geral</button><button class="nav" data-route="products" type="button"><span>PR</span>Produtos conferidos</button><button class="nav" data-route="baskets" type="button"><span>CE</span>Cestas básicas</button><button class="nav" data-route="customers" type="button"><span>CL</span>Clientes</button><button class="nav" data-route="whatsapp" type="button"><span>IA</span>Atendimento IA</button><button id="automationBuilderNav" class="nav hidden" data-route="automations" type="button"><span>AU</span>Automações</button><button class="nav" data-route="counts" type="button"><span>CT</span>Contagens</button><button class="nav" data-route="queue" type="button"><span>BQ</span>Fila Bling</button><a class="nav link" href="../contagem/"><span>📷</span>Abrir contagem</a></nav><div class="side-bottom"><div><strong id="sideUser">Usuário</strong><small id="sideRole"></small></div><button id="logoutButton" type="button">Sair</button></div></aside>
+<div class="workspace"><header class="topbar"><button id="menuButton" class="icon mobile-only" type="button">☰</button><div><h1 id="pageTitle">Visão geral</h1><p id="pageSubtitle">Estado operacional do sistema.</p></div><button id="refreshButton" class="button secondary" type="button">Atualizar</button></header><main>
+<section class="view active" data-view="dashboard"><div id="metrics" class="metrics"></div><div class="grid-two"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário</div><h2>Contagens recentes</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="recentCounts" class="list"></div></section><section class="panel"><div class="panel-head"><div><div class="eyebrow">Integração</div><h2>Erros Bling</h2></div></div><div id="recentErrors" class="list"></div></section></div></section>
+<section class="view" data-view="products"><div class="toolbar"><div class="search"><span>⌕</span><input id="productSearch" type="search" placeholder="Nome, EAN, SKU ou marca"></div><select id="productStatus"><option value="">Todos</option><option value="whatsapp">WhatsApp ativos</option><option value="offer">Ofertas</option><option value="upsell">Upsell</option><option value="no-stock">Sem estoque</option><option value="inactive">Inativos</option></select><select id="productSync"><option value="">Toda sincronização</option><option value="pending_bling">Pendente Bling</option><option value="synced">Sincronizado</option><option value="error_bling">Erro Bling</option></select><select id="productExpiry" aria-label="Validade"><option value="">Todas as validades</option><option value="expired">Vencidos</option><option value="30">Vencem em até 30 dias · regra 30%</option><option value="60">Vencem entre 31 e 60 dias · regra 20%</option><option value="missing">Sem validade cadastrada</option></select><select id="productSort" aria-label="Ordenação"><option value="">Conferidos recentemente</option><option value="name">Nome</option><option value="expiry">Validade mais próxima</option><option value="stock">Menor estoque</option><option value="price">Menor preço</option></select><input id="productCategory" type="search" placeholder="Categoria"><input id="productBrand" type="search" placeholder="Marca"><input id="productGondola" type="search" placeholder="Gôndola"><input id="productShelf" type="search" placeholder="Prateleira"></div><section class="panel table-panel"><div class="table-summary"><strong id="productCount">0 produtos</strong><span id="productPage"></span></div><div class="table-wrap"><table><thead><tr><th>Produto</th><th>EAN / SKU</th><th>Estoque</th><th>Validade</th><th>WhatsApp</th><th>Sync</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div><div class="pager"><button id="prevProducts" class="button secondary small" type="button">Anterior</button><button id="nextProducts" class="button secondary small" type="button">Próxima</button></div></section></section>
+<section class="view" data-view="baskets"><div class="toolbar baskets-toolbar"><div class="search"><span>⌕</span><input id="basketSearch" type="search" placeholder="Buscar cesta"></div><button id="newBasketButton" class="button primary" type="button">+ Nova cesta</button></div><section class="panel"><div class="panel-head"><div><div class="eyebrow">Catálogo comercial</div><h2>Cestas básicas</h2></div><span id="basketSummary" class="muted"></span></div><div id="basketRows" class="basket-grid"><div class="empty">Abra esta seção para carregar as cestas.</div></div></section></section>
+<section class="view" data-view="customers"><div class="toolbar"><div class="search"><span>⌕</span><input id="customerSearch" type="search" placeholder="Nome ou WhatsApp"></div><select id="customerModeFilter"><option value="">Todos os perfis</option><option value="catalog_first">Catálogo primeiro</option><option value="hybrid">Híbrido</option><option value="whatsapp_only">Somente WhatsApp</option></select></div><section class="panel table-panel"><div class="table-summary"><strong id="customerCount">0 clientes</strong><span id="customerPage"></span></div><div class="table-wrap"><table class="customer-table"><thead><tr><th>Cliente</th><th>Perfil</th><th>Compras</th><th>Última compra</th><th></th></tr></thead><tbody id="customerRows"></tbody></table></div><div class="pager"><button id="prevCustomers" class="button secondary small" type="button">Anterior</button><button id="nextCustomers" class="button secondary small" type="button">Próxima</button></div></section></section>
+<section class="view" data-view="whatsapp"><div class="ops-alert" id="waReleaseBanner">Atendimento geral fechado. Carregando estado operacional…</div><div id="waOpsMetrics" class="metrics"></div><div class="grid-two"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Fallback humano</div><h2>Atendimentos que precisam da equipe</h2></div><span id="waHandoffCount" class="muted"></span></div><div id="waHandoffRows" class="list"><div class="empty">Carregando…</div></div></section><section class="panel"><div class="panel-head"><div><div class="eyebrow">Segurança</div><h2>Controle operacional</h2></div></div><div id="waOpsState" class="ops-state"></div><div class="ops-danger-zone"><strong>Parada de emergência</strong><p>Fecha inbound, IA, worker e respostas automáticas imediatamente. Não reenvia mensagens incertas.</p><button id="waEmergencyStop" class="button danger" type="button">Parar atendimento automático</button></div></section></div><section class="panel"><div class="panel-head"><div><div class="eyebrow">Auditoria</div><h2>Eventos recentes</h2></div></div><div id="waOpsEvents" class="list"><div class="empty">Carregando…</div></div></section><section id="experienceOrchestratorMount" class="hidden"></section></section>
+<section id="automationBuilderMount" class="view" data-view="automations"></section>
+<section class="view" data-view="counts"><section class="panel"><div class="panel-head"><div><div class="eyebrow">Inventário físico</div><h2>Sessões de contagem</h2></div><a class="button primary small" href="../contagem/">Nova contagem</a></div><div id="countRows" class="list"></div></section></section><section class="view" data-view="queue"><div class="toolbar"><select id="queueStatus"><option value="">Todos</option><option value="pending">Pendentes</option><option value="processing">Processando</option><option value="done">Concluídos</option><option value="error">Erros</option><option value="cancelled">Cancelados</option></select><button id="reloadQueue" class="button secondary" type="button">Recarregar fila</button></div><section class="panel"><div id="queueRows" class="list"></div></section></section>
+</main></div></div><div id="modalBackdrop" class="modal-backdrop hidden"></div><section id="modal" class="modal hidden" role="dialog" aria-modal="true"><header><div><div id="modalEyebrow" class="eyebrow">Detalhes</div><h2 id="modalTitle"></h2></div><button id="modalClose" class="icon" type="button">×</button></header><div id="modalBody" class="modal-body"></div><footer id="modalFooter"></footer></section><div id="toastRegion" class="toasts" aria-live="polite"></div>
+<script src="./config.js?v=20260908-01"></script><script src="../admin-v3/app.js?v=20260907-03"></script><script src="../admin-v3/enhancements.js?v=20260907-02"></script><script src="../admin-v3/customer-intelligence.js?v=20260907-01"></script><script src="../admin-v3/whatsapp-ops.js?v=20260907-01"></script><script src="../admin-v3/experience-orchestrator.js?v=20260908-01"></script><script src="../admin-v3/automation-builder.js?v=20260908-01"></script><script>if(window.DA_ADMIN_V3_CONFIG?.experienceOrchestratorUiEnabled){const m=document.getElementById('experienceOrchestratorMount');if(m&&window.DAExperienceOrchestrator){m.classList.remove('hidden');window.DAExperienceOrchestrator.mount(m)}}if(window.DA_ADMIN_V3_CONFIG?.automationBuilderUiEnabled){const nav=document.getElementById('automationBuilderNav'),m=document.getElementById('automationBuilderMount');nav?.classList.remove('hidden');if(m&&window.DAAutomationBuilder)window.DAAutomationBuilder.mount(m)}</script></body></html>

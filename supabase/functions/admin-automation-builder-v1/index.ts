@@ -9,6 +9,30 @@ const arr=(v:unknown)=>Array.isArray(v)?v:[];
 const keyOf=(v:unknown)=>{const s=clean(v,80).toLowerCase();return /^[a-z][a-z0-9_]{2,79}$/.test(s)?s:""};
 const triggerTypes=new Set(["order","customer","inventory","expiry","delivery","payment","conversation","campaign","supplier","schedule","anomaly","manual"]);
 const strategies=new Set(["github_action","supabase_realtime","supabase_cron","edge_function","make","manual_review"]);
+const conditionOps=new Set(["eq","neq","in","not_in","gt","gte","lt","lte","exists","contains"]);
+const conditionFields=new Set(["order.status","order.total","order.region","customer.id","customer.consent","customer.score","inventory.stock","inventory.days_to_expiry","delivery.status","payment.status","conversation.channel","conversation.handoff_open","campaign.id","supplier.id","risk.score","margin.percent"]);
+
+function normalizeConditions(v:unknown){
+  const out=[] as Record<string,unknown>[];
+  for(const raw of arr(v)){
+    const c=obj(raw) as Record<string,unknown>; const field=clean(c.field,80),op=clean(c.operator||c.op,20);
+    if(!conditionFields.has(field)||!conditionOps.has(op))continue;
+    out.push({field,operator:op,value:c.value??null});
+  }
+  return out;
+}
+function deterministicDraft(instruction:string,actionKeys:Set<string>){
+  const l=instruction.toLowerCase();
+  let trigger="manual";
+  if(/todo dia|diari|seman|agend|schedule/.test(l))trigger="schedule"; else if(/validade|venc/.test(l))trigger="expiry"; else if(/estoque|ruptura/.test(l))trigger="inventory"; else if(/entrega|rota/.test(l))trigger="delivery"; else if(/pagamento|receb/.test(l))trigger="payment"; else if(/pedido/.test(l))trigger="order"; else if(/cliente/.test(l))trigger="customer"; else if(/conversa|whatsapp|mensagem/.test(l))trigger="conversation";
+  const strategy=["schedule","inventory","expiry","anomaly","supplier","campaign"].includes(trigger)?"github_action":trigger==="conversation"?"manual_review":"manual_review";
+  const candidates=["get_order","get_customer","search_products"].filter(k=>actionKeys.has(k));
+  const actions=[] as Record<string,unknown>[];
+  if(/pedido/.test(l)&&candidates.includes("get_order"))actions.push({action_key:"get_order",role:"system"});
+  if(/cliente/.test(l)&&candidates.includes("get_customer"))actions.push({action_key:"get_customer",role:"system"});
+  if(/produto|estoque|validade/.test(l)&&candidates.includes("search_products"))actions.push({action_key:"search_products",role:"system"});
+  return {trigger_type:trigger,trigger_config:{source:"natural_language_draft"},conditions:[],actions,execution_strategy:strategy,source_kind:"natural_language",natural_language_source:instruction,enabled:false,execution_mode:"off",kill_switch:true,canary_percent:0,review_required:true,runtime_activation_supported:false,compiler:"deterministic_safe_fallback"};
+}
 
 Deno.serve(async(req:Request)=>{
   if(req.method==="OPTIONS")return new Response("ok",{headers:CORS});
@@ -39,7 +63,15 @@ Deno.serve(async(req:Request)=>{
       sb.from("automation_workflows").select("workflow_key,display_name,trigger_type,execution_strategy,enabled,execution_mode").order("workflow_key")
     ]);
     if(aErr||wErr)return json({ok:false,error:"catalog_failed",detail:aErr?.message||wErr?.message},500);
-    return json({ok:true,actions:actions||[],workflows:workflows||[],trigger_types:[...triggerTypes],strategies:[...strategies]});
+    return json({ok:true,actions:actions||[],workflows:workflows||[],trigger_types:[...triggerTypes],strategies:[...strategies],condition_operators:[...conditionOps],condition_fields:[...conditionFields],runtime_activation_supported:false});
+  }
+
+  if(op==="compile_draft"){
+    const instruction=clean(body?.instruction,4000); if(instruction.length<8)return json({ok:false,error:"instruction_too_short"},400);
+    const {data:actionRows,error}=await sb.from("ai_action_registry").select("action_key");
+    if(error)return json({ok:false,error:"action_catalog_failed",detail:error.message},500);
+    const draft=deterministicDraft(instruction,new Set((actionRows||[]).map((x:any)=>String(x.action_key))));
+    return json({ok:true,draft,side_effect_performed:false,requires_human_review:true,openai_execution_performed:false,note:"Compiler seguro preparado; integração OpenAI permanece opt-in e não é chamada automaticamente."});
   }
 
   if(op==="recommend_strategy"){
@@ -55,9 +87,8 @@ Deno.serve(async(req:Request)=>{
     const workflowKey=keyOf(body?.workflow_key);if(!workflowKey)return json({ok:false,error:"invalid_workflow_key"},400);
     const trigger=clean(body?.trigger_type,30);if(!triggerTypes.has(trigger))return json({ok:false,error:"invalid_trigger_type"},400);
     const strategy=clean(body?.execution_strategy||"manual_review",40);if(!strategies.has(strategy))return json({ok:false,error:"invalid_execution_strategy"},400);
-    const metadata={...obj(body?.metadata),stage:10};
-    if(strategy==="make"&&!clean((metadata as any).make_justification,500))return json({ok:false,error:"make_requires_justification"},400);
-    const row={workflow_key:workflowKey,display_name:clean(body?.display_name,120)||workflowKey,description:clean(body?.description,1000),trigger_type:trigger,trigger_config:obj(body?.trigger_config),conditions:arr(body?.conditions),actions:arr(body?.actions),execution_strategy:strategy,enabled:false,execution_mode:"off",kill_switch:true,canary_percent:0,source_kind:clean(body?.source_kind||"admin",30),natural_language_source:body?.natural_language_source?clean(body.natural_language_source,4000):null,metadata,created_by:userData.user.id,updated_by:userData.user.id};
+    const metadata={...obj(body?.metadata),stage:10}; if(strategy==="make"&&!clean((metadata as any).make_justification,500))return json({ok:false,error:"make_requires_justification"},400);
+    const row={workflow_key:workflowKey,display_name:clean(body?.display_name,120)||workflowKey,description:clean(body?.description,1000),trigger_type:trigger,trigger_config:obj(body?.trigger_config),conditions:normalizeConditions(body?.conditions),actions:arr(body?.actions),execution_strategy:strategy,enabled:false,execution_mode:"off",kill_switch:true,canary_percent:0,source_kind:clean(body?.source_kind||"admin",30),natural_language_source:body?.natural_language_source?clean(body.natural_language_source,4000):null,metadata,created_by:userData.user.id,updated_by:userData.user.id};
     const {data,error}=await sb.from("automation_workflows").insert(row).select("*").single();
     if(error)return json({ok:false,error:"workflow_create_failed",detail:error.message},400);
     const snapshot={...data};delete snapshot.created_at;delete snapshot.updated_at;
@@ -70,12 +101,10 @@ Deno.serve(async(req:Request)=>{
     const id=clean(body?.workflow_id,80);if(!id)return json({ok:false,error:"workflow_id_required"},400);
     const allowed=new Set(["display_name","description","trigger_config","conditions","actions","budget_config","cooldown_seconds","requires_handoff_clear","natural_language_source","metadata"]);
     const patch=obj(body?.patch) as Record<string,unknown>;const safe:Record<string,unknown>={updated_by:userData.user.id};
-    for(const [k,v] of Object.entries(patch))if(allowed.has(k))safe[k]=v;
-    // Intencionalmente não permite enabled, execution_mode, kill_switch=false, canary_percent ou troca para estratégia paga.
+    for(const [k,v] of Object.entries(patch))if(allowed.has(k))safe[k]=k==="conditions"?normalizeConditions(v):v;
     const {data,error}=await sb.from("automation_workflows").update(safe).eq("id",id).select("*").single();
     if(error)return json({ok:false,error:"workflow_update_failed",detail:error.message},400);
-    const nextVersion=(Number(data.current_version)||1)+1;
-    const snapshot={...data,current_version:nextVersion};delete snapshot.created_at;delete snapshot.updated_at;
+    const nextVersion=(Number(data.current_version)||1)+1;const snapshot={...data,current_version:nextVersion};delete snapshot.created_at;delete snapshot.updated_at;
     const {error:vErr}=await sb.from("automation_workflow_versions").insert({workflow_id:id,version:nextVersion,snapshot,status:"draft",change_reason:clean(body?.change_reason,500)||"draft_update",created_by:userData.user.id});
     if(vErr)return json({ok:false,error:"workflow_version_failed",detail:vErr.message},500);
     await sb.from("automation_workflows").update({current_version:nextVersion,updated_by:userData.user.id}).eq("id",id);
@@ -103,6 +132,5 @@ Deno.serve(async(req:Request)=>{
     if(error)return json({ok:false,error:"kill_failed",detail:error.message},400);
     return json({ok:true,workflow:data});
   }
-
   return json({ok:false,error:"unknown_action"},400);
 });

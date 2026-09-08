@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const fn=fs.readFileSync('supabase/functions/admin-automation-builder-v1/index.ts','utf8');
+const html=fs.readFileSync('admin/index.html','utf8');
+const config=fs.readFileSync('admin/config.js','utf8');
+assert.match(config,/automationBuilderUiEnabled:\s*false/,'builder UI must remain dormant');
+assert.match(fn,/compile_draft/,'natural-language draft compiler missing');
+assert.match(fn,/runtime_activation_supported:false/,'runtime activation must remain unsupported');
+assert.doesNotMatch(fn,/execution_mode:\s*["']live["']/,'builder must not set live mode');
+assert.match(fn,/side_effect_performed:false/,'simulation must declare zero side effects');
+assert.match(html,/automationBuilderMount/,'builder mount missing');
+console.log('stage10 builder v2 checks passed');
