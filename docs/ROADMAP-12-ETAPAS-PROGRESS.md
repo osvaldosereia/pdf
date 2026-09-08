@@ -132,3 +132,33 @@ A primeira execução da PR #187 encontrou um teste legado que ainda exigia `res
 ## Próxima etapa
 
 Avançar para **ETAPA 7 — Facebook Messenger + centralização Meta**, executando somente arquitetura/adapters/webhooks/gates/Admin em modo dormente. Reutilizar o núcleo omnichannel e a Inbox, não conectar conta Meta real, não ativar IA/outbound, não publicar nada e não alterar o canary WhatsApp de 1%. A implantação pendente de `meta-instagram-webhook-v1` deve continuar registrada para a regressão/homologação externa da Etapa 12, salvo se uma próxima rodada conseguir implantá-la com o mesmo gate fail-closed sem reduzir segurança.
+
+## Roadmap posterior aprovado — Autonomia Empresarial
+
+Depois da conclusão/homologação das etapas 1–12, o planejamento oficial continua em `docs/ROADMAP-AUTONOMIA-EMPRESARIAL-ETAPAS-13-20.md`.
+
+As etapas 13–20 foram aprovadas como direção de produto e arquitetura, com os seguintes princípios obrigatórios:
+
+- empresa operada por exceção, minimizando intervenção humana no fluxo normal;
+- módulos e submódulos sempre desligáveis/ativáveis independentemente;
+- fundações podem ser programadas de forma dormente, mas nenhuma ativação real decorre apenas da implementação;
+- Admin como centro de configuração, versão, simulação, custo, autonomia, limites e rollback;
+- GitHub Actions como primeira opção para tarefas batch/periódicas e não urgentes;
+- Make somente quando houver vantagem clara de custo total, simplicidade ou integração realtime/webhook;
+- custo-benefício medido por automação, incluindo custo de OpenAI/Make/APIs e horas humanas economizadas;
+- OpenAI usada intensamente para compreensão, análise, planejamento, exceções, geração de workflows e supervisão, mas sem substituir fonte determinística de preço, estoque, margem, financeiro, rota ou status;
+- AI Action Registry com níveis de autonomia A/B/C/D e limites configuráveis;
+- toda ação com side effect relevante exige idempotência, auditoria, budget, kill switch e tratamento de estado externo incerto.
+
+Etapas futuras:
+
+13. Motor Geral de Automações + Builder no Admin;
+14. AI Action Registry + Autoatendimento Autônomo;
+15. Compras, Fornecedores, Reposição, Demanda e Qualidade;
+16. Pós-venda Autônomo, Trocas, Devoluções, Crédito e Recuperação;
+17. Financeiro Operacional, Recebimentos e Conciliação;
+18. Gerente IA, Central de Exceções e Operação Autônoma;
+19. AutoQA, Voz do Cliente e melhoria contínua da IA;
+20. CRM Preditivo, Fidelidade, Recorrência, Risco, Margem e Crescimento Autônomo.
+
+Este bloco posterior **não altera a próxima etapa atual (ETAPA 7)** e não autoriza ativar módulos, gastos, canais, compras, pagamentos, campanhas ou ações externas sem os gates e limites definidos no próprio roadmap.
