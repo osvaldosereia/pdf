@@ -22,73 +22,87 @@ Este arquivo é o marcador persistente de execução do `docs/ROADMAP-FINAL-DONA
 
 ## ETAPA 5 — CRM unificado, identidades e caixa de entrada única
 
-**Concluída, integrada e aplicada em produção.** PR #187 integrada por squash em `main` no commit `9c243f508cba19e7b5ff6fe8aef669b23c221c23` após todos os workflows verdes.
+**Concluída, integrada e aplicada em produção.** PR #187 integrada por squash em `main` no commit `9c243f508cba19e7b5ff6fe8aef669b23c221c23`; checkpoint de produção PR #188 integrado no commit `cb043c0a78748bba019e99c64712379f5b52be7e`.
 
-### Implementação consolidada
+Produção preservada: WhatsApp `live=1%`; Flow/orquestrador/Bling desligados; 3 handoffs humanos abertos e não assumidos, buckets 89/68/10; `channel_accounts=0`; nenhuma resposta humana enviada na implantação; Edge `admin-whatsapp-ops-v1` v2 com JWT/RBAC; cenário Make `6508939` de publicação automática no Instagram permanece inativo.
 
-Migration `supabase/migrations/20260908040000_unified_crm_inbox_v1.sql`:
+## ETAPA 6 — Instagram Direct + comentários → private reply → Direct
 
-- remove a dependência estrutural obrigatória de `conversations.whatsapp_account_id` e adiciona `channel_account_id` + `external_user_id` genéricos;
-- exige conta/identidade explícita para futuras conversas Instagram/Messenger, sem criar nenhuma conta;
-- permite identidades de canal apenas observadas antes de vínculo confirmado;
-- cria `customer_emails` com normalização, verificação e unicidade apenas após confirmação;
-- cria `customer_channel_consents` por canal/finalidade, sem ativar marketing;
-- cria auditoria `customer_identity_link_events`;
-- RPCs de confirmação de identidade exigem admin autorizado + evidência forte com referência SHA-256; nome/display name nunca é evidência de vínculo;
-- generaliza `human_handoffs` com `channel`, `channel_account_id`, SLA, primeira resposta e última resposta de operador;
-- cria `customer_timeline_v1`, reunindo eventos normalizados, mensagens legadas não espelhadas, pedidos, handoffs e respostas humanas;
-- cria `unified_inbox_v1` e `get_unified_inbox_metrics_v1` com filtros/SLA/motivos;
-- cria `operator_reply_jobs`, separado do outbound da IA;
-- resposta humana exige conversa em `mode=human`, handoff `claimed` pelo mesmo operador e rechecagem de janela/gates antes do envio;
-- WhatsApp humano reaproveita somente o transporte Make já existente; Instagram/Messenger ficam `held` com `channel_transport_not_enabled`;
-- entrega incerta vira `review_required`, sem retry cego;
-- nenhuma flag/canary é alterada.
+**Status programável: fundação dormente implementada em branch própria; nenhuma conexão/subscription/deploy Meta realizado.**
 
-Admin:
+### Política e segurança
 
-- `admin-whatsapp-ops-v1` expõe `inbox`, `timeline`, resumo de identidades/consentimentos e `operator_reply`, mantendo JWT/RBAC;
-- `admin-v3/whatsapp-ops.js` transforma a visão operacional em **Inbox omnichannel** com filtros por canal/status/prioridade, CRM, timeline, SLA, assumir/resolver e resposta humana;
-- a UI não oferece atalho automático `Resolver + IA`; resolver não retoma IA automaticamente.
+Snapshot documentado em `docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md` e implementado em `supabase/functions/_shared/instagram-policy-v1.mjs`:
 
-### CI e correção de regressão
+- conta profissional é pré-requisito externo;
+- permissões de mensagens/comentários ficam registradas como pré-requisito de homologação, sem token ou App Review nesta etapa;
+- no máximo um private reply por comentário;
+- janela conservadora de até 7 dias para comentário;
+- Live permanece bloqueado sem verificação de transmissão ativa;
+- continuação após private reply exige resposta real do destinatário quando aplicável, com janela conservadora de 24h depois da resposta;
+- quick replies registram limite de 13 itens e título de 20 caracteres para futura renderização;
+- compartilhamento futuro só pode referenciar mídia da conta profissional;
+- regras devem ser revalidadas contra documentação Meta imediatamente antes de homologação real.
 
-A primeira execução da PR #187 encontrou um teste legado que ainda exigia `resume_ai` no JavaScript do Admin. O teste foi corrigido para o novo contrato seguro: o RPC server-side continua disponível para uso explicitamente auditado, mas a Inbox não oferece mais `Resolver + IA` em um clique. Depois da correção, ficaram verdes:
+### Banco dormente
 
-- `Test Dona Antonia conversation worker`;
-- `Dona Antonia unified CRM + inbox`;
-- `Dona Antonia omnichannel core`;
-- `Dona Antonia channel runtime`;
-- `deno check` da Edge Function;
-- testes Node/PGlite/Flow/Sala/orquestrador e sintaxe do Admin.
+Migration `supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql` cria, server-only/RLS:
 
-### Produção
+- `channel_attribution_events`: comentário/Direct/post/Reel/Story/Live/ad + campaign/adset/ad/creative;
+- `instagram_comment_events`: comentário normalizado, intenção, elegibilidade e deadline de private reply;
+- `instagram_private_reply_jobs`: um candidato por comentário, somente `held`/`draft` nesta fundação, sem dispatcher Meta;
+- `instagram_conversation_windows`: última entrada, private reply futuro, resposta do destinatário e janela de continuidade;
+- índice único de conversa Instagram aberta por conta/IGSID;
+- `record_instagram_attribution_v1`;
+- `record_instagram_comment_event_v1`;
+- `evaluate_instagram_private_reply_candidate_v1`;
+- `ensure_instagram_direct_human_v1`.
 
-- migration aplicada no Supabase como `20260908031655 unified_crm_inbox_v1`;
-- Edge Function `admin-whatsapp-ops-v1` implantada como versão 2 com `verify_jwt=true`;
-- cron `dona-antonia-operator-reply-reconcile-v1` ativo a cada minuto somente para reconciliação de respostas já despachadas; não redispara mensagens;
-- `operator_reply_jobs=0` após implantação: nenhuma resposta real foi enviada durante a homologação técnica;
-- `customer_emails=0`, `customer_channel_consents=0` e `customer_identity_link_events=0`: nenhum dado de cliente foi inventado ou vinculado automaticamente;
-- `orders=0` e `order_sync_jobs=0`: nenhuma ação Bling/pedido foi criada pela etapa.
+`ensure_instagram_direct_human_v1` é humano-primeiro:
 
-### Auditoria pós-DDL
+- exige `channel_accounts` Instagram já existente e explicitamente em `observe`/`active` com inbound ligado;
+- sem esse gate, evento continua held;
+- IGSID nasce apenas `observed`; cliente só é reutilizado se identidade já estiver `verified`;
+- conversa nova nasce `status=needs_human`, `mode=human`, `human_required=true`, cohort `human_control`;
+- cria handoff `instagram_direct_human_first` se necessário;
+- não liga IA, auto-reply ou outbound.
 
-- `whatsapp_release_mode=live` e `whatsapp_live_canary_percent=1` preservados;
-- `experience_orchestrator_enabled=false`;
-- `whatsapp_flow_data_exchange_enabled=false`;
-- `whatsapp_flow_send_enabled=false`;
-- `bling_order_sync_enabled=false`;
-- os 3 handoffs reais continuam `open`, não assumidos, `mode=human`, `human_required=true`, canal `whatsapp`, cohort `human_control`, buckets 89/68/10;
-- os 3 receberam somente `sla_due_at` calculado; nenhum foi assumido, respondido, resolvido ou fechado;
-- `channel_accounts=0` e `meta_accounts_active=0`;
-- novas tabelas `customer_emails`, `customer_channel_consents`, `customer_identity_link_events` e `operator_reply_jobs` têm RLS habilitado e acesso público/authenticated revogado;
-- métricas da Inbox retornam 3 ativos, 3 abertos, 0 assumidos, todos no canal WhatsApp e motivo `live_canary_human_control`;
-- Security Advisor não apontou novo WARN de schema; permanecem INFOs esperados `RLS Enabled No Policy` em tabelas server-only e o WARN preexistente `Leaked Password Protection Disabled`.
+A migration não contém `net.http_post`, não chama Graph API, não cria `channel_accounts` e não altera `automation_config`.
 
-### Make
+### Webhook dormente
 
-- WhatsApp inbound `6779824` e outbound realtime `7290488` permanecem ativos e sem alterações;
-- cenário `6508939 — POSTAR PRIMEIRO CARROSSEL KIT NOVO` permanece **inativo** após ter sido desativado reversivelmente por conter publicação real automática no Instagram.
+`supabase/functions/instagram-webhook-v1/index.ts` foi versionado, mas **não deve ser implantado nesta etapa**:
 
-## Próxima etapa
+- GET implementa verificação Meta somente quando `META_INSTAGRAM_VERIFY_TOKEN` estiver configurado;
+- POST exige `META_APP_SECRET` e valida `x-hub-signature-256` HMAC-SHA256 antes de processar;
+- guarda apenas SHA-256/referência do payload em `channel_raw_events`; não persiste payload cru na fundação;
+- ignora conta Instagram desconhecida; nunca auto-cadastra conta Meta;
+- normaliza Direct/comentários via `ingest_normalized_channel_event_v1`;
+- Direct inbound segue para handoff humano;
+- comentário usa classificador determinístico `purchase_interest`, `question`, `support`, `spam`, `other` e cria somente candidato/draft;
+- nenhum endpoint de Send API/private reply existe no handler.
 
-Avançar para **ETAPA 6 — Instagram Direct + comentários → private reply → Direct**, executando apenas a fundação programável/dormente enquanto Instagram/Messenger reais continuarem proibidos. Não criar subscription Meta real, não ativar inbound/IA/outbound, não enviar private reply real e não alterar o canary WhatsApp de 1%.
+`supabase/config.toml` declara `verify_jwt=false` apenas para esse webhook futuro porque a Meta não envia JWT Supabase; a autenticação custom HMAC continua obrigatória no handler. Nenhuma Edge Function Instagram foi deployada e nenhuma subscription foi criada.
+
+### CI
+
+- `scripts/test-instagram-direct-comment-foundation-v1.mjs`: política, janela, Live, follow-up, intenção, idempotência, RLS, human-first e ausência de outbound/auto-cadastro Meta;
+- `.github/workflows/dona-antonia-instagram-dormant-foundation.yml`: contrato Node + `deno check` do webhook;
+- regressões existentes de núcleo omnichannel/runtime continuam acionadas pelos arquivos compartilhados quando aplicável.
+
+### Pendências externas deliberadas da Etapa 6
+
+Para cumprir a parte real da etapa futuramente ainda serão necessários, com nova autorização e revisão de política vigente:
+
+1. conta/app/business Meta corretos;
+2. permissões/App Review/Advanced Access/Business Verification aplicáveis;
+3. secrets fora do repositório;
+4. cadastro de `channel_accounts` começando em `dormant`;
+5. deploy + subscription do webhook;
+6. homologação `observe` e humano-primeiro;
+7. somente depois canary IA Instagram independente;
+8. dispatcher real de private reply/Direct após autorização específica.
+
+## Próximo ponto
+
+Abrir PR da fundação dormente da Etapa 6, exigir CI verde, integrar, auditar novamente produção e aplicar **somente a migration de banco dormente**. Não deployar `instagram-webhook-v1`, não criar subscription Meta, não cadastrar conta Instagram real, não enviar private reply e não alterar WhatsApp `live=1%`.
