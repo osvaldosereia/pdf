@@ -169,19 +169,67 @@ CI específico e regressão geral verdes para os blocos finais. Security Advisor
 
 ## ETAPA 13 — Financeiro Operacional, Recebimentos e Conciliação
 
-**PRÓXIMA ETAPA — PENDENTE / PRIMEIRA INCOMPLETA.**
+**EM ANDAMENTO — PRIMEIRA ETAPA INCOMPLETA.**
 
-Primeiro bloco seguro deve implementar de forma dormente:
+### Blocos programáveis já concluídos/dormentes
 
-- ledger operacional idempotente;
-- expectativa de recebimento;
-- eventos de dinheiro/Pix/cartão/link separados da entrega;
-- fechamento de rota/entregador;
-- divergências e `review_required`;
-- políticas/limites;
-- abstrações de conciliação sem chamada externa real inicialmente;
-- read models/Admin OFF;
-- GitHub Actions para batch/reconciliação quando adequado.
+**13A — Financial Ledger Operacional V1**
+
+- ledger append-only/idempotente;
+- recebimento/reversão separados;
+- caixa de rota e fechamento financeiro;
+- divergências estruturadas em `review_required`/reconciliation cases;
+- nenhum provider financeiro real;
+- trigger append-only endurecida para `SECURITY INVOKER` e execução pública revogada.
+
+Documento: `docs/ETAPA-13-FINANCIAL-LEDGER-V1.md`.
+
+**13B — Expectativas de recebimento + manifesto financeiro da rota**
+
+- PR #220 integrada;
+- expectativa `prepaid | on_delivery | mixed | unknown`;
+- saldo restante por pedido;
+- dinheiro com valor entregue/troco;
+- pagamento antecipado coberto deixa de entrar na cobrança da rota;
+- manifesto por dinheiro/Pix/cartão/link/outros;
+- nenhum evento confirma entrega/fiscal por inferência.
+
+Documento: `docs/ETAPA-13-COLLECTION-EXPECTATIONS-V1.md`.
+
+**13C — Driver App + contexto financeiro ledger-first**
+
+- PR #221 em validação nesta rodada;
+- `JÁ PAGO | COBRAR | REVISAR` por parada;
+- saldo/método/troco determinísticos no PWA;
+- dinheiro recebido pelo entregador -> ledger `operational_confirmed`;
+- Pix/cartão/link observados na porta -> ledger `observed`, aguardando conciliação;
+- valor divergente bloqueia antes da entrega;
+- `driver_deliver_stop_v3` não chama `confirm_order_payment_v1`;
+- pagamento do domínio fiscal não é confirmado pelo Driver App;
+- PWA permanece `enabled=false` e Edge Function não é implantada automaticamente.
+
+Documento: `docs/ETAPA-13-DRIVER-FINANCIAL-V1.md`.
+
+### Estado de runtime preservado
+
+```text
+financial.enabled=false
+financial.execution_mode=off
+financial.canary_percent=0
+logistics.enabled=false
+logistics.driver_app_enabled=false
+fiscal.enabled=false
+bling_invoice_prepare_enabled=false
+bling_invoice_send_enabled=false
+```
+
+### O que ainda falta para concluir a Etapa 13
+
+- adapters abstratos de conciliação Pix/cartão/link, inicialmente sem provider real;
+- read model/Admin financeiro e central de exceções atrás de gate OFF;
+- GitHub Actions para reconciliação batch/auditoria;
+- políticas/limites financeiros configuráveis;
+- projeção determinística, homologada e separada do ledger conciliado para o gate fiscal existente.
 
 Não ativar banco/Pix/adquirente/Bling financeiro real apenas por programar a fundação.
 
