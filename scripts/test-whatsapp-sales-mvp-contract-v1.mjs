@@ -9,6 +9,7 @@ const interactive=r('supabase/migrations/20260908210400_whatsapp_sales_interacti
 const binding=r('supabase/migrations/20260908210500_bling_shadow_product_binding_v1.sql');
 const confirmFirst=r('supabase/migrations/20260908210600_whatsapp_confirm_first_bling_batch_v1.sql');
 const dispatchTarget=r('supabase/migrations/20260908210900_conversation_worker_v3_dispatch_target_v1.sql');
+const searchRanking=r('supabase/migrations/20260908210910_whatsapp_sales_search_ranking_v2.sql');
 const worker=r('supabase/functions/conversation-worker-v3/index.ts');
 const admin=r('supabase/functions/admin-service-intelligence-v1/index.ts');
 const ui=r('admin-v3/service-intelligence.js');
@@ -54,6 +55,11 @@ must(dispatchTarget,"'worker_version',3",'dispatcher registra versão 3');
 must(dispatchTarget,"conversation_worker_webhook_key_v2",'dispatcher preserva segredo autenticado existente');
 mustNot(dispatchTarget,'functions/v1/conversation-worker-v2','migration corretiva não pode restaurar worker v2');
 
+must(searchRanking,'strpos(lower(p.name),q.term) between 1 and 14','termo próximo ao início recebe prioridade');
+must(searchRanking,'order by r.score desc,r.term_position','ranking usa score e posição do termo');
+must(searchRanking,'p.physically_verified=true','ranking mantém conferência física obrigatória');
+must(searchRanking,'coalesce(p.stock,0)>0','ranking mantém estoque positivo obrigatório');
+
 must(blingWorkflow,"cron: '*/10 11-21 * * *'",'agenda cobre 07:00–17:50 Cuiabá');
 must(blingWorkflow,"cron: '0 22 * * *'",'agenda inclui 18:00 Cuiabá');
 must(blingWorkflow,'TZ=America/Cuiaba date +%H%M','workflow valida hora local');
@@ -90,5 +96,5 @@ must(writer,'class AmbiguousError','efeito externo incerto vai para revisão');
 must(writer,"d.catalog_source!=='counter_verified'",'writer valida fonte própria');
 mustNot(writer,"if(!Number(i.bling_product_id))throw",'writer não exige vínculo prévio');
 
-for(const s of [core,exec,support,state,interactive,binding,confirmFirst,dispatchTarget]) must(s,'revoke all on function','RPCs revogadas do público');
-console.log('PASS: WhatsApp Sales MVP contract — catálogo próprio, IA/admin, dispatcher v3, confirmação antes do Bling e lote de 10 min 07–18 Cuiabá.');
+for(const s of [core,exec,support,state,interactive,binding,confirmFirst,dispatchTarget,searchRanking]) must(s,'revoke all on function','RPCs revogadas do público');
+console.log('PASS: WhatsApp Sales MVP contract — catálogo próprio, ranking conversacional, IA/admin, dispatcher v3, confirmação antes do Bling e lote de 10 min 07–18 Cuiabá.');
