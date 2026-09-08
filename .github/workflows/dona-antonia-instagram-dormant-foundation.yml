@@ -4,9 +4,12 @@ on:
   pull_request:
     paths:
       - 'lib/omnichannel/instagram-policy-v1.mjs'
+      - 'lib/omnichannel/instagram-send-contract-v1.mjs'
       - 'supabase/functions/_shared/instagram-policy-v1.mjs'
+      - 'supabase/functions/_shared/instagram-send-contract-v1.mjs'
       - 'supabase/functions/instagram-webhook-v1/**'
       - 'supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql'
+      - 'supabase/migrations/20260908043100_channel_order_attribution_link_v1.sql'
       - 'supabase/config.toml'
       - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
       - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
@@ -16,12 +19,17 @@ on:
     branches: [main]
     paths:
       - 'lib/omnichannel/instagram-policy-v1.mjs'
+      - 'lib/omnichannel/instagram-send-contract-v1.mjs'
       - 'supabase/functions/_shared/instagram-policy-v1.mjs'
+      - 'supabase/functions/_shared/instagram-send-contract-v1.mjs'
       - 'supabase/functions/instagram-webhook-v1/**'
       - 'supabase/migrations/20260908043000_instagram_direct_comment_foundation_v1.sql'
+      - 'supabase/migrations/20260908043100_channel_order_attribution_link_v1.sql'
       - 'supabase/config.toml'
       - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
       - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
+      - 'docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
   workflow_dispatch:
 
 permissions:
@@ -47,5 +55,5 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - name: Check dormant Instagram webhook
-        run: deno check supabase/functions/instagram-webhook-v1/index.ts
+      - name: Check dormant Instagram code
+        run: deno check supabase/functions/instagram-webhook-v1/index.ts supabase/functions/_shared/instagram-send-contract-v1.mjs
