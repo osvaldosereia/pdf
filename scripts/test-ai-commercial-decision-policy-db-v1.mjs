@@ -10,10 +10,11 @@ try{
   await db.exec(`create role anon;create role authenticated;create role service_role bypassrls;`);
   await db.exec(readFileSync('supabase/migrations/20260908062000_ai_action_registry_stage9_v1.sql','utf8'));
   await db.exec(readFileSync('supabase/migrations/20260908171000_ai_commercial_decision_policy_v1.sql','utf8'));
+  await db.exec(readFileSync('supabase/migrations/20260908171100_ai_commercial_decision_context_channel_v2.sql','utf8'));
 
   let ready=await json(`select public.commercial_decision_readiness_v1() x`);
   assert.equal(ready.enabled,false);assert.equal(ready.enabled_tools,0);assert.equal(ready.approved_cost_policies,0);assert.equal(ready.approved_confidence_policies,0);
-  let off=await json(`select public.preview_safe_commercial_action_v1('CATALOGO',0.99,false,false,'default','system') x`);
+  let off=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.99,false,false,'default','system','whatsapp') x`);
   assert.equal(off.error,'commercial_action_preview_disabled');
 
   await db.exec(`
@@ -23,18 +24,21 @@ try{
     update public.ai_action_registry set enabled=true,execution_mode='homologation' where action_key='search_products';
   `);
 
-  let high=await json(`select public.preview_safe_commercial_action_v1('CATALOGO',0.95,false,false,'default','system') x`);
-  assert.equal(high.decision,'approved');assert.equal(high.allowed,true);
-  let medium=await json(`select public.preview_safe_commercial_action_v1('CATALOGO',0.75,false,false,'default','system') x`);
+  let missingContext=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.95,false,false,'default','system',null) x`);
+  assert.equal(missingContext.decision,'review_required');assert.equal(missingContext.reason,'context_channel_required');
+
+  let high=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.95,false,false,'default','system','whatsapp') x`);
+  assert.equal(high.decision,'approved');assert.equal(high.allowed,true);assert.equal(high.tool_channel,'internal');assert.equal(high.context_channel,'whatsapp');
+  let medium=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.75,false,false,'default','system','whatsapp') x`);
   assert.equal(medium.decision,'execute_with_disclosure');assert.equal(medium.allowed,true);
-  let low=await json(`select public.preview_safe_commercial_action_v1('CATALOGO',0.50,false,false,'default','system') x`);
+  let low=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.50,false,false,'default','system','whatsapp') x`);
   assert.equal(low.decision,'ask_clarification');assert.equal(low.allowed,false);
-  let handoff=await json(`select public.preview_safe_commercial_action_v1('CATALOGO',0.99,false,true,'default','system') x`);
+  let handoff=await json(`select public.preview_safe_commercial_action_v2('CATALOGO',0.99,false,true,'default','system','whatsapp') x`);
   assert.equal(handoff.decision,'awaiting_human');
 
-  let commit=await json(`select public.preview_safe_commercial_action_v1('BLING_INTERNO',0.99,false,false,'default','system') x`);
+  let commit=await json(`select public.preview_safe_commercial_action_v2('BLING_INTERNO',0.99,false,false,'default','system','whatsapp') x`);
   assert.equal(commit.decision,'awaiting_confirmation');
-  commit=await json(`select public.preview_safe_commercial_action_v1('BLING_INTERNO',0.99,true,false,'default','system') x`);
+  commit=await json(`select public.preview_safe_commercial_action_v2('BLING_INTERNO',0.99,true,false,'default','system','whatsapp') x`);
   assert.equal(commit.decision,'approved');
 
   let cost=await json(`select public.preview_tool_cost_policy_v1('WHATSAPP_STANDARD_TEXT',now()) x`);
@@ -46,13 +50,16 @@ try{
   cost=await json(`select public.preview_tool_cost_policy_v1('WHATSAPP_STANDARD_TEXT',now()) x`);
   assert.equal(cost.allowed,true);assert.equal(Number(cost.unit_cost_brl),0.03);
 
-  let recorded=await json(`select public.record_commercial_decision_evaluation_v1('CATALOGO',0.95,false,false,'default','system','decision-test-0001') x`);
-  assert.equal(recorded.ok,true);assert.equal(recorded.replay,false);
-  let replay=await json(`select public.record_commercial_decision_evaluation_v1('CATALOGO',0.95,false,false,'default','system','decision-test-0001') x`);
+  let recorded=await json(`select public.record_commercial_decision_evaluation_v2('CATALOGO',0.95,false,false,'default','system','whatsapp','decision-test-0001') x`);
+  assert.equal(recorded.ok,true);assert.equal(recorded.replay,false);assert.equal(recorded.context_channel,'whatsapp');
+  let replay=await json(`select public.record_commercial_decision_evaluation_v2('CATALOGO',0.95,false,false,'default','system','whatsapp','decision-test-0001') x`);
   assert.equal(replay.replay,true);
+
+  const stored=await one(`select context_channel from public.commercial_decision_evaluations where idempotency_key='decision-test-0001'`);
+  assert.equal(stored.context_channel,'whatsapp');
 
   const cart=await one(`select confirmation_required,autonomy_level,risk_class,confidence_autorun_allowed from public.ai_action_registry where action_key='create_cart'`);
   assert.equal(cart.confirmation_required,false);assert.equal(cart.autonomy_level,'A');assert.equal(cart.risk_class,'reversible_write');assert.equal(cart.confidence_autorun_allowed,true);
 
-  console.log('PASS: Cost Policy blocks missing/expensive policies, confidence bands act correctly, handoff wins, commitments require confirmation and decisions are idempotent.');
+  console.log('PASS: Cost Policy blocks missing/expensive policies, confidence bands act correctly, context channel is explicit, handoff wins, commitments require confirmation and decisions are idempotent.');
 } finally {await db.close();}
