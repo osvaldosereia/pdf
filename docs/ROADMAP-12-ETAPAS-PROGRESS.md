@@ -89,6 +89,46 @@ A primeira execução da PR #187 encontrou um teste legado que ainda exigia `res
 - WhatsApp inbound `6779824` e outbound realtime `7290488` permanecem ativos e sem alterações;
 - cenário `6508939 — POSTAR PRIMEIRO CARROSSEL KIT NOVO` permanece **inativo** após ter sido desativado reversivelmente por conter publicação real automática no Instagram.
 
+## ETAPA 6 — Instagram Direct + comentários → private reply → Direct
+
+**Parte programável segura concluída, integrada e aplicada de forma dormente.** PR #190 integrada por squash em `main` no commit `93bab27391acb833c974f5ff454709fb18873344` após CI verde.
+
+### Implementação
+
+- `lib/omnichannel/instagram-runtime-v1.mjs` normaliza Direct e comentários e mantém gates independentes para observe mode, preparação e despacho;
+- `supabase/migrations/20260908053500_instagram_direct_comment_foundation_v1.sql` cria controles Instagram server-only, observações de comentários e fila idempotente de private reply;
+- todos os controles nascem `false`; política Meta de private reply nasce explicitamente não verificada (`private_reply_window_seconds=0`);
+- private replies nascem em estado `held`, com `requires_user_response=true` e no máximo uma tentativa; não existe retry cego nem cron de envio;
+- `prepare_instagram_private_reply_v1` prepara somente rascunho operacional e nunca publica;
+- `get_instagram_readiness_v1` declara explicitamente `transport_implemented=false` e `customer_runtime_released=false`;
+- `meta-instagram-webhook-v1` foi implementada no repositório com validação `X-Hub-Signature-256`/HMAC-SHA256, challenge token e gate ambiental `META_INSTAGRAM_WEBHOOK_RUNTIME_ENABLED`; ela não contém transporte Graph API nem private reply;
+- documentação de decisão em `docs/INSTAGRAM-DIRECT-COMMENTS-DECISION-V1.md` preserva homologação futura em observe mode e revisão da política Meta vigente antes de qualquer envio.
+
+### CI
+
+- parser/gates e invariantes SQL passaram;
+- `deno check` inicialmente encontrou incompatibilidade de tipo WebCrypto no Deno 2.x; a função foi corrigida para converter explicitamente `Uint8Array` em `ArrayBuffer`;
+- após a correção, `Dona Antonia Instagram foundation` e a regressão completa `Test Dona Antonia conversation worker` ficaram verdes.
+
+### Produção dormente
+
+- migration aplicada no Supabase como `20260908034350 instagram_direct_comment_foundation_v1`;
+- não foi criada nenhuma conta Instagram/Messenger;
+- `instagram_channel_controls=0`, `instagram_comment_observations=0` e `instagram_private_reply_jobs=0`;
+- readiness: `accounts=0`, `active_accounts=0`, `webhook_enabled_accounts=0`, `policy_verified_accounts=0`, `private_reply_send_enabled_accounts=0`, `ready_private_reply_jobs=0`, `transport_implemented=false`, `customer_runtime_released=false`;
+- a tentativa de implantar a nova Edge Function foi bloqueada pelo controle de segurança da ferramenta; não houve contorno. Portanto o código está integrado/testado, mas o endpoint Meta novo permanece **não implantado**, o que mantém a etapa ainda mais fail-closed;
+- nenhuma subscription Meta, App Secret, verify token, conta, webhook real, Direct, comentário ou private reply real foi criado/enviado.
+
+### Invariantes revalidadas
+
+- WhatsApp continua `live=1%`;
+- os 3 handoffs continuam `open` e 0 `claimed`;
+- Flow/Data Exchange e orquestrador continuam desligados;
+- Bling continua desligado;
+- `orders=0` e `order_sync_jobs=0`;
+- nenhum cenário Make novo foi criado; inbound/outbound WhatsApp realtime permanecem as pontes justificadas;
+- os INFOs `RLS Enabled No Policy` nas três novas tabelas são intencionais porque elas são server-only, RLS está ativo e `public/anon/authenticated` foram revogados; o WARN preexistente `Leaked Password Protection Disabled` continua sem alteração.
+
 ## Próxima etapa
 
-Avançar para **ETAPA 6 — Instagram Direct + comentários → private reply → Direct**, executando apenas a fundação programável/dormente enquanto Instagram/Messenger reais continuarem proibidos. Não criar subscription Meta real, não ativar inbound/IA/outbound, não enviar private reply real e não alterar o canary WhatsApp de 1%.
+Avançar para **ETAPA 7 — Facebook Messenger + centralização Meta**, executando somente arquitetura/adapters/webhooks/gates/Admin em modo dormente. Reutilizar o núcleo omnichannel e a Inbox, não conectar conta Meta real, não ativar IA/outbound, não publicar nada e não alterar o canary WhatsApp de 1%. A implantação pendente de `meta-instagram-webhook-v1` deve continuar registrada para a regressão/homologação externa da Etapa 12, salvo se uma próxima rodada conseguir implantá-la com o mesmo gate fail-closed sem reduzir segurança.
