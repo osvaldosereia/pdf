@@ -14,7 +14,7 @@
     return data;
   }
 
-  function stepper(item,compact=false){
+  function stepper(item){
     const min=Number(item.min_quantity??0),max=Math.max(min,Number(item.max_quantity??item.stock??99));
     const editable=item.quantity_editable!==false;
     const disabled=editable?"":"disabled";
@@ -35,7 +35,7 @@
           const res=await api("set_quantity",{product_id:id,quantity:next});
           item.quantity=next;input.value=String(next);
           if(state.flow==="basket_extras_v1"&&res.result?.cart?.total!=null)$("cartTotal").textContent=money(res.result.cart.total);
-          toast(next===0?"Produto retirado":"Quantidade atualizada");
+          toast(state.flow==="basket_basic_v1"?"Alteração registrada para conferência":next===0?"Produto retirado":"Quantidade atualizada");
         }catch(e){input.value=String(item.quantity||0);toast(e.message||"Não consegui atualizar");}
         finally{state.busy.delete(id);el.querySelectorAll("button,input").forEach(x=>x.disabled=item.quantity_editable===false)}
       };
@@ -58,7 +58,7 @@
 
   function renderProductCards(items){
     const root=$("productGrid");
-    root.innerHTML=items.map(item=>`<article class="product-card" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-name">${esc(item.name)}</div><div class="product-price">${money(item.price)}</div></div></button>${stepper({...item,min_quantity:0,max_quantity:item.stock,quantity_editable:true},true)}</article>`).join("");
+    root.innerHTML=items.map(item=>`<article class="product-card" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-name">${esc(item.name)}</div><div class="product-price">${money(item.price)}</div></div></button>${stepper({...item,min_quantity:0,max_quantity:item.stock,quantity_editable:true})}</article>`).join("");
     $("emptyProducts").classList.toggle("hidden",items.length>0);
     bindSteppers(root,state.items);
     root.querySelectorAll("[data-open]").forEach(btn=>btn.addEventListener("click",()=>openProduct(btn.dataset.open)));
@@ -92,8 +92,26 @@
     $("productModal").showModal();
   }
 
+  async function chooseCategories(){
+    let response;
+    try{response=await api("categories")}catch(e){toast("Não consegui carregar as categorias");return}
+    const dialog=document.createElement("dialog");dialog.className="category-modal";
+    dialog.innerHTML=`<div class="category-head"><div><span class="eyebrow">Personalizar cesta</span><h2>Escolha as categorias</h2><p>Marque uma ou várias categorias para montar sua vitrine.</p></div><button type="button" class="modal-close category-close" aria-label="Fechar">×</button></div><div class="category-list">${(response.categories||[]).map(c=>`<label class="category-option"><input type="checkbox" value="${esc(c.category)}"><span><strong>${esc(c.display_name||c.category)}</strong><small>${Number(c.product_count||0)} produtos</small></span></label>`).join("")}</div><div class="category-actions"><button type="button" class="btn btn-primary category-go">Ver produtos selecionados</button></div>`;
+    document.body.appendChild(dialog);dialog.showModal();
+    const close=()=>{dialog.close();dialog.remove()};
+    dialog.querySelector(".category-close").addEventListener("click",close);
+    dialog.addEventListener("click",e=>{if(e.target===dialog)close()});
+    dialog.querySelector(".category-go").addEventListener("click",async()=>{
+      const selected=[...dialog.querySelectorAll('input[type="checkbox"]:checked')].map(x=>x.value);
+      if(!selected.length){toast("Marque pelo menos uma categoria");return}
+      const btn=dialog.querySelector(".category-go"),old=btn.textContent;btn.disabled=true;btn.textContent="Montando vitrine…";
+      try{const res=await api("create_extras",{categories:selected});location.href=res.result.url}
+      catch(e){toast(e.message||"Não consegui montar a vitrine");btn.disabled=false;btn.textContent=old}
+    });
+  }
+
   async function returnWhatsapp(intent){
-    const btn=intent==="order"?$("orderBtn"):intent==="extras"?$("extrasBtn"):$("sendBtn");
+    const btn=intent==="order"?$("orderBtn"):$("sendBtn");
     const old=btn.textContent;btn.disabled=true;btn.textContent="Abrindo WhatsApp…";
     try{const res=await api("return",{intent});location.href=res.whatsapp_url}
     catch(e){toast(e.message||"Não consegui voltar ao WhatsApp");btn.disabled=false;btn.textContent=old}
@@ -110,7 +128,7 @@
   function showError(msg){$("loading").classList.add("hidden");$("errorText").textContent=msg;$("error").classList.remove("hidden")}
 
   $("orderBtn").addEventListener("click",()=>returnWhatsapp("order"));
-  $("extrasBtn").addEventListener("click",()=>returnWhatsapp("extras"));
+  $("extrasBtn").addEventListener("click",chooseCategories);
   $("sendBtn").addEventListener("click",()=>returnWhatsapp("extras_done"));
   $("closeModal").addEventListener("click",()=>$("productModal").close());
   $("productModal").addEventListener("click",e=>{if(e.target===$("productModal"))$("productModal").close()});
