@@ -1,0 +1,48 @@
+name: Stage 12 Substitution Cycle Count
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'supabase/migrations/20260908150000_stage12_substitution_cycle_count_v1.sql'
+      - 'scripts/test-stage12-substitution-cycle-count-contract-v1.mjs'
+      - 'scripts/test-stage12-substitution-cycle-count-db-v1.mjs'
+      - 'docs/ETAPA-12-SUBSTITUTION-CYCLE-COUNT-V1.md'
+      - '.github/workflows/stage12-substitution-cycle-count.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql'
+      - 'supabase/migrations/20260908150000_stage12_substitution_cycle_count_v1.sql'
+      - 'scripts/test-stage12-substitution-cycle-count-contract-v1.mjs'
+      - 'scripts/test-stage12-substitution-cycle-count-db-v1.mjs'
+      - 'docs/ETAPA-12-SUBSTITUTION-CYCLE-COUNT-V1.md'
+      - '.github/workflows/stage12-substitution-cycle-count.yml'
+permissions:
+  contents: read
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908130000_stage12_commercial_truth_foundation_v1.sql
+            supabase/migrations/20260908150000_stage12_substitution_cycle_count_v1.sql
+            scripts/test-stage12-substitution-cycle-count-contract-v1.mjs
+            scripts/test-stage12-substitution-cycle-count-db-v1.mjs
+            docs/ETAPA-12-SUBSTITUTION-CYCLE-COUNT-V1.md
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage12-substitution" --no-save @electric-sql/pglite@0.5.8
+      - name: Contrato estático
+        run: node scripts/test-stage12-substitution-cycle-count-contract-v1.mjs
+      - name: Substitution + Cycle Count em PostgreSQL isolado
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage12-substitution
+        run: node scripts/test-stage12-substitution-cycle-count-db-v1.mjs
