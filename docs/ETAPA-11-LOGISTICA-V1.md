@@ -1,85 +1,214 @@
 # Etapa 11 — Logística, Roteirização e App do Entregador V1
 
-Atualizado em 08/09/2026.
+Atualizado em **08/09/2026**.
 
 Status: **FUNDAÇÃO PROGRAMÁVEL SEGURA — DORMENTE POR PADRÃO**.
 
-Esta etapa implementa a base logística aprovada no roadmap reorganizado de 20 etapas e em `docs/ANALISE-LOGISTICA-ROTEIRIZACAO-ENTREGAS-V1.md`. Ela **não autoriza** rotas reais, GPS real, Google Maps/Routes/Route Optimization, mensagens logísticas, ativação do app do entregador ou alteração do canary WhatsApp.
+Esta etapa implementa a arquitetura aprovada em `docs/ANALISE-LOGISTICA-ROTEIRIZACAO-ENTREGAS-V1.md` e no roadmap de 20 etapas. Ela não autoriza rotas reais, GPS real, provider pago de Maps/Routes, mensagens logísticas, ativação do app do entregador ou alteração do canary WhatsApp.
 
-## Escopo implementado
+## 1. Separação de verdades
 
-### Banco / domínio
+O desenho mantém entidades diferentes para não misturar responsabilidades:
 
-Foram preparados:
+- `orders`: verdade comercial;
+- `delivery_jobs`: execução logística de um pedido `READY`;
+- `delivery_routes`: plano operacional;
+- `delivery_stops`: sequência executável;
+- `driver_locations`: posição observada do entregador;
+- ETA: previsão derivada de provider, nunca estado comercial;
+- `delivery_notifications`: intenção/recibo de comunicação ao cliente.
 
-- `logistics_runtime_config` com gates independentes e defaults `OFF`;
-- `drivers` e `vehicles`;
-- `delivery_jobs` separados de `orders`;
-- `delivery_routes`, `delivery_stops` e `delivery_route_versions`;
-- `delivery_events` append-oriented;
+Geofence não conclui entrega. ETA não muda pedido. OpenAI não altera rota.
+
+## 2. Banco e domínio
+
+Migrations da Etapa 11:
+
+```text
+20260908112000_stage11_logistics_foundation_v1.sql
+20260908112100_stage11_driver_actions_v1.sql
+20260908112200_stage11_logistics_policy_v2.sql
+20260908112300_stage11_route_drafts_notifications_v3.sql
+```
+
+Objetos principais:
+
+- `logistics_runtime_config`;
+- `drivers`;
+- `vehicles`;
+- `delivery_jobs`;
+- `delivery_routes`;
+- `delivery_stops`;
+- `delivery_route_versions`;
+- `delivery_events`;
 - `delivery_incidents`;
 - `driver_locations`;
-- `delivery_notifications` idempotentes;
-- `routing_provider_calls` com auditoria/custo e `external_call_performed=false` por padrão;
+- `delivery_notifications`;
+- `routing_provider_calls`;
 - `logistics_audit_events`.
 
-Todos os objetos server-side usam RLS e privilégios restritos. RPCs críticos são backend/service-role only.
+Todas as tabelas operacionais nascem com RLS e são server-only. As RPCs críticas revogam `PUBLIC`, `anon` e `authenticated`, deixando execução para `service_role`; clientes acessam somente Edge Functions autenticadas e restritas.
 
-### READY → delivery_job
+## 3. READY → delivery_job
 
 `preview_delivery_job_from_ready_order_v1(order_id)` valida deterministicamente um pedido `ready` sem side effect.
 
-`create_delivery_job_from_ready_order_v1(order_id,idempotency_key)` existe como fronteira idempotente, mas falha fechado enquanto `enabled=false`, `job_creation_enabled=false` ou `execution_mode=off`.
+`create_delivery_job_from_ready_order_v1(order_id,idempotency_key)` é a fronteira idempotente `READY → delivery_job`. Em produção ela nasce bloqueada por:
 
-A execução logística guarda snapshot do endereço, coordenadas/origem/confiança quando disponíveis, valor a receber, volumes, prioridade, janela e `ready_at`. Pedido e entrega permanecem entidades diferentes.
+```text
+enabled=false
+execution_mode=off
+job_creation_enabled=false
+```
 
-### Máquinas de estado
+A execução logística guarda snapshot de endereço, coordenadas e origem/confiança quando presentes, valor a receber, volumes, prioridade, janela, observações e `ready_at`.
 
-Foram criadas transições backend-only para job, rota e parada. A próxima parada notificada pode ficar bloqueada; reprogramação de parada bloqueada exige motivo explícito. Geofence não conclui entrega automaticamente.
+## 4. Rotas
 
-### Entregador
+`lib/logistics/route-planner-v1.mjs` monta um rascunho determinístico por prioridade/janela/READY, mas marca explicitamente:
 
-A fundação do PWA inclui:
+```text
+geographically_optimized=false
+requires_provider_optimization=true
+```
 
-- autenticação Supabase;
-- vínculo obrigatório `drivers.auth_user_id`;
-- leitura apenas da rota atribuída;
-- ações idempotentes por `client_event_id`;
-- COMEÇAR ROTA, CHEGUEI, ENTREGUEI e FALHA;
-- fila offline local e sincronização posterior;
-- GPS somente quando rota está ativa e gate específico está habilitado;
-- service worker/cache PWA.
+Isto evita chamar uma ordenação comercial de “rota otimizada”.
 
-O app nasce com `enabled=false` e `gpsEnabled=false` em `driver-app/config.js`.
+`create_delivery_route_draft_v1(...)`:
 
-### Roteamento / ETA
+- aceita somente jobs roteáveis;
+- exige coordenadas confirmadas;
+- verifica capacidade de paradas do veículo quando informada;
+- cria versão/auditoria;
+- não chama provider;
+- não publica rota.
 
-`lib/logistics/routing-provider-v1.mjs` define o contrato abstrato do provider. O provider inicial é `NullRoutingProvider`, que nunca chama rede e responde `held/provider_not_released`.
+`publish_delivery_route_v1(...)` existe somente como contrato backend futuro e falha fechado sem todos os gates de homologação. A Edge Function administrativa **não expõe publicação de rota** nesta versão.
 
-Nenhum endpoint do Google Maps ou outro fornecedor foi adicionado. Não há chave, secret, cobrança ou chamada externa.
+Paradas `locked_next` ou ativas não podem mudar silenciosamente de posição; `applyLockedNextInvariant(...)` e a máquina de estado exigem preservação ou intervenção explícita.
 
-O gatilho de aproximação exige:
+## 5. Provider de rota e ETA
+
+`lib/logistics/routing-provider-v1.mjs` abstrai:
+
+- `optimize_routes`;
+- `compute_eta`;
+- `geocode`.
+
+O provider padrão é `NullRoutingProvider`, sempre `held` e com:
+
+```text
+external_call_performed=false
+```
+
+Existe apenas um placeholder `GoogleRoutingProviderDormant`; ele lança `google_maps_provider_not_released`. Não há chave, secret, endpoint pago, `fetch` ou cobrança de Maps nesta etapa.
+
+Cada futura chamada paga já possui modelo de auditoria/custo em `routing_provider_calls`, com limites por rota configuráveis.
+
+## 6. ETA e avisos
+
+O aviso de aproximação exige simultaneamente:
 
 - rota ativa;
 - GPS recente;
-- ETA disponível;
-- confiança mínima configurável;
-- threshold configurável.
+- ETA calculado;
+- ETA dentro do threshold configurável;
+- confiança mínima configurável.
 
 Não usa distância em linha reta como verdade de ETA.
 
-### Admin
+`prepare_delivery_notification_v1(...)` cria somente um registro `held` e informa `dispatcher_implemented=false`.
 
-A Central `LOGÍSTICA` foi preparada com:
+Uma parada **não é bloqueada quando a mensagem é apenas preparada**. O lock da próxima parada só ocorre em `mark_delivery_notification_receipt_v1(...)` quando há recibo real `sent` ou `delivered`. Isso preserva a regra operacional: cliente avisado → próxima parada protegida.
 
-- readiness/fila/rotas/entregadores/veículos/ocorrências;
-- drafts inativos de entregador e veículo;
-- política de ETA/GPS/custo editável sem ativação;
-- kill switch unilateral.
+Nenhum dispatcher logístico é liberado nesta etapa; a futura implementação deverá reutilizar o outbound WhatsApp oficial existente, sem criar um segundo sender.
 
-A UI permanece invisível por `logisticsUiEnabled=false`. A API administrativa não possui operação de ativação do runtime ou provider externo.
+## 7. App/PWA do entregador
 
-## Gates default
+`driver-app/` contém fundação offline-first com:
+
+- login Supabase;
+- vínculo `drivers.auth_user_id`;
+- leitura somente da rota atribuída ao próprio entregador;
+- COMEÇAR ROTA;
+- CHEGUEI;
+- ENTREGUEI;
+- FALHA/ocorrência;
+- abertura de navegação externa por coordenada;
+- fila offline com `client_event_id` idempotente;
+- sincronização após reconexão;
+- service worker/cache;
+- GPS somente com rota ativa e gates de app/GPS habilitados.
+
+Defaults estáticos:
+
+```text
+driver-app enabled=false
+driver-app gpsEnabled=false
+```
+
+No backend, GPS também exige `enabled`, `driver_app_enabled`, `gps_tracking_enabled`, modo de execução liberado e rota ativa pertencente ao entregador. Assim, alterar HTML/JS sozinho não libera rastreamento.
+
+A retenção de `driver_locations` é configurável e existe `purge_driver_locations_v1(...)` para limpeza futura.
+
+## 8. Prova de entrega
+
+`proof_of_delivery_mode` é configurável:
+
+- `driver_confirmation` — default;
+- `photo_optional`;
+- `photo_required`;
+- `signature_optional`;
+- `signature_required`.
+
+O backend bloqueia `photo_required`/`signature_required` sem referência da prova. A UI de captura e storage de foto/assinatura deve ser homologada antes de alterar o default; nesta versão o app envia apenas confirmação explícita do entregador.
+
+A sequência normal é:
+
+```text
+rota published
+→ COMEÇAR ROTA
+→ pedido/job out_for_delivery
+→ CHEGUEI
+→ ENTREGUEI
+→ stop + delivery_job + order delivered
+```
+
+Tudo dentro de RPCs transacionais e idempotentes por evento do cliente.
+
+## 9. Incidentes e recursos
+
+Falhas estruturadas incluem ausência do cliente, endereço, pagamento, veículo, atraso, dano, segurança e outros.
+
+Eventos sensíveis podem ir para `review_required`. Rotas finalizadas/canceladas liberam motorista e veículo por trigger backend.
+
+## 10. Central de Logística no Admin
+
+A UI `LOGÍSTICA` está preparada, porém escondida com:
+
+```text
+logisticsUiEnabled=false
+```
+
+Ela mostra:
+
+- fila de delivery jobs;
+- rotas e estados;
+- entregadores;
+- veículos/capacidade;
+- ocorrências;
+- métricas;
+- ETA/GPS/cooldown;
+- retenção de localização;
+- limites de provider/custo;
+- prova de entrega;
+- kill switch.
+
+Também permite selecionar jobs com coordenadas válidas e montar **rascunho interno de rota**. Não há operação de publicação/ativação de rota no Admin.
+
+Entregadores e veículos criados por essa UI são forçados a `inactive`. Salvar política força novamente todos os gates para OFF.
+
+## 11. Gates de produção esperados
 
 ```text
 enabled=false
@@ -97,48 +226,61 @@ driver-app enabled=false
 driver-app gpsEnabled=false
 ```
 
-## Segurança e custo
+## 12. Segurança/custo
 
-- sem Maps/API paga;
+- sem Google Maps API paga;
 - sem Make novo;
 - sem OpenAI na verdade logística;
-- route/ETA/status/GPS determinísticos;
+- sem cron de rota/GPS;
+- sem dispatcher de notificações;
 - GPS não opera fora de rota ativa;
-- idempotência no evento offline do entregador;
-- sem retry cego de efeitos externos;
-- provider calls possuem trilha de custo;
-- política de retenção de localização já tem configuração dedicada;
-- Edge Functions administrativa e de entregador exigem JWT.
+- delivery exige confirmação explícita, não geofence;
+- offline actions são idempotentes;
+- sem retry cego de side effect externo;
+- provider calls têm trilha de custo;
+- próximo cliente só é protegido após recibo real da comunicação;
+- Edge Functions administrativa e do entregador exigem JWT.
 
-## CI
+## 13. Testes/CI
 
-`.github/workflows/stage11-logistics.yml` valida:
+`.github/workflows/stage11-logistics.yml` executa:
 
-- tabelas/RLS/defaults OFF;
-- idempotência `READY → delivery_job`;
-- máquinas de estado;
-- bloqueio da parada avisada;
-- app offline/GPS gated;
-- provider nulo sem rede;
-- Admin dormente;
-- autenticação das Edge Functions;
-- sintaxe JS e `deno check`.
+- assertions estáticas de fail-closed;
+- planner/provider determinísticos;
+- aplicação real das quatro migrations em PGlite;
+- teste de `READY → job` bloqueado e idempotente;
+- rascunho de rota;
+- publicação bloqueada por gate;
+- notificação `held` e lock somente após receipt;
+- GPS bloqueado por default;
+- kill switch;
+- sintaxe JavaScript;
+- `deno check` das duas Edge Functions.
 
-## Fora de escopo desta fundação
+## 14. Fora da liberação desta etapa
 
-Continuam protegidos para homologação/autorizações futuras:
+Continuam dependentes de homologação/autorização posterior:
 
-- ativar `READY → delivery_job` automático em produção;
-- cadastrar/vincular entregadores reais;
-- publicar Edge Functions para runtime real;
-- ligar app do entregador;
-- rastrear GPS real;
-- contratar/configurar Google Maps Platform;
-- otimizar/publicar rotas reais;
+- ativar `READY → delivery_job` automático;
+- vincular usuários reais de entregador;
+- tornar drivers/vehicles `available` para uma rota real;
+- mostrar a Central de Logística no Admin;
+- ativar o PWA;
+- ativar GPS;
+- contratar/configurar provider de Maps;
+- publicar rota real;
 - enviar WhatsApp logístico;
-- aumentar canary;
+- capturar foto/assinatura real;
+- aumentar canary WhatsApp;
 - ativar Bling/Flow/Instagram/Messenger/Ads.
 
-## Critério da rodada
+## 15. Critério de conclusão programável
 
-A parte programável de fundação, domínio, Admin, provider abstrato e PWA está preparada. Antes de considerar a Etapa 11 encerrada programaticamente, a migration deve ser aplicada/auditada de forma dormente e o CI/regressão deve ficar verde. A ativação logística real permanece fora desta etapa segura.
+A Etapa 11 pode ser marcada como programaticamente concluída quando:
+
+1. CI da PR estiver verde;
+2. migrations forem aplicadas em produção mantendo todos os gates OFF;
+3. Edge Functions, se implantadas, permanecerem protegidas por JWT + gates OFF;
+4. contagens de jobs/rotas/locations/notifications/provider calls continuarem zero;
+5. canary WhatsApp permanecer 1%, os 3 handoffs permanecerem intactos e Bling/Flow/orquestrador continuarem OFF;
+6. Security Advisor não registrar novo WARN decorrente da Etapa 11.
