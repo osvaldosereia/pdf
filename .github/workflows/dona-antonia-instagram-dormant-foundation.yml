@@ -12,6 +12,7 @@ on:
       - 'supabase/migrations/20260908043100_channel_order_attribution_link_v1.sql'
       - 'supabase/config.toml'
       - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
+      - 'scripts/test-instagram-send-order-attribution-v1.mjs'
       - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
       - 'docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md'
       - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
@@ -27,6 +28,7 @@ on:
       - 'supabase/migrations/20260908043100_channel_order_attribution_link_v1.sql'
       - 'supabase/config.toml'
       - 'scripts/test-instagram-direct-comment-foundation-v1.mjs'
+      - 'scripts/test-instagram-send-order-attribution-v1.mjs'
       - '.github/workflows/dona-antonia-instagram-dormant-foundation.yml'
       - 'docs/INSTAGRAM-DIRECT-POLICY-GUARDS-V1.md'
       - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
@@ -45,7 +47,9 @@ jobs:
         with:
           node-version: '22'
       - name: Validate Instagram policy and fail-closed contract
-        run: node scripts/test-instagram-direct-comment-foundation-v1.mjs
+        run: |
+          node scripts/test-instagram-direct-comment-foundation-v1.mjs
+          node scripts/test-instagram-send-order-attribution-v1.mjs
 
   deno-check:
     runs-on: ubuntu-latest
