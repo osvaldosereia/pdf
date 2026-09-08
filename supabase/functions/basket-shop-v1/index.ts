@@ -8,13 +8,19 @@ const validToken=(v:unknown)=>/^[a-f0-9]{64}$/i.test(clean(v,80));
 const validUuid=(v:unknown)=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clean(v,80));
 const digits=(v:unknown)=>String(v??"").replace(/\D/g,"");
 
-async function whatsappUrl(sb:any,conversationId:string,message:string){
+async function whatsappLinks(sb:any,conversationId:string,message:string){
   let phone="556584491018";
   if(conversationId){
     const {data:conv}=await sb.from("conversations").select("whatsapp_account:whatsapp_accounts(phone_e164)").eq("id",conversationId).maybeSingle();
     const found=digits((conv as any)?.whatsapp_account?.phone_e164);if(found)phone=found;
   }
-  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  const text=encodeURIComponent(message);
+  return {
+    phone,
+    whatsapp_url:`https://wa.me/${phone}?text=${text}`,
+    whatsapp_web_fallback:`https://api.whatsapp.com/send?phone=${phone}&text=${text}`,
+    whatsapp_deep_link:`whatsapp://send?phone=${phone}&text=${text}`
+  };
 }
 
 Deno.serve(async(req:Request)=>{
@@ -94,13 +100,20 @@ Deno.serve(async(req:Request)=>{
     if(flow==="basket_basic_v1"){
       const basketId=clean(session.metadata?.basket_id,80);
       const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",basketId).maybeSingle();basket=b||null;
+      let cart:any=null;
+      if(session.cart_id){
+        const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle();
+        cart=c||null;
+      }
+      if(basket)basket={...basket,current_price:Number(cart?.base_commercial_price??basket.base_price??0)};
       const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
-        .select("product_id,rank,quantity,metadata,product:products(id,name)")
+        .select("product_id,rank,quantity,metadata,product:products(id,name,image_url)")
         .eq("catalog_session_id",session.id).order("rank");
       if(itemsError)return json({ok:false,error:"items_failed"},500);
       const items=(rows||[]).map((r:any)=>({
         product_id:r.product_id,
         name:r.product?.name||"Produto",
+        image_url:r.product?.image_url||null,
         quantity:Number(r.quantity||0),
         base_quantity:Number(r.metadata?.base_quantity??r.quantity??0),
         removable:Boolean(r.metadata?.removable),
@@ -112,8 +125,8 @@ Deno.serve(async(req:Request)=>{
       return json({
         ok:true,flow,
         session:{id:session.id,title:session.title,expires_at:session.expires_at},
-        basket,items,
-        commercial_policy:{component_prices_visible:false,basket_price_is_commercial_price:true,quantity_changes_reviewed_by_human:true,replacements_only_in_external_showcase:true}
+        basket,items,cart,
+        commercial_policy:{component_prices_visible:false,basket_price_is_commercial_price:true,quantity_changes_reprice_total:true,missing_component_price_requires_review:true}
       });
     }
 
@@ -160,7 +173,7 @@ Deno.serve(async(req:Request)=>{
       .eq("catalog_session_id",session.id).order("rank");
     if(itemsError)return json({ok:false,error:"items_failed"},500);
     let cart:any=null;
-    if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
+    if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
     const items=(rows||[]).map((r:any)=>({
       product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),
       image_url:r.product?.image_url||null,category:r.product?.category||r.metadata?.category||null,
@@ -190,7 +203,8 @@ Deno.serve(async(req:Request)=>{
     const {data,error}=await sb.rpc("mark_whatsapp_basket_return_v1",{p_public_token:token,p_intent:intent});
     if(error)return json({ok:false,error:"return_failed"},400);
     const message=intent==="order"?"Quero encomendar a cesta que escolhi.":"Terminei de escolher os produtos adicionais da minha cesta. Pode finalizar meu pedido.";
-    return json({ok:true,intent,whatsapp_url:await whatsappUrl(sb,session.conversation_id,message),message,result:data});
+    const links=await whatsappLinks(sb,session.conversation_id,message);
+    return json({ok:true,intent,message,result:data,...links});
   }
 
   return json({ok:false,error:"unknown_action"},400);
