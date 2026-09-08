@@ -26,6 +26,8 @@ begin
   update public.drivers set status='on_route',updated_at=now() where id=d.id;
   update public.delivery_jobs j set status='out_for_delivery',updated_at=now()
     where j.id in (select s.delivery_job_id from public.delivery_stops s where s.route_id=r.id) and j.status in ('assigned','planned');
+  update public.orders o set status='out_for_delivery',external_status_updated_at=now(),updated_at=now()
+    where o.id in (select j.order_id from public.delivery_jobs j join public.delivery_stops s on s.delivery_job_id=j.id where s.route_id=r.id) and o.status='ready';
   insert into public.delivery_events(route_id,event_type,actor_type,actor_id,client_event_id,payload)
     values(r.id,'ROUTE_STARTED','driver',d.id,p_client_event_id,jsonb_build_object('auth_user_id',p_auth_user_id)) returning id into existing;
   return jsonb_build_object('ok',true,'replay',false,'route_id',r.id,'event_id',existing,'side_effect_performed',true);
@@ -94,7 +96,7 @@ begin
   select * into j from public.delivery_jobs where id=s.delivery_job_id for update;
   update public.delivery_stops set status='delivered',locked=false,delivered_at=coalesce(delivered_at,now()),updated_at=now() where id=s.id;
   update public.delivery_jobs set status='delivered',delivered_at=coalesce(delivered_at,now()),updated_at=now() where id=j.id;
-  update public.orders set status='delivered',delivered_at=coalesce(delivered_at,now()),updated_at=now() where id=j.order_id and status in ('ready','out_for_delivery');
+  update public.orders set status='delivered',delivered_at=coalesce(delivered_at,now()),external_status_updated_at=now(),updated_at=now() where id=j.order_id and status in ('ready','out_for_delivery');
   insert into public.delivery_events(delivery_job_id,route_id,stop_id,event_type,actor_type,actor_id,client_event_id,payload)
     values(j.id,s.route_id,s.id,'STOP_DELIVERED','driver',d.id,p_client_event_id,jsonb_build_object('proof',coalesce(p_proof,'{}'::jsonb))) returning id into existing;
   select count(*) into remaining from public.delivery_stops where route_id=r.id and status not in ('delivered','skipped','rescheduled');
