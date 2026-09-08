@@ -1,5 +1,9 @@
 begin;
 
+-- Stage 12 WMS/fulfillment foundation integrated with commercial truth inventory_lots.
+-- Assumes 20260908130000_stage12_commercial_truth_foundation_v1.sql has already created inventory_lots.
+-- No inventory, Bling, logistics, Maps, Make or external API side effects are enabled here.
+
 create table if not exists public.fulfillment_runtime_config (
   id smallint primary key default 1 check (id=1),
   enabled boolean not null default false,
@@ -58,23 +62,18 @@ create table if not exists public.product_location_assignments (
 alter table public.product_location_assignments enable row level security;
 create unique index if not exists product_location_one_primary_active_idx on public.product_location_assignments(product_id) where is_primary and active;
 
-create table if not exists public.inventory_lots (
+create table if not exists public.inventory_lot_locations (
   id uuid primary key default gen_random_uuid(),
-  product_id uuid not null references public.products(id) on delete restrict,
-  location_id uuid null references public.warehouse_locations(id) on delete set null,
-  lot_code text not null,
-  expires_on date null,
-  received_on date null,
-  quantity_on_hand numeric(14,3) not null default 0 check (quantity_on_hand>=0),
-  quantity_reserved numeric(14,3) not null default 0 check (quantity_reserved>=0 and quantity_reserved<=quantity_on_hand),
-  status text not null default 'inactive' check (status in ('inactive','available','blocked','expired','depleted')),
-  source text not null default 'manual',
-  created_at timestamptz not null default now(),
+  lot_id uuid not null references public.inventory_lots(id) on delete cascade,
+  location_id uuid not null references public.warehouse_locations(id) on delete cascade,
+  quantity_present numeric(14,3) not null default 0 check(quantity_present>=0),
+  is_primary boolean not null default false,
+  active boolean not null default false,
   updated_at timestamptz not null default now(),
-  unique(product_id,lot_code,location_id)
+  unique(lot_id,location_id)
 );
-alter table public.inventory_lots enable row level security;
-create index if not exists inventory_lots_fefo_idx on public.inventory_lots(product_id,status,expires_on,received_on);
+alter table public.inventory_lot_locations enable row level security;
+create unique index if not exists inventory_lot_one_primary_location_idx on public.inventory_lot_locations(lot_id) where is_primary and active;
 
 create table if not exists public.fulfillment_orders (
   id uuid primary key default gen_random_uuid(),
@@ -142,31 +141,45 @@ create table if not exists public.order_packages (
 );
 alter table public.order_packages enable row level security;
 
+create or replace function public.preview_fulfillment_order_v1(p_order_id uuid)
+returns jsonb language plpgsql security definer set search_path=public,pg_temp as $$
+declare o public.orders%rowtype; missing_locations integer:=0; item_count integer:=0;
+begin
+  select * into o from public.orders where id=p_order_id;
+  if not found then return jsonb_build_object('ok',false,'error','order_not_found','external_side_effect',false); end if;
+  select count(*),count(*) filter(where pla.location_id is null) into item_count,missing_locations
+  from public.order_items oi left join public.product_location_assignments pla on pla.product_id=oi.product_id and pla.active and pla.is_primary
+  where oi.order_id=o.id;
+  return jsonb_build_object('ok',true,'order_id',o.id,'order_status',o.status,'item_count',item_count,'missing_locations',missing_locations,'ready_for_picking',(item_count>0 and missing_locations=0),'external_side_effect',false);
+end; $$;
+
 create or replace function public.create_fulfillment_from_order_v1(p_order_id uuid)
 returns jsonb language plpgsql security definer set search_path=public,pg_temp as $$
-declare cfg public.fulfillment_runtime_config%rowtype; o public.orders%rowtype; f_id uuid; existing uuid;
+declare cfg public.fulfillment_runtime_config%rowtype; o public.orders%rowtype; f_id uuid; existing uuid; missing_locations integer:=0;
 begin
   select * into cfg from public.fulfillment_runtime_config where id=1;
-  if not cfg.enabled or not cfg.picking_enabled or cfg.execution_mode not in ('homologation','canary','live') then
-    return jsonb_build_object('ok',false,'error','fulfillment_runtime_disabled','side_effect_performed',false);
-  end if;
+  if not cfg.enabled or not cfg.picking_enabled or cfg.execution_mode not in ('homologation','canary','live') then return jsonb_build_object('ok',false,'error','fulfillment_runtime_disabled','side_effect_performed',false); end if;
   select * into o from public.orders where id=p_order_id for update;
   if not found then return jsonb_build_object('ok',false,'error','order_not_found','side_effect_performed',false); end if;
   if o.status not in ('confirmed','sent_to_bling','processing') then return jsonb_build_object('ok',false,'error','order_not_eligible','order_status',o.status,'side_effect_performed',false); end if;
   select id into existing from public.fulfillment_orders where order_id=o.id;
   if found then return jsonb_build_object('ok',true,'replay',true,'fulfillment_order_id',existing,'side_effect_performed',false); end if;
+  select count(*) into missing_locations from public.order_items oi left join public.product_location_assignments pla on pla.product_id=oi.product_id and pla.active and pla.is_primary where oi.order_id=o.id and pla.location_id is null;
+  if missing_locations>0 then return jsonb_build_object('ok',false,'error','product_location_missing','missing_items',missing_locations,'side_effect_performed',false); end if;
   insert into public.fulfillment_orders(order_id) values(o.id) returning id into f_id;
   insert into public.fulfillment_items(fulfillment_order_id,order_item_id,product_id,expected_quantity,expected_gtin,location_id,lot_id,pick_sequence)
   select f_id,oi.id,oi.product_id,oi.quantity,p.gtin,pla.location_id,
          case when cfg.fefo_enforced then (
-           select il.id from public.inventory_lots il where il.product_id=oi.product_id and il.status='available' and il.quantity_on_hand>il.quantity_reserved and (il.expires_on is null or il.expires_on>=current_date)
-           order by il.expires_on nulls last,il.received_on nulls last,il.created_at limit 1
+           select il.id from public.inventory_lots il
+           where il.product_id=oi.product_id and il.status='available' and il.physically_verified=true
+             and (il.quantity_available-il.quantity_reserved)>0 and (il.expires_at is null or il.expires_at>=current_date)
+           order by il.expires_at nulls last,il.received_at nulls last,il.id limit 1
          ) else null end,
-         coalesce(wl.pick_sequence,1000)
+         wl.pick_sequence
   from public.order_items oi
-  left join public.products p on p.id=oi.product_id
-  left join public.product_location_assignments pla on pla.product_id=oi.product_id and pla.active and pla.is_primary
-  left join public.warehouse_locations wl on wl.id=pla.location_id
+  join public.products p on p.id=oi.product_id
+  join public.product_location_assignments pla on pla.product_id=oi.product_id and pla.active and pla.is_primary
+  join public.warehouse_locations wl on wl.id=pla.location_id and wl.active
   where oi.order_id=o.id;
   return jsonb_build_object('ok',true,'replay',false,'fulfillment_order_id',f_id,'side_effect_performed',true,'external_side_effect',false);
 end; $$;
@@ -247,15 +260,33 @@ begin
   return jsonb_build_object('ok',true,'order_id',o.id,'order_status','ready','side_effect_performed',true,'external_side_effect',false);
 end; $$;
 
-revoke all on public.fulfillment_runtime_config,public.warehouse_staff,public.warehouse_locations,public.product_location_assignments,public.inventory_lots,public.fulfillment_orders,public.fulfillment_items,public.fulfillment_scan_events,public.order_packages from public,anon,authenticated;
-grant all on public.fulfillment_runtime_config,public.warehouse_staff,public.warehouse_locations,public.product_location_assignments,public.inventory_lots,public.fulfillment_orders,public.fulfillment_items,public.fulfillment_scan_events,public.order_packages to service_role;
+create or replace function public.fulfillment_readiness_v1() returns jsonb
+language sql security definer set search_path=public,pg_temp as $$
+  select jsonb_build_object(
+    'enabled',c.enabled,'execution_mode',c.execution_mode,'picking_enabled',c.picking_enabled,'checking_enabled',c.checking_enabled,
+    'packing_enabled',c.packing_enabled,'ready_release_enabled',c.ready_release_enabled,'loading_enabled',c.loading_enabled,
+    'fefo_enforced',c.fefo_enforced,'require_independent_checker',c.require_independent_checker,'allow_manual_barcode_override',c.allow_manual_barcode_override,
+    'canary_percent',c.canary_percent,
+    'staff',(select count(*) from public.warehouse_staff),'locations',(select count(*) from public.warehouse_locations),
+    'fulfillment_orders',(select count(*) from public.fulfillment_orders),'scan_events',(select count(*) from public.fulfillment_scan_events),
+    'packages',(select count(*) from public.order_packages),'external_side_effect',false
+  ) from public.fulfillment_runtime_config c where c.id=1
+$$;
+
+revoke all on public.fulfillment_runtime_config,public.warehouse_staff,public.warehouse_locations,public.product_location_assignments,public.inventory_lot_locations,public.fulfillment_orders,public.fulfillment_items,public.fulfillment_scan_events,public.order_packages from public,anon,authenticated;
+grant all on public.fulfillment_runtime_config,public.warehouse_staff,public.warehouse_locations,public.product_location_assignments,public.inventory_lot_locations,public.fulfillment_orders,public.fulfillment_items,public.fulfillment_scan_events,public.order_packages to service_role;
+
+revoke all on function public.preview_fulfillment_order_v1(uuid) from public,anon,authenticated;
 revoke all on function public.create_fulfillment_from_order_v1(uuid) from public,anon,authenticated;
 revoke all on function public.scan_fulfillment_item_v1(uuid,uuid,text,text,text) from public,anon,authenticated;
 revoke all on function public.finalize_fulfillment_phase_v1(uuid,uuid,text) from public,anon,authenticated;
 revoke all on function public.release_fulfillment_ready_v1(uuid,uuid) from public,anon,authenticated;
+revoke all on function public.fulfillment_readiness_v1() from public,anon,authenticated;
+grant execute on function public.preview_fulfillment_order_v1(uuid) to service_role;
 grant execute on function public.create_fulfillment_from_order_v1(uuid) to service_role;
 grant execute on function public.scan_fulfillment_item_v1(uuid,uuid,text,text,text) to service_role;
 grant execute on function public.finalize_fulfillment_phase_v1(uuid,uuid,text) to service_role;
 grant execute on function public.release_fulfillment_ready_v1(uuid,uuid) to service_role;
+grant execute on function public.fulfillment_readiness_v1() to service_role;
 
 commit;
