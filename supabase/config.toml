@@ -43,6 +43,14 @@ verify_jwt = true
 [functions.admin-whatsapp-flow-v1]
 verify_jwt = true
 
+# Builder e dispatcher da Etapa 10 são administrativos, dormentes e autenticados.
+[functions.admin-automation-builder-v1]
+verify_jwt = true
+
+# Dispatcher: apenas observe/dry-run, sem execução de action e external_side_effect=false.
+[functions.automation-dispatcher-v1]
+verify_jwt = true
+
 # Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
 # JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
 # do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.

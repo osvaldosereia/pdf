@@ -5,24 +5,30 @@ on:
     paths:
       - 'supabase/migrations/20260908070000_automation_engine_stage10_v1.sql'
       - 'supabase/functions/admin-automation-builder-v1/**'
+      - 'supabase/functions/automation-dispatcher-v1/**'
+      - 'supabase/config.toml'
       - 'admin-v3/automation-builder.js'
       - 'admin-v3/automation-builder.css'
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
+      - 'scripts/test-automation-dispatcher-stage10-v3.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
   push:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908070000_automation_engine_stage10_v1.sql'
       - 'supabase/functions/admin-automation-builder-v1/**'
+      - 'supabase/functions/automation-dispatcher-v1/**'
+      - 'supabase/config.toml'
       - 'admin-v3/automation-builder.js'
       - 'admin-v3/automation-builder.css'
       - 'admin/index.html'
       - 'admin/config.js'
       - 'scripts/test-automation-engine-stage10-v1.mjs'
       - 'scripts/test-automation-builder-stage10-v2.mjs'
+      - 'scripts/test-automation-dispatcher-stage10-v3.mjs'
       - '.github/workflows/stage10-automation-engine.yml'
 
 permissions:
@@ -39,12 +45,15 @@ jobs:
           sparse-checkout: |
             supabase/migrations/20260908070000_automation_engine_stage10_v1.sql
             supabase/functions/admin-automation-builder-v1
+            supabase/functions/automation-dispatcher-v1
+            supabase/config.toml
             admin-v3/automation-builder.js
             admin-v3/automation-builder.css
             admin/index.html
             admin/config.js
             scripts/test-automation-engine-stage10-v1.mjs
             scripts/test-automation-builder-stage10-v2.mjs
+            scripts/test-automation-dispatcher-stage10-v3.mjs
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
@@ -56,7 +65,11 @@ jobs:
         run: node scripts/test-automation-engine-stage10-v1.mjs
       - name: Testar Builder v2
         run: node scripts/test-automation-builder-stage10-v2.mjs
+      - name: Testar dispatcher v3
+        run: node scripts/test-automation-dispatcher-stage10-v3.mjs
       - name: Verificar JavaScript do Admin
         run: node --check admin-v3/automation-builder.js
-      - name: Deno check da Edge Function
+      - name: Deno check do Builder
         run: deno check supabase/functions/admin-automation-builder-v1/index.ts
+      - name: Deno check do dispatcher
+        run: deno check supabase/functions/automation-dispatcher-v1/index.ts
