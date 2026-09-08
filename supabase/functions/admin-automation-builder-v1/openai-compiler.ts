@@ -56,9 +56,16 @@ function normalizeAiDraft(raw:unknown,ctx:CompilerContext){
     actions.push({action_key:actionKey,role:"system"});
   }
 
+  const triggerConfigRaw=obj(d.trigger_config);
+  const triggerConfig={
+    source:clean(triggerConfigRaw.source||"natural_language_draft",80),
+    schedule:triggerConfigRaw.schedule==null?null:clean(triggerConfigRaw.schedule,120),
+    event:triggerConfigRaw.event==null?null:clean(triggerConfigRaw.event,120),
+  };
+
   return {
     trigger_type:trigger,
-    trigger_config:obj(d.trigger_config),
+    trigger_config:triggerConfig,
     conditions,
     actions,
     execution_strategy:strategy,
@@ -95,7 +102,7 @@ export async function compileWithOpenAI(ctx:CompilerContext):Promise<CompilerRes
     required:["trigger_type","trigger_config","conditions","actions","execution_strategy","summary"],
     properties:{
       trigger_type:{type:"string",enum:[...ctx.triggerTypes]},
-      trigger_config:{type:"object",additionalProperties:true},
+      trigger_config:{type:"object",additionalProperties:false,required:["source","schedule","event"],properties:{source:{type:"string"},schedule:{type:["string","null"]},event:{type:["string","null"]}}},
       conditions:{type:"array",maxItems:12,items:{type:"object",additionalProperties:false,required:["field","operator","value"],properties:{field:{type:"string",enum:[...ctx.conditionFields]},operator:{type:"string",enum:[...ctx.conditionOps]},value:{type:["string","number","boolean","null"]}}}},
       actions:{type:"array",maxItems:8,items:{type:"object",additionalProperties:false,required:["action_key"],properties:{action_key:{type:"string",enum:[...ctx.actionKeys]}}}},
       execution_strategy:{type:"string",enum:[...ctx.strategies]},
