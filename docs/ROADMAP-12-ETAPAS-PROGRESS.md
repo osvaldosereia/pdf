@@ -6,43 +6,53 @@ Este arquivo é o marcador persistente de execução do `docs/ROADMAP-FINAL-DONA
 
 ## ETAPA 1 — Fundação, limpeza e consolidação operacional
 
-**Status programável: concluída nesta rodada.**
+**Status programável: concluída e integrada em `main` pela PR #182.**
 
-### Concluído
+Consolidado: canary WhatsApp `live=1%`; Flow/orquestrador desligados; handoffs humanos preservados; Security Advisor revisado; cenários Make temporários/teste/Bling inativos; Make mantido somente como ponte fina realtime quando justificado; inventário e CI de custo versionados.
 
-- PR #179 (`painel dormente de ciclo de vida da chave WhatsApp Flow`) validada com CI verde e integrada em `main`; nenhum par de chaves foi gerado e nenhum gate Flow foi ativado.
-- Canary real reaudidado em produção: `whatsapp_release_mode=live`, `whatsapp_live_canary_percent=1`, inbound/auto-reply/IA/worker ativos; `experience_orchestrator_enabled=false`, `whatsapp_flow_data_exchange_enabled=false`, `whatsapp_flow_send_enabled=false`.
-- Handoffs humanos reaudidados e preservados; existem conversas `human_control` com `needs_human`, `mode=human`, `human_required=true` e handoff aberto `live_canary_human_control`. Nenhum foi assumido/fechado/retomado.
-- Supabase Security Advisor reexecutado: permanecem INFOs `RLS Enabled No Policy` em tabelas server-only e o WARN de conta `Leaked Password Protection Disabled`; os WARNs anteriores das quatro trigger functions SECURITY DEFINER não reapareceram.
-- Inventário Make real revisado. Permanecem ativos por necessidade realtime: `6779824` WhatsApp Inbound Controlado v1 e `7290488` WhatsApp Outbound Event-Driven v3.
-- Foram desativados de forma reversível por serem temporários/teste/Bling e representarem risco de disparo acidental: `7274385`, `7274320`, `7274337`, `7268750`, `7269163`, `7272741`.
-- O outbound legado `7290290` já estava inativo e permanece apenas como referência.
-- Inventário versionado em `ops/dona-antonia/make-scenarios-v1.json`, com classificação, estado esperado, motivo para permanência no Make e alvo de migração.
-- Política de custo formalizada: batch/periódico deve preferir GitHub Actions; Make fica como ponte fina de realtime/webhook/conector quando houver ganho claro.
-- Adicionado `scripts/audit-make-inventory-v1.mjs` para impedir que cenários temporários/teste/legado sejam versionados como esperadamente ativos e para exigir justificativa dos cenários mantidos no Make.
-- Adicionado workflow `.github/workflows/dona-antonia-ops-inventory.yml` para executar essa auditoria em PR/push e manualmente.
+## ETAPA 2 — Pedido real ponta a ponta + Bling
 
-### Classificação Make / migração
+**Status programável: fundação transacional/homologação implementada nesta rodada; homologação real continua bloqueada por autorização explícita.**
 
-- Manter no Make: inbound WhatsApp oficial em tempo real e outbound event-driven/TTS/upload Meta, pois são pontes realtime e não polling batch.
-- Migrar/preparar fora do Make: import/sync Bling batch para GitHub Actions/API direta; testes on-demand deixam de ser rotas operacionais; cenários temporários permanecem inativos.
-- Não desligar produção realtime existente antes de adapter substituto comprovado.
+### Implementado nesta rodada
 
-### Rollback operacional da etapa 1
+- auditoria real confirmou Supabase saudável, `whatsapp_release_mode=live`, `whatsapp_live_canary_percent=1`, Flow/Data Exchange/orquestrador `false` e Make com somente inbound `6779824` + outbound realtime `7290488` ativos entre os cenários Dona Antônia;
+- preservada a arquitetura existente de carrinho/cesta com `fiscal_subtotal`, `other_expenses`, `discount` e total comercial separado;
+- `confirm_cart_order_v2` torna a confirmação replay-safe por carrinho e chave de idempotência, evitando pedido duplicado quando a resposta do primeiro commit se perde;
+- índice único garante no máximo um pedido por carrinho e chave idempotente única quando informada;
+- Bling ganha gates próprios em `automation_config`: `bling_order_sync_enabled=false`, `bling_order_homologation_only=true`, `bling_order_max_per_run=1` por padrão;
+- criada allowlist server-only `bling_order_homologation_allowlist`; a fila não pode ser criada/claimada em homologação sem pedido explicitamente allowlisted e não expirado;
+- `claim_order_sync_jobs` passa a falhar fechado enquanto o gate Bling estiver desligado e limita o lote pelo teto configurado;
+- fila Bling recebe guard transacional de estoque local antes do insert em `order_sync_jobs`;
+- criada timeline server-only `order_status_events` e RPC `update_order_status_v1` com transições controladas, incluindo `delivered`, `cancelled` e `returned`;
+- wrapper `run-bling-order-homologation-v1.mjs` exige confirmação literal `PEDIDO_UNICO_CONTROLADO` e força `ORDER_LIMIT=1` em `--apply`;
+- o writer existente continua tratando resposta de criação incerta como `review`, sem retry cego de POST ambíguo;
+- CI novo valida gates fail-closed, allowlist, idempotência, pedido único, estoque e tratamento de ambiguidade;
+- nenhuma chamada real ao Bling foi executada, nenhum pedido real foi criado e nenhum cenário Bling do Make foi reativado.
 
-1. Se a consolidação documental/CI causar problema, reverter somente os commits/PR desta etapa; ela não altera schema nem gates runtime.
-2. Cenários Make desativados podem ser reativados individualmente somente em homologação explícita; não reativar Bling/testes por conveniência.
-3. Em incidente WhatsApp, preservar handoff humano antes de qualquer tentativa de retomada de IA.
-4. Não elevar canary acima de 1% durante rollback.
-5. Flow continua fail-closed; não gerar/registrar chave para resolver incidentes não relacionados.
+### Arquivos da rodada
 
-### Pendências externas não bloqueantes
+- `supabase/migrations/20260908030000_order_bling_homologation_foundation_v2.sql`
+- `supabase/migrations/20260908030100_order_bling_stock_guard_v1.sql`
+- `scripts/run-bling-order-homologation-v1.mjs`
+- `scripts/test-order-bling-homologation-foundation-v2.mjs`
+- `.github/workflows/dona-antonia-order-bling-foundation.yml`
 
-- `Leaked Password Protection` do Supabase Auth depende de decisão/configuração de conta e não bloqueia o avanço programável das próximas etapas.
-- Nenhuma chave Flow foi gerada/registrada na Meta; isso pertence à homologação controlada futura e não bloqueia a Etapa 2 programável.
+### Critério restante exclusivamente externo/real
+
+- homologar **um único pedido real controlado** no Bling, allowlisted, validando contato, itens/componentes, diferença fiscal, estoque, retorno do `bling_order_id` e conciliação de status;
+- isso não será executado sem autorização explícita futura para homologação real Bling.
+
+### Rollback
+
+1. manter `bling_order_sync_enabled=false` para bloquear qualquer claim;
+2. remover/desabilitar allowlist de homologação se houver incidente;
+3. reverter as migrations/PR somente se necessário; as novas tabelas/gates nascem dormentes e server-only;
+4. nunca reexecutar POST ambíguo no Bling sem reconciliação;
+5. não alterar o canary WhatsApp de 1% durante qualquer rollback.
 
 ## Próxima etapa
 
-**ETAPA 2 — Pedido real ponta a ponta + Bling.**
+**ETAPA 3 — Núcleo omnichannel e evento normalizado.**
 
-A próxima rodada deve programar o máximo seguro da Etapa 2, mantendo Bling real desligado fora de homologação explicitamente autorizada. Preparar idempotência, contrato ERP, reconciliação, estados e testes sem executar pedido real no Bling.
+A próxima rodada deve começar pela primeira parte programável da Etapa 3 depois de confirmar que esta PR está verde/integrada e que as migrations dormentes da Etapa 2 estão aplicadas/validadas. Não é necessário aguardar a homologação real Bling para programar o núcleo omnichannel; o teste real permanece como pendência externa da Etapa 2 para a execução 12.
