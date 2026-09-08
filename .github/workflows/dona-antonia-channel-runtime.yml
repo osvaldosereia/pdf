@@ -1,0 +1,21 @@
+name: Dona Antonia channel runtime
+on:
+  pull_request:
+    paths:
+      - 'lib/omnichannel/channel-runtime-v1.mjs'
+      - 'scripts/test-channel-runtime-v1.mjs'
+      - '.github/workflows/dona-antonia-channel-runtime.yml'
+      - 'docs/ROADMAP-12-ETAPAS-PROGRESS.md'
+  workflow_dispatch:
+jobs:
+  channel-runtime:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate channel adapters, gates and fallbacks
+        run: node scripts/test-channel-runtime-v1.mjs
