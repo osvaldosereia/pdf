@@ -5,5 +5,5 @@ window.DA_DRIVER_CONFIG=Object.freeze({
   supabasePublishableKey:'sb_publishable_tFXHtH0HCXZepVtwgKElIg_DxS76Gu8',
   edgeFunction:'driver-logistics-v1',
   gpsIntervalSeconds:30,
-  build:'20260908-stage11-driver-pwa-02'
+  build:'20260908-stage13c-driver-financial-01'
 });
