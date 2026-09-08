@@ -19,7 +19,7 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   commercialTruthUiEnabled: false,
   driverAppUrl: '../driver-app/',
   countAppUrl: '../contagem/',
-  build: '20260908-product-categories-inline-01'
+  build: '20260908-basket-showcase-admin-02'
 });
 
 (function loadHumanServiceCenter(cfg){
@@ -81,10 +81,10 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   if(!cfg?.categoryEdgeFunction)return;
   if(!document.querySelector('link[data-product-categories-inline]')){
     const link=document.createElement('link');
-    link.rel='stylesheet';link.href='../admin-v3/product-categories-inline.css?v=20260908-01';link.dataset.productCategoriesInline='1';document.head.appendChild(link);
+    link.rel='stylesheet';link.href='../admin-v3/product-categories-inline.css?v=20260908-02';link.dataset.productCategoriesInline='1';document.head.appendChild(link);
   }
   if(!document.querySelector('script[data-product-categories-inline]')){
     const script=document.createElement('script');
-    script.src='../admin-v3/product-categories-inline.js?v=20260908-01';script.dataset.productCategoriesInline='1';document.body.appendChild(script);
+    script.src='../admin-v3/product-categories-inline.js?v=20260908-02';script.dataset.productCategoriesInline='1';document.body.appendChild(script);
   }
 })(window.DA_ADMIN_V3_CONFIG);
