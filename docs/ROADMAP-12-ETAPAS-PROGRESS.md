@@ -6,48 +6,58 @@ Este arquivo é o marcador persistente de execução do `docs/ROADMAP-FINAL-DONA
 
 ## ETAPA 1 — Fundação, limpeza e consolidação operacional
 
-**Status programável: concluída e integrada em `main` pela PR #182.**
-
-Consolidado: canary WhatsApp `live=1%`; Flow/orquestrador desligados; handoffs humanos preservados; Security Advisor revisado; cenários Make temporários/teste/Bling inativos; Make mantido somente como ponte fina realtime quando justificado; inventário e CI de custo versionados.
+**Concluída.** PR #182 integrada. Canary WhatsApp permanece `live=1%`; Flow/orquestrador desligados; handoffs humanos preservados; Make consolidado com pontes realtime justificadas e batch priorizado em GitHub Actions.
 
 ## ETAPA 2 — Pedido real ponta a ponta + Bling
 
-**Status programável: concluída e integrada em `main` pela PR #183. Homologação Bling real permanece pendência externa deliberadamente bloqueada.**
-
-Produção mantém `bling_order_sync_enabled=false`, homologação allowlist-only, lote máximo 1 e nenhum pedido/job real criado pela etapa. Migrations aplicadas: `20260908024746 order_bling_homologation_foundation_v2` e `20260908024845 order_bling_stock_guard_v1`. Homologação de um único pedido real fica registrada para a Etapa 12 e exige autorização explícita.
+**Parte programável concluída.** PR #183 integrada; migrations `20260908024746 order_bling_homologation_foundation_v2` e `20260908024845 order_bling_stock_guard_v1` aplicadas. Bling continua desligado, allowlist-only e lote máximo 1. Homologação de um único pedido real permanece pendência externa para a Etapa 12.
 
 ## ETAPA 3 — Núcleo omnichannel e evento normalizado
 
-**Status programável: implementada nesta rodada em PR própria; Instagram/Messenger permanecem dormentes.**
+**Concluída e aplicada nesta rodada.** PR #185 integrada em `main` após CI verde. Migration `omnichannel_event_core_v1` aplicada em produção.
+
+Auditoria pós-DDL:
+- `whatsapp_live_canary_percent=1` preservado;
+- `experience_orchestrator_enabled=false`;
+- `whatsapp_flow_data_exchange_enabled=false`;
+- `whatsapp_flow_send_enabled=false`;
+- `bling_order_sync_enabled=false`;
+- existem 3 handoffs humanos abertos, preservados;
+- `channel_accounts` está vazio: nenhuma conta Instagram/Messenger/Web adicional foi criada ou ativada.
+
+Entregas: `channel_accounts`, `customer_channel_identities`, `channel_raw_events`, `normalized_channel_events`, contrato idempotente e RPC server-only `ingest_normalized_channel_event_v1`.
+
+## ETAPA 4 — Adapters, renderers e gates independentes
+
+**Status programável: implementada nesta rodada em PR própria; nenhum canal novo ativado.**
 
 ### Implementado
 
-- `conversations.channel` preparado para `instagram` e `messenger`, preservando `whatsapp`, `web` e `hybrid`;
-- `channel_accounts` centraliza contas por canal e nasce fail-closed: `status=dormant`, inbound/IA/auto-reply/outbound `false`, canary `0%`;
-- `customer_channel_identities` modela E.164, IGSID, PSID, identidade web/e-mail sem unificação automática por nome; novas identidades nascem apenas `observed`;
-- `channel_raw_events` guarda somente hash SHA-256 e referência segura opcional, evitando colocar payload cru no motor central;
-- `normalized_channel_events` implementa contrato comum com canal, conta, usuário externo, mensagem/evento externo, direção, tipo, reply-to, source, referral, timestamp, mídia normalizada e referência ao evento bruto;
-- índices únicos garantem idempotência por canal/conta/mensagem externa ou evento externo;
-- `ingest_normalized_channel_event_v1` é server-only, replay-safe e mantém evento `held` quando o canal não estiver explicitamente habilitado; web permanece compatível com a Sala existente;
-- nenhuma conta Instagram/Messenger é criada/ativada pela migration; nenhuma chamada Meta é feita;
-- CI GitHub Actions valida o contrato e os defaults fail-closed sem gastar créditos Make.
+- `lib/omnichannel/channel-runtime-v1.mjs` define WA Adapter, Web/Sala Adapter, Instagram Adapter e Messenger Adapter sobre o mesmo envelope interno;
+- `CAPABILITY_REGISTRY` descreve suporte por canal para texto, imagem, áudio, botões, quick replies, cards, carrosséis e Flow;
+- gates continuam independentes por conta/canal: inbound, IA, auto-reply, outbound e canary; o runtime bloqueia outbound quando `outbound_enabled=false`;
+- decisão comercial fica neutra ao canal (`mission`, `cards`, `buttons`, `quick_replies`), sem acoplar regra comercial à API Meta;
+- renderer seleciona apresentação por capacidade e aplica fallback determinístico quando o canal não suporta o recurso;
+- exemplo neutro `mission=show_three_baskets` pode virar carrossel em WA/IG/Messenger/Web, sem duplicar regra de venda;
+- fallback testado: quick replies no WhatsApp degradam para texto, enquanto Instagram/Messenger/Web podem preservá-las;
+- limites de botões/carrossel são aplicados no renderer, não no cérebro comercial;
+- adapters e renderers são funções puras, sem chamadas externas, sem credenciais e sem possibilidade de ativar Meta;
+- CI em GitHub Actions valida adapters, gates, capacidades e fallbacks; nenhuma automação Make foi adicionada.
 
-### Auditoria desta rodada
+### Segurança operacional
 
-- GitHub: Etapas 1 e 2 confirmadas em `main` pelo marcador persistente antes da alteração;
-- Make: WhatsApp inbound `6779824` e outbound realtime `7290488` continuam ativos; nenhuma nova automação Make foi criada para a Etapa 3;
-- Supabase: tentativa de leitura nesta rodada foi recusada pelo conector por permissão; por segurança não houve escrita/DDL em produção antes de CI. O estado autoritativo imediatamente anterior permanece canary `live=1%`, três handoffs humanos abertos e Bling/Flow/orquestrador desligados até nova auditoria permitida.
+- Instagram/Messenger continuam sem `channel_accounts` em produção;
+- nenhuma flag global libera todos os canais;
+- nenhuma alteração foi feita no canary WhatsApp de 1%;
+- nenhum handoff humano foi alterado;
+- nenhum Flow, Bling, Meta Ads, Google Ads ou marketing foi ativado.
 
 ### Arquivos
 
-- `supabase/migrations/20260908032000_omnichannel_event_core_v1.sql`
-- `scripts/test-omnichannel-event-core-v1.mjs`
-- `.github/workflows/dona-antonia-omnichannel-core.yml`
-
-### Regra de integração
-
-Só integrar/aplicar a migration depois de CI verde. Após DDL, reauditar gates, handoffs, pedidos/jobs e confirmar que Instagram/Messenger continuam sem conta ativa, inbound, IA ou outbound.
+- `lib/omnichannel/channel-runtime-v1.mjs`
+- `scripts/test-channel-runtime-v1.mjs`
+- `.github/workflows/dona-antonia-channel-runtime.yml`
 
 ## Próxima etapa
 
-Quando a PR da Etapa 3 estiver verde, integrar e aplicar a migration dormente; em seguida a próxima execução deve atacar **ETAPA 4 — Adapters, renderers e gates independentes**, sem depender de permissões Meta externas.
+Após CI verde e integração da PR desta etapa, a próxima execução deve atacar **ETAPA 5 — CRM unificado, identidades e caixa de entrada única**, generalizando inbox/handoffs por canal e vínculo seguro de identidades sem depender de permissões externas Meta.
