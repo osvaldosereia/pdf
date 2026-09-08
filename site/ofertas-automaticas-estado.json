@@ -1,6 +1,6 @@
 {
   "versao": 2,
-  "ultima_execucao": "2026-09-08T05:27:42.873Z",
+  "ultima_execucao": "2026-09-08T06:42:03.873Z",
   "ultima_execucao_status": "sucesso",
   "ofertas_ativas": [
     {
@@ -520,6 +520,20 @@
       "inicio": "2026-09-07",
       "fim": "2026-09-10T23:59:59-04:00",
       "historico_id": "oferta-1775968438859-1788787789049-zfqd0"
+    },
+    {
+      "produto_key": "1775968438861",
+      "codigo": "864288X",
+      "nome": "Novex Kit Shampoo e Condicionador Óleo de Argan 300ml cada",
+      "categoria": "SHAMPOO E CONDICIONADOR",
+      "regra_id": "regra-1785205192100",
+      "origem": "campanha_automatica",
+      "preco_normal": 21.9,
+      "preco_oferta": 20.37,
+      "desconto_percentual": 6.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1775968438861-1788849723873-8iffm"
     },
     {
       "produto_key": "1775968438863",
@@ -1362,6 +1376,20 @@
       "historico_id": "oferta-1776338123018-1788600346257-h4fes"
     },
     {
+      "produto_key": "1776338123045",
+      "codigo": "547547W",
+      "nome": "Tratamento Capilar Elseve Liso dos Sonhos 100ml",
+      "categoria": "BELEZA",
+      "regra_id": "regra-1785202557027",
+      "origem": "campanha_automatica",
+      "preco_normal": 32.9,
+      "preco_oferta": 29.61,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-15T23:59:59-04:00",
+      "historico_id": "oferta-1776338123045-1788849723873-do4g0"
+    },
+    {
       "produto_key": "1776338123050",
       "codigo": "P0300",
       "nome": "Tixan Sabão em Pó Primavera Cx Azul 800g",
@@ -1430,6 +1458,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338123136-1788745247517-c9ju1"
+    },
+    {
+      "produto_key": "1776338123167",
+      "codigo": "767225K",
+      "nome": "Colgate Fio Dental Total Menta 50m",
+      "categoria": "HIGIENE",
+      "regra_id": "regra-1785205082552",
+      "origem": "campanha_automatica",
+      "preco_normal": 15.9,
+      "preco_oferta": 14.63,
+      "desconto_percentual": 7.99,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338123167-1788849723873-y1uii"
     },
     {
       "produto_key": "1776338123180",
@@ -3826,6 +3868,20 @@
       "historico_id": "oferta-1776338127530-1788776960355-n88k0"
     },
     {
+      "produto_key": "1776338127549",
+      "codigo": "502681E",
+      "nome": "Palmolive Sabonete Karité e Vitamina 85g",
+      "categoria": "SABONETE",
+      "regra_id": "regra-1785205164829",
+      "origem": "campanha_automatica",
+      "preco_normal": 2.8,
+      "preco_oferta": 2.63,
+      "desconto_percentual": 6.07,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338127549-1788849723873-fyd06"
+    },
+    {
       "produto_key": "1776338127605",
       "codigo": "P0288",
       "nome": "NIVEA Sabonete Hidr Erva-Doce 85g",
@@ -4678,6 +4734,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-1776338129208-1788733469901-7idkf"
+    },
+    {
+      "produto_key": "1776338129231",
+      "codigo": "C0089",
+      "nome": "Leão Leo Ch Mate 100g",
+      "categoria": "CAFÉ DA MANHÃ",
+      "regra_id": "regra-1785205019989",
+      "origem": "campanha_automatica",
+      "preco_normal": 5.99,
+      "preco_oferta": 5.65,
+      "desconto_percentual": 5.68,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1776338129231-1788849723873-cdv6s"
     },
     {
       "produto_key": "1776338129256",
@@ -9748,6 +9818,20 @@
       "historico_id": "oferta-177947293272838017-1788327110314-j9est"
     },
     {
+      "produto_key": "1779474694690102743",
+      "codigo": "P-9903",
+      "nome": "Minuano Sabão em Pó Roxo Unidade 800g",
+      "categoria": "LAVANDERIA",
+      "regra_id": "regra-1785205096285",
+      "origem": "campanha_automatica",
+      "preco_normal": 10.9,
+      "preco_oferta": 10.14,
+      "desconto_percentual": 6.97,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1779474694690102743-1788849723873-w8ndq"
+    },
+    {
       "produto_key": "1779474694690115834",
       "codigo": "P-DQ79",
       "nome": "Francis Sabonete Suave Amarelo 85g",
@@ -10264,6 +10348,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-09T23:59:59-04:00",
       "historico_id": "oferta-177988672808055249-1788344958829-uv75y"
+    },
+    {
+      "produto_key": "177988782897559742",
+      "codigo": "8289750043",
+      "nome": "Da Roz Macarrão Talharini 500g",
+      "categoria": "MACARRÃO E MOLHOS",
+      "regra_id": "regra-1785205113340",
+      "origem": "campanha_automatica",
+      "preco_normal": 12.9,
+      "preco_oferta": 11.61,
+      "desconto_percentual": 10,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-177988782897559742-1788849723873-k5q5q"
     },
     {
       "produto_key": "177996685556679557",
@@ -12058,6 +12156,20 @@
       "historico_id": "oferta-1786459678160a8f6-1788845262873-6y22l"
     },
     {
+      "produto_key": "1786460002392_30f8",
+      "codigo": "7898247312788",
+      "nome": "Sal Rosa do Himalaia Fino Empório Nut's 120 g",
+      "categoria": "MERCEARIA BÁSICA",
+      "regra_id": "regra-1785205122760",
+      "origem": "campanha_automatica",
+      "preco_normal": 4.9,
+      "preco_oferta": 4.7,
+      "desconto_percentual": 4.08,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-178646000239230f8-1788849723873-ufe0w"
+    },
+    {
       "produto_key": "1786467098148_31ae",
       "codigo": "7899674044198",
       "nome": "Espuma de Barbear Above Men Elements Carvão Ativado 250ml",
@@ -12084,6 +12196,20 @@
       "inicio": "2026-09-05",
       "fim": "2026-09-08T23:59:59-04:00",
       "historico_id": "oferta-1786467244581135e-1788643370681-fo421"
+    },
+    {
+      "produto_key": "1786467627817_a0ab",
+      "codigo": "7899674025029",
+      "nome": "DESODORANTE ANTITRANSPIRANTE AEROSOL CLUBES FLAMENGO 150 ml",
+      "categoria": "DESODORANTE",
+      "regra_id": "regra-1785205065492",
+      "origem": "campanha_automatica",
+      "preco_normal": 11.9,
+      "preco_oferta": 11.19,
+      "desconto_percentual": 5.97,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1786467627817a0ab-1788849723873-wasrv"
     },
     {
       "produto_key": "1786468651990_8ad0",
@@ -12182,6 +12308,20 @@
       "inicio": "2026-09-06",
       "fim": "2026-09-13T23:59:59-04:00",
       "historico_id": "oferta-1786713091784f2b9-1788733469901-hz7r2"
+    },
+    {
+      "produto_key": "1786713349424_fa81",
+      "codigo": "7898717560107",
+      "nome": "Balde Preto 6 Litros Alça de Ferro Plástico Resistente",
+      "categoria": "LIMPEZA",
+      "regra_id": "regra-1785205105033",
+      "origem": "campanha_automatica",
+      "preco_normal": 6.9,
+      "preco_oferta": 6.49,
+      "desconto_percentual": 5.94,
+      "inicio": "2026-09-08",
+      "fim": "2026-09-11T23:59:59-04:00",
+      "historico_id": "oferta-1786713349424fa81-1788849723873-vqn6t"
     },
     {
       "produto_key": "1786714040263_0dfd",
@@ -14310,7 +14450,7 @@
       "regra_id": "regra-1785205132287"
     },
     "177988782897559742": {
-      "ultima_oferta_em": "2026-09-04T06:41:57.625Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205113340"
     },
     "178050152496867645": {
@@ -16082,7 +16222,7 @@
       "regra_id": "regra-1785205113340"
     },
     "1779474694690102743": {
-      "ultima_oferta_em": "2026-09-04T02:35:31.401Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205096285"
     },
     "177947469468977341": {
@@ -16478,7 +16618,7 @@
       "regra_id": "regra-1785202557027"
     },
     "1776338123045": {
-      "ultima_oferta_em": "2026-08-26T22:17:55.356Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785202557027"
     },
     "1776338123172": {
@@ -16758,7 +16898,7 @@
       "regra_id": "regra-1785205192100"
     },
     "1775968438861": {
-      "ultima_oferta_em": "2026-09-03T18:13:02.041Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205192100"
     },
     "1775968438860": {
@@ -17210,7 +17350,7 @@
       "regra_id": "regra-1785205082552"
     },
     "1776338123167": {
-      "ultima_oferta_em": "2026-09-04T05:27:43.166Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205082552"
     },
     "177972529700688419": {
@@ -18830,7 +18970,7 @@
       "regra_id": "regra-1785205164829"
     },
     "1776338127549": {
-      "ultima_oferta_em": "2026-09-04T05:27:43.166Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205164829"
     },
     "1776338128321": {
@@ -19262,7 +19402,7 @@
       "regra_id": "regra-1785205096285"
     },
     "1786460002392_30f8": {
-      "ultima_oferta_em": "2026-09-04T06:41:57.625Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205122760"
     },
     "1776338125335": {
@@ -19270,7 +19410,7 @@
       "regra_id": "regra-1785205132287"
     },
     "1786467627817_a0ab": {
-      "ultima_oferta_em": "2026-09-04T06:41:57.625Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205065492"
     },
     "1786467098148_31ae": {
@@ -19326,11 +19466,11 @@
       "regra_id": "regra-1785205105033"
     },
     "1786713349424_fa81": {
-      "ultima_oferta_em": "2026-09-03T11:24:55.959Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205105033"
     },
     "1776338129231": {
-      "ultima_oferta_em": "2026-09-04T06:41:57.625Z",
+      "ultima_oferta_em": "2026-09-08T06:42:03.873Z",
       "regra_id": "regra-1785205019989"
     },
     "1776695585113": {
@@ -19679,23 +19819,6 @@
     }
   },
   "execucoes": [
-    {
-      "id": "github-1788168928897",
-      "executado_em": "2026-08-31T09:35:29.272Z",
-      "origem": "make",
-      "modo": "completo",
-      "resumo": {
-        "ofertas_solicitadas": 23,
-        "ofertas_criadas": 7,
-        "ofertas_nao_criadas": 16,
-        "ofertas_encerradas": 0,
-        "vencidos": 0,
-        "ofertas_reativadas": 0,
-        "reativacoes_com_falha": 0,
-        "banners_reativados": 0,
-        "banners_desativados": 0
-      }
-    },
     {
       "id": "make-20260831071137144",
       "executado_em": "2026-08-31T10:13:01.314Z",
@@ -23071,6 +23194,23 @@
         "ofertas_solicitadas": 23,
         "ofertas_criadas": 13,
         "ofertas_nao_criadas": 10,
+        "ofertas_encerradas": 0,
+        "vencidos": 0,
+        "ofertas_reativadas": 0,
+        "reativacoes_com_falha": 0,
+        "banners_reativados": 0,
+        "banners_desativados": 0
+      }
+    },
+    {
+      "id": "github-1788849723356",
+      "executado_em": "2026-09-08T06:42:03.873Z",
+      "origem": "make",
+      "modo": "completo",
+      "resumo": {
+        "ofertas_solicitadas": 23,
+        "ofertas_criadas": 10,
+        "ofertas_nao_criadas": 13,
         "ofertas_encerradas": 0,
         "vencidos": 0,
         "ofertas_reativadas": 0,
