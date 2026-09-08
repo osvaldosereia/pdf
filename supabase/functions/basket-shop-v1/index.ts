@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2.112.3";
 
 const CORS={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"content-type","Access-Control-Allow-Methods":"POST,OPTIONS"};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...CORS,"Content-Type":"application/json","Cache-Control":"no-store"}});
@@ -20,11 +20,13 @@ async function whatsappUrl(sb:any,conversationId:string,message:string){
 Deno.serve(async(req:Request)=>{
   if(req.method==="OPTIONS")return new Response("ok",{headers:CORS});
   if(req.method!=="POST")return json({ok:false,error:"method_not_allowed"},405);
+
   const url=Deno.env.get("SUPABASE_URL")||"",key=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
   if(!url||!key)return json({ok:false,error:"server_config"},500);
   const sb=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
+
   let body:any={};try{body=await req.json()}catch{return json({ok:false,error:"invalid_json"},400)}
-  const action=clean(body?.action||"open",40).toLowerCase();
+  const action=clean(body?.action||"open",50).toLowerCase();
   const token=clean(body?.token,80);
   if(!validToken(token))return json({ok:false,error:"invalid_token"},400);
 
@@ -33,52 +35,146 @@ Deno.serve(async(req:Request)=>{
     .eq("public_token",token).maybeSingle();
   if(sessionError)return json({ok:false,error:"session_lookup_failed"},500);
   if(!session||session.status!=="open"||new Date(session.expires_at).getTime()<=Date.now())return json({ok:false,error:"catalog_unavailable"},404);
+
   const flow=clean(session.metadata?.flow,40);
-  if(!["basket_basic_v1","basket_extras_v1"].includes(flow))return json({ok:false,error:"wrong_catalog_flow"},404);
+  if(!["basket_basic_v1","basket_extras_v1","basket_replace_v1"].includes(flow))return json({ok:false,error:"wrong_catalog_flow"},404);
 
   if(action==="categories"){
-    if(flow!=="basket_basic_v1")return json({ok:false,error:"basket_session_required"},400);
+    if(!["basket_basic_v1","basket_replace_v1"].includes(flow))return json({ok:false,error:"basket_session_required"},400);
     const {data,error}=await sb.rpc("get_whatsapp_product_categories_v1");
-    if(error)return json({ok:false,error:"categories_failed"},500);
+    if(error)return json({ok:false,error:"categories_failed",detail:clean(error.message,160)},500);
     return json({ok:true,categories:data||[]});
   }
 
   if(action==="create_extras"){
     if(flow!=="basket_basic_v1")return json({ok:false,error:"basket_session_required"},400);
-    const categories=Array.isArray(body?.categories)?body.categories.map((x:any)=>clean(x,100)).filter(Boolean).slice(0,40):[];
+    const categories=Array.isArray(body?.categories)?body.categories.map((x:any)=>clean(x,120)).filter(Boolean).slice(0,40):[];
     if(!categories.length)return json({ok:false,error:"categories_required"},400);
     const {data,error}=await sb.rpc("create_whatsapp_basket_extras_by_categories_v1",{p_conversation_id:session.conversation_id,p_categories:categories});
     if(error)return json({ok:false,error:"extras_session_failed",detail:clean(error.message,160)},400);
     return json({ok:true,result:data});
   }
 
+  if(action==="create_replacement"){
+    if(flow!=="basket_basic_v1")return json({ok:false,error:"basket_session_required"},400);
+    const productId=clean(body?.product_id,80),targetQuery=clean(body?.target_query,160);
+    if(!validUuid(productId))return json({ok:false,error:"invalid_product"},400);
+    const {data,error}=await sb.rpc("create_whatsapp_basket_replacement_session_v1",{
+      p_conversation_id:session.conversation_id,
+      p_source_product_id:productId,
+      p_target_query:targetQuery||null,
+      p_categories:[]
+    });
+    if(error)return json({ok:false,error:"replacement_session_failed",detail:clean(error.message,160)},400);
+    return json({ok:true,result:data});
+  }
+
+  if(action==="set_replacement_categories"){
+    if(flow!=="basket_replace_v1")return json({ok:false,error:"replacement_session_required"},400);
+    const categories=Array.isArray(body?.categories)?body.categories.map((x:any)=>clean(x,120)).filter(Boolean).slice(0,40):[];
+    if(!categories.length)return json({ok:false,error:"categories_required"},400);
+    const {data,error}=await sb.rpc("set_whatsapp_basket_replacement_categories_v1",{p_public_token:token,p_categories:categories});
+    if(error)return json({ok:false,error:"replacement_categories_failed",detail:clean(error.message,160)},400);
+    return json({ok:true,result:data});
+  }
+
+  if(action==="choose_replacement"){
+    if(flow!=="basket_replace_v1")return json({ok:false,error:"replacement_session_required"},400);
+    const productId=clean(body?.product_id,80);
+    if(!validUuid(productId))return json({ok:false,error:"invalid_product"},400);
+    const {data,error}=await sb.rpc("choose_whatsapp_basket_replacement_v1",{p_public_token:token,p_replacement_product_id:productId});
+    if(error)return json({ok:false,error:"replacement_failed",detail:clean(error.message,160)},400);
+    return json({ok:true,result:data});
+  }
+
   if(action==="open"){
     await sb.from("catalog_sessions").update({last_opened_at:new Date().toISOString(),last_activity_at:new Date().toISOString()}).eq("id",session.id);
     let basket:any=null;
+
     if(flow==="basket_basic_v1"){
       const basketId=clean(session.metadata?.basket_id,80);
       const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",basketId).maybeSingle();basket=b||null;
       const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
-        .select("product_id,rank,quantity,metadata,product:products(id,name)").eq("catalog_session_id",session.id).order("rank");
+        .select("product_id,rank,quantity,metadata,product:products(id,name)")
+        .eq("catalog_session_id",session.id).order("rank");
       if(itemsError)return json({ok:false,error:"items_failed"},500);
-      const items=(rows||[]).map((r:any)=>({product_id:r.product_id,name:r.product?.name||"Produto",quantity:Number(r.quantity||0),base_quantity:Number(r.metadata?.base_quantity??r.quantity??0),removable:Boolean(r.metadata?.removable),quantity_editable:Boolean(r.metadata?.quantity_editable),min_quantity:Number(r.metadata?.min_quantity??0),max_quantity:Number(r.metadata?.max_quantity??20)}));
-      return json({ok:true,flow,session:{id:session.id,title:session.title,expires_at:session.expires_at},basket,items,commercial_policy:{component_prices_visible:false,basket_price_is_commercial_price:true,quantity_changes_reviewed_by_human:true}});
+      const items=(rows||[]).map((r:any)=>({
+        product_id:r.product_id,
+        name:r.product?.name||"Produto",
+        quantity:Number(r.quantity||0),
+        base_quantity:Number(r.metadata?.base_quantity??r.quantity??0),
+        removable:Boolean(r.metadata?.removable),
+        quantity_editable:Boolean(r.metadata?.quantity_editable),
+        min_quantity:Number(r.metadata?.min_quantity??0),
+        max_quantity:Number(r.metadata?.max_quantity??20),
+        substitution:r.metadata?.substitution||null
+      }));
+      return json({
+        ok:true,flow,
+        session:{id:session.id,title:session.title,expires_at:session.expires_at},
+        basket,items,
+        commercial_policy:{component_prices_visible:false,basket_price_is_commercial_price:true,quantity_changes_reviewed_by_human:true,replacements_only_in_external_showcase:true}
+      });
     }
 
     const parentId=clean(session.metadata?.parent_basket_session_id,80);
+    let parentToken:string|null=null;
     if(validUuid(parentId)){
-      const {data:parent}=await sb.from("catalog_sessions").select("metadata").eq("id",parentId).maybeSingle();
-      const bid=clean(parent?.metadata?.basket_id,80);if(validUuid(bid)){const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",bid).maybeSingle();basket=b||null}
+      const {data:parent}=await sb.from("catalog_sessions").select("public_token,metadata").eq("id",parentId).maybeSingle();
+      parentToken=parent?.public_token||null;
+      const bid=clean(parent?.metadata?.basket_id,80);
+      if(validUuid(bid)){const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",bid).maybeSingle();basket=b||null}
     }
+
+    if(flow==="basket_replace_v1"){
+      const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
+        .select("product_id,rank,metadata,product:products(id,name,image_url,category,stock)")
+        .eq("catalog_session_id",session.id).order("rank");
+      if(itemsError)return json({ok:false,error:"items_failed"},500);
+      const items=(rows||[]).map((r:any)=>({
+        product_id:r.product_id,
+        name:r.product?.name||"Produto",
+        image_url:r.product?.image_url||null,
+        category:r.product?.category||r.metadata?.category||null,
+        stock:Number(r.product?.stock||0)
+      }));
+      return json({
+        ok:true,flow,
+        session:{
+          id:session.id,title:session.title,expires_at:session.expires_at,
+          categories:session.metadata?.categories||[],
+          source_product_id:session.metadata?.source_product_id||null,
+          source_product_name:session.metadata?.source_product_name||"Produto",
+          target_query:session.metadata?.target_query||null,
+          selected_replacement:session.metadata?.selected_replacement||null,
+          parent_token:parentToken,
+          parent_url:parentToken?`https://donaantonia.com.br/cesta/?t=${parentToken}`:null
+        },
+        basket,items,
+        commercial_policy:{component_prices_visible:false,basket_price_is_commercial_price:true,replacement_price_hidden:true,replacement_requires_human_review:true}
+      });
+    }
+
     const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
-      .select("product_id,rank,quantity,metadata,product:products(id,name,price,image_url,category,stock)").eq("catalog_session_id",session.id).order("rank");
+      .select("product_id,rank,quantity,metadata,product:products(id,name,price,image_url,category,stock)")
+      .eq("catalog_session_id",session.id).order("rank");
     if(itemsError)return json({ok:false,error:"items_failed"},500);
-    let cart:any=null;if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
-    const items=(rows||[]).map((r:any)=>({product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),image_url:r.product?.image_url||null,category:r.product?.category||r.metadata?.category||null,stock:Number(r.product?.stock||0),quantity:Number(r.quantity||0)}));
-    return json({ok:true,flow,session:{id:session.id,title:session.title,expires_at:session.expires_at,categories:session.metadata?.categories||[]},basket,items,cart});
+    let cart:any=null;
+    if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
+    const items=(rows||[]).map((r:any)=>({
+      product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),
+      image_url:r.product?.image_url||null,category:r.product?.category||r.metadata?.category||null,
+      stock:Number(r.product?.stock||0),quantity:Number(r.quantity||0)
+    }));
+    return json({
+      ok:true,flow,
+      session:{id:session.id,title:session.title,expires_at:session.expires_at,categories:session.metadata?.categories||[],parent_token:parentToken},
+      basket,items,cart
+    });
   }
 
   if(action==="set_quantity"){
+    if(flow==="basket_replace_v1")return json({ok:false,error:"replacement_has_no_quantity"},400);
     const productId=clean(body?.product_id,80),quantity=Number(body?.quantity);
     if(!validUuid(productId)||!Number.isInteger(quantity)||quantity<0)return json({ok:false,error:"invalid_quantity"},400);
     const rpc=flow==="basket_basic_v1"?"set_whatsapp_basket_component_quantity_v1":"set_whatsapp_basket_extra_quantity_v1";
@@ -89,7 +185,7 @@ Deno.serve(async(req:Request)=>{
 
   if(action==="return"){
     const intent=clean(body?.intent,30).toLowerCase();
-    const allowed=flow==="basket_basic_v1"?["order"]:["extras_done"];
+    const allowed=flow==="basket_basic_v1"?["order"]:flow==="basket_extras_v1"?["extras_done"]:[];
     if(!allowed.includes(intent))return json({ok:false,error:"invalid_return_intent"},400);
     const {data,error}=await sb.rpc("mark_whatsapp_basket_return_v1",{p_public_token:token,p_intent:intent});
     if(error)return json({ok:false,error:"return_failed"},400);
