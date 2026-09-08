@@ -9,6 +9,8 @@ on:
       - 'scripts/bling-stock-writer-v1.mjs'
       - 'supabase/functions/inventory-count-v2/**'
       - 'supabase/functions/inventory-fast-v1/**'
+      - 'supabase/functions/inventory-fast-stock-v1/**'
+      - 'supabase/migrations/*fast_inventory_add_balance_v1.sql'
       - '.github/workflows/bling-stock-writer-v1.yml'
       - '.github/workflows/test-contagem-v2.yml'
   workflow_dispatch:
@@ -39,6 +41,7 @@ jobs:
           node --check contagem/fast-mode.js
           node --check contagem/fast-mode-compat.js
           node --check contagem/fast-mode-tabs.js
+          node --check contagem/fast-stock-operation.js
           node --check scripts/bling-stock-writer-v1.mjs
       - name: Validar tela operacional
         run: |
@@ -62,6 +65,10 @@ jobs:
           grep -q 'quickSearchInput' contagem-v2/kiosk-mode.js
           grep -q 'inventory-count-v2' contagem-v2/config.js
           grep -q 'inventory-fast-v1' contagem/fast-mode.js
+          grep -q 'inventory-fast-stock-v1' contagem/fast-stock-operation.js
+          grep -q 'ADICIONAR' contagem/fast-stock-operation.js
+          grep -q 'BALANÇO' contagem/fast-stock-operation.js
+          grep -q 'fast-stock-operation.js' contagem/fast-mode-compat.js
       - name: Validar ausência de segredos óbvios no microapp
         shell: bash
         run: |
