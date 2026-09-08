@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql'
+      - 'supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql'
       - 'scripts/test-stage13-financial-ledger-contract-v1.mjs'
       - 'scripts/test-stage13-financial-ledger-db-v1.mjs'
       - 'docs/ETAPA-13-FINANCIAL-LEDGER-V1.md'
@@ -12,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql'
+      - 'supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql'
       - 'scripts/test-stage13-financial-ledger-contract-v1.mjs'
       - 'scripts/test-stage13-financial-ledger-db-v1.mjs'
       - 'docs/ETAPA-13-FINANCIAL-LEDGER-V1.md'
@@ -31,6 +33,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             supabase/migrations/20260908170000_stage13_financial_ledger_foundation_v1.sql
+            supabase/migrations/20260908172000_stage13_financial_append_only_security_fix_v1.sql
             scripts/test-stage13-financial-ledger-contract-v1.mjs
             scripts/test-stage13-financial-ledger-db-v1.mjs
             docs/ETAPA-13-FINANCIAL-LEDGER-V1.md
