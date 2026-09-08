@@ -51,8 +51,8 @@ for(const fn of ['driver_start_route_v1','driver_arrive_stop_v1','driver_deliver
 }
 assert.match(driverActions,/client_event_id=p_client_event_id/,'driver actions must dedupe client events');
 assert.match(driverActions,/arrival_confirmation_required/,'delivery requires explicit arrival confirmation');
-assert.match(driverActions,/update public\.orders set status='out_for_delivery'/,'route start must reflect in commercial order');
-assert.match(driverActions,/update public\.orders set status='delivered'/,'delivery must reflect in commercial order');
+assert.match(driverActions,/update public\.orders(?:\s+[a-z][a-z0-9_]*)? set status='out_for_delivery'/i,'route start must reflect in commercial order');
+assert.match(driverActions,/update public\.orders(?:\s+[a-z][a-z0-9_]*)? set status='delivered'/i,'delivery must reflect in commercial order');
 assert.doesNotMatch(driverActions,/geofence/i,'geofence must not auto-complete delivery');
 
 assert.match(policy,/proof_of_delivery_mode text not null default 'driver_confirmation'/);
