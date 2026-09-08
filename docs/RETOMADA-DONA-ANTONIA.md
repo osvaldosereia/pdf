@@ -15,7 +15,8 @@ Este é o arquivo **autoritativo** para retomar o projeto. Antes de qualquer alt
 - `docs/HOMOLOGACAO-WHATSAPP-IMAGEM-FINAL-20260907.md`;
 - `docs/WHATSAPP-BRIDGE-V3.md`;
 - `docs/SALA-COMPRA-MOTOR-COMERCIAL-V1.md`;
-- `docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md` — futuro Gestor/Roteirista de Inteligência.
+- `docs/PLANO-ADMIN-INTELIGENCIA-ATENDIMENTO-V1.md` — futuro Gestor/Roteirista de Inteligência;
+- `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md` — análise dos relatórios de Flow/Magalu e estratégia aprovada para aperfeiçoamento futuro.
 
 ---
 
@@ -270,6 +271,44 @@ Futuramente incluir conhecimento, FAQs, guidance, procedimentos, regras rígidas
 
 ---
 
+# FLOW / COMÉRCIO CONVERSACIONAL — PLANEJAMENTO APROVADO
+
+A pesquisa entregue pelo proprietário foi analisada e consolidada em:
+
+`docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md`
+
+Decisão:
+
+**incorporar WhatsApp Flow ao roadmap como interface especializada, não como substituto do chat ou da Sala.**
+
+Arquitetura conceitual futura:
+
+```text
+Orquestrador Comercial
+→ conversa simples quando conversar é melhor
+→ carrossel para poucas recomendações
+→ Flow para escolhas estruturadas
+→ Sala/vitrine para exploração visual ampla
+→ humano para exceções
+```
+
+Prioridades futuras, somente depois de o canary atual estar estável:
+
+1. Flow 1 de personalização de cesta;
+2. preservar preço comercial próprio da cesta e ocultar preços individuais dos componentes;
+3. Flow reutilizável com sessão/payload dinâmicos, não Flow novo por cliente;
+4. medir IA sem Flow vs IA + Flow;
+5. carrossel para curadoria curta;
+6. Sala de Compra para variedade/fotos/comparação;
+7. Flow 2 de upsell somente depois de Flow 1 comprovado e sempre opcional;
+8. integrar regras de seleção de interface ao futuro Gestor/Roteirista de Inteligência do Admin;
+9. usar Flow para reduzir mensagens/tokens em tarefas multi-escolha, sem chamar LLM a cada campo;
+10. validar documentação oficial vigente da Meta imediatamente antes da implementação.
+
+Não alterar o canary `live=1%` por causa desta análise. Não misturar primeiro piloto de Flow com primeira homologação real de pedido Bling.
+
+---
+
 # CESTAS / BLING
 
 Cestas:
@@ -312,4 +351,4 @@ Somente depois de canary estável e revisado:
 
 ## Instrução para novo chat
 
-> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/CANARY-LIVE-1PCT-20260907.md`, `docs/HOMOLOGACAO-OBSERVE-CANARY-PREFLIGHT-20260907.md` e `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md`. Audite Supabase e Make imediatamente. O primeiro canary REAL `live=1%` está ativo. Monitore eventos, cohorts, jobs, outbound, handoffs e erros. Não aumente o canary sem nova avaliação explícita. Bling continua fora.
+> Acesse `osvaldosereia/SUCEDOAN12`, leia `docs/RETOMADA-DONA-ANTONIA.md`, `docs/CANARY-LIVE-1PCT-20260907.md`, `docs/ANALISE-WHATSAPP-FLOWS-COMERCIO-CONVERSACIONAL-V1.md`, `docs/HOMOLOGACAO-OBSERVE-CANARY-PREFLIGHT-20260907.md` e `docs/OPERACAO-WHATSAPP-GRADUAL-V1.md`. Audite Supabase e Make imediatamente. O primeiro canary REAL `live=1%` está ativo. Monitore eventos, cohorts, jobs, outbound, handoffs e erros. Não aumente o canary sem nova avaliação explícita. Bling continua fora. A estratégia de Flow está aprovada apenas para aperfeiçoamento futuro e não deve alterar o canary atual.
