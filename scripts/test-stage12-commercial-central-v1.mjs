@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {buildCommercialSnapshot} from '../lib/commercial/commercial-snapshot-v1.mjs';
+const [cfg,html,js]=await Promise.all([readFile('admin/config.js','utf8'),readFile('admin/index.html','utf8'),readFile('admin-v3/commercial-truth.js','utf8')]);
+assert.match(cfg,/commercialTruthUiEnabled:\s*false/,'commercial truth UI must stay dormant');
+assert.match(html,/id="commercialTruthNav" class="nav hidden"/,'commercial nav must be hidden by default');
+assert.match(html,/if\(window\.DA_ADMIN_V3_CONFIG\?\.commercialTruthUiEnabled\)/,'mount must require feature flag');
+assert.doesNotMatch(js,/api\(['"](?:enable|activate|publish|go_live)/i,'UI must not expose activation API');
+for(const action of ['dashboard','search_products','preview_fefo','preview_margin','create_lot_draft','create_policy_draft','kill'])assert.match(js,new RegExp(`api\\(['\"]${action}`),`expected safe action ${action}`);
+const snapshot=buildCommercialSnapshot({lots:[{product_id:'p1',expires_at:'2026-09-20',quantity_available:10,quantity_reserved:2},{product_id:'p2',expires_at:'2026-11-20',quantity_available:5,quantity_reserved:0},{product_id:'p3',expires_at:null,quantity_available:4,quantity_reserved:1}],products:[{id:'p1',sku:'A',name:'A',minimum_stock:5},{id:'p2',sku:'B',name:'B',minimum_stock:8},{id:'p4',sku:'C',name:'C',stock:0,minimum_stock:0}],delivered_items:[{product_id:'p1',quantity:8},{product_id:'p2',quantity:1}],margin_events:[{gross_revenue:100,discount:10,known_cost:60},{gross_revenue:50,discount:0}]},{now:'2026-09-08T12:00:00Z'});
+assert.equal(snapshot.external_side_effect,false);
+assert.equal(snapshot.expiry['0_30'].units,8);
+assert.equal(snapshot.expiry['61_plus'].units,5);
+assert.equal(snapshot.expiry.missing.units,3);
+assert.equal(snapshot.rupture.count,2);
+assert.equal(snapshot.margin.known_events,1);
+assert.equal(snapshot.margin.incomplete_events,1);
+assert.equal(snapshot.margin.complete,false);
+assert.equal(snapshot.margin.known_margin,80); // net 140 - known cost 60; incomplete cost is never guessed.
+console.log('PASS: Stage 12 Commercial Central stays dormant and snapshots are deterministic/incomplete-safe.');
