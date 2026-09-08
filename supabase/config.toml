@@ -49,6 +49,13 @@ verify_jwt = true
 [functions.whatsapp-flow-data-exchange-v1]
 verify_jwt = false
 
+# Webhook oficial do Instagram. A Meta não envia JWT do Supabase. Quando futuramente
+# implantado, este endpoint só aceita POST com x-hub-signature-256 HMAC-SHA256 válido
+# usando META_APP_SECRET e só processa contas Instagram já cadastradas e gateadas no banco.
+# Nesta etapa a função permanece apenas versionada: nenhuma subscription Meta é criada.
+[functions.instagram-webhook-v1]
+verify_jwt = false
+
 [functions.bootstrap-owner-v1]
 verify_jwt = true
 
