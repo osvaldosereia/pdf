@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const sql=readFileSync(new URL('../supabase/migrations/20260908210940_whatsapp_current_message_precedence_v1.sql',import.meta.url),'utf8');
+assert.match(sql,/current_message_is_authoritative/);
+assert.match(sql,/history_role','support_only_never_overrides_current_message'/);
+assert.match(sql,/created_at<m\.created_at/);
+assert.match(sql,/created_at>=m\.created_at-interval '2 hours'/);
+assert.match(sql,/current_message_precedence/);
+assert.match(sql,/Se a mensagem atual for uma saudação, responda à saudação/);
+console.log('PASS: mensagem atual prevalece sobre histórico antigo no WhatsApp Sales MVP.');

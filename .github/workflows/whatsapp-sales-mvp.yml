@@ -3,10 +3,14 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908210*.sql'
+      - 'supabase/migrations/20260908211*.sql'
       - 'supabase/functions/conversation-worker-v3/**'
       - 'supabase/functions/admin-service-intelligence-v1/**'
       - 'scripts/bling-order-writer-v1.mjs'
       - 'scripts/test-whatsapp-sales-mvp-*.mjs'
+      - 'scripts/test-whatsapp-current-message-precedence-v1.mjs'
+      - 'scripts/test-whatsapp-objective-service-v1.mjs'
+      - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin-v3/service-intelligence.*'
       - '.github/workflows/whatsapp-sales-mvp.yml'
@@ -25,7 +29,10 @@ jobs:
       - name: Instalar PostgreSQL isolado
         run: npm install --prefix "$RUNNER_TEMP/whatsapp-sales-mvp" --no-save @electric-sql/pglite@0.5.8
       - name: Contrato estático do MVP
-        run: node scripts/test-whatsapp-sales-mvp-contract-v1.mjs
+        run: |
+          node scripts/test-whatsapp-sales-mvp-contract-v1.mjs
+          node scripts/test-whatsapp-current-message-precedence-v1.mjs
+          node scripts/test-whatsapp-objective-service-v1.mjs
       - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
