@@ -6,20 +6,27 @@
   <meta name="theme-color" content="#173f2a">
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Dona Antônia · Contagem física</title>
-  <link rel="stylesheet" href="../contagem-v2/style.css?v=20260907-06">
-  <link rel="stylesheet" href="../contagem-v2/kiosk-mode.css?v=20260907-03">
-  <link rel="stylesheet" href="./product-edit-controls.css?v=20260907-01">
-  <link rel="stylesheet" href="./fast-mode.css?v=20260908-02">
+  <link rel="stylesheet" href="../contagem-v2/style.css?v=20260908-01">
+  <link rel="stylesheet" href="../contagem-v2/kiosk-mode.css?v=20260908-01">
+  <link rel="stylesheet" href="./product-edit-controls.css?v=20260908-01">
+  <link rel="stylesheet" href="./fast-mode.css?v=20260908-03">
 </head>
 <body>
   <header class="topbar">
     <div class="brand"><span class="brand-mark">DA</span><div><strong>Dona Antônia</strong><small>Contagem física · Supabase</small></div></div>
-    <div class="top-actions"><button id="modeToggleButton" class="mode-toggle hidden" type="button">⚡ Leitura rápida</button><a class="ghost" href="../admin/" style="text-decoration:none">Admin</a><button id="syncQueueButton" class="ghost" type="button">Pendências <b id="pendingBadge">0</b></button><button id="logoutButton" class="ghost hidden" type="button">Sair</button></div>
+    <div class="top-actions"><a class="ghost" href="../admin/" style="text-decoration:none">Admin</a><button id="syncQueueButton" class="ghost" type="button">Pendências <b id="pendingBadge">0</b></button><button id="logoutButton" class="ghost hidden" type="button">Sair</button></div>
   </header>
   <main class="shell">
     <section id="loginCard" class="card login-card"><div class="eyebrow">Acesso protegido</div><h1>Entrar na contagem</h1><p>Use o mesmo acesso do Admin Dona Antônia.</p><form id="loginForm" class="stack"><label>E-mail<input id="emailInput" type="email" autocomplete="username" required></label><label>Senha<input id="passwordInput" type="password" autocomplete="current-password" required></label><button id="loginButton" class="primary" type="submit">Entrar</button></form><div id="loginStatus" class="note"></div></section>
     <div id="app" class="hidden">
+      <nav id="countModeTabs" class="count-mode-tabs" aria-label="Modo de contagem" role="tablist">
+        <button id="detailModeTab" class="count-mode-tab active" type="button" role="tab" aria-selected="true">Contagem detalhada</button>
+        <button id="fastModeTab" class="count-mode-tab fast" type="button" role="tab" aria-selected="false">⚡ Leitura rápida</button>
+      </nav>
+      <button id="modeToggleButton" class="mode-toggle mode-toggle-bridge" type="button" aria-hidden="true" tabindex="-1">⚡ Leitura rápida</button>
       <section class="status-row"><div><span class="dot" id="connectionDot"></span><strong id="connectionLabel">Conectando…</strong><small id="userLabel"></small></div><div class="counter"><b id="sessionCount">0</b><span>contados</span></div></section>
 
       <div id="fastMode" class="fast-mode hidden">
@@ -56,13 +63,14 @@
     </div>
   </main>
   <div id="toastRegion" class="toast-region" aria-live="polite"></div>
-  <script src="../contagem-v2/bridge-auth.js?v=20260907-03"></script>
-  <script src="../contagem-v2/config.js?v=20260907-02"></script>
-  <script src="../contagem-v2/app-v2.js?v=20260907-02"></script>
-  <script src="../contagem-v2/stock-zero-guard.js?v=20260907-01"></script>
-  <script src="../contagem-v2/kiosk-mode.js?v=20260907-03"></script>
-  <script src="./product-edit-controls.js?v=20260907-01"></script>
-  <script src="./fast-mode.js?v=20260908-01"></script>
-  <script src="./fast-mode-compat.js?v=20260908-01"></script>
+  <script src="../contagem-v2/bridge-auth.js?v=20260908-01"></script>
+  <script src="../contagem-v2/config.js?v=20260908-01"></script>
+  <script src="../contagem-v2/app-v2.js?v=20260908-01"></script>
+  <script src="../contagem-v2/stock-zero-guard.js?v=20260908-01"></script>
+  <script src="../contagem-v2/kiosk-mode.js?v=20260908-01"></script>
+  <script src="./product-edit-controls.js?v=20260908-01"></script>
+  <script src="./fast-mode.js?v=20260908-03"></script>
+  <script src="./fast-mode-compat.js?v=20260908-02"></script>
+  <script src="./fast-mode-tabs.js?v=20260908-01"></script>
 </body>
 </html>
