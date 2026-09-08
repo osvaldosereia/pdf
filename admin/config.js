@@ -10,6 +10,8 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   logisticsEdgeFunction: 'admin-logistics-v1',
   logisticsUiEnabled: false,
   driverAppUrl: '../driver-app/',
+  commercialTruthEdgeFunction: 'admin-commercial-truth-v1',
+  commercialTruthUiEnabled: false,
   countAppUrl: '../contagem/',
-  build: '20260908-stage11-logistics-foundation-01'
+  build: '20260908-stage12-commercial-truth-foundation-01'
 });
