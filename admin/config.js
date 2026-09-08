@@ -18,7 +18,7 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
   commercialTruthUiEnabled: false,
   driverAppUrl: '../driver-app/',
   countAppUrl: '../contagem/',
-  build: '20260908-stage13d-copilot-financial-admin-01'
+  build: '20260908-stage13d-copilot-financial-admin-02'
 });
 
 (function loadHumanServiceCenter(cfg){
@@ -40,11 +40,18 @@ window.DA_ADMIN_V3_CONFIG = Object.freeze({
     link.rel='stylesheet';link.href='../admin-v3/human-service-center.css?v=20260908-02';link.dataset.humanServiceCenter='1';
     document.head.appendChild(link);
   }
+  const loadCopilotPanel=()=>{
+    if(!cfg.humanCopilotEnabled||document.querySelector('script[data-human-copilot-panel]'))return;
+    const panel=document.createElement('script');
+    panel.src='../admin-v3/human-copilot-panel.js?v=20260908-01';panel.dataset.humanCopilotPanel='1';document.body.appendChild(panel);
+  };
   if(!document.querySelector('script[data-human-service-center]')){
     const script=document.createElement('script');
     script.src='../admin-v3/human-service-center.js?v=20260908-02';script.dataset.humanServiceCenter='1';
-    script.onload=()=>window.DAHumanServiceCenter?.mount(mount);
+    script.onload=()=>{window.DAHumanServiceCenter?.mount(mount);loadCopilotPanel()};
     document.body.appendChild(script);
+  }else{
+    window.DAHumanServiceCenter?.mount(mount);loadCopilotPanel();
   }
 })(window.DA_ADMIN_V3_CONFIG);
 
