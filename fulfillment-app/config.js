@@ -1,0 +1,9 @@
+window.DA_FULFILLMENT_CONFIG={
+  enabled:false,
+  apiBase:"/functions/v1/fulfillment-mobile-v1",
+  supabaseUrl:"",
+  supabasePublishableKey:"",
+  deviceLabel:"",
+  offlineQueueEnabled:true,
+  scannerAutoSubmitMs:80
+};
