@@ -6,7 +6,9 @@ const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,
 const clean=(v:unknown,max=300)=>String(v??"").replace(/[\u0000-\u001f\u007f]/g," ").replace(/\s+/g," ").trim().slice(0,max);
 const uuid=(v:unknown)=>{const s=clean(v,80);return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s)?s:""};
 const eventId=(v:unknown)=>{const s=clean(v,160);return /^[A-Za-z0-9._:-]{8,160}$/.test(s)?s:""};
-const paymentMethod=(v:unknown)=>{const s=clean(v,40).toLowerCase();return ['cash','pix','card','payment_link','prepaid_pix','prepaid_link','other'].includes(s)?s:""};
+const paymentMethod=(v:unknown)=>{const s=clean(v,40).toLowerCase();return ['cash','pix','card','payment_link','other'].includes(s)?s:""};
+const cents=(v:unknown)=>{const n=Number(v);return Number.isSafeInteger(n)&&n>0?n:null};
+const optionalCents=(v:unknown)=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isSafeInteger(n)&&n>=0?n:NaN};
 
 Deno.serve(async(req:Request)=>{
   if(req.method==="OPTIONS")return new Response("ok",{headers:CORS});
@@ -29,7 +31,7 @@ Deno.serve(async(req:Request)=>{
   const action=clean(body?.action||"route",40).toLowerCase();
 
   if(action==="route"){
-    const {data,error}=await sb.rpc("get_driver_route_snapshot_v1",{p_auth_user_id:userId});
+    const {data,error}=await sb.rpc("get_driver_route_snapshot_v2",{p_auth_user_id:userId});
     if(error)return json({ok:false,error:"route_read_failed",detail:error.message},500);
     return json({ok:true,driver:{id:driver.id,display_name:driver.display_name,status:driver.status},snapshot:data});
   }
@@ -51,23 +53,23 @@ Deno.serve(async(req:Request)=>{
   if(action==="delivered"){
     const stopId=uuid(body?.stop_id),clientEventId=eventId(body?.client_event_id);if(!stopId||!clientEventId)return json({ok:false,error:"stop_id_and_client_event_id_required"},400);
     const proof=(body?.proof&&typeof body.proof==="object"&&!Array.isArray(body.proof))?body.proof:{};
-    const paymentStatus=clean(body?.payment_status||'pending',20).toLowerCase();
-    if(!['pending','confirmed'].includes(paymentStatus))return json({ok:false,error:"invalid_payment_status"},400);
-    const method=paymentStatus==='confirmed'?paymentMethod(body?.payment_method):null;
-    const settledAmount=paymentStatus==='confirmed'?Number(body?.settled_amount):null;
-    if(paymentStatus==='confirmed'&&(!method||!Number.isFinite(settledAmount)||Number(settledAmount)<0))return json({ok:false,error:"confirmed_payment_requires_valid_method_and_amount"},400);
-    const source=clean(body?.payment_source||'driver_app',40).toLowerCase()||'driver_app';
-    const {data,error}=await sb.rpc("driver_deliver_stop_v2",{
+    let collection:null|Record<string,unknown>=null;
+    if(body?.collection!==null&&body?.collection!==undefined){
+      if(typeof body.collection!=="object"||Array.isArray(body.collection))return json({ok:false,error:"invalid_collection_payload"},400);
+      const method=paymentMethod(body.collection.payment_method),amount=cents(body.collection.amount_cents),tender=optionalCents(body.collection.tender_amount_cents);
+      if(!method||amount===null||Number.isNaN(tender))return json({ok:false,error:"invalid_collection_payload"},400);
+      if(method!=="cash"&&tender!==null)return json({ok:false,error:"tender_amount_only_for_cash"},400);
+      collection={payment_method:method,amount_cents:amount,tender_amount_cents:tender};
+    }
+    const {data,error}=await sb.rpc("driver_deliver_stop_v3",{
       p_auth_user_id:userId,
       p_stop_id:stopId,
       p_client_event_id:clientEventId,
       p_proof:proof,
-      p_payment_status:paymentStatus,
-      p_payment_method:method,
-      p_settled_amount:settledAmount,
-      p_payment_source:source
+      p_collection:collection
     });
     if(error)return json({ok:false,error:"delivery_confirmation_failed",detail:error.message},400);
+    if(data?.ok===false)return json(data,409);
     return json(data);
   }
 
