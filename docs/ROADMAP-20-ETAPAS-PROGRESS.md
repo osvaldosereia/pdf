@@ -60,10 +60,14 @@ O CI `Stage 10 Automation Engine` passou integralmente em v1/v2/v3/v4, incluindo
 **Critério programável da Etapa 10 atendido.** Homologação/ativação do compilador pago, do Builder e do dispatcher permanece protegida para fase autorizada; isso não bloqueia o avanço da programação.
 
 ## ETAPA 11 — Logística + Roteirização + App do Entregador
-**PRÓXIMA ETAPA — PENDENTE.** Prioridade operacional alta. Iniciar pela fundação dormente/idempotente `READY → delivery_job`, modelo de drivers/vehicles/routes/stops/events, provider abstrato de rota/ETA e gates independentes, sem chamar Maps/provider pago nem ativar logística real.
+**PARTE PROGRAMÁVEL SEGURA CONCLUÍDA E DORMENTE.** PR #201 integrada (`15786dcc1ca0d4ea484e0c22e567acb531cf0a6b`). Foram implementados domínio logístico separado de `orders`, `delivery_jobs`, drivers, vehicles, routes, stops, versions, events, incidents, locations, notifications e auditoria/custo de provider; fronteira idempotente `READY → delivery_job`; máquinas de estado backend-only; drafts determinísticos de rota; publicação protegida; bloqueio da próxima parada somente após receipt real do aviso; políticas configuráveis de ETA/GPS/prova de entrega/retenção/custo; PWA do entregador offline-first; Central LOGÍSTICA no Admin atrás de `logisticsUiEnabled=false`; provider abstrato com `NullRoutingProvider` sem rede; kill switch unilateral e Edge Functions versionadas com JWT obrigatório.
+
+As migrations `stage11_logistics_foundation_v1`, `stage11_driver_actions_v1`, `stage11_logistics_policy_v2` e `stage11_route_drafts_notifications_v3` foram aplicadas e auditadas no Supabase. Readiness pós-DDL: `enabled=false`, `execution_mode=off`, `job_creation_enabled=false`, `routing_enabled=false`, `driver_app_enabled=false`, `gps_tracking_enabled=false`, `notifications_enabled=false`, `external_provider_enabled=false`, `provider_name=none`, `canary_percent=0`; `drivers=0`, `vehicles=0`, `jobs=0`, `routes=0`, `stops=0`, `locations=0`, `notifications=0` e `external_provider_calls=0`. Testes fail-closed confirmaram `logistics_job_creation_disabled` e `driver_runtime_disabled` sem side effects. O CI específico `Stage 11 Logistics / safety-contract` ficou verde no head integrado; workflows legados chamados apenas `validar` continuam com falhas preexistentes/agregadoras e não foram mascarados. Nenhum Maps/provider pago, OpenAI, cenário Make novo, GPS real, mensagem logística ou Edge Function logística foi ativado/deployado. A auditoria preservou WhatsApp `live=1%`, Flow/Data Exchange e Experience Orchestrator desligados, Bling order sync desligado/homologation-only e 3 handoffs humanos abertos / 0 claimed.
+
+**Critério programável da Etapa 11 atendido.** Homologação com entregadores/rotas/GPS/Maps/WhatsApp logístico reais permanece protegida para fase autorizada; isso não bloqueia o avanço da programação.
 
 ## ETAPA 12 — Lotes + Validade + FEFO + Ofertas + Guardião de Margem
-**PENDENTE.**
+**PRÓXIMA ETAPA — PENDENTE.** Iniciar pela verdade determinística de lotes/validade/FEFO e políticas comerciais versionadas, mantendo ofertas/benefícios/margem e qualquer automação real desligados até validação.
 
 ## ETAPA 13 — Financeiro Operacional + Recebimentos + Conciliação
 **PENDENTE.**
