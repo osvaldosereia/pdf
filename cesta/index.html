@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f36b21">
+  <title>Dona Antônia · Sua cesta</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="./styles.css?v=1">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark">DA</div>
+    <div><strong>Dona Antônia</strong><span id="pageSubtitle">Sua cesta</span></div>
+  </header>
+
+  <main id="app" class="app-shell">
+    <section id="loading" class="state-card"><div class="spinner"></div><p>Carregando sua cesta…</p></section>
+    <section id="error" class="state-card hidden"><h1>Não consegui abrir este catálogo</h1><p id="errorText">O link pode ter expirado.</p></section>
+
+    <section id="basketView" class="hidden">
+      <div class="basket-hero">
+        <img id="basketImage" alt="Cesta básica Dona Antônia">
+        <div class="basket-hero-copy">
+          <span class="eyebrow">Cesta selecionada</span>
+          <h1 id="basketName"></h1>
+          <strong id="basketPrice" class="basket-price"></strong>
+        </div>
+      </div>
+      <div class="section-heading">
+        <div><span class="eyebrow">Composição</span><h2>Produtos da cesta</h2></div>
+        <p>Você pode ajustar as quantidades. Os produtos não têm valor individual nesta cesta.</p>
+      </div>
+      <div id="basketItems" class="basket-list"></div>
+      <p class="review-note">Alterações na composição ficam registradas para conferência da equipe.</p>
+    </section>
+
+    <section id="extrasView" class="hidden">
+      <div class="extras-head">
+        <div><span class="eyebrow">Adicionar produtos</span><h1 id="extrasTitle">Complete sua cesta</h1></div>
+        <div id="sectionChips" class="chips"></div>
+      </div>
+      <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar produto" autocomplete="off"></label>
+      <div id="productGrid" class="product-grid"></div>
+      <p id="emptyProducts" class="empty-products hidden">Nenhum produto encontrado nesta busca.</p>
+    </section>
+  </main>
+
+  <footer id="basketActions" class="bottom-bar hidden">
+    <button id="orderBtn" class="btn btn-primary">Encomendar</button>
+    <button id="extrasBtn" class="btn btn-secondary">Adicionar mais produtos</button>
+  </footer>
+
+  <footer id="extrasActions" class="bottom-bar extras-bottom hidden">
+    <div class="total-box"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+    <button id="sendBtn" class="btn btn-primary">Enviar para WhatsApp</button>
+  </footer>
+
+  <dialog id="productModal" class="product-modal">
+    <button id="closeModal" class="modal-close" aria-label="Fechar">×</button>
+    <img id="modalImage" alt="">
+    <h2 id="modalName"></h2>
+    <strong id="modalPrice"></strong>
+    <div id="modalStepper"></div>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="./app.js?v=1" defer></script>
+</body>
+</html>
