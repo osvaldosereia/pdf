@@ -18,11 +18,14 @@ Este bloco cria a base determinística de lotes, validade, FEFO e guardião de m
 
 ## Objetos
 
-Migration:
+Migrations:
 
-`20260908130000_stage12_commercial_truth_foundation_v1.sql`
+```text
+20260908130000_stage12_commercial_truth_foundation_v1.sql
+20260908130100_stage12_commercial_truth_admin_safety_v2.sql
+```
 
-Cria:
+Cria a fundação:
 
 - `commercial_truth_runtime_config`;
 - `inventory_lots`;
@@ -34,6 +37,15 @@ Cria:
 - `evaluate_margin_guard_v1`;
 - `preview_expiry_offer_v2`;
 - `stage12_readiness_v1`.
+
+A camada administrativa adiciona:
+
+- `kill_commercial_truth_runtime_v1`;
+- `create_inventory_lot_draft_v1`;
+- `create_commercial_policy_draft_v1`;
+- `create_promotion_rule_draft_v1`;
+- `stage12_admin_snapshot_v1`;
+- Edge Function versionada `admin-commercial-truth-v1`, com JWT + `admin_users` e writes owner-only.
 
 Todas as tabelas possuem RLS e acesso server-only. As RPCs ficam restritas a `service_role`.
 
@@ -52,6 +64,8 @@ reports_enabled=false
 canary_percent=0
 ```
 
+Existe kill switch unilateral que força todos esses gates novamente para OFF/0 e também desliga qualquer `promotion_rule` que porventura estivesse habilitada. A API administrativa deliberadamente não possui endpoint para ativação de runtime, promoção ou verificação/liberação de lote.
+
 ## FEFO
 
 `preview_fefo_allocation_v1(product, quantity, delivery_date, min_shelf_life_days)` é read-only. Ele ordena por:
@@ -63,6 +77,25 @@ canary_percent=0
 Lotes não verificados, bloqueados/quarentenados, vencidos ou incompatíveis com `delivery_date + min_shelf_life_days` não entram na alocação.
 
 O preview informa `sufficient`, `shortage` e a composição por lote, sem reservar ou consumir estoque.
+
+## Rascunhos administrativos seguros
+
+`create_inventory_lot_draft_v1` pode registrar dados para posterior conferência, mas força:
+
+```text
+status=draft
+physically_verified=false
+quantity_available=0
+quantity_reserved=0
+```
+
+Logo cadastrar um lote pelo Admin não altera o estoque vendável.
+
+`create_commercial_policy_draft_v1` gera a próxima versão sempre como `draft`. `create_promotion_rule_draft_v1` força sempre `enabled=false` e `execution_mode=off`.
+
+A Edge Function `admin-commercial-truth-v1` oferece dashboard, pesquisa de produtos, previews FEFO/margem/validade, criação desses drafts e kill switch. Não oferece ativação. Ela está apenas versionada neste bloco; não deve ser deployada/mostrada no Admin até homologação posterior.
+
+O `admin/config.js` já possui `commercialTruthUiEnabled=false` e o slug da futura API para permitir montagem da UI em bloco seguinte sem liberar funcionalidade agora.
 
 ## Guardião de margem
 
@@ -92,24 +125,29 @@ GitHub Actions executa os testes batch/CI. Não existe polling ou cron pago.
 
 ## Testes
 
-O workflow `Stage 12 Commercial Truth` usa sparse checkout e PGlite. Valida:
+O workflow `Stage 12 Commercial Truth` usa sparse checkout, PGlite e `deno check`. Valida:
 
 - defaults OFF;
 - RLS/server-only;
 - FEFO determinístico;
-- exclusão de lote não verificado ou incompatível com a data de entrega;
+- exclusão de lote não verificado, draft ou incompatível com a data de entrega;
 - insuficiência de estoque explícita;
 - guardião de margem allow/block;
 - ausência de desconto sem política ativa;
 - preview de desconto com política versionada;
 - bloqueio de oferta economicamente inviável;
+- lote draft não vendável;
+- política draft não ativa;
+- promoção draft OFF;
+- kill switch retorna todos os gates para OFF e canary 0;
+- API administrativa exige JWT e não contém caminho de ativação;
 - nenhum side effect externo.
 
 ## Próximo bloco seguro da Etapa 12
 
-Após CI e migration dormente verdes:
+Após CI e migrations dormentes verdes:
 
-- Admin de lotes/políticas atrás de feature flag;
+- montar visualmente a Central de Verdade Comercial no Admin atrás de `commercialTruthUiEnabled=false`;
 - ledger de reserva/consumo por lote com idempotência;
 - compatibilidade FEFO no checkout/separação em `observe/dry_run` antes de enforcement;
 - relatórios/snapshots de validade, giro, ruptura e margem por GitHub Actions;
