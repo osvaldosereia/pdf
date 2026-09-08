@@ -2,7 +2,7 @@
 
 Revisado em 08/09/2026.
 
-Este documento registra o contrato de segurança usado pela fundação da ETAPA 6. A fonte primária revisada foi a documentação oficial atual da Meta para Instagram API / Send API / Private Replies, incluindo as coleções oficiais de referência da Meta. As regras devem ser revalidadas imediatamente antes de qualquer homologação real, App Review ou ativação, pois políticas da plataforma podem mudar.
+Este documento registra o contrato de segurança usado pela fundação da ETAPA 6. A fonte primária revisada foi a documentação oficial atual da Meta para Instagram API / Send API / Private Replies, incluindo o workspace oficial da Meta no Postman. As regras devem ser revalidadas imediatamente antes de qualquer homologação real, App Review ou ativação, pois políticas da plataforma podem mudar.
 
 ## Estado operacional nesta etapa
 
@@ -20,7 +20,7 @@ Este documento registra o contrato de segurança usado pela fundação da ETAPA 
 
 1. Instagram profissional (Business ou Creator) correto da Dona Antônia;
 2. app/business Meta correto e verificado conforme exigência vigente;
-3. permissões aplicáveis, incluindo `instagram_business_manage_messages` e `instagram_business_manage_comments` quando requeridas pelo fluxo;
+3. permissões aplicáveis de mensagens/comentários conforme o tipo de login/API utilizado;
 4. configuração de webhook oficial e validação do endpoint;
 5. `META_INSTAGRAM_VERIFY_TOKEN` e `META_APP_SECRET` configurados fora do repositório;
 6. criação manual/controlada de `channel_accounts` com `status=dormant` primeiro;
@@ -29,15 +29,31 @@ Este documento registra o contrato de segurança usado pela fundação da ETAPA 
 
 ## Guardrails de private reply
 
-O snapshot `meta_instagram_private_reply_2026_09_08_v1` codifica de maneira conservadora:
+O snapshot `meta_instagram_private_reply_2026_09_08_v1` codifica de maneira conservadora as regras atuais revisadas:
 
 - máximo de **um** private reply por comentário;
 - comentário elegível no máximo até **7 dias** após sua criação;
-- comentário de Live permanece bloqueado enquanto o estado ativo da transmissão não tiver sido verificado;
-- private reply é apenas abertura da conversa: automação posterior fica bloqueada até o destinatário responder quando a política exigir;
-- após resposta do destinatário, o núcleo registra uma janela conservadora de **24 horas** para continuação;
+- comentário de Live permanece bloqueado sem verificação explícita de transmissão ainda ativa;
+- private reply é apenas abertura da conversa: follow-up automático fica bloqueado até o destinatário responder quando a política exigir;
+- após resposta do destinatário, o núcleo registra janela conservadora de **24 horas**;
+- somente intenções `purchase_interest`, `question` e `support` podem virar candidato de private reply nesta fundação;
+- `spam`, `unknown` e `other` ficam bloqueados para evitar abordagem privada indevida;
 - entrega incerta nunca deve receber retry cego;
-- nesta etapa, candidato de private reply só pode ficar `held` ou `draft`; não existe dispatcher Meta.
+- não existe dispatcher Meta nesta etapa.
+
+## Revisão humana sem envio
+
+A migration `20260908043200_instagram_private_reply_review_hardening_v1.sql` adiciona revisão operacional server-only:
+
+- `review_instagram_private_reply_v1` exige admin ativo `owner` ou `operator`;
+- aprovação revalida intenção, janela, Live e gates `observe/inbound/outbound`;
+- aprovação grava `status=approved`, mas mantém `blocked_reason=dispatcher_not_released`;
+- resposta do RPC declara explicitamente `sent=false`;
+- cancelamento é terminal para o rascunho;
+- `instagram_private_reply_review_v1` fornece fila de revisão;
+- `get_instagram_stage6_metrics_v1` expõe métricas com `transport_released=false` fixo.
+
+A aprovação administrativa **não envia nada** e não contém transporte Graph/HTTP.
 
 ## Direct inbound humano primeiro
 
@@ -62,25 +78,36 @@ Comentários são normalizados e classificados inicialmente por regras determin�
 - `spam`;
 - `other`.
 
-A classificação não envia mensagem. Ela alimenta `instagram_comment_events` e cria, quando tecnicamente elegível, apenas um registro de candidato em `instagram_private_reply_jobs`. O texto é um rascunho e o dispatcher permanece inexistente/dormente.
+A classificação não envia mensagem. Ela alimenta `instagram_comment_events` e pode criar apenas um candidato idempotente em `instagram_private_reply_jobs`. Nesta etapa não existe caminho capaz de transformar o candidato em chamada Meta.
 
-## Atribuição
+## Contratos de apresentação do Instagram
 
-`channel_attribution_events` preserva, quando presentes no evento, referências de:
+`supabase/functions/_shared/instagram-send-contract-v1.mjs` e o wrapper Node correspondente preparam somente JSON puro para uso futuro:
 
-- comentário/Direct;
-- post/Reel/Story/Live;
-- anúncio;
-- `campaign_id`;
-- `adset_id`;
-- `ad_id`;
-- `creative_id`.
+- texto;
+- private reply por `comment_id`;
+- quick replies com no máximo 13 itens e títulos limitados a 20 caracteres;
+- Generic Template/carrossel com botões normalizados;
+- compartilhamento de post próprio via `MEDIA_SHARE`, exigindo confirmação explícita de que a mídia pertence à conta profissional.
 
-Ao surgir um Direct da mesma identidade, atribuições recentes sem conversa podem ser ligadas à conversa sem inventar identidade de cliente. A ligação CRM só usa identidade previamente verificada.
+O módulo declara `transportReleased=false` e não contém `fetch`, `net.http_post`, token Bearer ou URL Graph.
+
+## Atribuição conversa → pedido
+
+`channel_attribution_events` preserva comentário/Direct/post/Reel/Story/Live/ad e IDs de campanha quando disponíveis.
+
+A migration `20260908043100_channel_order_attribution_link_v1.sql` cria `order_channel_attribution_links` e aplica last-touch somente quando:
+
+- o pedido possui `conversation_id`;
+- o touchpoint pertence à mesma conversa;
+- o touchpoint ocorreu antes do pedido;
+- o touchpoint está dentro da janela conservadora de 30 dias.
+
+Não existe fallback por nome, telefone, e-mail ou `customer_id` isolado. Triggers locais cobrem tanto pedido novo quanto touchpoint recebido fora de ordem, sem rede externa.
 
 ## Autenticação do webhook futuro
 
-Como a Meta não envia JWT do Supabase, `supabase/config.toml` declara `verify_jwt=false` para `instagram-webhook-v1`. Isso **não** torna o endpoint público sem autenticação: o handler rejeita POST sem `x-hub-signature-256` HMAC-SHA256 válido contra `META_APP_SECRET`, exige objeto `instagram`, só aceita contas previamente cadastradas no banco e nunca auto-cria `channel_accounts`.
+Como a Meta não envia JWT do Supabase, `supabase/config.toml` declara `verify_jwt=false` para `instagram-webhook-v1`. Isso **não** torna o endpoint operacionalmente aberto: o handler rejeita POST sem `x-hub-signature-256` HMAC-SHA256 válido contra `META_APP_SECRET`, exige objeto `instagram`, só aceita contas previamente cadastradas no banco e nunca auto-cria `channel_accounts`.
 
 ## Regra de mudança
 
