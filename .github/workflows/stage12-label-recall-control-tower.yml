@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/20260908153000_stage12_label_recall_control_tower_v1.sql'
+      - 'supabase/migrations/20260908153100_stage12_label_recall_control_tower_v1_fix.sql'
       - 'scripts/test-stage12-label-recall-control-tower-contract-v1.mjs'
       - 'scripts/test-stage12-label-recall-control-tower-db-v1.mjs'
       - 'docs/ETAPA-12-LABEL-RECALL-CONTROL-TOWER-V1.md'
@@ -12,6 +13,7 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20260908153000_stage12_label_recall_control_tower_v1.sql'
+      - 'supabase/migrations/20260908153100_stage12_label_recall_control_tower_v1_fix.sql'
       - 'scripts/test-stage12-label-recall-control-tower-contract-v1.mjs'
       - 'scripts/test-stage12-label-recall-control-tower-db-v1.mjs'
       - 'docs/ETAPA-12-LABEL-RECALL-CONTROL-TOWER-V1.md'
@@ -29,6 +31,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             supabase/migrations/20260908153000_stage12_label_recall_control_tower_v1.sql
+            supabase/migrations/20260908153100_stage12_label_recall_control_tower_v1_fix.sql
             scripts/test-stage12-label-recall-control-tower-contract-v1.mjs
             scripts/test-stage12-label-recall-control-tower-db-v1.mjs
             docs/ETAPA-12-LABEL-RECALL-CONTROL-TOWER-V1.md
