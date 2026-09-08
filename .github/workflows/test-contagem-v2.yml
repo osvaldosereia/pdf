@@ -8,6 +8,7 @@ on:
       - 'contagem-v2/**'
       - 'scripts/bling-stock-writer-v1.mjs'
       - 'supabase/functions/inventory-count-v2/**'
+      - 'supabase/functions/inventory-fast-v1/**'
       - '.github/workflows/bling-stock-writer-v1.yml'
       - '.github/workflows/test-contagem-v2.yml'
   workflow_dispatch:
@@ -35,12 +36,17 @@ jobs:
           node --check contagem-v2/kiosk-mode.js
           node --check contagem-v2/stock-zero-guard.js
           node --check contagem/product-edit-controls.js
+          node --check contagem/fast-mode.js
           node --check scripts/bling-stock-writer-v1.mjs
       - name: Validar tela operacional
         run: |
           grep -q 'app-v2.js' contagem/index.html
           grep -q 'kiosk-mode.js' contagem/index.html
           grep -q 'product-edit-controls.js' contagem/index.html
+          grep -q 'fast-mode.js' contagem/index.html
+          grep -q 'modeToggleButton' contagem/index.html
+          grep -q 'fastScanInput' contagem/index.html
+          grep -q 'fastFinishButton' contagem/index.html
           grep -q 'costInput' contagem/index.html
           grep -q 'priceInput' contagem/index.html
           grep -q 'gondolaInput' contagem/index.html
@@ -48,6 +54,7 @@ jobs:
           grep -q 'activeInput' contagem/product-edit-controls.js
           grep -q 'quickSearchInput' contagem-v2/kiosk-mode.js
           grep -q 'inventory-count-v2' contagem-v2/config.js
+          grep -q 'inventory-fast-v1' contagem/fast-mode.js
       - name: Validar ausência de segredos óbvios no microapp
         shell: bash
         run: |
