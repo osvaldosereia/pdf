@@ -3,7 +3,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
 const {PGlite}=require(process.env.TEST_RUNTIME?`${process.env.TEST_RUNTIME}/node_modules/@electric-sql/pglite`:'@electric-sql/pglite');
 const db=new PGlite();
-const sql=readFileSync('supabase/security/whatsapp_trigger_rpc_hardening_v1.sql','utf8');
+const sql=readFileSync('supabase/migrations/20260908015211_whatsapp_trigger_rpc_hardening_v1.sql','utf8');
 const names=['ai_job_dispatch_trigger_v2','ai_job_human_fallback_trigger_v1','guard_whatsapp_ai_outbound_rate_v1','message_human_intent_trigger_v1'];
 const one=async(q)=>{const r=await db.query(q);return r.rows?.[0]||null};
 try{
