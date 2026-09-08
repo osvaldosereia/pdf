@@ -1,0 +1,66 @@
+name: Stage 12 WMS
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260908123000_stage12_inventory_lots_fulfillment_wms_v1.sql'
+      - 'supabase/migrations/20260908123100_stage12_operations_staff_v1.sql'
+      - 'supabase/functions/fulfillment-mobile-v1/**'
+      - 'supabase/config.toml'
+      - 'fulfillment-app/**'
+      - 'scripts/test-stage12-wms-contract-v1.mjs'
+      - 'scripts/test-stage12-wms-db-v1.mjs'
+      - 'docs/ETAPA-12-WMS-FULFILLMENT-V1.md'
+      - '.github/workflows/stage12-wms.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20260908123000_stage12_inventory_lots_fulfillment_wms_v1.sql'
+      - 'supabase/migrations/20260908123100_stage12_operations_staff_v1.sql'
+      - 'supabase/functions/fulfillment-mobile-v1/**'
+      - 'supabase/config.toml'
+      - 'fulfillment-app/**'
+      - 'scripts/test-stage12-wms-contract-v1.mjs'
+      - 'scripts/test-stage12-wms-db-v1.mjs'
+      - 'docs/ETAPA-12-WMS-FULFILLMENT-V1.md'
+      - '.github/workflows/stage12-wms.yml'
+permissions:
+  contents: read
+jobs:
+  safety-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            supabase/migrations/20260908123000_stage12_inventory_lots_fulfillment_wms_v1.sql
+            supabase/migrations/20260908123100_stage12_operations_staff_v1.sql
+            supabase/functions/fulfillment-mobile-v1/
+            supabase/config.toml
+            fulfillment-app/
+            scripts/test-stage12-wms-contract-v1.mjs
+            scripts/test-stage12-wms-db-v1.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Instalar PostgreSQL isolado
+        run: npm install --prefix "$RUNNER_TEMP/stage12" --no-save @electric-sql/pglite@0.5.8
+      - name: Validar contrato WMS
+        run: node scripts/test-stage12-wms-contract-v1.mjs
+      - name: Aplicar e testar migrations em PGlite
+        env:
+          TEST_RUNTIME: ${{ runner.temp }}/stage12
+        run: node scripts/test-stage12-wms-db-v1.mjs
+      - name: Verificar PWA
+        run: |
+          node --check fulfillment-app/app.js
+          node --check fulfillment-app/config.js
+          node --check fulfillment-app/sw.js
+      - name: Verificar API mobile
+        run: deno check supabase/functions/fulfillment-mobile-v1/index.ts
