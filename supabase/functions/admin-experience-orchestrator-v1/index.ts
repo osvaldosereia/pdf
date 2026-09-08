@@ -36,18 +36,20 @@ Deno.serve(async(req:Request)=>{
     const [
       {data:dashboard,error:dashError},
       {data:flowReadiness,error:flowError},
+      {data:flowTransport,error:transportError},
       {data:funnel,error:funnelError},
       {data:experiments,error:experimentError},
       {data:conversations,error:convError},
     ]=await Promise.all([
       sb.rpc("get_experience_orchestrator_dashboard_v1"),
       sb.rpc("get_flow_contract_readiness_v1"),
+      sb.rpc("get_whatsapp_flow_transport_readiness_v1"),
       sb.rpc("get_experience_funnel_metrics_v1",{p_since:new Date(Date.now()-7*86400000).toISOString()}),
       sb.rpc("get_experience_experiment_dashboard_v1"),
       sb.from("conversations").select("id,channel,mode,status,stage,automation_cohort,human_required,updated_at").order("updated_at",{ascending:false}).limit(20),
     ]);
-    if(dashError||flowError||funnelError||experimentError||convError)return json({ok:false,error:"dashboard_failed",detail:dashError?.message||flowError?.message||funnelError?.message||experimentError?.message||convError?.message},500);
-    return json({ok:true,user:{id:user.id,role:admin.role,display_name:admin.display_name||null},dashboard,flow_readiness:flowReadiness,funnel,experiments,conversations:conversations||[]});
+    if(dashError||flowError||transportError||funnelError||experimentError||convError)return json({ok:false,error:"dashboard_failed",detail:dashError?.message||flowError?.message||transportError?.message||funnelError?.message||experimentError?.message||convError?.message},500);
+    return json({ok:true,user:{id:user.id,role:admin.role,display_name:admin.display_name||null},dashboard,flow_readiness:flowReadiness,flow_transport:flowTransport,funnel,experiments,conversations:conversations||[]});
   }
 
   if(action==="preview"){
