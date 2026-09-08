@@ -1,492 +1,299 @@
 # RETOMADA — Projeto Dona Antônia
 
-Atualizado em **07/09/2026 local / 08/09/2026 UTC**.
+Atualizado em **08/09/2026**.
 
-Este é o arquivo **autoritativo** para retomar o projeto. Antes de qualquer alteração, auditar GitHub, Supabase e Make. Não recomeçar etapas já concluídas.
+Este é o arquivo **autoritativo de retomada operacional**. Ler junto com:
 
----
+1. `docs/ROADMAP-FINAL-DONA-ANTONIA-20-ETAPAS.md`;
+2. `docs/ROADMAP-20-ETAPAS-PROGRESS.md`;
+3. `docs/ETAPA-12-CHECKPOINT-FINAL-20260908.md`;
+4. `docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md`;
+5. documentos de decisão mais recentes.
 
-# ESTADO OPERACIONAL ATUAL
+O plano de IA é uma **diretriz transversal obrigatória**: Cost Policy Engine configurável, política de ação segura/confirmação, confiança versionada, memória comercial útil com evidência, pedido implícito, Next Best Action, compressão com baixa carga cognitiva e ordem de objetivos `resolver → facilitar → fechar → aumentar ticket`.
 
-## WhatsApp real
-
-O primeiro canary real continua ativo e **não pode ser ampliado sem nova autorização explícita do proprietário**.
-
-```text
-whatsapp_release_mode = live
-whatsapp_live_canary_percent = 1
-whatsapp_inbound_enabled = true
-whatsapp_auto_reply_enabled = true
-ai_enabled = true
-conversation_worker_enabled = true
-conversation_worker_dispatch_enabled = true
-human_fallback_enabled = true
-emergency_stop_reason = null
-```
-
-Corte do inbound:
-
-```text
-2026-09-07T23:48:18.455344+00:00
-```
-
-Make:
-
-```text
-inbound 6779824 = active
-outbound 7290488 = active
-legacy outbound 7290290 = inactive
-```
-
-## Eventos reais observados no canary
-
-Auditoria mais recente:
-
-```text
-messages = 4
-inbound = 4
-outbound messages = 0
-conversations = 2
-ai_jobs = 0
-outbound_jobs = 0
-orders = 0
-order_sync = 0
-flow_events = 0
-critical_ops_events = 0
-```
-
-Conversa 1:
-
-```text
-automation_bucket = 89
-automation_cohort = human_control
-conversation.status = needs_human
-mode = human
-human_required = true
-handoff.status = open
-handoff.reason = live_canary_human_control
-inbound_count = 3
-inbound_types = text, location, other
-outbound_count = 0
-```
-
-Conversa 2 — novo evento real em `2026-09-08T01:55:07Z`:
-
-```text
-automation_bucket = 68
-automation_cohort = human_control
-conversation.status = needs_human
-mode = human
-human_required = true
-handoff.status = open
-handoff.reason = live_canary_human_control
-inbound_count = 1
-inbound_type = text
-outbound_count = 0
-```
-
-Execução Make correspondente ao segundo evento:
-
-```text
-scenario = 6779824
-execution = 87657f81a22f44bebb9596623774e414
-status = success
-operations = 2
-```
-
-Os buckets 89 e 68 estão fora do cohort de 1%. O comportamento correto foi confirmado nas duas conversas: ingestão + handoff humano, sem IA e sem outbound automático.
-
-**Preservar os dois handoffs. Não assumir, resolver ou fechar automaticamente.**
+Antes de programar: auditar GitHub e Supabase; auditar Make se o bloco tocar automações/conectores ou para confirmar o baseline operacional. Não reiniciar etapa concluída.
 
 ---
 
-# INVARIANTES QUE NÃO PODEM SER ALTERADAS SEM AUTORIZAÇÃO
+## Ponto exato de retomada
 
-- canary permanece em **1%**;
-- não ativar Bling;
+**ETAPAS 1–12: parte programável segura concluída.**
+
+A primeira etapa numerada ainda não concluída é:
+
+> **ETAPA 13 — Financeiro Operacional, Recebimentos e Conciliação.**
+
+Não voltar à Etapa 12 salvo bug/regressão ou decisão nova do proprietário.
+
+Primeiro bloco seguro recomendado da Etapa 13:
+
+- ledger operacional imutável/idempotente;
+- expectativa de recebimento por pedido e rota;
+- recebimento por dinheiro/Pix/cartão/link como eventos separados de entrega;
+- fechamento de rota/entregador;
+- divergência esperado × recebido/declarado;
+- `review_required` em incerteza;
+- abstração de conciliação externa sem provider/chamada real inicialmente;
+- read models/Admin atrás de gate OFF;
+- GitHub Actions para reconciliação batch quando fizer sentido.
+
+O financeiro da Etapa 13 deve expor somente **contexto determinístico** para o futuro `next_best_action`; a IA não decide se pagamento ocorreu nem reconcilia valores por inferência.
+
+---
+
+## Estado de produção que DEVE ser preservado
+
+Auditoria em 08/09/2026:
+
+```text
+whatsapp_release_mode=live
+whatsapp_live_canary_percent=1
+whatsapp_inbound_enabled=true
+whatsapp_auto_reply_enabled=true
+ai_enabled=true
+experience_orchestrator_enabled=false
+whatsapp_flow_data_exchange_enabled=false
+whatsapp_flow_send_enabled=false
+bling_order_sync_enabled=false
+bling_order_homologation_only=true
+```
+
+### Handoffs humanos
+
+```text
+open_handoffs=10
+claimed_open_handoffs=0
+```
+
+Preservar todos. Handoff humano tem precedência absoluta sobre IA/Flow.
+
+### Make — cenários ativos autorizados
+
+Auditoria em 08/09/2026 encontrou exatamente:
+
+```text
+Dona Antônia - WhatsApp Inbound Controlado v1
+Dona Antônia - WhatsApp Outbound Event-Driven v3
+consultar no cpf
+```
+
+Não ativar cenário Make adicional sem necessidade/decisão. `consultar no cpf` está explicitamente autorizado a permanecer ativo.
+
+---
+
+## Proibições de rollout ainda vigentes
+
+- **não aumentar WhatsApp acima de 1%** sem nova autorização explícita;
 - não ativar WhatsApp Flow/Data Exchange para clientes;
-- não ativar o orquestrador de experiências;
-- novas features de Flow/orquestração permanecem atrás de flags;
-- atendimento humano aberto nunca volta automaticamente para IA/Flow;
-- IA entende e conversa; backend controla preço, estoque, pedido, regras críticas e ações;
-- preço individual dos componentes das cestas não é exposto ao cliente;
-- Flow não escreve carrinho enquanto `flow_cart_apply_not_enabled` estiver vigente;
-- processamento externo incerto não recebe retry cego;
-- job de IA é processado por ID exato;
-- gates são rechecados antes de gasto externo;
-- segredos e mídias privadas não vão para GitHub/docs;
-- não combinar primeira homologação de Flow com primeira homologação real de Bling.
+- não ativar Experience Orchestrator;
+- não ativar Bling order sync;
+- não ativar emissão fiscal real/SEFAZ;
+- não alterar configuração fiscal já existente no Bling;
+- não ativar Instagram/Messenger/Ads;
+- não ativar logística/GPS/Maps/notifications reais;
+- não ativar compras, pagamentos, conciliação bancária ou qualquer movimentação financeira real;
+- não criar gasto pago/OpenAI/Maps/provider externo apenas porque a fundação existe;
+- não contornar bloqueio de segurança de ferramenta/deploy.
+
+Todo módulo novo deve nascer OFF, com idempotência, auditoria, RLS/RBAC e rollback/kill switch quando aplicável.
 
 ---
 
-# FUNDAÇÃO WHATSAPP FLOW — CONCLUÍDA E DORMENTE EM PRODUÇÃO
+## Decisão fiscal oficial — preservar
 
-## PR #175
+A configuração de NF-e e tipo de venda **`venda pela internet`** já está configurada no Bling pelo proprietário. O sistema não deve alterar CFOP, natureza, tributação ou tipo de operação.
 
-`#175 — Dona Antônia: fundação criptografada do WhatsApp Flow Data Exchange`
-
-Merge:
+Fluxo oficial:
 
 ```text
-3db08cd83238461fa76d7ea6b0e29f3f6568809b
+PEDIDO
+→ SEPARAÇÃO
+→ PRONTO
+→ EM ROTA
+→ ENTREGUE + PAGAMENTO CONFIRMADO
+→ FISCAL_READY
+→ NF-e
+→ CONCLUÍDO
 ```
 
-Inclui:
+Regras:
 
-- gates independentes de Data Exchange e envio;
-- RSA-OAEP/SHA-256 + AES-128-GCM;
-- IV de resposta invertido;
-- HTTP 421 para falha de chave RSA;
-- private key destinada ao Supabase Vault;
-- chave pública/fingerprint operacional;
-- token de Flow armazenado somente como SHA-256;
-- auditoria sem payload, token cru, private key ou PII;
-- handler read-only do Flow de personalização de cesta;
-- replay guard por SHA-256 do envelope criptografado;
-- TTL do guard de 24 horas;
-- máquina de estados `INIT → BASKET_EDIT → BASKET_REVIEW`;
-- replay idempotente;
-- budget de 40 exchanges por sessão;
-- takeover humano revalidado sob lock;
-- `BASKET_REVIEW` com `write_enabled=false`.
+- pagamento antecipado sozinho não libera NF-e;
+- `PAID + IN_ROUTE` não é fiscal-ready;
+- entrega falha/ausência/recusa/desistência não gera NF-e;
+- entrega parcial/alterada exige reconciliação antes do fiscal;
+- IA não decide entrega, pagamento, valor ou elegibilidade fiscal.
 
-### Correção Deno/WebCrypto
-
-O `deno check` originalmente falhou pela tipagem mais estrita de `BufferSource` no Deno 2.x. Foi corrigido convertendo explicitamente os buffers para `ArrayBuffer`.
-
-Commits relevantes:
-
-```text
-a93c7b712d1153846288aca376f3a431a093b2cc
-a63607ec0dec42e3d0f0dbdc4c83aa7b77d190c6
-```
-
-## Migrations Flow aplicadas
-
-Lista operacional do Supabase:
-
-```text
-20260908013915 whatsapp_flow_transport_foundation_v1
-20260908014007 whatsapp_flow_transport_hardening_v1
-```
-
-Arquivos históricos no repositório:
-
-```text
-supabase/migrations/20260908010000_whatsapp_flow_transport_foundation_v1.sql
-supabase/migrations/20260908010100_whatsapp_flow_transport_hardening_v1.sql
-```
-
-## Gates atuais
-
-```text
-experience_orchestrator_enabled = false
-whatsapp_flow_data_exchange_enabled = false
-whatsapp_flow_send_enabled = false
-whatsapp_flow_max_exchanges_per_session = 40
-```
-
-Readiness:
-
-```text
-transport_ready = false
-send_ready = false
-private_key_configured = false
-public_key_configured = false
-meta_signature_status = unknown
-key_version = 0
-ready_flow_definitions = 0
-active_flow_sessions = 0
-replay_guard_enabled = true
-state_machine_enabled = true
-```
-
-**Nenhuma chave Flow foi gerada. Nenhuma chave pública foi registrada na Meta. Nenhum Flow foi liberado para cliente.**
+Bling/SEFAZ continuam sem dispatcher real autorizado.
 
 ---
 
-# EDGE FUNCTIONS / AUTENTICAÇÃO — PR #176
+## Etapa 12 — checkpoint concluído
 
-PR:
+Referência completa: `docs/ETAPA-12-CHECKPOINT-FINAL-20260908.md`.
 
-`#176 — Dona Antônia: versionar autenticação das Edge Functions de Flow`
-
-Merge:
+Últimos merges:
 
 ```text
-323c6b3b17331549e04a92364551edf06faaaca9
+PR #213 -> 8f4dfb759f41f5feec44bed9ea0ed82bbbf62c53
+PR #214 -> ec3a84e09ad2caaccb25dd9ec0df1497b37da187
+PR #215 -> 8307f5e64f7f8f51174e660a9c7f1fed2be6d24b
 ```
 
-Configuração explícita:
+A Etapa 12 contém de forma dormente:
+
+- lotes/validade/FEFO;
+- Guardião de Margem;
+- WMS barcode-first;
+- reservas e consumo por lote;
+- Order Promise/capacidade/cutoff;
+- Order Change Control;
+- Substitution Engine;
+- Cycle Counting;
+- etiquetas 100×150 sem valores;
+- Recall/rastreabilidade reversa;
+- Control Tower + SLA/Aging;
+- benefícios, cupons, brindes e aniversário com orçamento/margem/FEFO;
+- evidência de compra apenas por pedido realmente entregue.
+
+### Supabase — estado final da Etapa 12
+
+Principais runtimes:
 
 ```text
-admin-experience-orchestrator-v1  verify_jwt = true
-admin-whatsapp-flow-v1            verify_jwt = true
-whatsapp-flow-data-exchange-v1    verify_jwt = false
+commercial_truth.enabled=false
+commercial_truth.execution_mode=off
+commercial_truth.canary_percent=0
+fulfillment.enabled=false
+fulfillment.execution_mode=off
+fulfillment.canary_percent=0
+order_promise.enabled=false
+order_promise.execution_mode=off
+order_promise.canary_percent=0
+operational_control.enabled=false
+operational_control.execution_mode=off
+operational_control.canary_percent=0
 ```
 
-Produção:
+Todos os subgates de escrita/aplicação/preview relevantes estão OFF, inclusive:
 
 ```text
-admin-experience-orchestrator-v1 = ACTIVE v2
-admin-whatsapp-flow-v1 = ACTIVE v1
-whatsapp-flow-data-exchange-v1 = ACTIVE v1
+benefits_enabled=false
+benefit_preview_enabled=false
+benefit_recording_enabled=false
+benefit_reservation_enabled=false
+benefit_apply_enabled=false
+delivered_purchase_evidence_enabled=false
+substitution_apply_enabled=false
+cycle_count_adjustment_enabled=false
+label_dispatch_enabled=false
+recall_quarantine_enabled=false
+sla_exception_recording_enabled=false
+lot_reservation_enabled=false
+lot_consumption_enabled=false
+commitment_write_enabled=false
+change_control_enabled=false
 ```
 
-O callback Meta usa `verify_jwt=false` porque a Meta não envia JWT Supabase. O endpoint continua inoperante comercialmente enquanto os gates do banco estiverem `false`.
-
-Teste:
+Contagens reais após DDL:
 
 ```text
-scripts/test-whatsapp-flow-auth-config-v1.mjs
+orders=0
+inventory_lots=0
+fulfillment_orders=0
+order_promise_commitments=0
+substitution_evaluations=0
+cycle_count_tasks=0
+label_documents=0
+recall_cases=0
+operational_sla_exceptions=0
+customer_benefit_evaluations=0
+customer_benefit_reservations=0
+promotion_rules=0
 ```
+
+Fail-closed dos benefícios confirmado:
+
+```text
+preview_customer_benefit_v1 -> benefit_preview_disabled
+customer_delivered_purchase_evidence_v1 -> delivered_purchase_evidence_disabled
+```
+
+Últimas migrations aplicadas:
+
+```text
+20260908140804 stage12_label_recall_control_tower_v1
+20260908140820 stage12_label_recall_control_tower_v1_fix
+20260908142112 stage12_benefits_guardrails_v1
+20260908142627 stage12_benefits_guardrails_v1_conflict_fix
+```
+
+Observação: a primeira tentativa de correção dos benefícios baseada em `SET plpgsql.variable_conflict` foi rejeitada antes de aplicar e não foi registrada. A PR #215 substituiu por redefinição explícita com `target_year`; a migration `20260908142627` entrou com sucesso.
 
 ---
 
-# HARDENING SECURITY DEFINER — PRs #177/#178
+## Regras comerciais que não podem ser perdidas
 
-O Security Advisor detectou quatro trigger functions `SECURITY DEFINER` herdando `EXECUTE` de `PUBLIC`:
-
-```text
-ai_job_dispatch_trigger_v2()
-ai_job_human_fallback_trigger_v1()
-guard_whatsapp_ai_outbound_rate_v1()
-message_human_intent_trigger_v1()
-```
-
-PR #177 merge:
-
-```text
-cca416e7f03e42598c94605bf0d8f92ebf7b2457
-```
-
-Migration aplicada em produção:
-
-```text
-20260908015211 whatsapp_trigger_rpc_hardening_v1
-```
-
-PR #178 versionou a migration definitiva e consolidou a rastreabilidade.
-
-Merge:
-
-```text
-0922c85f9ad6048464eb4d151a3272129deec174
-```
-
-Arquivo definitivo:
-
-```text
-supabase/migrations/20260908015211_whatsapp_trigger_rpc_hardening_v1.sql
-```
-
-Estado pós-hardening para as quatro funções:
-
-```text
-PUBLIC execute = false
-anon execute = false
-authenticated execute = false
-service_role execute = true
-trigger enabled = O
-```
-
-O Security Advisor foi executado novamente e os WARNs `anon_security_definer_function_executable` dessas funções desapareceram.
-
-Restam:
-
-- INFO `RLS Enabled No Policy` em tabelas server-only — esperado no desenho atual;
-- WARN de conta `Leaked Password Protection Disabled` no Auth — não alterado nesta etapa.
-
-Referências:
-
-```text
-https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy
-https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
-```
+- cestas têm preço comercial próprio; não são soma automática dos itens;
+- diferença entre preço da cesta e soma dos componentes é custo/estrutura comercial interna e não deve ser exposta automaticamente;
+- componente em promoção não recalcula automaticamente o preço comercial da cesta;
+- validade 31–60 dias: política inicial configurável de 20%;
+- validade 0–30 dias: política inicial configurável de 30%;
+- vencido: bloquear;
+- aniversário: dia/mês opcional, desconto OU brinde, no máximo uma concessão por ano;
+- benefício só pode ser liberado com orçamento e margem conhecidos;
+- brinde depende de estoque/FEFO/validade compatíveis;
+- IA pode sugerir/explicar, mas backend determinístico valida preço, estoque, margem, validade, pagamento e fiscal.
 
 ---
 
-# PAINEL DORMENTE DE CICLO DE CHAVE FLOW — PR #179
+## Diretriz transversal de IA comercial
 
-PR:
+Referência oficial: `docs/PLANO-IA-ATENDIMENTO-VENDAS-2026-09-08.md`.
 
-`#179 — Dona Antônia: painel dormente de ciclo de vida da chave WhatsApp Flow`
+Regras que precisam orientar novas implementações:
 
-Status nesta atualização: **CI verde; aguardando merge**.
-
-O módulo `admin-v3/experience-orchestrator.js`, que continua atrás de:
-
-```text
-experienceOrchestratorUiEnabled = false
-```
-
-passa a preparar somente operações seguras:
-
-- consultar dashboard/readiness de `admin-whatsapp-flow-v1`;
-- mostrar versão da chave, fingerprint e status Meta;
-- mostrar/copiar **somente a chave pública**;
-- gerar ou rotacionar par RSA apenas se o usuário for `owner`;
-- exigir confirmação literal `GERAR_CHAVE_FLOW`;
-- bloquear geração/rotação enquanto Data Exchange ou envio estiver ligado;
-- falhar fechado se a resposta do backend sugerir vazamento de private key;
-- oferecer `disable_transport` como kill switch unilateral;
-- **não oferecer nenhuma ação para habilitar Data Exchange, envio, Flow ou orquestrador**.
-
-Teste novo:
-
-```text
-scripts/test-whatsapp-flow-key-lifecycle-admin-v1.mjs
-```
-
-O teste confirmou:
-
-- UI continua dormente;
-- operação de chave é owner-only;
-- confirmação literal obrigatória;
-- private key não é renderizada;
-- chave pública é a única chave exibível;
-- não existe ação `enable_transport`/`enable_flow`;
-- backend limpa a referência da private key depois de instalar no Vault;
-- backend retorna `private_key_returned=false`;
-- kill switch só coloca `whatsapp_flow_data_exchange_enabled=false` e `whatsapp_flow_send_enabled=false`.
-
-**Esta PR não gera chave.**
+- Cost Policy Engine configurável/versionado; preço de canal nunca hardcoded;
+- custo desconhecido/desatualizado => bloquear;
+- minimizar mensagens **e** carga cognitiva;
+- ações seguras/reversíveis podem ser executadas conforme política;
+- ações irreversíveis/obrigacionais exigem confirmação;
+- confiança é configurável e nunca bypassa confirmação irreversível;
+- memória comercial só vira preferência com evidência/confiança/recorrência;
+- pedido implícito deve gerar ação útil quando houver contexto suficiente;
+- Next Best Action decide antes da geração textual;
+- ordem de objetivos: `resolver corretamente → facilitar → fechar → aumentar ticket`;
+- aprendizado futuro usa evidência e testes controlados, sem alterar regras críticas automaticamente.
 
 ---
 
-# SEGURANÇA FLOW — AUDITORIA ATUAL
+## Segurança / Supabase Advisor
 
-RLS:
+Última auditoria não encontrou alerta crítico novo.
 
-```text
-whatsapp_flow_transport_config = true
-whatsapp_flow_exchange_events = true
-whatsapp_flow_request_guard = true
-```
+Persistem:
 
-RPCs críticos:
+- INFO `RLS Enabled No Policy` para várias tabelas server-only; isso é compatível com o padrão do projeto porque `anon/authenticated` são revogados e o acesso é service-role;
+- WARN preexistente `Leaked Password Protection Disabled` no Supabase Auth.
 
-```text
-get_whatsapp_flow_private_key_v1:
-  anon=false
-  authenticated=false
-  service_role=true
-
-claim_whatsapp_flow_request_v1:
-  anon=false
-  authenticated=false
-  service_role=true
-
-handle_whatsapp_flow_exchange_v1:
-  anon=false
-  authenticated=false
-  service_role=true
-```
-
-Logs/guard não possuem colunas de payload, token cru, encrypted payload ou private key.
+Não alterar configuração de Auth automaticamente.
 
 ---
 
-# WORKER V2 — ARQUITETURA OFICIAL
+## Estratégia de implementação daqui para frente
 
-```text
-ai_jobs pending
-→ trigger ai_job_event_dispatch_v2
-→ pg_net
-→ conversation-worker-v2
-→ claim por job_id exato
-→ OpenAI
-→ finish_conversation_job
-→ outbound event-driven quando permitido
-```
+- PostgreSQL/Supabase para verdade transacional e regras determinísticas;
+- GitHub Actions primeiro para batch/reconciliação/auditoria/reporting;
+- Make apenas em realtime/conectores onde houver benefício claro;
+- OpenAI para interpretação, triagem, linguagem e sugestão — nunca como calculadora/autoridade de saldo, preço, margem, pagamento, fiscal, rota ou estoque;
+- todo executor externo deve ser separado de preview/evaluation e ficar atrás de gate próprio;
+- estados incertos devem virar `review_required`, nunca confirmação inventada.
 
-Produção:
+## Próxima ação ao receber “continue”
 
-```text
-conversation-worker-v2 = v2
-provider OpenAI = Supabase Vault
-custom server-to-server auth
-```
-
-Áudio obrigatório:
-
-```text
-transcription
-→ salva transcript/body_text
-→ cria job conversation
-→ conversation interpreta
-→ resposta controlada
-→ Marin B quando aplicável
-```
-
-Voz oficial:
-
-```text
-dona_antonia_marin_b_v1
-gpt-4o-mini-tts
-voice = marin
-speed = 1.0
-```
-
-Nunca voltar para transcrição → resposta direta.
-
----
-
-# CESTAS / BLING
-
-Cestas:
-
-- preço comercial próprio;
-- não mostrar preço individual dos componentes;
-- Bling futuramente recebe componentes individualizados;
-- diferença positiva → Outras despesas;
-- diferença negativa → desconto;
-- IA nunca calcula diferença fiscal;
-- pagamento somente na entrega;
-- somente entrega.
-
-Bling continua **fora do canary atual**.
-
-Quando houver autorização futura para homologar Bling:
-
-1. um único pedido real controlado;
-2. validar contato;
-3. validar componentes da cesta;
-4. validar diferença fiscal;
-5. validar estoque;
-6. validar idempotência;
-7. sem retry cego;
-8. confirmação WhatsApp somente após confirmação do Bling.
-
----
-
-# PRÓXIMA AÇÃO EXATA
-
-1. integrar PR #179 depois do CI verde — sem gerar chave;
-2. reauditar `live=1%`, handoffs, IA/outbound/pedidos após o merge;
-3. manter os dois handoffs `human_control` abertos;
-4. continuar monitorando eventos reais do canary;
-5. próxima etapa externa de Flow será geração controlada do primeiro par de chaves pelo endpoint owner-only;
-6. a geração da chave **não** deve ligar Data Exchange/envio/orquestrador;
-7. registrar apenas a chave pública na Meta em etapa separada;
-8. validar status/assinatura da chave antes de qualquer homologação Data Exchange;
-9. criar/publicar Flow real somente em homologação controlada/allowlisted;
-10. não elevar `live=1%`, não ativar Bling e não liberar Flow para clientes sem nova autorização explícita.
-
----
-
-# REGRA DE TRABALHO
-
-- programar blocos grandes, modulares e profissionais;
-- baixo custo;
-- Make como ponte fina;
-- testes perigosos sempre controlados;
-- documentar cada marco nesta retomada;
-- minimizar passos manuais;
-- não repetir etapas concluídas;
-- antes de qualquer alteração em produção, auditar gates e handoffs;
-- depois de DDL/deploy, reauditar canary, handoffs, jobs, outbound, pedidos e Security Advisor.
-
-## Instrução para novo chat
-
-> Acesse `osvaldosereia/SUCEDOAN12` e leia primeiro `docs/RETOMADA-DONA-ANTONIA.md`. O canary REAL continua `live=1%` e não pode subir sem nova autorização. Existem dois handoffs humanos abertos em `human_control`, buckets 89 e 68, que devem ser preservados. PRs #175, #176, #177 e #178 já foram integradas; a migration `20260908015211 whatsapp_trigger_rpc_hardening_v1` está aplicada e versionada. As Edge Functions Flow estão publicadas, porém `experience_orchestrator_enabled=false`, `whatsapp_flow_data_exchange_enabled=false`, `whatsapp_flow_send_enabled=false`, sem chave configurada e sem Flow para clientes. Bling continua fora. PR #179 prepara, ainda dormente, o painel de ciclo de vida da chave e não gera chave. Continue monitorando `live=1%` e só avance para homologação de chave sem ativar runtime ou clientes.
+1. reler este arquivo, roadmap, checkpoint da Etapa 12 e plano de IA;
+2. auditar `main`/PRs recentes e Supabase;
+3. iniciar **Etapa 13** somente com fundação financeira dormente;
+4. não conectar banco/adquirente/Pix/Bling financeiro real no primeiro bloco;
+5. persistir cada rodada em PR + testes + CI + docs + auditoria pós-DDL.
