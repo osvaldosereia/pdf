@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { classifyInstagramCommentIntentV2 } from "../_shared/instagram-policy-v2.mjs";
 
 const encoder=new TextEncoder();
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{"Content-Type":"application/json","Cache-Control":"no-store"}});
@@ -15,9 +16,7 @@ async function hmacHex(secret:string,body:Uint8Array){
 }
 function safeEqual(a:string,b:string){
   if(a.length!==b.length) return false;
-  let diff=0;
-  for(let i=0;i<a.length;i++) diff|=a.charCodeAt(i)^b.charCodeAt(i);
-  return diff===0;
+  let diff=0;for(let i=0;i<a.length;i++) diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;
 }
 function eventsFromWebhook(body:any){
   const out:any[]=[];
@@ -25,17 +24,40 @@ function eventsFromWebhook(body:any){
     const externalAccountId=clean((entry as any)?.id,200);
     if(!externalAccountId) continue;
     for(const item of arr((entry as any)?.messaging) as any[]){
-      const senderId=clean(item?.sender?.id,200), mid=clean(item?.message?.mid,300);
+      const senderId=clean(item?.sender?.id,200),mid=clean(item?.message?.mid,300);
       if(!senderId||!mid||item?.message?.is_echo===true) continue;
-      out.push({kind:"direct",external_account_id:externalAccountId,event:{external_user_id:senderId,external_message_id:mid,message_type:item?.message?.attachments?.length?"image":"text",body_text:clean(item?.message?.text,4096)||null,reply_to:clean(item?.message?.reply_to?.mid,300)||null,source:"instagram_direct",referral:item?.referral&&typeof item.referral==="object"?item.referral:{},timestamp:item?.timestamp?new Date(Number(item.timestamp)).toISOString():new Date().toISOString(),context:{recipient_external_id:clean(item?.recipient?.id,200)||null}}});
+      const referral=item?.referral&&typeof item.referral==="object"?item.referral:{};
+      out.push({kind:"direct",external_account_id:externalAccountId,event:{
+        external_user_id:senderId,external_message_id:mid,message_type:item?.message?.attachments?.length?"image":"text",
+        body_text:clean(item?.message?.text,4096)||null,reply_to:clean(item?.message?.reply_to?.mid,300)||null,
+        source:"instagram_direct",referral,
+        timestamp:item?.timestamp?new Date(Number(item.timestamp)).toISOString():new Date().toISOString(),
+        context:{recipient_external_id:clean(item?.recipient?.id,200)||null,touchpoint_type:referral?.ad_id?"ad":"direct"}
+      }});
     }
     for(const change of arr((entry as any)?.changes) as any[]){
       const field=clean(change?.field,40).toLowerCase();
       if(!["comments","live_comments"].includes(field)) continue;
       const value=change?.value&&typeof change.value==="object"?change.value:{};
-      const commentId=clean(value?.id,300), authorId=clean(value?.from?.id,200);
-      if(!commentId||!authorId) continue;
-      out.push({kind:"comment",external_account_id:externalAccountId,event:{external_user_id:authorId,external_message_id:commentId,message_type:"comment",body_text:clean(value?.text,4096)||null,reply_to:clean(value?.parent_id,300)||null,source:"instagram_comment",referral:{media_id:clean(value?.media?.id||value?.media_id,300)||null,media_product_type:clean(value?.media?.media_product_type,80)||null},timestamp:value?.created_time||new Date().toISOString(),context:{username:clean(value?.from?.username,200)||null,field}}});
+      const commentId=clean(value?.id,300),authorId=clean(value?.from?.id,200);
+      if(!commentId||!authorId||authorId===externalAccountId) continue;
+      const intent=classifyInstagramCommentIntentV2(value?.text);
+      out.push({kind:"comment",external_account_id:externalAccountId,event:{
+        external_user_id:authorId,external_message_id:commentId,message_type:"comment",body_text:clean(value?.text,4096)||null,
+        reply_to:clean(value?.parent_id,300)||null,source:"instagram_comment",
+        referral:{
+          media_id:clean(value?.media?.id||value?.media_id,300)||null,
+          media_product_type:clean(value?.media?.media_product_type||value?.media_product_type,80)||null,
+          parent_id:clean(value?.parent_id,300)||null,
+          ad_id:clean(value?.ad_id,300)||null,campaign_id:clean(value?.campaign_id,300)||null,
+          adset_id:clean(value?.adset_id,300)||null,creative_id:clean(value?.creative_id,300)||null
+        },
+        timestamp:value?.created_time||new Date().toISOString(),
+        context:{
+          username:clean(value?.from?.username,200)||null,field,touchpoint_type:field==="live_comments"?"live":"comment",
+          is_live:field==="live_comments",comment_intent:intent.intent,comment_intent_confidence:intent.confidence,comment_intent_source:intent.source
+        }
+      }});
     }
   }
   return out;
@@ -46,33 +68,25 @@ Deno.serve(async(req:Request)=>{
   if(!runtimeEnabled) return json({ok:false,error:"instagram_webhook_runtime_disabled"},503);
 
   if(req.method==="GET"){
-    const url=new URL(req.url);
-    const mode=url.searchParams.get("hub.mode")||"";
-    const token=url.searchParams.get("hub.verify_token")||"";
-    const challenge=url.searchParams.get("hub.challenge")||"";
+    const url=new URL(req.url),mode=url.searchParams.get("hub.mode")||"",token=url.searchParams.get("hub.verify_token")||"",challenge=url.searchParams.get("hub.challenge")||"";
     const expected=Deno.env.get("META_WEBHOOK_VERIFY_TOKEN")||"";
     if(mode!=="subscribe"||!expected||!safeEqual(token,expected)) return new Response("Forbidden",{status:403});
     return new Response(challenge,{status:200,headers:{"Content-Type":"text/plain","Cache-Control":"no-store"}});
   }
   if(req.method!=="POST") return json({ok:false,error:"method_not_allowed"},405);
 
-  const appSecret=Deno.env.get("META_APP_SECRET")||"";
-  const supabaseUrl=Deno.env.get("SUPABASE_URL")||"";
-  const serviceKey=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
+  const appSecret=Deno.env.get("META_APP_SECRET")||"",supabaseUrl=Deno.env.get("SUPABASE_URL")||"",serviceKey=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")||"";
   if(!appSecret||!supabaseUrl||!serviceKey) return json({ok:false,error:"server_config"},500);
-
   const raw=new Uint8Array(await req.arrayBuffer());
   const provided=(req.headers.get("x-hub-signature-256")||"").replace(/^sha256=/i,"").toLowerCase();
   const expected=await hmacHex(appSecret,raw);
   if(!provided||!safeEqual(provided,expected)) return json({ok:false,error:"invalid_meta_signature"},401);
 
-  let payload:any;
-  try{payload=JSON.parse(new TextDecoder().decode(raw));}catch{return json({ok:false,error:"invalid_json"},400);}
+  let payload:any;try{payload=JSON.parse(new TextDecoder().decode(raw));}catch{return json({ok:false,error:"invalid_json"},400);}
   if(payload?.object!=="instagram") return json({ok:true,ignored:true,reason:"unsupported_object"},200);
 
   const sb=createClient(supabaseUrl,serviceKey,{auth:{persistSession:false,autoRefreshToken:false}});
-  const events=eventsFromWebhook(payload);
-  const results=[];
+  const events=eventsFromWebhook(payload),results=[];
   for(const item of events){
     const {data:account,error:accountError}=await sb.from("channel_accounts").select("id,status,inbound_enabled").eq("channel","instagram").eq("external_account_id",item.external_account_id).maybeSingle();
     if(accountError){results.push({kind:item.kind,accepted:false,reason:"account_lookup_failed"});continue;}
