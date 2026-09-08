@@ -10,6 +10,7 @@ on:
       - 'scripts/test-whatsapp-sales-mvp-*.mjs'
       - 'scripts/test-whatsapp-current-message-precedence-v1.mjs'
       - 'scripts/test-whatsapp-objective-service-v1.mjs'
+      - 'admin/index.html'
       - 'admin/inteligencia.html'
       - 'admin-v3/service-intelligence.*'
       - '.github/workflows/whatsapp-sales-mvp.yml'
