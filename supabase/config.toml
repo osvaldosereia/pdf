@@ -4,18 +4,12 @@
 [functions.whatsapp-ingest]
 verify_jwt = false
 
-# Adaptador fino para o HTTP v4 do Make. Ele apenas converte form fields em JSON e
-# encaminha a mesma chave custom para whatsapp-ingest, que faz a validação real.
 [functions.whatsapp-ingest-make-v1]
 verify_jwt = false
 
-# Server-to-server Make -> Supabase. JWT gateway desligado somente porque a função
-# valida x-da-ingest-key contra hash server-only em system_secrets.
 [functions.whatsapp-outbound-v1]
 verify_jwt = false
 
-# Worker event-driven interno. JWT gateway desligado porque aceita apenas a chave
-# gerada server-side no Vault e validada contra hash em system_secrets.
 [functions.conversation-worker-v2]
 verify_jwt = false
 
@@ -31,47 +25,37 @@ verify_jwt = true
 [functions.admin-ops-v1]
 verify_jwt = true
 
-# Observabilidade/fallback do WhatsApp: JWT + getUser + admin_users.
 [functions.admin-whatsapp-ops-v1]
 verify_jwt = true
 
-# Orquestrador administrativo: endpoint autenticado e autorizado internamente.
 [functions.admin-experience-orchestrator-v1]
 verify_jwt = true
 
-# Administração de chaves/readiness do Flow: JWT obrigatório + autorização owner no handler.
 [functions.admin-whatsapp-flow-v1]
 verify_jwt = true
 
-# Builder e dispatcher da Etapa 10 são administrativos, dormentes e autenticados.
 [functions.admin-automation-builder-v1]
 verify_jwt = true
 
-# Dispatcher: apenas observe/dry-run, sem execução de action e external_side_effect=false.
 [functions.automation-dispatcher-v1]
 verify_jwt = true
 
-# Etapa 11: Central logística administrativa. JWT + getUser + admin_users; sem ativação de runtime.
 [functions.admin-logistics-v1]
 verify_jwt = true
 
-# Etapa 11: app do entregador. JWT obrigatório; handler valida auth_user_id do driver e rota atribuída.
 [functions.driver-logistics-v1]
 verify_jwt = true
 
-# Etapa 12: verdade comercial administrativa. JWT + admin_users; somente previews/drafts/kill switch.
 [functions.admin-commercial-truth-v1]
 verify_jwt = true
 
-# Callback de Data Exchange da Meta. A Meta não envia JWT do Supabase; por isso o gateway
-# JWT fica desligado exclusivamente aqui. O endpoint continua fail-closed por criptografia
-# do protocolo, gates no banco, token de sessão, replay guard, state machine e budget.
+# Etapa 12: operação de armazém/fulfillment. JWT obrigatório + warehouse_staff no handler.
+[functions.warehouse-ops-v1]
+verify_jwt = true
+
 [functions.whatsapp-flow-data-exchange-v1]
 verify_jwt = false
 
-# Webhook oficial da Meta para Instagram. A Meta não envia JWT Supabase; o handler valida
-# x-hub-signature-256 com META_APP_SECRET e permanece inoperante enquanto
-# META_INSTAGRAM_WEBHOOK_RUNTIME_ENABLED não for explicitamente true.
 [functions.meta-instagram-webhook-v1]
 verify_jwt = false
 
