@@ -28,9 +28,6 @@ function renderJson(v:any,vars:Record<string,unknown>):any{
   return v;
 }
 function itemTitle(name:string){const s=clean(name,60);return s.length<=24?s:`${s.slice(0,21)}…`}
-function productListInteractive(products:any[],body:string){
-  return {type:"list",body:{text:clean(body,1024)},action:{button:"Escolher",sections:[{title:"Opções",rows:products.slice(0,10).map(p=>({id:`da_add_product:${p.id}`,title:itemTitle(p.name),description:clean(`${money(p.price)} · ${p.packaging||p.brand||"Disponível"}`,72)}))}]}};
-}
 function basketListInteractive(baskets:any[],body:string){
   return {type:"list",body:{text:clean(body,1024)},action:{button:"Ver cestas",sections:[{title:"Cestas básicas",rows:baskets.slice(0,10).map((b:any)=>({id:`da_basket:${b.id}`,title:itemTitle(b.display_name||b.name),description:money(b.base_price)}))}]}};
 }
@@ -41,8 +38,8 @@ function cartText(cart:any){
 }
 function deterministicProductIntent(text:string){
   const n=norm(text);
-  const add=/\b(quero|coloca|coloque|adiciona|adicione|bota|manda|poe|põe)\b/.test(n);
-  const search=/\b(tem|preco|quanto|procura|procurar|mostra|mostrar|vende|disponivel|disponível)\b/.test(n);
+  const add=/\b(quero|coloca|coloque|adiciona|adicione|bota|manda|poe)\b/.test(n);
+  const search=/\b(tem|preco|quanto|procura|procurar|mostra|mostrar|vende|disponivel)\b/.test(n);
   if(add)return "add";
   if(search)return "search";
   return "";
@@ -80,36 +77,42 @@ Deno.serve(async(req:Request)=>{
   };
 
   const {data:pre,error:preError}=await sb.rpc("get_whatsapp_cost_first_preflight_v1",{p_job_id:expectedJobId});
-  if(preError||!pre)return proxyV3();
-  if(!pre.eligible)return proxyV3();
+  if(preError||!pre||!pre.eligible)return proxyV3();
 
   const messageText=clean(pre?.message?.text,4000),normalized=norm(messageText),interactiveId=clean(pre?.message?.interactive?.id,256);
   const customerFirst=firstName(pre?.first_name||pre?.customer?.name);
   const vars:Record<string,unknown>={first_name:customerFirst,name_suffix:customerFirst?`, ${customerFirst}`:""};
   const trigger=pre?.trigger?.matched?pre.trigger:null;
+  const triggerAction=clean(trigger?.trigger?.action_type,80);
+  const triggerSupported=Boolean(trigger&&(
+    triggerAction==="human"||
+    (triggerAction==="send_block"&&trigger?.block?.body_template)||
+    triggerAction==="show_baskets"||
+    triggerAction==="show_cart"
+  ));
   const candidates=arr(pre?.product_candidates);
   const candidate=strongCandidate(candidates);
   const prodIntent=deterministicProductIntent(messageText);
   const exactCart=new Set(["carrinho","meu carrinho","ver carrinho","resumo do pedido","ver pedido"]);
   const basketIntent=/\bcestas?\b/.test(normalized);
-  const deterministicHint=trigger?`trigger:${clean(trigger?.trigger?.key,80)}`:basketIntent?"baskets":exactCart.has(normalized)?"cart":candidate&&prodIntent?`product_${prodIntent}`:"";
+  const deterministicHint=triggerSupported?`trigger:${clean(trigger?.trigger?.key,80)}`:basketIntent?"baskets":exactCart.has(normalized)?"cart":candidate&&prodIntent?`product_${prodIntent}`:"";
 
   if(pre.shadow_mode){
     if(deterministicHint){
       await sb.rpc("record_service_trigger_event_v1",{
         p_conversation_id:pre.conversation.id,p_message_id:pre.message.id,
-        p_trigger_id:uuid(trigger?.trigger?.id)||null,p_trigger_key:trigger?.trigger?.key||deterministicHint,
-        p_action_type:trigger?.trigger?.action_type||deterministicHint,p_execution_mode:"shadow",
-        p_result:{hint:deterministicHint,candidate: candidate?{id:candidate.id,name:candidate.name,score:candidate.score}:null},
+        p_trigger_id:uuid(triggerSupported?trigger?.trigger?.id:null)||null,
+        p_trigger_key:triggerSupported?trigger?.trigger?.key:deterministicHint,
+        p_action_type:triggerSupported?triggerAction:deterministicHint,p_execution_mode:"shadow",
+        p_result:{hint:deterministicHint,candidate:candidate?{id:candidate.id,name:candidate.name,score:candidate.score}:null},
         p_estimated_ai_calls_saved:0,p_estimated_input_tokens_avoided:0
       });
     }
     return proxyV3();
   }
 
-  // Cliques/botões já têm execução determinística madura no worker v3.
-  if(interactiveId)return proxyV3();
-  if(!deterministicHint)return proxyV3();
+  // Cliques/botões continuam no caminho determinístico já homologado do v3.
+  if(interactiveId||!deterministicHint)return proxyV3();
 
   const workerId=`conversation-cost-first-${crypto.randomUUID()}`;
   const {data:job,error:claimError}=await sb.rpc("claim_conversation_job_v2",{p_worker:workerId,p_expected_job_id:expectedJobId});
@@ -127,25 +130,40 @@ Deno.serve(async(req:Request)=>{
     if(error)throw new Error("reply_queue_failed");return data;
   };
   const record=async(key:string,action:string,result:any,saved=1)=>sb.rpc("record_service_trigger_event_v1",{
-    p_conversation_id:job.conversation_id,p_message_id:job.message_id,p_trigger_id:uuid(trigger?.trigger?.id)||null,p_trigger_key:key,
+    p_conversation_id:job.conversation_id,p_message_id:job.message_id,p_trigger_id:uuid(triggerSupported?trigger?.trigger?.id:null)||null,p_trigger_key:key,
     p_action_type:action,p_execution_mode:"deterministic",p_result:result||{},p_estimated_ai_calls_saved:saved,p_estimated_input_tokens_avoided:0
   });
-  const block=trigger?.block||null;
+  const showBaskets=async(sourceKey:string,saved:number)=>{
+    const {data:baskets,error}=await sb.rpc("get_whatsapp_simple_baskets_v1");if(error)throw new Error("basket_search_failed");
+    const rows=arr(baskets);
+    if(!rows.length)await queueReply(`Poxa${vars.name_suffix}, ainda não há cestas liberadas no atendimento.`,"text",null,null,"baskets_unavailable",{},1);
+    else if(rows.length<=10){const text=`Claro${vars.name_suffix} 😊 Estas são as nossas cestas disponíveis hoje:`;await queueReply(text,"interactive",null,basketListInteractive(rows,text),"show_baskets",{baskets:rows},1)}
+    else{const text=`Claro${vars.name_suffix} 😊 Estas são as nossas cestas disponíveis hoje:\n\n${rows.map((b:any)=>`• ${clean(b.display_name||b.name,80)} — ${money(b.base_price)}`).join("\n")}`;await queueReply(text,"text",null,null,"show_baskets",{baskets:rows},1)}
+    await record(sourceKey,"show_baskets",{count:rows.length},saved);
+    await finish({plan:{intent:"baskets",deterministic:true,cost_first:true},action_result:{count:rows.length}});
+    return rows.length;
+  };
+  const showCart=async(sourceKey:string,saved:number)=>{
+    const {data:cart,error}=await sb.rpc("get_whatsapp_sales_cart_v1",{p_conversation_id:job.conversation_id});if(error)throw new Error("cart_read_failed");
+    await queueReply(cartText(cart),"text",null,null,"cart_summary",cart||{},1);
+    await record(sourceKey,"cart",{exists:Boolean(cart?.exists)},saved);
+    await finish({plan:{intent:"cart",deterministic:true,cost_first:true},action_result:cart||{}});
+    return cart;
+  };
 
   try{
-    if(trigger){
-      const action=clean(trigger.trigger.action_type,80);
-      if(action==="human"){
+    if(triggerSupported){
+      if(triggerAction==="human"){
         await sb.rpc("queue_human_handoff_v1",{p_conversation_id:job.conversation_id,p_reason:"customer_requested_human",p_message_id:job.message_id,p_priority:2,p_summary:"Cliente pediu atendimento humano; contexto preservado pelo roteador cost-first.",p_context:{source:"whatsapp_cost_first_v1"}});
-        const text=renderText(block?.body_template||"Vou encaminhar seu atendimento para a equipe.",vars);
+        const text=renderText(trigger?.block?.body_template||"Vou encaminhar seu atendimento para a equipe.",vars);
         await queueReply(text,"text",null,null,"human_handoff",{trigger:trigger.trigger.key},1);
         await record(trigger.trigger.key,"human",{handoff:true},1);
         await finish({plan:{intent:"human",deterministic:true,cost_first:true},action_result:{handoff:true}});
         return json({ok:true,status:"done",worker_version:4,route:"trigger_human"});
       }
-      if(action==="send_block"&&block){
-        const text=renderText(block.body_template,vars);
-        const mode=clean(block.delivery_mode,30)||"text";
+      if(triggerAction==="send_block"){
+        const block=trigger.block;
+        const text=renderText(block.body_template,vars),mode=clean(block.delivery_mode,30)||"text";
         const imageUrl=renderText(block.image_url_template||"",vars)||null;
         const interactive=block.interactive_template?renderJson(block.interactive_template,vars):null;
         await queueReply(text,mode,imageUrl,interactive,"trigger_block",{trigger:trigger.trigger.key,block:block.key},1);
@@ -153,32 +171,30 @@ Deno.serve(async(req:Request)=>{
         await finish({plan:{intent:"answer",deterministic:true,cost_first:true},action_result:{trigger:trigger.trigger.key,block:block.key}});
         return json({ok:true,status:"done",worker_version:4,route:"trigger_block",trigger:trigger.trigger.key});
       }
-      await record(trigger.trigger.key,action,{fallback:"unsupported_configured_action"},0);
-      return proxyV3();
+      if(triggerAction==="show_baskets"){
+        const count=await showBaskets(trigger.trigger.key,1);
+        return json({ok:true,status:"done",worker_version:4,route:"trigger_baskets",count});
+      }
+      if(triggerAction==="show_cart"){
+        await showCart(trigger.trigger.key,1);
+        return json({ok:true,status:"done",worker_version:4,route:"trigger_cart"});
+      }
     }
 
     if(basketIntent){
-      const {data:baskets,error}=await sb.rpc("get_whatsapp_simple_baskets_v1");if(error)throw new Error("basket_search_failed");
-      const rows=arr(baskets);if(!rows.length){await queueReply(`Poxa${vars.name_suffix}, ainda não há cestas liberadas no atendimento.`,"text",null,null,"baskets_unavailable",{},1)}
-      else if(rows.length<=10){const text=`Claro${vars.name_suffix} 😊 Estas são as nossas cestas disponíveis hoje:`;await queueReply(text,"interactive",null,basketListInteractive(rows,text),"show_baskets",{baskets:rows},1)}
-      else{const text=`Claro${vars.name_suffix} 😊 Estas são as nossas cestas disponíveis hoje:\n\n${rows.map((b:any)=>`• ${clean(b.display_name||b.name,80)} — ${money(b.base_price)}`).join("\n")}`;await queueReply(text,"text",null,null,"show_baskets",{baskets:rows},1)}
-      await record("builtin_baskets_v1","show_baskets",{count:rows.length},0);
-      await finish({plan:{intent:"baskets",deterministic:true,cost_first:true},action_result:{count:rows.length}});
-      return json({ok:true,status:"done",worker_version:4,route:"baskets"});
+      const count=await showBaskets("builtin_baskets_v1",0);
+      return json({ok:true,status:"done",worker_version:4,route:"baskets",count});
     }
 
     if(exactCart.has(normalized)){
-      const {data:cart,error}=await sb.rpc("get_whatsapp_sales_cart_v1",{p_conversation_id:job.conversation_id});if(error)throw new Error("cart_read_failed");
-      const text=cartText(cart);await queueReply(text,"text",null,null,"cart_summary",cart||{},1);
-      await record("builtin_cart_v1","cart",{exists:Boolean(cart?.exists)},0);
-      await finish({plan:{intent:"cart",deterministic:true,cost_first:true},action_result:cart||{}});
+      await showCart("builtin_cart_v1",0);
       return json({ok:true,status:"done",worker_version:4,route:"cart"});
     }
 
     if(candidate&&prodIntent==="search"){
-      const body=`Encontrei esta opção${vars.name_suffix}: ${clean(candidate.name,100)} — ${money(candidate.price)}.`;
-      if(candidate.image_url)await queueReply(body,"image",candidate.image_url,null,"show_product",candidate,Number(candidate.confidence||1));
-      else await queueReply(body,"text",null,null,"show_product",candidate,Number(candidate.confidence||1));
+      const prefix=customerFirst?`${customerFirst}, encontrei esta opção:`:"Encontrei esta opção:";
+      const text=`${prefix} ${clean(candidate.name,100)} — ${money(candidate.price)}.`;
+      await queueReply(text,"text",null,null,"show_product",candidate,Number(candidate.confidence||1));
       await record("builtin_product_resolver_v1","search_product",{candidate_id:candidate.id,score:candidate.score},1);
       await finish({plan:{intent:"search",deterministic:true,cost_first:true},action_result:{product:candidate}});
       return json({ok:true,status:"done",worker_version:4,route:"product_search"});
@@ -197,7 +213,8 @@ Deno.serve(async(req:Request)=>{
       return json({ok:true,status:"done",worker_version:4,route:"product_add"});
     }
 
-    return proxyV3();
+    // Inatingível por design: todos os fallbacks devem ocorrer antes do claim.
+    throw new Error("deterministic_route_not_resolved");
   }catch(error){
     const code=clean(error instanceof Error?error.message:"cost_first_failed",100).replace(/[^a-z0-9_]+/gi,"_").toLowerCase();
     try{await finish({},code);return json({ok:false,handled:true,error:code,worker_version:4},200)}catch{return json({ok:false,error:"completion_uncertain_review_required",worker_version:4},500)}
