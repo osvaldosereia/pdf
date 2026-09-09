@@ -3,8 +3,9 @@
   const C=window.DA_CATALOGO_CONFIG||{};
   const $=id=>document.getElementById(id);
   const params=new URLSearchParams(location.search);
-  const token=(params.get('c')||params.get('token')||'').trim();
-  let state={session:null,items:[],cart:null,whatsappUrl:'',filter:''};
+  const token=(params.get('c')||params.get('t')||params.get('token')||'').trim();
+  const initialQuery=(params.get('q')||'').trim();
+  let state={session:null,items:[],cart:null,whatsappUrl:'',filter:initialQuery};
   const money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   const text=v=>String(v??'').replace(/\s+/g,' ').trim();
   const toast=msg=>{const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),1800)};
@@ -29,7 +30,7 @@
   function render(){
     const host=$('productGrid');host.innerHTML='';
     const list=filtered();
-    if(!list.length){$('stateBox').textContent=state.items.length?'Nenhum produto encontrado nesta busca.':'Nenhum produto disponível neste catálogo.';$('stateBox').classList.remove('hidden');host.classList.add('hidden');totals();return}
+    if(!list.length){$('stateBox').textContent=state.items.length?'Nenhum produto encontrado nesta busca.':'Nenhum produto disponível nesta vitrine.';$('stateBox').classList.remove('hidden');host.classList.add('hidden');totals();return}
     $('stateBox').classList.add('hidden');host.classList.remove('hidden');
     for(const item of list){
       const p=item.product||{},frag=$('productTemplate').content.cloneNode(true),card=frag.querySelector('.product');
@@ -54,14 +55,15 @@
     }catch(e){toast(e.message||'Não foi possível alterar');card.classList.remove('busy')}
   }
   async function open(){
-    if(!/^[a-f0-9]{64}$/i.test(token)){ $('stateBox').textContent='Este link de catálogo é inválido ou incompleto.';return }
+    if(!/^[a-f0-9]{64}$/i.test(token)){ $('stateBox').textContent='Este link de vitrine é inválido ou incompleto.';return }
     try{
       const data=await api('open');state.session=data.session;state.items=data.items||[];state.cart=data.cart||null;state.whatsappUrl=data.whatsapp_url||'';
-      $('catalogTitle').textContent=data.session?.title||'Catálogo Dona Antônia';
+      $('catalogTitle').textContent=initialQuery?`Resultados para ${initialQuery}`:(data.session?.title||'Vitrine Dona Antônia');
+      $('searchInput').value=initialQuery;
       const expires=data.session?.expires_at?new Date(data.session.expires_at):null;
-      $('catalogSubtitle').textContent=expires?`Escolha o que quiser. Este link fica disponível até ${expires.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`:'Escolha o que quiser e continue no WhatsApp.';
+      $('catalogSubtitle').textContent=expires?`Escolha os produtos e ajuste as quantidades. Link disponível até ${expires.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}.`:'Escolha os produtos e ajuste as quantidades.';
       render();
-    }catch(e){$('stateBox').textContent=e.message==='catalog_unavailable'?'Este catálogo expirou ou não está mais disponível.':'Não foi possível abrir este catálogo.'}
+    }catch(e){$('stateBox').textContent=e.message==='catalog_unavailable'?'Esta vitrine expirou ou não está mais disponível.':'Não foi possível abrir esta vitrine.'}
   }
   $('searchInput').addEventListener('input',e=>{state.filter=e.target.value;render()});
   $('whatsappButton').addEventListener('click',async()=>{
