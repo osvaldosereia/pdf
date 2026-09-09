@@ -13,6 +13,12 @@ verify_jwt = false
 [functions.conversation-worker-v2]
 verify_jwt = false
 
+[functions.conversation-worker-v3]
+verify_jwt = false
+
+[functions.conversation-worker-v4]
+verify_jwt = false
+
 [functions.bling-products-ingest]
 verify_jwt = false
 
@@ -35,6 +41,12 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.admin-automation-builder-v1]
+verify_jwt = true
+
+[functions.admin-service-intelligence-v1]
+verify_jwt = true
+
+[functions.admin-service-intelligence-v2]
 verify_jwt = true
 
 [functions.automation-dispatcher-v1]
