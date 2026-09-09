@@ -7,73 +7,93 @@
   <meta http-equiv="Cache-Control" content="no-store">
   <title>Dona Antônia · Inteligência do Atendimento</title>
   <link rel="stylesheet" href="../admin-v3/style.css?v=20260907-02">
-  <link rel="stylesheet" href="../admin-v3/service-intelligence.css?v=20260908-02">
+  <link rel="stylesheet" href="../admin-v3/service-intelligence.css?v=20260908-03">
 </head>
 <body>
-<div class="si-shell">
-  <header class="si-top">
-    <div>
-      <div class="eyebrow">Dona Antônia · WhatsApp</div>
-      <h1>Como a IA atende</h1>
-      <p>Cadastre aqui somente o que a IA precisa saber para atender e vender bem.</p>
+<div class="si-page">
+  <header class="si-topbar">
+    <div class="si-topbar-copy">
+      <a class="si-back" href="./" aria-label="Voltar ao Admin">←</a>
+      <div>
+        <div class="eyebrow">Inteligência do atendimento</div>
+        <h1>Como a IA atende</h1>
+        <p>Informações, orientações e regras que guiam o atendimento e as vendas.</p>
+      </div>
     </div>
     <div class="si-actions">
-      <a class="button secondary" href="./">← Admin</a>
-      <button id="siRefresh" class="button secondary" type="button">Atualizar</button>
+      <button id="siImportMd" class="button secondary" type="button">Importar .md</button>
+      <button id="siExportMd" class="button secondary" type="button">Exportar .md</button>
+      <button id="siRefresh" class="button primary" type="button">Atualizar</button>
+      <input id="siImportFile" class="hidden" type="file" accept=".md,text/markdown,text/plain">
     </div>
   </header>
 
-  <div id="siAuthWarning" class="ops-alert hidden">Faça login no Admin principal antes de abrir esta tela.</div>
+  <main class="si-shell">
+    <div id="siAuthWarning" class="ops-alert hidden">Faça login no Admin principal antes de abrir esta tela.</div>
 
-  <section id="siMetrics" class="metrics"></section>
+    <section id="siMetrics" class="metrics"></section>
 
-  <section class="si-simple-help">
-    <strong>É simples:</strong> escolha uma área, escreva a orientação e publique. Preço, estoque e fotos dos produtos continuam vindo automaticamente do cadastro feito pelo contador.
-  </section>
-
-  <nav class="si-tabs" aria-label="Áreas da inteligência">
-    <button class="active" data-tab="knowledge">O que a IA deve saber</button>
-    <button data-tab="guidance">Como a IA deve atender</button>
-    <button data-tab="procedure">Regras importantes</button>
-  </nav>
-
-  <div class="si-grid">
-    <section class="panel si-list-panel">
-      <div class="panel-head">
-        <div>
-          <div class="eyebrow">Cadastrados</div>
-          <h2 id="siListTitle">O que a IA deve saber</h2>
-        </div>
-        <button id="siNew" class="button primary small" type="button">+ Adicionar</button>
+    <section class="si-intro panel">
+      <div class="si-intro-icon">IA</div>
+      <div>
+        <strong>Ensine a IA como um funcionário novo</strong>
+        <p>Cadastre apenas conhecimento estável e regras de atendimento. Preço, estoque, fotos e outras verdades comerciais continuam vindo automaticamente do sistema.</p>
       </div>
-      <div class="search"><span>⌕</span><input id="siSearch" type="search" placeholder="Buscar"></div>
-      <div id="siList" class="si-list"></div>
-    </section>
-
-    <section class="panel si-editor">
-      <div class="panel-head">
-        <div>
-          <div class="eyebrow">Editar</div>
-          <h2 id="siEditorTitle">Nova informação</h2>
-        </div>
-        <span id="siStatus" class="badge">Rascunho</span>
-      </div>
-      <form id="siForm"></form>
-      <div class="si-editor-actions">
-        <button id="siSave" class="button primary" type="button">Salvar</button>
-        <button id="siPublish" class="button secondary" type="button">Publicar</button>
-        <button id="siArchive" class="button secondary" type="button">Arquivar</button>
+      <div class="si-file-hint">
+        <strong>Revisar com IA</strong>
+        <span>Exporte o .md, peça melhorias para uma IA e importe o arquivo revisado. Novas regras podem ser criadas pelo próprio arquivo.</span>
       </div>
     </section>
-  </div>
 
-  <section class="si-note">
-    <strong>Não cadastre aqui:</strong> preço atual, estoque atual ou dados do Bling. Essas informações vêm do sistema automaticamente para evitar respostas erradas.
-  </section>
+    <nav class="si-tabs panel" aria-label="Áreas da inteligência">
+      <button class="active" data-tab="knowledge"><span>01</span><strong>O que a IA deve saber</strong><small>Fatos estáveis da empresa</small></button>
+      <button data-tab="guidance"><span>02</span><strong>Como a IA deve atender</strong><small>Comportamento e condução</small></button>
+      <button data-tab="procedure"><span>03</span><strong>Regras importantes</strong><small>Gatilhos e procedimentos</small></button>
+    </nav>
 
-  <div id="toastRegion" class="toasts" aria-live="polite"></div>
+    <div class="si-grid">
+      <section class="panel si-list-panel">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Cadastrados</div>
+            <h2 id="siListTitle">O que a IA deve saber</h2>
+          </div>
+          <button id="siNew" class="button primary small" type="button">+ Adicionar</button>
+        </div>
+        <div class="si-list-toolbar">
+          <div class="search"><span>⌕</span><input id="siSearch" type="search" placeholder="Buscar nesta área"></div>
+        </div>
+        <div id="siList" class="si-list"></div>
+      </section>
+
+      <section class="panel si-editor">
+        <div class="panel-head">
+          <div>
+            <div class="eyebrow">Editar</div>
+            <h2 id="siEditorTitle">Nova informação</h2>
+          </div>
+          <span id="siStatus" class="badge">Rascunho</span>
+        </div>
+        <div class="si-editor-body">
+          <form id="siForm"></form>
+          <div class="si-editor-actions">
+            <button id="siSave" class="button primary" type="button">Salvar</button>
+            <button id="siPublish" class="button secondary" type="button">Publicar</button>
+            <button id="siArchive" class="button secondary" type="button">Arquivar</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="si-note">
+      <strong>Não cadastre aqui:</strong> preço atual, estoque atual ou dados do Bling. Essas informações vêm do sistema automaticamente para evitar respostas erradas.
+    </section>
+
+    <div id="toastRegion" class="toasts" aria-live="polite"></div>
+  </main>
 </div>
 <script src="./config.js?v=20260908-02"></script>
 <script src="../admin-v3/service-intelligence.js?v=20260908-02"></script>
+<script src="../admin-v3/service-intelligence-io.js?v=20260908-01"></script>
 </body>
 </html>
