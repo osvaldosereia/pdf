@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Dona Antônia V2 · Homologação</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./collections.css">
+  <link rel="stylesheet" href="./quick-purchase.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Ir para o início"><strong>Dona Antônia</strong><span>Nova versão em homologação</span></a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#/">Início</a>
+      <a href="#/categorias">Categorias</a>
+      <a href="#/ofertas">Ofertas</a>
+      <a href="#/cestas">Cestas</a>
+      <a href="#/kits">Kits</a>
+      <a href="#/compra-rapida">Compra rápida</a>
+      <a href="#/favoritos">Favoritos <strong id="favorites-count">0</strong></a>
+    </nav>
+    <div class="top-actions">
+      <div id="catalog-status" class="status" aria-live="polite">Inicializando catálogo…</div>
+      <button id="cart-button" class="cart-button" type="button" aria-expanded="false"><span>Minha compra</span><strong id="cart-count">0</strong></button>
+    </div>
+  </header>
+
+  <main id="app" class="page" aria-live="polite"></main>
+
+  <aside id="cart-drawer" class="cart-drawer" aria-hidden="true" aria-labelledby="cart-title">
+    <div class="cart-head"><div><span class="eyebrow">RASCUNHO LOCAL</span><h2 id="cart-title">Minha compra</h2></div><button id="cart-close" type="button" aria-label="Fechar carrinho">×</button></div>
+    <div id="cart-items" class="cart-items"></div>
+    <div class="cart-footer"><div><span>Total</span><strong id="cart-total">R$ 0,00</strong></div><a class="add-button" href="../checkout/index.html">Revisar checkout de teste</a><button id="cart-clear" type="button">Limpar compra</button><small>O checkout apenas valida e monta o pedido localmente. Nenhum envio real está habilitado.</small></div>
+  </aside>
+  <div id="cart-overlay" class="cart-overlay" hidden></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Testes homologação de produtos V2</title></head><body><pre id="out"></pre><script type="module">
+import {
+  HUMAN_CONFIRMATIONS,
+  HOMOLOGATION_STATUS,
+  resolveSavedDraftProduct,
+  evaluateProductHomologation,
+  saveProductHomologation,
+  approveProductHomologation,
+  buildHomologationEnvelope
+} from '../services/product-homologation-service.js';
+
+localStorage.removeItem('da_v2:product-homologations');
+const out=document.getElementById('out'),results=[];
+const test=(name,fn)=>{try{fn();results.push(`✅ ${name}`)}catch(error){results.push(`❌ ${name}: ${error.message}`)}};
+const assert=(value,message)=>{if(!value)throw new Error(message)};
+const product={id:'7891234567890',firebaseKey:'7891234567890',codigo:'1001',gtin:'7891234567890',nome:'Arroz Tipo 1 5kg',descricao:'Arroz tipo 1 em embalagem de 5 kg.',ncm:'10063021',categoria:'Mercearia',subcategoria:'Arroz',marca:'Marca Teste',fornecedor:'Fornecedor Teste',embalagem:'Pacote 5 kg',tags:'arroz, cesta básica',preco_custo:20,preco:29.9,estoque:10,validade:'2027-12-31',gondola:'A1',prateleira:'2',imagem:'',captureSessionId:'capture_123'};
+const saved={id:'7891234567890',savedAt:new Date().toISOString(),original:{gtin:'7891234567890',captureSessionId:'capture_123',source:'ean-photo-capture'},draft:{...product,captureSessionId:undefined},changes:[{field:'nome',before:'',after:product.nome}]};
+const confirmations=Object.fromEntries(HUMAN_CONFIRMATIONS.map(item=>[item.id,true]));
+
+test('preserva sessão de fotos do objeto original',()=>{const resolved=resolveSavedDraftProduct(saved);assert(resolved.captureSessionId==='capture_123','sessão de fotos foi perdida')});
+test('produto completo exige confirmações humanas',()=>{const evaluation=evaluateProductHomologation(product,{});assert(!evaluation.ready,'não deveria estar pronto');assert(evaluation.automaticPassed===evaluation.automaticTotal,'verificações automáticas deveriam passar')});
+test('produto completo e confirmado fica pronto',()=>{const evaluation=evaluateProductHomologation(product,confirmations);assert(evaluation.ready,'deveria estar pronto');assert(evaluation.status===HOMOLOGATION_STATUS.READY,'status incorreto')});
+test('custo zero bloqueia homologação',()=>{const evaluation=evaluateProductHomologation({...product,preco_custo:0},confirmations);assert(!evaluation.ready,'custo zero deveria bloquear');assert(evaluation.blockingIssues.some(item=>item.id==='commercial'),'bloqueio comercial ausente')});
+test('data impossível bloqueia homologação',()=>{const evaluation=evaluateProductHomologation({...product,validade:'2027-02-31'},confirmations);assert(evaluation.blockingIssues.some(item=>item.id==='inventory'),'validade inválida não detectada')});
+test('imagem ou sessão de fotos é obrigatória',()=>{const evaluation=evaluateProductHomologation({...product,imagem:'',captureSessionId:''},confirmations);assert(evaluation.blockingIssues.some(item=>item.id==='image_source'),'fonte de imagem não detectada')});
+test('aprovação gera envelope sem publicação externa',()=>{const record=saveProductHomologation(saved,confirmations);assert(record.status===HOMOLOGATION_STATUS.READY,'registro deveria estar pronto');const approved=approveProductHomologation(record.id);assert(approved.status===HOMOLOGATION_STATUS.APPROVED,'aprovação falhou');const envelope=buildHomologationEnvelope(approved);assert(envelope.canPublish===false&&envelope.externalWriteAllowed===false,'envelope não deveria permitir publicação');assert(envelope.product.captureSessionId==='capture_123','envelope perdeu sessão de fotos')});
+
+out.textContent=results.join('\n');
+</script></body></html>

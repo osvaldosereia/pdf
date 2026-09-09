@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Testes · Reprocessamento de pedidos V2</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:940px;margin:40px auto;padding:0 18px;color:#18211b}article{padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}.ok{background:#ecfdf3;border-color:#abefc6}.error{background:#fff1f0;border-color:#fecdca}pre{white-space:pre-wrap;overflow:auto}</style>
+</head>
+<body>
+  <h1>Reprocessamento controlado de pedidos V2</h1>
+  <div id="results"></div>
+  <script type="module">
+    import {
+      prepareDispatchSession,
+      markWhatsAppOpened,
+      registerChannelResult,
+      findDispatchSession,
+      clearDispatchSessions,
+      DISPATCH_STATUS
+    } from '../services/order-dispatch-service.js';
+    import {
+      createOrderReprocessService,
+      REPROCESS_STATUS
+    } from '../services/order-reprocess-service.js';
+
+    const results = document.getElementById('results');
+    let passed = 0;
+    let failed = 0;
+    const test = (name, condition, detail='') => {
+      const ok = Boolean(condition); ok ? passed++ : failed++;
+      results.insertAdjacentHTML('beforeend', `<article class="${ok?'ok':'error'}"><strong>${ok?'✓':'✕'} ${name}</strong>${detail?`<pre>${String(detail)}</pre>`:''}</article>`);
+    };
+
+    const envelope = (id, fingerprint) => ({
+      id,
+      fingerprint,
+      ambiente:'homologation',
+      criadoEm:'2026-07-18T12:00:00.000Z',
+      order:{
+        ambiente:'homologation',
+        cliente:{nome:'Cliente Teste',telefone:'65999999999',cpf:''},
+        entrega:{logradouro:'Rua Teste',numero:'10',bairro:'Centro',cidade:'Cuiabá'},
+        pagamento:{tipo:'pix',trocoPara:0},
+        itens:[{firebaseKey:'produto-1',id:'produto-1',nome:'Arroz Teste',quantidade:2,precoUnitario:10,subtotal:20}],
+        total:20,
+        observacoes:''
+      }
+    });
+
+    const activeConfig = {
+      firebaseWriteEnabled:true,
+      makeWriteEnabled:true,
+      makeWebhookUrl:'https://hook.us1.make.com/test',
+      maximumAttempts:3,
+      reprocessReasonMinimumLength:8,
+      reprocessConfirmationTtlMs:600000
+    };
+
+    clearDispatchSessions();
+    localStorage.removeItem('da_v2:order-reprocess-requests');
+
+    let firebaseCalls = 0;
+    let makeCalls = 0;
+    const service = createOrderReprocessService({
+      config:activeConfig,
+      environmentSnapshotFn:()=>({name:'homologation',externalWriteEnabled:true}),
+      assertWriteFn:()=>true,
+      firebaseAdapter:async current=>{
+        firebaseCalls++;
+        return {success:true,attempts:1,detail:`Firebase confirmou ${current.id}`};
+      },
+      makeAdapterFactory:options=>async current=>{
+        makeCalls++;
+        return {
+          success:true,
+          attempts:1,
+          detail:`Make e Bling confirmaram ${current.id}`,
+          bling:{status:'created',completed:true,contactId:'C-1',saleId:'V-1',saleNumber:'1001'}
+        };
+      }
+    });
+
+    const firstEnvelope = envelope('HML-REPROCESS-001','fp-reprocess-001');
+    prepareDispatchSession(firstEnvelope);
+    markWhatsAppOpened(firstEnvelope.id);
+
+    test('WhatsApp não pode ser reprocessado', service.assess(firstEnvelope.id,'whatsapp').eligible === false);
+    test('Make depende do Firebase concluído', service.assess(firstEnvelope.id,'make').eligible === false && service.assess(firstEnvelope.id,'make').reasons.some(item=>/Firebase/i.test(item)));
+    test('Firebase pode ser preparado após WhatsApp', service.assess(firstEnvelope.id,'firebase').eligible === true);
+
+    let shortReasonBlocked = false;
+    try { service.prepare(firstEnvelope.id,'firebase','erro'); }
+    catch (error) { shortReasonBlocked = /pelo menos/i.test(error.message); }
+    test('Motivo curto é bloqueado', shortReasonBlocked);
+
+    const preparedFirebase = service.prepare(firstEnvelope.id,'firebase','Falha temporária HTTP 500');
+    test('Solicitação gera frase e expiração', preparedFirebase.created === true && preparedFirebase.request.confirmationPhrase.includes(firstEnvelope.id) && preparedFirebase.request.expiresAt > Date.now());
+
+    let wrongPhraseBlocked = false;
+    try { await service.execute(preparedFirebase.request.id,'CONFIRMAÇÃO ERRADA'); }
+    catch (error) { wrongPhraseBlocked = /incorreta/i.test(error.message); }
+    test('Frase incorreta impede execução', wrongPhraseBlocked && firebaseCalls === 0);
+
+    const firebaseExecution = await service.execute(preparedFirebase.request.id,preparedFirebase.request.confirmationPhrase);
+    test('Somente Firebase foi chamado', firebaseExecution.success === true && firebaseCalls === 1 && makeCalls === 0);
+    test('Firebase concluído não pode ser repetido', service.assess(firstEnvelope.id,'firebase').eligible === false && findDispatchSession(firstEnvelope.id).channels.firebase.status === DISPATCH_STATUS.SUCCESS);
+
+    const makeAssessment = service.assess(firstEnvelope.id,'make');
+    test('Make é liberado após Firebase', makeAssessment.eligible === true && makeAssessment.remainingAttempts === 3);
+    const preparedMake = service.prepare(firstEnvelope.id,'make','Repetir cenário após falha transitória');
+    const makeExecution = await service.execute(preparedMake.request.id,preparedMake.request.confirmationPhrase);
+    const completedSession = findDispatchSession(firstEnvelope.id);
+    test('Somente Make foi chamado na segunda etapa', makeExecution.success === true && makeCalls === 1 && firebaseCalls === 1);
+    test('Resultado do Bling permanece na sessão', completedSession.channels.make.bling.completed === true && completedSession.channels.make.bling.saleNumber === '1001');
+    test('Canal concluído e Bling confirmado não repetem', service.assess(firstEnvelope.id,'make').eligible === false);
+
+    const limitedEnvelope = envelope('HML-REPROCESS-002','fp-reprocess-002');
+    prepareDispatchSession(limitedEnvelope);
+    markWhatsAppOpened(limitedEnvelope.id);
+    registerChannelResult(limitedEnvelope.id,'firebase',{success:false,attempts:1,detail:'falha 1'});
+    registerChannelResult(limitedEnvelope.id,'firebase',{success:false,attempts:1,detail:'falha 2'});
+    registerChannelResult(limitedEnvelope.id,'firebase',{success:false,attempts:1,detail:'falha 3'});
+    const limited = service.assess(limitedEnvelope.id,'firebase');
+    test('Limite total de tentativas bloqueia nova execução', limited.eligible === false && limited.remainingAttempts === 0);
+
+    const cancelledEnvelope = envelope('HML-REPROCESS-003','fp-reprocess-003');
+    prepareDispatchSession(cancelledEnvelope);
+    markWhatsAppOpened(cancelledEnvelope.id);
+    const toCancel = service.prepare(cancelledEnvelope.id,'firebase','Operador decidiu não repetir agora');
+    const cancelled = service.cancel(toCancel.request.id);
+    test('Solicitação pendente pode ser cancelada', cancelled.status === REPROCESS_STATUS.CANCELLED && service.findPending(cancelledEnvelope.id,'firebase') === null);
+
+    let blockedAdapterCalls = 0;
+    const blockedService = createOrderReprocessService({
+      config:{firebaseWriteEnabled:false,makeWriteEnabled:false,makeWebhookUrl:'',maximumAttempts:3,reprocessReasonMinimumLength:8,reprocessConfirmationTtlMs:600000},
+      environmentSnapshotFn:()=>({name:'homologation',externalWriteEnabled:false}),
+      firebaseAdapter:async()=>{blockedAdapterCalls++;return {success:true};},
+      assertWriteFn:()=>{throw new Error('não deveria executar');}
+    });
+    const blockedEnvelope = envelope('HML-REPROCESS-004','fp-reprocess-004');
+    prepareDispatchSession(blockedEnvelope);
+    markWhatsAppOpened(blockedEnvelope.id);
+    const blockedRequest = blockedService.prepare(blockedEnvelope.id,'firebase','Teste com escrita externa desabilitada');
+    const blockedResult = await blockedService.execute(blockedRequest.request.id,blockedRequest.request.confirmationPhrase);
+    const blockedSession = findDispatchSession(blockedEnvelope.id);
+    test('Configuração bloqueada não chama adaptador externo', blockedResult.blocked === true && blockedAdapterCalls === 0);
+    test('Bloqueio de configuração não consome tentativa', blockedSession.channels.firebase.attempts === 0);
+
+    const exceptionEnvelope = envelope('HML-REPROCESS-005','fp-reprocess-005');
+    prepareDispatchSession(exceptionEnvelope);
+    markWhatsAppOpened(exceptionEnvelope.id);
+    const exceptionService = createOrderReprocessService({
+      config:activeConfig,
+      environmentSnapshotFn:()=>({name:'homologation',externalWriteEnabled:true}),
+      assertWriteFn:()=>true,
+      firebaseAdapter:async()=>{throw new Error('Falha de rede simulada');}
+    });
+    const exceptionRequest = exceptionService.prepare(exceptionEnvelope.id,'firebase','Testar falha inesperada do adaptador');
+    let exceptionCaptured = false;
+    try { await exceptionService.execute(exceptionRequest.request.id,exceptionRequest.request.confirmationPhrase); }
+    catch (error) { exceptionCaptured = /Falha de rede simulada/.test(error.message); }
+    const exceptionSession = findDispatchSession(exceptionEnvelope.id);
+    test('Exceção do adaptador é registrada como falha', exceptionCaptured && exceptionService.findRequest(exceptionRequest.request.id).status === REPROCESS_STATUS.FAILED);
+    test('Exceção consome uma tentativa do canal', exceptionSession.channels.firebase.attempts === 1 && exceptionSession.channels.firebase.status === DISPATCH_STATUS.ERROR);
+
+    const dailyEnvelope = envelope('HML-REPROCESS-006','fp-reprocess-006');
+    prepareDispatchSession(dailyEnvelope);
+    markWhatsAppOpened(dailyEnvelope.id);
+    registerChannelResult(dailyEnvelope.id,'firebase',{success:true,attempts:1,detail:'Firebase concluído'});
+    registerChannelResult(dailyEnvelope.id,'make',{
+      success:false,
+      attempts:1,
+      retryable:false,
+      detail:'Limite diário do Bling atingido',
+      bling:{status:'rate_limited',completed:false,rateLimited:true,rateLimitPeriod:'day',rateLimitValue:120000}
+    });
+    const dailyAssessment = service.assess(dailyEnvelope.id,'make');
+    test('Limite diário do Bling bloqueia reprocessamento manual', dailyAssessment.eligible === false && dailyAssessment.reasons.some(item=>/limite diário/i.test(item)));
+
+    results.insertAdjacentHTML('beforeend', `<h2>${passed} aprovados · ${failed} falharam</h2>`);
+    document.title = failed ? `Falhou (${failed}) · Reprocessamento V2` : `Aprovado (${passed}) · Reprocessamento V2`;
+  </script>
+</body>
+</html>

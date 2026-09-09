@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Testes diagnóstico geral V2</title></head>
+<body><pre id="out"></pre><script type="module">
+import { buildDiagnosticSummary, diagnosticRecommendations } from '../admin/diagnostic-audit.js';
+
+const out=document.getElementById('out');
+const results=[];
+const test=(name,fn)=>{try{fn();results.push(`✅ ${name}`);}catch(error){results.push(`❌ ${name}: ${error.message}`);}};
+const assert=(value,message)=>{if(!value)throw new Error(message);};
+
+const product={nome:'Arroz',codigo:'1',categoria:'Mercearia',preco:20,estoque:10};
+const basket={id:'c1',preco:50,items:[{ref:'1'}]};
+const order={cliente:{nome:'Maria'},itens:[{nome:'Arroz'}]};
+const quality={total:1,withStock:1,withoutStock:0,withoutImage:0,withoutPrice:0,withoutCategory:0,duplicateIds:[],duplicateGtins:[],completeness:{image:100,price:100,category:100,gtin:100,brand:100,packaging:100}};
+const metrics={firebaseMs:250,normalizationMs:20,totalMs:300,productCount:1};
+
+test('diagnóstico completo chega a 100%',()=>{
+  const summary=buildDiagnosticSummary({products:[product],catalogQuality:quality,catalogMetrics:metrics,baskets:[basket],orders:[order],integrationResults:[{status:'ok'}],publicationPlan:{ready:true}});
+  assert(summary.score===100,'pontuação incorreta');
+});
+
+test('qualidade incompleta bloqueia catálogo',()=>{
+  const summary=buildDiagnosticSummary({products:[product],catalogQuality:{...quality,withoutImage:1},catalogMetrics:metrics,baskets:[basket],integrationResults:[{status:'ok'}],publicationPlan:{ready:true}});
+  assert(!summary.checks.find(check=>check.id==='catalog').ok,'catálogo deveria bloquear');
+});
+
+test('estoque zero usa métrica consolidada',()=>{
+  const summary=buildDiagnosticSummary({products:[product],catalogQuality:{...quality,withStock:0,withoutStock:1},catalogMetrics:metrics,baskets:[basket],integrationResults:[{status:'ok'}],publicationPlan:{ready:true}});
+  assert(summary.stockIssues===1,'estoque não detectado');
+});
+
+test('leitura acima de oito segundos gera alerta',()=>{
+  const summary=buildDiagnosticSummary({products:[product],catalogQuality:quality,catalogMetrics:{...metrics,totalMs:9000},baskets:[basket],integrationResults:[{status:'ok'}],publicationPlan:{ready:true}});
+  assert(!summary.checks.find(check=>check.id==='performance').ok,'performance deveria bloquear');
+});
+
+test('recomendações incluem desempenho',()=>{
+  const summary=buildDiagnosticSummary({products:[product],catalogQuality:quality,catalogMetrics:{...metrics,totalMs:9000},baskets:[basket],integrationResults:[{status:'ok'}],publicationPlan:{ready:true}});
+  const recs=diagnosticRecommendations(summary);
+  assert(recs.some(item=>item.id==='performance'),'recomendação de performance ausente');
+});
+
+out.textContent=results.join('\n');
+</script></body></html>

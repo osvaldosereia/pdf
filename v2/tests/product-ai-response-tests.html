@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Testes resposta IA de produtos V2</title></head>
+<body><pre id="out"></pre><script type="module">
+import { parseProductAiResponse, buildProductDraftFromAi } from '../services/product-ai-response.js';
+import { createNewProductSeed } from '../services/ean-service.js';
+
+const out = document.getElementById('out');
+const results = [];
+const assert = (value, message) => { if (!value) throw new Error(message); };
+const test = (name, fn) => { try { fn(); results.push(`✅ ${name}`); } catch (error) { results.push(`❌ ${name}: ${error.message}`); } };
+const request = { id: 'req_1', ean: '7891234567890' };
+
+test('normaliza resposta de alta confiança', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7891234567890', fields: {
+    nome: { value: 'Arroz Tipo 1', confidence: 0.96, source: 'foto_frente' },
+    validade: { value: '31/12/2026', confidence: 0.91, source: 'foto_validade' }
+  } }, request);
+  assert(result.status === 'ready', 'resultado deveria estar pronto');
+  assert(result.fields.find(item => item.field === 'validade').value === '2026-12-31', 'data não normalizada');
+});
+
+test('confiança intermediária exige atenção', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7891234567890', fields: {
+    ncm: { value: '10063021', confidence: 0.72, source: 'pesquisa' }
+  } }, request);
+  assert(result.status === 'attention', 'deveria exigir atenção');
+  assert(result.fields[0].decision === 'review', 'campo deveria exigir revisão');
+});
+
+test('EAN divergente bloqueia toda resposta', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7899999999999', fields: {
+    nome: { value: 'Produto incorreto', confidence: 0.99 }
+  } }, request);
+  assert(result.status === 'blocked', 'EAN divergente deveria bloquear');
+  assert(result.errors.some(item => item.includes('diferente')), 'erro de divergência ausente');
+});
+
+test('campos operacionais são ignorados', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7891234567890', fields: {
+    nome: { value: 'Produto', confidence: 0.95 }, preco: 99.9, estoque: 500
+  } }, request);
+  assert(!result.fields.some(item => item.field === 'preco' || item.field === 'estoque'), 'campo operacional importado');
+  assert(result.warnings.some(item => item.includes('preco') && item.includes('estoque')), 'aviso de campo ignorado ausente');
+});
+
+test('NCM inválido fica bloqueado individualmente', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7891234567890', fields: {
+    nome: { value: 'Produto', confidence: 0.95 }, ncm: { value: '123', confidence: 0.99 }
+  } }, request);
+  const ncm = result.fields.find(item => item.field === 'ncm');
+  assert(ncm.decision === 'blocked', 'NCM inválido deveria bloquear o campo');
+  assert(result.status === 'attention', 'resultado deveria exigir atenção');
+});
+
+test('rascunho aplica apenas campos aceitos', () => {
+  const result = parseProductAiResponse({ requestId: 'req_1', ean: '7891234567890', fields: {
+    nome: { value: 'Arroz Teste', confidence: 0.96 },
+    categoria: { value: 'Mercearia', confidence: 0.75 },
+    marca: { value: 'Marca duvidosa', confidence: 0.2 }
+  } }, request);
+  const seed = createNewProductSeed(request.ean);
+  const built = buildProductDraftFromAi({ seed, result, acceptedFields: ['nome', 'categoria', 'marca'] });
+  assert(built.draft.nome === 'Arroz Teste', 'nome não aplicado');
+  assert(built.draft.categoria === 'Mercearia', 'categoria revisada não aplicada');
+  assert(built.draft.marca === '', 'campo de baixa confiança não deveria ser aplicado');
+  assert(built.draft.source === 'ai-reviewed-draft', 'origem do rascunho incorreta');
+  assert(built.draft.aiAppliedFields.length === 2, 'campos aplicados não registrados');
+});
+
+test('resultado globalmente bloqueado não gera rascunho', () => {
+  const result = parseProductAiResponse({ requestId: 'outra', ean: '7891234567890', fields: { nome: { value: 'Produto', confidence: 0.99 } } }, request);
+  let blocked = false;
+  try { buildProductDraftFromAi({ seed: createNewProductSeed(request.ean), result, acceptedFields: ['nome'] }); } catch { blocked = true; }
+  assert(blocked, 'resultado bloqueado foi aceito');
+});
+
+out.textContent = results.join('\n');
+</script></body></html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Testes · Despacho de pedidos V2</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 18px;color:#18211b}article{padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}.ok{background:#ecfdf3;border-color:#abefc6}.error{background:#fff1f0;border-color:#fecdca}pre{white-space:pre-wrap}</style>
+</head>
+<body>
+  <h1>Despacho de pedidos V2</h1>
+  <div id="results"></div>
+  <script type="module">
+    import {
+      validateDispatchEnvelope,
+      buildDispatchPlan,
+      buildWhatsAppUrl,
+      prepareDispatchSession,
+      findDispatchSession,
+      markWhatsAppOpened,
+      registerChannelResult,
+      dispatchExternalChannels,
+      clearDispatchSessions,
+      DISPATCH_STATUS
+    } from '../services/order-dispatch-service.js';
+
+    const results = document.getElementById('results');
+    let passed = 0;
+    let failed = 0;
+    function test(name, condition, detail = '') {
+      const ok = Boolean(condition); ok ? passed++ : failed++;
+      results.insertAdjacentHTML('beforeend', `<article class="${ok?'ok':'error'}"><strong>${ok?'✓':'✕'} ${name}</strong>${detail?`<pre>${String(detail)}</pre>`:''}</article>`);
+    }
+
+    const envelope = {
+      id:'HML-TESTE-001', fingerprint:'fp-teste-001', ambiente:'homologation',
+      order:{ambiente:'homologation',cliente:{nome:'Cliente Teste',telefone:'65999999999',cpf:''},entrega:{logradouro:'Rua Teste',numero:'10',bairro:'Centro',cidade:'Cuiabá'},pagamento:{tipo:'pix',trocoPara:0},itens:[{firebaseKey:'produto-1',id:'produto-1',nome:'Arroz Teste',quantidade:2,precoUnitario:10,subtotal:20}],total:20,observacoes:''}
+    };
+
+    clearDispatchSessions();
+    const invalid = validateDispatchEnvelope({});
+    test('Envelope vazio é rejeitado', invalid.valid === false && invalid.errors.length >= 4, invalid.errors.join('\n'));
+    test('Envelope completo é aceito', validateDispatchEnvelope(envelope).valid === true);
+
+    const plan = buildDispatchPlan(envelope);
+    test('Ordem dos canais é WhatsApp, Firebase e Make', plan.sequence.join('>') === 'whatsapp>firebase>make', plan.sequence.join(' > '));
+    test('Firebase começa bloqueado', plan.channels.firebase.enabled === false);
+    test('Make começa bloqueado', plan.channels.make.enabled === false);
+    test('Make exige confirmação do Bling', plan.channels.make.requiresBlingConfirmation === true && plan.channels.make.blingMode === 'via_make_only');
+    test('Firebase aponta somente para homologacao_v2/pedidos', plan.channels.firebase.path === `homologacao_v2/pedidos/${envelope.id}`, plan.channels.firebase.path);
+    test('Plano marca o caminho de produção como bloqueado', plan.channels.firebase.productionPathBlocked === true && !plan.channels.firebase.path.startsWith('pedidos/'));
+
+    const whatsappUrl = buildWhatsAppUrl(envelope);
+    test('URL do WhatsApp usa wa.me e mensagem codificada', whatsappUrl.startsWith('https://wa.me/') && whatsappUrl.includes('text='), whatsappUrl.slice(0,100));
+
+    const first = prepareDispatchSession(envelope);
+    test('Primeira preparação cria sessão', first.created === true && first.duplicate === false);
+    test('Sessão começa aguardando WhatsApp', first.session.status === DISPATCH_STATUS.WAITING_WHATSAPP);
+    test('Sessão inicia Bling como não processado', first.session.channels.make.bling.status === 'not_processed');
+    test('Sessão preserva destino isolado do Firebase', first.session.plan.channels.firebase.path === `homologacao_v2/pedidos/${envelope.id}`);
+
+    const second = prepareDispatchSession(envelope);
+    test('Segunda preparação reutiliza sessão', second.created === false && second.duplicate === true && second.session.id === first.session.id);
+
+    const opened = markWhatsAppOpened(envelope.id);
+    test('Abertura do WhatsApp é registrada localmente', opened.channels.whatsapp.status === DISPATCH_STATUS.WHATSAPP_OPENED);
+
+    const makeRecorded = registerChannelResult(envelope.id, 'make', {
+      success:true,
+      attempts:2,
+      status:200,
+      detail:'Venda criada no Bling (1001).',
+      bling:{status:'created',completed:true,contactId:'C-10',saleId:'V-20',saleNumber:'1001',duplicate:false,rateLimited:false}
+    });
+    test('Resultado do Bling fica preservado no canal Make', makeRecorded.channels.make.bling.saleId === 'V-20' && makeRecorded.channels.make.bling.saleNumber === '1001');
+    test('Histórico registra referência da venda Bling', makeRecorded.history[0].blingSaleId === 'V-20' && makeRecorded.history[0].blingSaleNumber === '1001');
+    test('Sessão pode ser localizada pelo envelope', findDispatchSession(envelope.id)?.id === first.session.id);
+
+    let externalBlocked = false;
+    try {
+      await dispatchExternalChannels(envelope, {firebase:async()=>({success:true}),make:async()=>({success:true})});
+    } catch (error) {
+      externalBlocked = /bloqueada|desabilitados/i.test(String(error.message));
+    }
+    test('Escrita externa permanece bloqueada', externalBlocked);
+
+    results.insertAdjacentHTML('beforeend', `<h2>${passed} aprovados · ${failed} falharam</h2>`);
+    document.title = failed ? `Falhou (${failed}) · Despacho V2` : `Aprovado (${passed}) · Despacho V2`;
+  </script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+.ai-review-center{display:flex;flex-direction:column;gap:16px}.ai-suggestion-card{border:1px solid #ddd;border-radius:12px;padding:16px}.ai-suggestion-change{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ai-old-value,.ai-new-value{padding:10px;border-radius:8px}.ai-impact-critical{font-weight:700}.ai-review-actions{display:flex;gap:8px}

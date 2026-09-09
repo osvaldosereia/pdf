@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Testes fotos e IA de produtos V2</title></head>
+<body>
+<pre id="out">Executando…</pre>
+<script type="module">
+import {
+  PRODUCT_PHOTO_SLOTS,
+  createCaptureSession,
+  validateImageFile,
+  validateCaptureSession
+} from '../services/product-photo-service.js';
+import {
+  buildProductAiDraftRequest,
+  buildProductAiFormData,
+  canDispatchProductAiRequest
+} from '../services/product-ai-request.js';
+
+const output = document.getElementById('out');
+const results = [];
+const test = (name, fn) => Promise.resolve().then(fn).then(() => results.push(`✅ ${name}`)).catch(error => results.push(`❌ ${name}: ${error.message}`));
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const imageBlob = () => new Blob(['imagem-teste'], { type: 'image/jpeg' });
+const completeSession = () => {
+  const session = createCaptureSession('7891234567890');
+  session.photos = {
+    front: { blob: imageBlob(), type: 'image/jpeg', size: 12 },
+    ean: { blob: imageBlob(), type: 'image/jpeg', size: 12 },
+    expiry: { blob: imageBlob(), type: 'image/jpeg', size: 12 }
+  };
+  return session;
+};
+
+await test('define quatro fotos separadas', () => {
+  assert(PRODUCT_PHOTO_SLOTS.length === 4, 'quantidade de fotos incorreta');
+  assert(PRODUCT_PHOTO_SLOTS.filter(slot => slot.required).length === 3, 'obrigatoriedade incorreta');
+});
+await test('cria sessão vinculada ao EAN', () => {
+  const session = createCaptureSession('7891234567890');
+  assert(session.ean === '7891234567890' && session.id.includes(session.ean), 'sessão inválida');
+});
+await test('rejeita sessão com EAN inválido', () => {
+  let failed = false;
+  try { createCaptureSession('123'); } catch { failed = true; }
+  assert(failed, 'EAN inválido deveria ser rejeitado');
+});
+await test('rejeita arquivo que não é imagem', () => {
+  const validation = validateImageFile(new Blob(['texto'], { type: 'text/plain' }));
+  assert(!validation.valid, 'arquivo de texto foi aceito');
+});
+await test('exige frente, EAN e validade', () => {
+  const session = createCaptureSession('7891234567890');
+  session.photos = { front: { blob: imageBlob() } };
+  const validation = validateCaptureSession(session);
+  assert(!validation.valid && validation.errors.length === 2, 'fotos ausentes não detectadas');
+});
+await test('foto de informações permanece opcional', () => {
+  const validation = validateCaptureSession(completeSession());
+  assert(validation.valid, 'sessão mínima deveria ser válida');
+});
+await test('monta pacote preparado sem envio externo', () => {
+  const session = completeSession();
+  const request = buildProductAiDraftRequest({ ean: session.ean, session, category: 'Mercearia', subcategory: 'Arroz' });
+  assert(request.mode === 'prepared_only', 'modo inseguro');
+  assert(request.photoSlots.length === 3, 'fotos não relacionadas ao pacote');
+  assert(request.instructions.restrictions.some(item => item.includes('Não gravar no Firebase')), 'restrição de segurança ausente');
+});
+await test('FormData contém metadados e três imagens', () => {
+  const session = completeSession();
+  const request = buildProductAiDraftRequest({ ean: session.ean, session });
+  const form = buildProductAiFormData(request, session);
+  assert(form.has('request') && form.has('photo_front') && form.has('photo_ean') && form.has('photo_expiry'), 'FormData incompleto');
+});
+await test('disparo ao Make continua bloqueado', () => {
+  assert(canDispatchProductAiRequest() === false, 'envio externo foi liberado indevidamente');
+});
+
+output.textContent = results.join('\n');
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Checkout V2 · Homologação</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header>
+    <a href="../site/index.html#/">← Voltar ao catálogo</a>
+    <div><strong>Dona Antônia V2</strong><span>Checkout em homologação</span></div>
+  </header>
+
+  <main>
+    <section class="checkout-intro">
+      <span>FLUXO CONTROLADO</span>
+      <h1>Revise sua compra e seus dados.</h1>
+      <p>O pedido é validado, protegido contra duplicidade e preparado na ordem WhatsApp, Firebase e Make. Somente a prévia manual do WhatsApp está disponível nesta fase.</p>
+    </section>
+
+    <div class="checkout-grid">
+      <form id="checkout-form">
+        <section>
+          <h2>Seus dados</h2>
+          <div class="fields">
+            <label>Nome completo<input name="nome" autocomplete="name" required></label>
+            <label>Telefone<input name="telefone" inputmode="tel" autocomplete="tel" required></label>
+            <label>CPF<input name="cpf" inputmode="numeric"></label>
+            <label>E-mail<input name="email" type="email" autocomplete="email"></label>
+          </div>
+        </section>
+
+        <section>
+          <h2>Entrega</h2>
+          <div class="fields">
+            <label>Cidade<select name="cidade"><option>Cuiabá</option><option>Várzea Grande</option></select></label>
+            <label>Bairro<input name="bairro" required></label>
+            <label class="wide">Rua / avenida<input name="logradouro" required></label>
+            <label>Número<input name="numero" required></label>
+            <label>Complemento<input name="complemento"></label>
+            <label class="wide">Referência<input name="referencia"></label>
+            <label class="wide">Agendamento<input name="agendamento" placeholder="Ex.: amanhã à tarde"></label>
+          </div>
+        </section>
+
+        <section>
+          <h2>Pagamento</h2>
+          <div class="payments">
+            <label><input type="radio" name="pagamento" value="dinheiro" checked> Dinheiro</label>
+            <label><input type="radio" name="pagamento" value="pix"> Pix</label>
+            <label><input type="radio" name="pagamento" value="cartao"> Cartão</label>
+          </div>
+          <label id="troco-field">Troco para<input name="trocoPara" inputmode="decimal"></label>
+        </section>
+
+        <section>
+          <h2>Observações</h2>
+          <textarea name="observacoes" rows="4"></textarea>
+        </section>
+
+        <div id="errors" class="errors" hidden></div>
+        <button class="review-button" type="submit">Preparar pedido de homologação</button>
+      </form>
+
+      <aside>
+        <h2>Resumo</h2>
+        <div id="summary">Carregando compra…</div>
+        <div class="total"><span>Total</span><strong id="total">R$ 0,00</strong></div>
+        <div id="minimum" class="minimum"></div>
+        <div class="summary-security"><strong>Sem envio automático</strong><span>Você verá o estado de cada canal antes de qualquer ação.</span></div>
+      </aside>
+    </div>
+
+    <section id="result" class="result" hidden aria-live="polite"></section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

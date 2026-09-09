@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="pt-BR"><body>
+<h1>Produto save adapter tests</h1>
+<script type="module">
+import {buildProductChangeRequest,canSendExternalWrite} from '../admin/product-save-adapter.js';
+const draft=buildProductChangeRequest({id:'1',nome:'Teste'},{nome:'Novo'});
+console.assert(draft.mode==='draft_only');
+console.assert(!canSendExternalWrite(draft));
+document.body.append('OK');
+</script>
+</body></html>

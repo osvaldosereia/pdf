@@ -1,0 +1,13 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Testes EAN V2</title></head><body><pre id="out"></pre><script type="module">
+import { normalizeEan, validateEan, lookupProductByEan, createNewProductSeed } from '../services/ean-service.js';
+import { normalizeCatalog, createProductIndex } from '../shared/catalog.js';
+const out=document.getElementById('out'),results=[];
+const test=async(name,fn)=>{try{await fn();results.push(`✅ ${name}`)}catch(error){results.push(`❌ ${name}: ${error.message}`)}};
+const assert=(value,message)=>{if(!value)throw new Error(message)};
+await test('normaliza pontuação do EAN',()=>{assert(normalizeEan('789.123-45')==='78912345','normalização incorreta')});
+await test('rejeita EAN curto',()=>{assert(!validateEan('123').valid,'EAN curto deveria falhar')});
+await test('localiza produto existente',async()=>{const products=normalizeCatalog({p1:{id:'p1',codigo:'10',gtin:'7891234567890',nome:'Café',situacao:'A'}});const catalogResult={products,index:createProductIndex(products)};const result=await lookupProductByEan('7891234567890',{catalogResult});assert(result.found,'produto deveria ser encontrado');assert(result.product.nome==='Café','produto incorreto')});
+await test('retorna não encontrado sem erro',async()=>{const products=normalizeCatalog({p1:{id:'p1',codigo:'10',gtin:'7891234567890',nome:'Café',situacao:'A'}});const catalogResult={products,index:createProductIndex(products)};const result=await lookupProductByEan('7891234567891',{catalogResult});assert(!result.found,'não deveria encontrar produto')});
+await test('cria rascunho seguro com EAN preenchido',()=>{const seed=createNewProductSeed('7891234567891',{categoria:'Mercearia'});assert(seed.gtin==='7891234567891','EAN ausente');assert(seed.draftOnly===true,'rascunho deveria ser local');assert(seed.categoria==='Mercearia','categoria padrão ausente')});
+out.textContent=results.join('\n');
+</script></body></html>

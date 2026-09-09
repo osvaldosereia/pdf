@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Dona Antônia V2 · Admin Homologação</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./product-editor.css">
+  <link rel="stylesheet" href="./ean-module.css">
+  <link rel="stylesheet" href="./product-ai-review-module.css">
+  <link rel="stylesheet" href="./product-homologation-module.css">
+  <link rel="stylesheet" href="./kit-module.css">
+  <link rel="stylesheet" href="./quick-purchase-module.css">
+  <link rel="stylesheet" href="./order-module.css">
+  <link rel="stylesheet" href="./integration-module.css">
+  <link rel="stylesheet" href="./publication-module.css">
+  <link rel="stylesheet" href="./diagnostic-module.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <a class="admin-brand" href="./index.html"><strong>Admin Dona Antônia V2</strong><span>Homologação · escrita externa bloqueada</span></a>
+      <nav class="admin-nav" aria-label="Módulos administrativos">
+        <button class="active" type="button" data-module="dashboard">Visão geral</button>
+        <button type="button" data-module="inventory">Estoque e validade</button>
+        <button type="button" data-module="products">Produtos</button>
+        <button type="button" data-module="ean">Consulta por EAN</button>
+        <button type="button" data-module="ai-review">Revisão da IA</button>
+        <button type="button" data-module="product-homologation">Homologação de produtos</button>
+        <button type="button" data-module="registrations">Cadastros auxiliares</button>
+        <button type="button" data-module="baskets">Cestas básicas</button>
+        <button type="button" data-module="kits">Kits promocionais</button>
+        <button type="button" data-module="quick-purchase">Compra rápida</button>
+        <button type="button" data-module="orders">Pedidos e operação</button>
+        <button type="button" data-module="integrations">Integrações</button>
+        <button type="button" data-module="publishing">Publicação</button>
+        <button type="button" data-module="diagnostics">Diagnóstico</button>
+      </nav>
+      <div class="sidebar-note">Edição, fotos, revisão da IA e homologação de produtos funcionam apenas como registros locais. Firebase, GitHub, Make, Bling, pedidos, estoque e publicação continuam sem gravação. A administração de banners foi retirada da V2.</div>
+    </aside>
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div><h1 id="module-title">Visão geral</h1><p id="module-subtitle">Carregando diagnóstico administrativo…</p></div>
+        <div id="admin-status" class="status" aria-live="polite">Verificando catálogo…</div>
+      </header>
+      <div id="admin-content" class="admin-content"></div>
+    </main>
+  </div>
+  <script type="module" src="./app.js"></script>
+  <script type="module" src="./product-editor-module.js"></script>
+  <script type="module" src="./ean-module.js"></script>
+  <script type="module" src="./product-ai-review-module.js"></script>
+  <script type="module" src="./product-homologation-module.js"></script>
+  <script type="module" src="./kit-module.js"></script>
+  <script type="module" src="./quick-purchase-module.js"></script>
+  <script type="module" src="./order-module.js"></script>
+  <script type="module" src="./integration-module.js"></script>
+  <script type="module" src="./publication-module.js"></script>
+  <script type="module" src="./diagnostic-module.js"></script>
+</body>
+</html>

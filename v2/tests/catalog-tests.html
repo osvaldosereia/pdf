@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Testes V2 · Catálogo</title><style>body{font-family:system-ui;margin:0;padding:24px;background:#f6f7f4;color:#18211b}.wrap{max-width:860px;margin:auto}.test{padding:12px 14px;margin:8px 0;border:1px solid #e4e7ec;border-radius:12px;background:#fff}.ok{border-color:#a6dfba;background:#edf8f1}.fail{border-color:#ffb4aa;background:#fff1ef}pre{white-space:pre-wrap}</style></head>
+<body><main class="wrap"><h1>Testes de integridade do catálogo V2</h1><p>Executados apenas no navegador e sem gravar no Firebase ou GitHub.</p><div id="results"></div></main><script type="module">
+import { normalizeCatalog, normalizeProduct, validateCatalog, createProductIndex } from '../shared/catalog.js';
+const output=document.getElementById('results');
+const tests=[];
+function test(name,run){try{const detail=run();tests.push({name,ok:true,detail})}catch(error){tests.push({name,ok:false,detail:error.message||String(error)})}}
+function assert(condition,message){if(!condition)throw new Error(message)}
+test('Normaliza preço brasileiro e estoque',()=>{const p=normalizeProduct({id:'1',nome:'Arroz',preco:'R$ 19,90',estoque:'12'});assert(p.preco===19.9,'Preço incorreto');assert(p.estoque===12,'Estoque incorreto');return `${p.preco} · ${p.estoque}`});
+test('Rejeita catálogo vazio',()=>{const audit=validateCatalog([]);assert(!audit.valid,'Catálogo vazio foi aceito');return audit.errors.join(' ')});
+test('Detecta queda anormal de quantidade',()=>{const list=normalizeCatalog({a:{id:'a',nome:'A'},b:{id:'b',nome:'B'}});const audit=validateCatalog(list,10);assert(!audit.valid,'Queda anormal não foi detectada');return audit.errors.join(' ')});
+test('Detecta identificadores duplicados',()=>{const list=[normalizeProduct({id:'x',nome:'A'}),normalizeProduct({id:'x',nome:'B'})];const audit=validateCatalog(list);assert(!audit.valid,'Duplicidade não foi detectada');return audit.errors.join(' ')});
+test('Cria índice por ID, código e EAN',()=>{const p=normalizeProduct({id:'p1',codigo:'ABC',gtin:'789',nome:'Produto'});const index=createProductIndex([p]);assert(index.get('p1')===p,'ID ausente');assert(index.get('abc')===p,'Código ausente');assert(index.get('789')===p,'EAN ausente');return `${index.size} referências`});
+output.innerHTML=tests.map(item=>`<section class="test ${item.ok?'ok':'fail'}"><strong>${item.ok?'✓':'✕'} ${item.name}</strong><pre>${item.detail||''}</pre></section>`).join('');
+</script></body></html>

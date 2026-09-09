@@ -1,0 +1,6 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Testes UI V2</title><body><h1>Testes dos módulos de interface</h1><pre id="out"></pre><script type="module">
+import { getFavorites, toggleFavorite, clearFavorites } from '../shared/favorites.js';
+import { currentRoute, productRoute } from '../shared/router.js';
+const out=document.getElementById('out');const results=[];const test=(name,fn)=>{try{fn();results.push('✅ '+name)}catch(e){results.push('❌ '+name+' — '+e.message)}};const assert=(condition,message)=>{if(!condition)throw new Error(message)};
+clearFavorites();test('favoritos inicia vazio',()=>assert(getFavorites().length===0,'não iniciou vazio'));toggleFavorite('P1');test('adiciona favorito',()=>assert(getFavorites().includes('P1'),'não adicionou'));toggleFavorite('P1');test('remove favorito',()=>assert(!getFavorites().includes('P1'),'não removeu'));test('rota de produto codifica identificador',()=>assert(productRoute('P 1')==='#/produto/P%201','rota incorreta'));location.hash='#/produto/P1';test('roteador interpreta produto',()=>{const route=currentRoute();assert(route.name==='produto'&&route.segments[1]==='P1','interpretação incorreta')});out.textContent=results.join('\n');
+</script></body></html>

@@ -1,0 +1,19 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>V2 Foundation Tests</title></head><body><pre id="results">Executando…</pre><script type="module">
+import { environmentSnapshot, canWriteExternally } from '../shared/environment.js';
+import { createProduct, validateProduct } from '../models/product.js';
+import { createOrder, validateOrder } from '../models/order.js';
+import { createStockMovement, validateStockMovement } from '../models/stock.js';
+
+const tests=[];
+function test(name,fn){try{fn();tests.push({name,ok:true});}catch(error){tests.push({name,ok:false,error:error.message});}}
+function equal(actual,expected,message='Valores diferentes'){if(actual!==expected)throw new Error(`${message}: ${actual} !== ${expected}`);}
+function truthy(value,message='Valor esperado como verdadeiro'){if(!value)throw new Error(message);}
+
+test('ambiente permanece sem escrita externa',()=>equal(canWriteExternally(),false));
+test('snapshot identifica homologação',()=>equal(environmentSnapshot().name,'homologation'));
+test('produto normaliza campos legados',()=>{const product=createProduct({codigo:'10',produto_nome:'Café',url_imagem:'x.webp',preco_venda:'12.5',estoque:'3',situacao:'A'});equal(product.nome,'Café');equal(product.preco,12.5);truthy(validateProduct(product).valid);});
+test('pedido exige cliente e itens',()=>{const order=createOrder({id:'p1',cliente:{nome:'Ana',telefone:'6599999999'},itens:[{id:'10',nome:'Café',qtd:1,price:12.5}]});truthy(validateOrder(order).valid);});
+test('movimento calcula novo saldo',()=>{const movement=createStockMovement({produtoId:'10',quantidade:-2,saldoAnterior:10,motivo:'Venda'});equal(movement.saldoNovo,8);truthy(validateStockMovement(movement).valid);});
+
+document.getElementById('results').textContent=tests.map(item=>`${item.ok?'✅':'❌'} ${item.name}${item.error?` — ${item.error}`:''}`).join('\n');
+</script></body></html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Testes · Firebase homologação de pedidos V2</title>
+  <style>
+    body{font-family:system-ui,sans-serif;max-width:920px;margin:40px auto;padding:0 18px;color:#18211b}article{padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}.ok{background:#ecfdf3;border-color:#abefc6}.error{background:#fff1f0;border-color:#fecdca}pre{white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <h1>Firebase de homologação de pedidos V2</h1>
+  <div id="results"></div>
+  <script type="module">
+    import {
+      PRODUCTION_ORDERS_NODE,
+      HOMOLOGATION_ORDERS_NODE,
+      validateHomologationOrdersNode,
+      validateHomologationEnvelope,
+      buildHomologationOrderTarget,
+      buildHomologationOrderRecord,
+      createHomologationFirebaseOrderAdapter,
+      homologationFirebaseSnapshot
+    } from '../services/firebase-homologation-order-adapter.js';
+
+    const results = document.getElementById('results');
+    let passed = 0;
+    let failed = 0;
+
+    function test(name, condition, detail = '') {
+      const ok = Boolean(condition);
+      ok ? passed++ : failed++;
+      results.insertAdjacentHTML('beforeend', `<article class="${ok ? 'ok' : 'error'}"><strong>${ok ? '✓' : '✕'} ${name}</strong>${detail ? `<pre>${String(detail)}</pre>` : ''}</article>`);
+    }
+
+    const envelope = {
+      id: 'HML-TESTE-FIREBASE-001',
+      fingerprint: 'fp-firebase-001',
+      ambiente: 'homologation',
+      criadoEm: '2026-07-18T18:00:00.000Z',
+      order: {
+        ambiente: 'homologation',
+        cliente: { nome: 'Cliente Teste', telefone: '65999999999' },
+        entrega: { cidade: 'Cuiabá', bairro: 'Centro', logradouro: 'Rua Teste', numero: '10' },
+        pagamento: { tipo: 'pix', trocoPara: 0 },
+        itens: [{ firebaseKey: 'produto-1', id: 'produto-1', nome: 'Produto Teste', quantidade: 1, precoUnitario: 20, subtotal: 20 }],
+        total: 20
+      }
+    };
+
+    const nodeValidation = validateHomologationOrdersNode();
+    test('Nó padrão de homologação é válido', nodeValidation.valid === true, HOMOLOGATION_ORDERS_NODE);
+    test('Nó de produção é conhecido separadamente', PRODUCTION_ORDERS_NODE === 'pedidos', PRODUCTION_ORDERS_NODE);
+    test('Nó /pedidos é rejeitado pelo adaptador', validateHomologationOrdersNode('pedidos').valid === false);
+    test('Subcaminho dentro de /pedidos também é rejeitado', validateHomologationOrdersNode('pedidos/homologacao').valid === false);
+    test('Envelope de homologação é aceito', validateHomologationEnvelope(envelope).valid === true);
+
+    const target = buildHomologationOrderTarget(envelope);
+    test('Destino usa somente homologacao_v2/pedidos', target.path === `homologacao_v2/pedidos/${envelope.id}`, target.path);
+    test('Destino não começa pelo nó de produção', !target.path.startsWith('pedidos/'), target.path);
+
+    const record = buildHomologationOrderRecord(envelope);
+    test('Registro mantém fingerprint de idempotência', record.fingerprint === envelope.fingerprint && record.idempotencyKey === envelope.fingerprint);
+    test('Registro marca produção como bloqueada', record.productionPathBlocked === true && record.targetPath === target.path);
+
+    let disabledRead = 0;
+    let disabledWrite = 0;
+    const disabledAdapter = createHomologationFirebaseOrderAdapter({
+      enabled: false,
+      readRecordFn: async () => { disabledRead++; return { data: null }; },
+      writeRecordFn: async () => { disabledWrite++; return { status: 200 }; },
+      assertWriteFn: () => { throw new Error('Não deveria ser chamada'); }
+    });
+    const disabledResult = await disabledAdapter(envelope);
+    test('Configuração desabilitada bloqueia sem acessar rede', disabledResult.blocked === true && disabledRead === 0 && disabledWrite === 0);
+
+    let savedNode = '';
+    let savedId = '';
+    let savedPayload = null;
+    const writeAdapter = createHomologationFirebaseOrderAdapter({
+      enabled: true,
+      assertWriteFn: operation => { if (!operation.includes('homologacao_v2/pedidos')) throw new Error('Destino inseguro'); },
+      readRecordFn: async () => ({ data: null, status: 200 }),
+      writeRecordFn: async (node, id, payload) => {
+        savedNode = node;
+        savedId = id;
+        savedPayload = payload;
+        return { status: 200, elapsedMs: 5 };
+      }
+    });
+    const saved = await writeAdapter(envelope);
+    test('Gravação simulada ocorre no nó isolado', saved.success === true && savedNode === 'homologacao_v2/pedidos', savedNode);
+    test('Gravação simulada usa ID determinístico', savedId === envelope.id, savedId);
+    test('Payload salvo preserva pedido e caminho seguro', savedPayload?.order?.cliente?.nome === 'Cliente Teste' && savedPayload?.targetPath === target.path);
+
+    let duplicateWrites = 0;
+    const duplicateAdapter = createHomologationFirebaseOrderAdapter({
+      enabled: true,
+      assertWriteFn: () => {},
+      readRecordFn: async () => ({ data: { fingerprint: envelope.fingerprint, envelopeId: envelope.id } }),
+      writeRecordFn: async () => { duplicateWrites++; return { status: 200 }; }
+    });
+    const duplicate = await duplicateAdapter(envelope);
+    test('Mesmo fingerprint é tratado como duplicidade segura', duplicate.success === true && duplicate.duplicate === true && duplicateWrites === 0);
+
+    let conflictWrites = 0;
+    const conflictAdapter = createHomologationFirebaseOrderAdapter({
+      enabled: true,
+      assertWriteFn: () => {},
+      readRecordFn: async () => ({ data: { fingerprint: 'outro-fingerprint', envelopeId: envelope.id } }),
+      writeRecordFn: async () => { conflictWrites++; return { status: 200 }; }
+    });
+    const conflict = await conflictAdapter(envelope);
+    test('Fingerprint diferente no mesmo ID gera conflito', conflict.success === false && conflict.conflict === true && conflictWrites === 0);
+
+    const snapshot = homologationFirebaseSnapshot();
+    test('Configuração real continua com escrita desligada', snapshot.writeEnabled === false && snapshot.isolated === true, JSON.stringify(snapshot, null, 2));
+
+    results.insertAdjacentHTML('beforeend', `<h2>${passed} aprovados · ${failed} falharam</h2>`);
+    document.title = failed ? `Falhou (${failed}) · Firebase homologação V2` : `Aprovado (${passed}) · Firebase homologação V2`;
+  </script>
+</body>
+</html>

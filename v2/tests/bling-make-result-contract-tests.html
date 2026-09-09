@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Testes · Contrato Bling via Make</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:940px;margin:40px auto;padding:0 18px;color:#18211b}article{padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}.ok{background:#ecfdf3;border-color:#abefc6}.error{background:#fff1f0;border-color:#fecdca}pre{white-space:pre-wrap;overflow:auto}</style>
+</head>
+<body>
+  <h1>Contrato Bling via Make</h1>
+  <div id="results"></div>
+  <script type="module">
+    import { BLING_STATUS, buildExpectedBlingResponseContract, normalizeMakeBlingResult, blingResultSummary } from '../services/bling-make-result-contract.js';
+    const results=document.getElementById('results');let passed=0,failed=0;
+    const test=(name,condition,detail='')=>{const ok=Boolean(condition);ok?passed++:failed++;results.insertAdjacentHTML('beforeend',`<article class="${ok?'ok':'error'}"><strong>${ok?'✓':'✕'} ${name}</strong>${detail?`<pre>${String(detail)}</pre>`:''}</article>`)};
+    const envelope={id:'HML-BLING-001',fingerprint:'fp-bling-001'};
+    const identity={envelopeId:envelope.id,idempotencyKey:envelope.fingerprint};
+    const expected=buildExpectedBlingResponseContract(envelope);
+    test('Contrato esperado bloqueia acesso direto do navegador',expected.directBrowserAccessAllowed===false);
+    test('Contrato leva envelope e idempotência',expected.envelopeId===envelope.id&&expected.idempotencyKey===envelope.fingerprint);
+
+    const created=normalizeMakeBlingResult({...identity,success:true,integrations:{bling:{success:true,status:'created',contact:{status:'created',id:'C-10'},sale:{status:'created',id:'V-20',number:'1001'}}}},envelope);
+    test('Venda criada é confirmada',created.success===true&&created.bling.status===BLING_STATUS.CREATED,JSON.stringify(blingResultSummary(created),null,2));
+
+    const duplicateConfirmed=normalizeMakeBlingResult({...identity,success:true,integrations:{bling:{success:true,duplicate:true,message:'Informações idênticas à última venda salva',contact:{status:'found',id:'C-10'},sale:{status:'existing',id:'V-20',number:'1001',duplicate:true}}}},envelope);
+    test('Duplicidade com referência é sucesso idempotente',duplicateConfirmed.success===true&&duplicateConfirmed.bling.status===BLING_STATUS.DUPLICATE_CONFIRMED);
+
+    const duplicateUnsafe=normalizeMakeBlingResult({...identity,success:false,integrations:{bling:{success:false,duplicate:true,message:'Informações idênticas à última venda salva',sale:{status:'duplicate'}}}},envelope);
+    test('Duplicidade sem ID ou número não vira sucesso',duplicateUnsafe.success===false&&duplicateUnsafe.errors.some(item=>/não retornou ID nem número/i.test(item)),duplicateUnsafe.errors.join('\n'));
+
+    const missingContact=normalizeMakeBlingResult({...identity,success:true,integrations:{bling:{success:true,sale:{status:'created',id:'V-20',number:'1001'}}}},envelope);
+    test('Venda sem confirmação do contato não conclui',missingContact.success===false&&missingContact.errors.some(item=>/contato/i.test(item)),missingContact.errors.join('\n'));
+
+    const secondLimit=normalizeMakeBlingResult({...identity,success:false,integrations:{bling:{success:false,httpStatus:429,error:{type:'TOO_MANY_REQUESTS',message:'Limite de requisições atingido.',period:'second',limit:3}}}},envelope);
+    test('429 por segundo é repetível',secondLimit.retryable===true&&secondLimit.bling.rateLimit.period==='second'&&secondLimit.retryAfterMs>=500);
+
+    const dailyLimit=normalizeMakeBlingResult({...identity,success:false,integrations:{bling:{success:false,httpStatus:429,error:{type:'TOO_MANY_REQUESTS',message:'Limite diário atingido.',period:'day',limit:120000}}}},envelope);
+    test('Limite diário não entra em repetição automática',dailyLimit.retryable===false&&dailyLimit.bling.rateLimit.period==='day');
+
+    const mismatch=normalizeMakeBlingResult({success:true,envelopeId:'OUTRO',idempotencyKey:'OUTRA',integrations:{bling:{success:true,contact:{status:'found',id:'C-1'},sale:{status:'created',id:'V-1',number:'1'}}}},envelope);
+    test('Resposta de outro pedido é bloqueada',mismatch.success===false&&mismatch.errors.length>=2,mismatch.errors.join('\n'));
+
+    const missingIdentity=normalizeMakeBlingResult({success:true,integrations:{bling:{success:true,contact:{status:'found',id:'C-1'},sale:{status:'created',id:'V-1',number:'1'}}}},envelope);
+    test('Resposta sem envelope e idempotência é bloqueada',missingIdentity.success===false&&missingIdentity.errors.some(item=>/envelopeId/i.test(item))&&missingIdentity.errors.some(item=>/idempotência/i.test(item)));
+
+    const missingBling=normalizeMakeBlingResult({...identity,success:true},envelope);
+    test('HTTP lógico sem confirmação do Bling não conclui',missingBling.success===false&&missingBling.errors.some(item=>/não confirmou/i.test(item)));
+
+    results.insertAdjacentHTML('beforeend',`<h2>${passed} aprovados · ${failed} falharam</h2>`);
+    document.title=failed?`Falhou (${failed}) · Contrato Bling`:`Aprovado (${passed}) · Contrato Bling`;
+  </script>
+</body>
+</html>

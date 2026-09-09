@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>V2 Catalog Service Tests</title>
+</head>
+<body>
+  <pre id="results">Executando…</pre>
+  <script type="module">
+    import { analyzeCatalogQuality, findProduct } from '../services/catalog-service.js';
+    import { normalizeCatalog, createProductIndex } from '../shared/catalog.js';
+
+    const tests = [];
+
+    function test(name, fn) {
+      try {
+        fn();
+        tests.push({ name, ok: true });
+      } catch (error) {
+        tests.push({ name, ok: false, error: error.message });
+      }
+    }
+
+    function equal(actual, expected, message = 'Valores diferentes') {
+      if (actual !== expected) throw new Error(`${message}: ${actual} !== ${expected}`);
+    }
+
+    function truthy(value, message = 'Valor esperado como verdadeiro') {
+      if (!value) throw new Error(message);
+    }
+
+    const products = normalizeCatalog({
+      a: {
+        codigo: '101',
+        nome: 'Arroz Tipo 1',
+        gtin: '7891000000011',
+        preco: 25.9,
+        estoque: 8,
+        categoria: 'Mercearia',
+        marca: 'Marca A',
+        descricao: 'Pacote de arroz',
+        embalagem: '5 kg',
+        url_imagem: 'arroz.webp',
+        situacao: 'A'
+      },
+      b: {
+        codigo: '102',
+        nome: 'Feijão Carioca',
+        gtin: '7891000000028',
+        preco: 0,
+        estoque: 0,
+        categoria: '',
+        marca: '',
+        descricao: '',
+        embalagem: '',
+        situacao: 'A'
+      }
+    });
+
+    test('auditoria conta produtos', () => {
+      const quality = analyzeCatalogQuality(products);
+      equal(quality.total, 2);
+      equal(quality.withStock, 1);
+      equal(quality.withoutStock, 1);
+      equal(quality.withoutImage, 1);
+      equal(quality.withoutPrice, 1);
+      equal(quality.withoutCategory, 1);
+    });
+
+    test('índice localiza por código e GTIN', () => {
+      const index = createProductIndex(products);
+      const result = { products, index };
+      equal(findProduct(result, '101')?.nome, 'Arroz Tipo 1');
+      equal(findProduct(result, '7891000000028')?.nome, 'Feijão Carioca');
+    });
+
+    test('completude é calculada em percentual', () => {
+      const quality = analyzeCatalogQuality(products);
+      equal(quality.completeness.image, 50);
+      equal(quality.completeness.price, 50);
+      truthy(Object.isFrozen(quality));
+    });
+
+    document.getElementById('results').textContent = tests
+      .map(item => `${item.ok ? '✅' : '❌'} ${item.name}${item.error ? ` — ${item.error}` : ''}`)
+      .join('\n');
+  </script>
+</body>
+</html>

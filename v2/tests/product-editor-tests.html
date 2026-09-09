@@ -1,0 +1,21 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Testes editor de produtos V2</title></head><body><pre id="out">Executando…</pre><script type="module">
+import { normalizeDraft, validateProductDraft, diffProduct, createProductEditorSession } from '../admin/product-editor.js';
+import { buildProductChangeRequest, validateProductChangeRequest, prepareProductSave, canSendExternalWrite } from '../admin/product-save-adapter.js';
+
+const results=[];
+const test=(name,fn)=>{try{fn();results.push(`✅ ${name}`);}catch(error){results.push(`❌ ${name}: ${error.message}`);}};
+const assert=(value,message)=>{if(!value)throw new Error(message);};
+const equal=(actual,expected,message='Valores diferentes')=>{if(actual!==expected)throw new Error(`${message}: ${actual} !== ${expected}`);};
+
+const product={firebaseKey:'abc',id:'10',codigo:'10',nome:'Café 500g',gtin:'7891234567890',ncm:'09012100',preco:18.9,preco_custo:12,estoque:5,categoria:'Mercearia',imagem:'cafe.webp'};
+
+test('normaliza números e textos',()=>{const draft=normalizeDraft(product,{preco:'20.50',nome:' Café Premium '});equal(draft.preco,20.5);equal(draft.nome,'Café Premium');});
+test('valida NCM e EAN',()=>{const draft=normalizeDraft(product,{ncm:'123',gtin:'12'});assert(!validateProductDraft(draft).valid,'dados inválidos deveriam falhar');});
+test('detecta somente campos alterados',()=>{const draft=normalizeDraft(product,{preco:21});const changes=diffProduct(product,draft);equal(changes.length,1);equal(changes[0].field,'preco');});
+test('sessão controla dirty state e reset',()=>{const session=createProductEditorSession(product);assert(!session.isDirty(),'sessão deveria iniciar limpa');session.update({estoque:9});assert(session.isDirty(),'alteração não detectada');equal(session.changes()[0].field,'estoque');session.reset();assert(!session.isDirty(),'reset não limpou alterações');});
+test('monta requisição segura em draft_only',()=>{const draft=normalizeDraft(product,{preco:21});const request=buildProductChangeRequest(product,draft);equal(request.mode,'draft_only');equal(request.productId,'abc');assert(request.externalWriteAllowed===false,'escrita externa deveria estar bloqueada');assert(validateProductChangeRequest(request).valid,'requisição deveria ser válida');});
+test('preparo de salvamento nunca libera escrita',()=>{const prepared=prepareProductSave(product,normalizeDraft(product,{estoque:8}));assert(prepared.validation.valid,'payload inválido');assert(prepared.canWrite===false,'escrita externa liberada indevidamente');assert(canSendExternalWrite(prepared.request)===false,'adaptador permitiu escrita');});
+test('bloqueia requisição sem mudanças',()=>{let failed=false;try{buildProductChangeRequest(product,normalizeDraft(product));}catch{failed=true;}assert(failed,'deveria rejeitar ausência de mudanças');});
+
+document.getElementById('out').textContent=results.join('\n');
+</script></body></html>

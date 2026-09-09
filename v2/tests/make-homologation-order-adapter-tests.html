@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Testes · Make homologação V2</title>
+  <style>body{font-family:system-ui,sans-serif;max-width:920px;margin:40px auto;padding:0 18px;color:#18211b}article{padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}.ok{background:#ecfdf3;border-color:#abefc6}.error{background:#fff1f0;border-color:#fecdca}pre{white-space:pre-wrap;overflow:auto}</style>
+</head>
+<body>
+  <h1>Adaptador Make · homologação V2</h1>
+  <div id="results"></div>
+  <script type="module">
+    import {
+      validateMakeWebhookUrl,
+      validateMakeOrderEnvelope,
+      buildMakeOrderPayload,
+      shouldRetryMakeRequest,
+      createMakeHomologationOrderAdapter
+    } from '../services/make-homologation-order-adapter.js';
+
+    const results = document.getElementById('results');
+    let passed = 0;
+    let failed = 0;
+    function test(name, condition, detail = '') {
+      const ok = Boolean(condition); ok ? passed++ : failed++;
+      results.insertAdjacentHTML('beforeend', `<article class="${ok?'ok':'error'}"><strong>${ok?'✓':'✕'} ${name}</strong>${detail?`<pre>${String(detail)}</pre>`:''}</article>`);
+    }
+
+    const envelope = {
+      id:'HML-MAKE-001', fingerprint:'fp-make-001', ambiente:'homologation', criadoEm:'2026-07-18T12:00:00.000Z',
+      order:{ambiente:'homologation',cliente:{nome:'Cliente Teste',telefone:'65999999999',cpf:''},entrega:{logradouro:'Rua Teste',numero:'10',bairro:'Centro',cidade:'Cuiabá'},pagamento:{tipo:'pix',trocoPara:0},itens:[{firebaseKey:'produto-1',id:'produto-1',nome:'Arroz Teste',quantidade:2,precoUnitario:10,subtotal:20}],total:20,observacoes:''}
+    };
+
+    const blingSuccess = (extra={}) => ({
+      success:true,
+      envelopeId:envelope.id,
+      idempotencyKey:envelope.fingerprint,
+      executionId:'exec-1',
+      integrations:{bling:{success:true,status:'created',contact:{status:'created',id:'C-10'},sale:{status:'created',id:'V-20',number:'1001'},...extra}}
+    });
+
+    test('Webhook vazio é rejeitado', validateMakeWebhookUrl('').valid === false);
+    test('Webhook HTTP é rejeitado', validateMakeWebhookUrl('http://hook.us1.make.com/abc').valid === false);
+    test('Host fora do Make é rejeitado', validateMakeWebhookUrl('https://example.com/webhook').valid === false);
+    test('Webhook HTTPS do Make é aceito', validateMakeWebhookUrl('https://hook.us1.make.com/abc123').valid === true);
+    test('Envelope válido é aceito', validateMakeOrderEnvelope(envelope).valid === true);
+
+    const payload = buildMakeOrderPayload(envelope);
+    test('Payload usa contrato versionado', payload.contractVersion === 2 && payload.eventType === 'order.homologation.created');
+    test('Payload exige retorno do Bling', payload.expectedResponse.required.integrations.bling && payload.safeguards.directBlingBrowserAccessAllowed === false);
+    test('Payload carrega idempotência e proteção de produção', payload.idempotencyKey === envelope.fingerprint && payload.safeguards.productionOrderWriteAllowed === false);
+    test('Erro 500 pode repetir', shouldRetryMakeRequest({status:500,attempt:1,maximumAttempts:3}) === true);
+    test('Erro 400 não repete', shouldRetryMakeRequest({status:400,attempt:1,maximumAttempts:3}) === false);
+    test('Falha lógica repetível pode repetir', shouldRetryMakeRequest({status:200,retryable:true,attempt:1,maximumAttempts:3}) === true);
+
+    const blocked = await createMakeHomologationOrderAdapter({enabled:false,webhookUrl:''})(envelope);
+    test('Configuração desabilitada retorna bloqueio sem chamada', blocked.blocked === true && blocked.attempts === 0);
+
+    let successRequest = null;
+    const successAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/abc123', assertWriteFn:()=>true,
+      fetchFn:async(url,options)=>{successRequest={url,options,body:JSON.parse(options.body)};return new Response(JSON.stringify(blingSuccess()),{status:200,headers:{'Content-Type':'application/json'}})},
+      sleepFn:async()=>{}, retryBaseDelayMs:0
+    });
+    const success = await successAdapter(envelope);
+    test('Resposta 200 só conclui com venda Bling confirmada', success.success === true && success.bling.saleId === 'V-20' && success.bling.saleNumber === '1001', JSON.stringify(success,null,2));
+    test('Cabeçalho e corpo levam a mesma idempotência', successRequest.options.headers['X-Idempotency-Key'] === envelope.fingerprint && successRequest.body.idempotencyKey === envelope.fingerprint);
+
+    let retryCalls = 0;
+    const retryAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/retry', assertWriteFn:()=>true, maximumAttempts:3, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>{retryCalls++;if(retryCalls===1)return new Response('temporariamente indisponível',{status:500});return new Response(JSON.stringify(blingSuccess()),{status:200})}
+    });
+    const retried = await retryAdapter(envelope);
+    test('Erro 500 repete e depois conclui', retried.success === true && retried.attempts === 2 && retryCalls === 2, JSON.stringify(retried.history,null,2));
+
+    let internalRateLimitCalls = 0;
+    const internalRateLimitAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/limit', assertWriteFn:()=>true, maximumAttempts:3, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>{internalRateLimitCalls++;if(internalRateLimitCalls===1)return new Response(JSON.stringify({success:false,integrations:{bling:{success:false,httpStatus:429,error:{type:'TOO_MANY_REQUESTS',message:'Limite atingido',period:'second',limit:3}}}}),{status:200});return new Response(JSON.stringify(blingSuccess()),{status:200})}
+    });
+    const internalRateLimit = await internalRateLimitAdapter(envelope);
+    test('429 do Bling dentro do retorno do Make repete', internalRateLimit.success === true && internalRateLimitCalls === 2 && internalRateLimit.attempts === 2, JSON.stringify(internalRateLimit.history,null,2));
+
+    let badRequestCalls = 0;
+    const badRequestAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/bad-request', assertWriteFn:()=>true, maximumAttempts:3, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>{badRequestCalls++;return new Response(JSON.stringify({message:'payload inválido'}),{status:400})}
+    });
+    const badRequest = await badRequestAdapter(envelope);
+    test('Erro 400 não é repetido', badRequest.success === false && badRequest.attempts === 1 && badRequestCalls === 1);
+
+    let rejectedCalls = 0;
+    const rejectedAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/rejected', assertWriteFn:()=>true, maximumAttempts:3, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>{rejectedCalls++;return new Response(JSON.stringify({success:false,message:'pedido rejeitado pelo cenário'}),{status:200})}
+    });
+    const rejected = await rejectedAdapter(envelope);
+    test('Rejeição de negócio em HTTP 200 não vira sucesso', rejected.success === false && rejected.attempts === 1 && rejectedCalls === 1);
+
+    const missingBlingAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/no-bling', assertWriteFn:()=>true, maximumAttempts:1, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>new Response(JSON.stringify({success:true,envelopeId:envelope.id,idempotencyKey:envelope.fingerprint}),{status:200})
+    });
+    const missingBling = await missingBlingAdapter(envelope);
+    test('HTTP 200 sem confirmação do Bling é falha', missingBling.success === false && missingBling.validationErrors.some(item=>/Bling/i.test(item)));
+
+    const duplicateAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/duplicate', assertWriteFn:()=>true, maximumAttempts:1, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>new Response(JSON.stringify({success:true,envelopeId:envelope.id,idempotencyKey:envelope.fingerprint,integrations:{bling:{success:true,duplicate:true,message:'Informações idênticas à última venda salva',contact:{status:'found',id:'C-10'},sale:{status:'existing',id:'V-20',number:'1001',duplicate:true}}}}),{status:200})
+    });
+    const duplicate = await duplicateAdapter(envelope);
+    test('Venda duplicada confirmada com referência é sucesso', duplicate.success === true && duplicate.duplicate === true && duplicate.bling.saleId === 'V-20');
+
+    let networkCalls = 0;
+    const networkAdapter = createMakeHomologationOrderAdapter({
+      enabled:true, webhookUrl:'https://hook.us1.make.com/network', assertWriteFn:()=>true, maximumAttempts:2, retryBaseDelayMs:0, sleepFn:async()=>{},
+      fetchFn:async()=>{networkCalls++;throw new TypeError('Falha de rede simulada')}
+    });
+    const networkFailure = await networkAdapter(envelope);
+    test('Falha de rede respeita limite de tentativas', networkFailure.success === false && networkFailure.attempts === 2 && networkCalls === 2, JSON.stringify(networkFailure.history,null,2));
+
+    results.insertAdjacentHTML('beforeend', `<h2>${passed} aprovados · ${failed} falharam</h2>`);
+    document.title = failed ? `Falhou (${failed}) · Make V2` : `Aprovado (${passed}) · Make V2`;
+  </script>
+</body>
+</html>
