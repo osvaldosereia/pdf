@@ -5,6 +5,7 @@ const migration=[
   r('supabase/migrations/20260909043000_whatsapp_cost_first_schema_v1.sql'),
   r('supabase/migrations/20260909043100_whatsapp_cost_first_functions_v1.sql'),
   r('supabase/migrations/20260909043150_whatsapp_cost_first_resolver_fix_v1.sql'),
+  r('supabase/migrations/20260909043170_whatsapp_dynamic_context_v2.sql'),
   r('supabase/migrations/20260909043200_whatsapp_cost_first_seeds_dispatch_v1.sql')
 ].join('\n');
 const worker=r('supabase/functions/conversation-worker-v4/index.ts');
@@ -17,12 +18,15 @@ const mustNot=(s,x,m)=>assert.ok(!s.includes(x),`${m}: não deveria conter ${x}`
 
 must(migration,'whatsapp_cost_first_router_enabled boolean not null default false','router nasce fail-closed');
 must(migration,'whatsapp_cost_first_shadow_mode boolean not null default true','shadow nasce ligado');
+must(migration,'dynamic_selection_enabled boolean not null default false','contexto dinâmico nasce desligado');
 must(migration,'create table if not exists public.service_trigger_rules','motor de gatilhos persistente');
 must(migration,'create table if not exists public.service_message_blocks','blocos de mensagem persistentes');
 must(migration,'create table if not exists public.product_aliases','aliases de produto persistentes');
 must(migration,'resolve_whatsapp_product_candidates_v2','resolvedor local de produtos');
 must(migration,"nullif(public.normalize_service_text_v1((select canonical_query from alias_rewrite)),'')",'busca sem alias preserva consulta original');
 must(migration,'get_service_intelligence_bundle_v2','seleção dinâmica de contexto');
+must(migration,"'context_mode',case when dynamic_enabled then 'compact_dynamic_v2' else 'legacy_v1' end",'contexto compacto é explicitamente gateado');
+must(migration,"'raw_event',case when dynamic_enabled then null else m.raw_event end",'raw webhook sai apenas do contexto compacto');
 must(migration,"v_worker_version:=4",'dispatcher conhece worker v4');
 must(migration,"if coalesce(cfg.whatsapp_cost_first_router_enabled,false)",'dispatcher só usa v4 com gate explícito');
 must(migration,"conversation-worker-v3'",'fallback v3 preservado');
@@ -51,4 +55,4 @@ must(page,'data-tab="trigger"','página mostra gatilhos');
 must(page,'id="siSimulate"','página oferece simulador');
 must(cfg,'[functions.conversation-worker-v4]','config inclui worker v4');
 must(cfg,'[functions.admin-service-intelligence-v2]','config inclui Admin v2');
-console.log('PASS: arquitetura cost-first, gatilhos, renderer configurável, busca local, shadow mode, Admin e gates validados.');
+console.log('PASS: arquitetura cost-first, gatilhos, renderer configurável, busca local, contexto dinâmico, shadow mode, Admin e gates validados.');
