@@ -12,7 +12,10 @@
   }
 
   function cleanBasketStatus(root=document){
-    $$('.basket-row-sub',root).forEach(el=>{
+    const targets=[];
+    if(root?.matches?.('.basket-row-sub'))targets.push(root);
+    if(root?.querySelectorAll)targets.push(...root.querySelectorAll('.basket-row-sub'));
+    targets.forEach(el=>{
       if((el.textContent||'').trim()==='Quantidade original')el.textContent='';
     });
   }
@@ -54,12 +57,14 @@
 
     const quantity=Math.max(0,Number(input.value||0));
     const busy=$$('button,input',stepper).some(el=>el.disabled);
-    card.classList.toggle('has-quantity',quantity>0||busy&&card.classList.contains('has-quantity'));
-    if(!busy){
-      add.disabled=false;
-      add.textContent='Adicionar';
-      card.classList.toggle('has-quantity',quantity>0);
+    if(busy){
+      if(quantity>0)card.classList.add('has-quantity');
+      return;
     }
+
+    add.disabled=false;
+    add.textContent='Adicionar';
+    card.classList.toggle('has-quantity',quantity>0);
 
     if(stepper.dataset.visualV5!=='1'){
       stepper.dataset.visualV5='1';
@@ -69,12 +74,14 @@
   }
 
   function tuneProductGrid(root=document){
+    if(root?.matches?.('.product-card'))syncQuantityControl(root);
     $$('.product-card',root).forEach(syncQuantityControl);
   }
 
   function tuneAll(root=document){
     reorderBasketActions();
     cleanBasketStatus(root);
+    if(root?.matches?.('.category-modal'))tuneCategoryDialog(root);
     $$('.category-modal',root).forEach(tuneCategoryDialog);
     tuneProductGrid(root);
   }
@@ -84,13 +91,8 @@
     const observer=new MutationObserver(mutations=>{
       for(const mutation of mutations){
         if(mutation.type==='childList'){
-          mutation.addedNodes.forEach(node=>{
-            if(node.nodeType!==1)return;
-            tuneAll(node);
-            if(node.matches?.('.category-modal'))tuneCategoryDialog(node);
-            if(node.matches?.('.product-card'))syncQuantityControl(node);
-          });
-          cleanBasketStatus(mutation.target.nodeType===1?mutation.target:document);
+          tuneAll(mutation.target.nodeType===1?mutation.target:document);
+          mutation.addedNodes.forEach(node=>{if(node.nodeType===1)tuneAll(node)});
         }
         if(mutation.type==='attributes'){
           const card=mutation.target.closest?.('.product-card');
