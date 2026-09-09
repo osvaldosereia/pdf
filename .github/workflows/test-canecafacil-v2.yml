@@ -1,0 +1,69 @@
+name: CanecaFácil V2 · testes básicos
+
+on:
+  pull_request:
+    paths:
+      - 'canecafacil-v2/**'
+      - 'loja-integrada/personalizar/native-cart-v3.js'
+      - 'loja-integrada/personalizar/index.html'
+      - 'scripts/build-canecafacil-v2-seo.mjs'
+      - '.github/workflows/build-canecafacil-v2-seo.yml'
+      - '.github/workflows/test-canecafacil-v2.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'canecafacil-v2/**'
+      - 'loja-integrada/personalizar/native-cart-v3.js'
+      - 'loja-integrada/personalizar/index.html'
+      - 'scripts/build-canecafacil-v2-seo.mjs'
+      - '.github/workflows/build-canecafacil-v2-seo.yml'
+      - '.github/workflows/test-canecafacil-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar JavaScript
+        run: |
+          node --check canecafacil-v2/app.js
+          node --check canecafacil-v2/browser-v2.js
+          node --check canecafacil-v2/public-controls-v2.js
+          node --check canecafacil-v2/personalization-v2.js
+          node --check canecafacil-v2/shared/api.js
+          node --check canecafacil-v2/admin/app.js
+          node --check canecafacil-v2/admin/validation-v1.js
+          node --check loja-integrada/personalizar/native-cart-v3.js
+          node --check scripts/build-canecafacil-v2-seo.mjs
+      - name: Validar arquivos essenciais
+        run: |
+          test -s canecafacil-v2/index.html
+          test -s canecafacil-v2/styles.css
+          test -s canecafacil-v2/extensions-v2.css
+          test -s canecafacil-v2/browser-v2.css
+          test -s canecafacil-v2/public-controls-v2.css
+          test -s canecafacil-v2/MOCKUP-CONTRACT-V1.md
+          test -s canecafacil-v2/admin/index.html
+          test -s canecafacil-v2/admin/styles.css
+          test -s canecafacil-v2/assets/mockup-demo.svg
+          test -s scripts/build-canecafacil-v2-seo.mjs
+          test -s .github/workflows/build-canecafacil-v2-seo.yml
+          grep -q 'native-cart-v3.js' loja-integrada/personalizar/index.html
+          grep -q 'store_v2' loja-integrada/personalizar/native-cart-v3.js
+          grep -q 'validation-v1.js' canecafacil-v2/admin/index.html
+          grep -q 'public-controls-v2.js' canecafacil-v2/index.html
+          grep -q 'browser-v2.js' canecafacil-v2/index.html
+      - name: Bloquear segredos óbvios no front
+        run: |
+          if grep -RniE 'ACCESS_TOKEN|MERCADO_PAGO_ACCESS_TOKEN|LOJA_INTEGRADA_AUTHORIZATION|Bearer [A-Za-z0-9._-]{20,}' canecafacil-v2 --exclude='README.md'; then
+            echo 'Possível segredo encontrado no front-end.'
+            exit 1
+          fi

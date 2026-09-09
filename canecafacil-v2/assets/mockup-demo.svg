@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Mockup transparente de duas canecas</title>
+  <desc id="desc">Duas canecas brancas com sombra e pequenos elementos gráficos ao redor.</desc>
+  <defs>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%">
+      <feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#111" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" transform="translate(110 140) rotate(-8 290 290)">
+    <path d="M180 150h330c50 0 80 32 80 80v340c0 54-35 88-90 88H190c-55 0-90-34-90-88V235c0-53 30-85 80-85Z" fill="#fff" stroke="#e6e6e6" stroke-width="8"/>
+    <path d="M104 260C6 247-24 334 3 442c21 81 91 128 142 93 36-24 43-75 43-137 0-87-22-131-84-138Z" fill="none" stroke="#fff" stroke-width="70"/>
+    <path d="M104 260C6 247-24 334 3 442c21 81 91 128 142 93" fill="none" stroke="#e6e6e6" stroke-width="8"/>
+    <circle cx="335" cy="320" r="92" fill="#FFD54A"/>
+    <circle cx="308" cy="310" r="8" fill="#252525"/>
+    <circle cx="362" cy="310" r="8" fill="#252525"/>
+    <path d="M310 354c16 18 37 18 52 0" fill="none" stroke="#252525" stroke-width="9" stroke-linecap="round"/>
+    <path d="M257 430c50 36 113 36 160 0" fill="none" stroke="#1F6F8B" stroke-width="28" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#shadow)" transform="translate(300 470) rotate(9 270 230)">
+    <path d="M100 80h360c46 0 75 30 75 76v330c0 50-32 82-84 82H110c-52 0-84-32-84-82V165c0-53 26-85 74-85Z" fill="#fff" stroke="#e6e6e6" stroke-width="8"/>
+    <path d="M530 205c102-8 137 61 118 165-15 81-78 137-135 109-39-20-50-72-49-132 2-87 16-136 66-142Z" fill="none" stroke="#fff" stroke-width="70"/>
+    <path d="M530 205c102-8 137 61 118 165-15 81-78 137-135 109" fill="none" stroke="#e6e6e6" stroke-width="8"/>
+    <text x="106" y="240" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="800" fill="#242424">Café</text>
+    <rect x="104" y="265" width="250" height="64" rx="22" fill="#FFD54A"/>
+    <text x="126" y="309" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#242424">boas ideias</text>
+    <text x="106" y="392" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700" fill="#242424">planos grandes</text>
+  </g>
+  <g fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M710 142l22 43 47 7-34 34 8 47-43-22-43 22 8-47-34-34 47-7Z"/>
+    <path d="M110 818c42-66 85-65 122 2s82 68 124 0"/>
+  </g>
+  <g fill="none" stroke="#222" stroke-width="12" stroke-linecap="round">
+    <path d="M694 780l38-38M723 806l53-6M667 749l2-54"/>
+  </g>
+</svg>

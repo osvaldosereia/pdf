@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin · CanecaFácil V2</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="admin-brand" href="./">Caneca<span>Fácil</span><small>admin v2</small></a>
+    <nav>
+      <button class="nav-item active" data-view="products">Canecas</button>
+      <button class="nav-item" data-view="settings">Configurações</button>
+      <button class="nav-item future" disabled>Personalização <small>em breve</small></button>
+      <button class="nav-item future" disabled>Pedidos <small>em breve</small></button>
+      <button class="nav-item future" disabled>Automação <small>em breve</small></button>
+    </nav>
+    <a class="store-link" href="../" target="_blank" rel="noopener">Abrir nova loja ↗</a>
+  </aside>
+
+  <main>
+    <header class="page-head">
+      <div><p class="kicker">CanecaFácil V2</p><h1 id="pageTitle">Canecas</h1></div>
+      <div class="head-actions"><span id="statusText" class="status">Conectando…</span><button id="newProductBtn" class="button primary">+ Nova caneca</button></div>
+    </header>
+
+    <section id="productsView" class="view active">
+      <div class="toolbar">
+        <input id="searchProducts" type="search" placeholder="Buscar caneca, categoria ou subcategoria">
+        <select id="statusFilter"><option value="all">Todas</option><option value="active">Ativas</option><option value="inactive">Inativas</option></select>
+      </div>
+      <div id="productList" class="product-list"></div>
+    </section>
+
+    <section id="settingsView" class="view">
+      <form id="settingsForm" class="panel compact">
+        <div class="panel-head"><div><p class="kicker">Loja</p><h2>Configurações básicas</h2></div><button class="button primary" type="submit">Salvar</button></div>
+        <label>Marca<input name="marca" placeholder="CanecaFácil"></label>
+        <label>Preço padrão<input name="preco_padrao" type="number" step="0.01" min="0" placeholder="24,90"></label>
+        <p class="hint">Produtos com preço próprio igual a zero usam o preço padrão.</p>
+      </form>
+    </section>
+  </main>
+
+  <section id="editor" class="drawer" hidden>
+    <form id="productForm" class="drawer-card">
+      <div class="drawer-head">
+        <div><p class="kicker">Cadastro</p><h2 id="editorTitle">Nova caneca</h2></div>
+        <button type="button" class="close" id="closeEditor" aria-label="Fechar">×</button>
+      </div>
+      <input type="hidden" name="id">
+
+      <div class="form-grid">
+        <label class="span-2">Nome<input name="nome" required placeholder="Ex.: Descanso entre séries"></label>
+        <label>Slug<input name="slug" placeholder="gerado automaticamente"></label>
+        <label>Ordem<input name="ordem" type="number" step="1" value="0"></label>
+        <label>Categoria<input name="categoria" list="categoryList" required placeholder="Academia"></label>
+        <label>Subcategoria<input name="subcategoria" list="subcategoryList" placeholder="Humor"></label>
+        <datalist id="categoryList"></datalist><datalist id="subcategoryList"></datalist>
+        <label>Preço próprio<input name="preco" type="number" step="0.01" min="0" value="0"><small>0 = preço padrão</small></label>
+        <label>Cor de fundo<div class="color-row"><input name="fundo" type="color" value="#FF6B1A"><input name="fundo_text" value="#FF6B1A" maxlength="7"></div></label>
+        <label class="span-2">Mockup PNG transparente<input name="mockup_png" type="url" placeholder="https://.../mockup.png"><small>Obrigatório para ativar a caneca na loja.</small></label>
+        <label class="span-2">Arte horizontal de impressão<input name="arte_horizontal" type="url" placeholder="https://.../arte-horizontal.png"><small>Obrigatória para ativar a caneca na loja.</small></label>
+        <label class="span-2">Descrição curta<textarea name="descricao_curta" rows="3" placeholder="Uma linha curta para acompanhar a arte."></textarea></label>
+      </div>
+
+      <div class="switches">
+        <label class="switch"><input name="ativo" type="checkbox" checked><span></span>Ativa na loja</label>
+        <label class="switch"><input name="personalizavel" type="checkbox"><span></span>Personalizável</label>
+      </div>
+
+      <div id="personalizerFields" class="conditional" hidden>
+        <label>Modelo usado pelo personalizador<input name="personalizador_modelo_key" placeholder="chave do produto/modelo atual"><small>Permite reutilizar o personalizador existente sem mudar o visual da nova loja.</small></label>
+      </div>
+
+      <section class="preview-panel">
+        <div class="preview-title"><strong>Prévia do visor</strong><span id="contrastBadge">texto automático</span></div>
+        <div id="visualPreview" class="visual-preview"><img id="mockupPreview" src="../assets/mockup-demo.svg" alt="Prévia do mockup"><div class="preview-copy"><span>CanecaFácil</span><strong id="previewName">Nova caneca</strong></div></div>
+      </section>
+
+      <footer class="drawer-actions">
+        <button type="button" id="deleteProductBtn" class="button danger" hidden>Excluir</button>
+        <div class="spacer"></div>
+        <button type="button" class="button" id="cancelEditor">Cancelar</button>
+        <button type="submit" class="button primary">Salvar caneca</button>
+      </footer>
+    </form>
+  </section>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="./validation-v1.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

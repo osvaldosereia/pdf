@@ -1,0 +1,43 @@
+name: CanecaFácil V2 · build SEO
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: canecafacil-v2-seo
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Gerar páginas, categorias e sitemap
+        env:
+          FIREBASE_BASE_URL: https://cedar-chemist-310801-default-rtdb.firebaseio.com
+          CANECAFACIL_V2_BASE_URL: https://www.canecafacil.com.br/
+        run: node scripts/build-canecafacil-v2-seo.mjs
+      - name: Publicar somente se houver mudança
+        run: |
+          git config user.name "canecafacil-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A -- canecafacil-v2
+          if git diff --cached --quiet; then
+            echo "Nenhuma mudança SEO."
+            exit 0
+          fi
+          git commit -m "CanecaFácil V2: atualizar páginas SEO"
+          git pull --rebase origin main
+          git push origin HEAD:main

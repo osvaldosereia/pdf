@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#FF6B1A">
+  <title>CanecaFácil</title>
+  <meta name="description" content="Canecas com arte, humor e personalidade. Escolha uma criação ou personalize do seu jeito.">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./extensions-v2.css">
+  <link rel="stylesheet" href="./browser-v2.css">
+  <link rel="stylesheet" href="./public-controls-v2.css">
+</head>
+<body>
+  <header class="floating-pill topbar" aria-label="Navegação principal">
+    <button class="brand-button" data-action="home" aria-label="CanecaFácil, início">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M5 7h11v7.5A4.5 4.5 0 0 1 11.5 19h-2A4.5 4.5 0 0 1 5 14.5Z"/><path d="M16 9h1.5a3 3 0 0 1 0 6H16"/><path d="M8.5 11h.01M12.5 11h.01"/><path d="M8.7 14c.8.8 2.6.8 3.4 0"/></svg>
+      </span>
+      <span class="brand">Caneca<span>Fácil</span></span>
+    </button>
+    <div class="top-actions">
+      <button class="icon-button" data-action="search" aria-label="Buscar canecas">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+      </button>
+      <button class="icon-button favorite-header" data-action="favorites" aria-label="Ver favoritas">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>
+      </button>
+      <button class="icon-button cart-header" data-action="cart" aria-label="Abrir sacola">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7Z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>
+        <span id="cartBadge" class="cart-badge" hidden>0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="viewer" class="viewer" aria-live="polite"></main>
+
+  <nav class="floating-pill bottombar" aria-label="Atalhos">
+    <button class="icon-button nav-button active" data-action="home" aria-label="Início">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></svg>
+    </button>
+    <button class="icon-button nav-button" data-action="explore" aria-label="Explorar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </button>
+    <button class="icon-button nav-button" data-action="favorites" aria-label="Favoritas">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 1 0-7.6 7.6L12 21l8.8-8.8a5.4 5.4 0 0 0 0-7.6Z"/></svg>
+    </button>
+    <button class="icon-button nav-button" data-action="creations" aria-label="Minhas canecas">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0Z"/></svg>
+    </button>
+  </nav>
+
+  <section class="overlay" id="searchOverlay" hidden>
+    <div class="overlay-card search-card">
+      <div class="overlay-head"><strong>Buscar canecas</strong><button class="icon-button" data-close="searchOverlay" aria-label="Fechar">×</button></div>
+      <input id="searchInput" type="search" placeholder="Academia, professor, café..." autocomplete="off">
+      <div id="searchResults" class="mini-grid"></div>
+    </div>
+  </section>
+
+  <section class="overlay" id="exploreOverlay" hidden>
+    <div class="overlay-card explore-card">
+      <div class="overlay-head"><strong>Explorar</strong><button class="icon-button" data-close="exploreOverlay" aria-label="Fechar">×</button></div>
+      <div id="categoryFilters" class="chips"></div>
+      <div id="exploreGrid" class="explore-grid"></div>
+    </div>
+  </section>
+
+  <section class="overlay detail-overlay" id="descriptionOverlay" hidden>
+    <div class="detail-sheet">
+      <button class="detail-close icon-button" data-close="descriptionOverlay" aria-label="Fechar descrição">×</button>
+      <div class="detail-visual"><img id="descriptionMockup" src="./assets/mockup-demo.svg" alt=""></div>
+      <div class="detail-copy">
+        <small id="descriptionCategory">CanecaFácil</small>
+        <h2 id="descriptionName">Sua caneca</h2>
+        <p id="descriptionText"></p>
+        <div class="detail-price" id="descriptionPrice">R$ 24,90</div>
+        <div class="detail-facts"><span>Porcelana</span><span>Arte exclusiva</span><span>Produzida sob demanda</span></div>
+        <button id="descriptionBuy" class="detail-buy">Comprar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="overlay" id="cartOverlay" hidden>
+    <div class="overlay-card cart-card">
+      <div class="overlay-head"><div><small class="overlay-kicker">CanecaFácil</small><strong>Sua sacola</strong></div><button class="icon-button" data-close="cartOverlay" aria-label="Fechar sacola">×</button></div>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="cart-footer"><span>Total dos produtos</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <p class="cart-note">Frete e pagamento serão conectados em uma etapa posterior.</p>
+    </div>
+  </section>
+
+  <section class="overlay" id="creationsOverlay" hidden>
+    <div class="overlay-card creations-card">
+      <div class="overlay-head"><div><small class="overlay-kicker">Seu dispositivo</small><strong>Minhas canecas</strong></div><button class="icon-button" data-close-v2="creationsOverlay" aria-label="Fechar">×</button></div>
+      <p class="creations-intro">As criações feitas neste dispositivo ficam aqui para você continuar depois.</p>
+      <div id="creationsGrid" class="creations-grid"></div>
+    </div>
+  </section>
+
+  <section class="overlay personalizer-overlay" id="personalizerOverlay" hidden>
+    <div class="personalizer-shell personalizer-shell-v2">
+      <div class="personalizer-top floating-pill">
+        <strong>Personalizar</strong>
+        <button class="icon-button" data-close="personalizerOverlay" aria-label="Fechar personalização">×</button>
+      </div>
+      <aside id="personalizerContext" class="personalizer-context" aria-hidden="true">
+        <img id="personalizerContextImage" src="./assets/mockup-demo.svg" alt="">
+        <div><small id="personalizerContextCategory">CanecaFácil</small><strong id="personalizerContextName">Sua caneca</strong></div>
+      </aside>
+      <div class="personalizer-stage">
+        <iframe id="personalizerFrame" title="Personalizador CanecaFácil" allow="clipboard-write"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./app.js"></script>
+  <script type="module" src="./browser-v2.js"></script>
+  <script type="module" src="./personalization-v2.js"></script>
+  <script type="module" src="./public-controls-v2.js"></script>
+</body>
+</html>
