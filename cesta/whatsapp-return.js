@@ -22,12 +22,40 @@
 
   function openWhatsapp(intent,button){
     const message=messageFor(intent);
+    const encoded=encodeURIComponent(message);
+    const deep=`whatsapp://send?phone=${WHATSAPP_PHONE}&text=${encoded}`;
+    const fallback=`https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encoded}`;
+    let appOpened=false;
+
     registerReturn(intent);
+
     if(button){
       button.disabled=true;
       button.textContent="Abrindo WhatsApp…";
     }
-    location.href=`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+
+    const markOpened=()=>{appOpened=true};
+    document.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState==="hidden")markOpened();
+    },{once:true});
+    window.addEventListener("pagehide",markOpened,{once:true});
+
+    // Precisa ocorrer diretamente dentro do clique do usuário. Em navegadores
+    // internos do WhatsApp, aguardar um fetch antes do deep link pode fazer o
+    // navegador bloquear a abertura do próprio app.
+    location.href=deep;
+
+    // Se o esquema nativo não for atendido pelo aparelho, usa a URL web oficial.
+    setTimeout(()=>{
+      if(!appOpened&&document.visibilityState==="visible")location.href=fallback;
+    },1200);
+
+    setTimeout(()=>{
+      if(!appOpened&&document.visibilityState==="visible"&&button){
+        button.disabled=false;
+        button.textContent="Abrir WhatsApp";
+      }
+    },2600);
   }
 
   document.addEventListener("click",event=>{
