@@ -139,7 +139,7 @@
 .category-modal.category-simple .category-head h2{margin:0;font-size:22px;line-height:1.15}
 
 @media(max-width:430px){
-  .brand-logo{width:72px;height:50px}
+  .brand-logo{width:75px;height:52px}
   .basket-row{
     grid-template-columns:92px minmax(0,1fr);
     gap:10px;
