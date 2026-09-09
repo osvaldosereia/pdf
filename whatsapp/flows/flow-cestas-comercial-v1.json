@@ -1,0 +1,225 @@
+{
+  "version": "7.1",
+  "data_api_version": "3.0",
+  "routing_model": {
+    "CESTAS": ["PERSONALIZAR", "SECOES", "REVISAO"],
+    "PERSONALIZAR": ["SECOES", "REVISAO"],
+    "SECOES": ["TERMOS", "PRODUTOS", "REVISAO"],
+    "TERMOS": ["PRODUTOS", "SECOES", "REVISAO"],
+    "PRODUTOS": ["PRODUTO", "TERMOS", "SECOES", "REVISAO"],
+    "PRODUTO": ["PRODUTOS", "SECOES", "UPSELL", "REVISAO"],
+    "UPSELL": ["PRODUTO", "REVISAO"],
+    "REVISAO": ["CLIENTE", "SECOES"],
+    "CLIENTE": ["FINALIZAR", "REVISAO"],
+    "FINALIZAR": []
+  },
+  "screens": [
+    {
+      "id": "CESTAS",
+      "title": "Escolha sua cesta",
+      "data": {
+        "intro": {"type": "string", "__example__": "Escolha uma cesta básica para começar."},
+        "baskets": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "description": {"type": "string"}}}, "__example__": [{"id": "basket-1", "title": "Cesta Econômica · R$ 199,90", "description": "Toque para selecionar"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "Cestas Básicas Dona Antônia"},
+          {"type": "TextBody", "text": "${data.intro}"},
+          {"type": "Form", "name": "basket_form", "children": [
+            {"type": "Dropdown", "label": "Escolha sua cesta", "name": "basket_id", "data-source": "${data.baskets}", "required": true},
+            {"type": "Footer", "label": "Personalizar cesta", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "basket_selected", "basket_id": "${form.basket_id}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "PERSONALIZAR",
+      "title": "Personalize sua cesta",
+      "data": {
+        "basket_name": {"type": "string", "__example__": "Cesta Econômica"},
+        "basket_price": {"type": "string", "__example__": "R$ 199,90"},
+        "basket_note": {"type": "string", "__example__": "Os produtos da cesta não exibem preço individual."},
+        "selection_json": {"type": "string", "__example__": "[]"},
+        "items_summary": {"type": "string", "__example__": "2 Arroz\n2 Feijão\n1 Café"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "${data.basket_name}"},
+          {"type": "TextSubheading", "text": "${data.basket_price}"},
+          {"type": "TextBody", "text": "${data.items_summary}"},
+          {"type": "TextCaption", "text": "${data.basket_note}"},
+          {"type": "Form", "name": "customize_form", "children": [
+            {"type": "TextArea", "label": "Alterações da cesta", "name": "changes", "helper-text": "Ex.: tirar açúcar, aumentar café. O backend valida todas as alterações.", "required": false},
+            {"type": "Footer", "label": "Salvar e adicionar produtos", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "basket_customize", "changes": "${form.changes}", "selection_json": "${data.selection_json}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "SECOES",
+      "title": "Adicionar produtos",
+      "data": {
+        "sections": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "higiene", "title": "Higiene e beleza"}, {"id": "limpeza", "title": "Limpeza"}]},
+        "cart_total": {"type": "string", "__example__": "R$ 235,80"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "O que deseja adicionar?"},
+          {"type": "TextBody", "text": "Escolha uma seção. Depois mostramos somente buscas úteis daquela seção — nunca o catálogo inteiro."},
+          {"type": "Form", "name": "section_form", "children": [
+            {"type": "Dropdown", "label": "Seção", "name": "section_key", "data-source": "${data.sections}", "required": true},
+            {"type": "Footer", "label": "Ver opções", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "section_selected", "section_key": "${form.section_key}"}}}
+          ]},
+          {"type": "TextCaption", "text": "Pedido atual: ${data.cart_total}"}
+        ]
+      }
+    },
+    {
+      "id": "TERMOS",
+      "title": "Escolha o que procura",
+      "data": {
+        "section_title": {"type": "string", "__example__": "Higiene e beleza"},
+        "terms": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "sabonete", "title": "Sabonetes"}, {"id": "shampoo", "title": "Shampoo"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "${data.section_title}"},
+          {"type": "TextBody", "text": "Estas opções são buscas segmentadas. Só os produtos correspondentes serão carregados."},
+          {"type": "Form", "name": "term_form", "children": [
+            {"type": "Dropdown", "label": "Produto", "name": "term_key", "data-source": "${data.terms}", "required": true},
+            {"type": "Footer", "label": "Mostrar produtos", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "term_selected", "term_key": "${form.term_key}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "PRODUTOS",
+      "title": "Produtos encontrados",
+      "data": {
+        "query_title": {"type": "string", "__example__": "Sabonetes"},
+        "result_note": {"type": "string", "__example__": "8 opções disponíveis"},
+        "products": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "description": {"type": "string"}}}, "__example__": [{"id": "product-1", "title": "Sabonete Dove · R$ 4,99", "description": "90 g"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "${data.query_title}"},
+          {"type": "TextBody", "text": "${data.result_note}"},
+          {"type": "Form", "name": "products_form", "children": [
+            {"type": "Dropdown", "label": "Escolha um produto", "name": "product_id", "data-source": "${data.products}", "required": true},
+            {"type": "Footer", "label": "Ver produto", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "product_selected", "product_id": "${form.product_id}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "PRODUTO",
+      "title": "Produto",
+      "data": {
+        "product_name": {"type": "string", "__example__": "Sabonete Dove 90 g"},
+        "product_price": {"type": "string", "__example__": "R$ 4,99"},
+        "product_description": {"type": "string", "__example__": "Disponível para entrega"},
+        "product_image_base64": {"type": "string", "__example__": "iVBORw0KGgoAAA..."},
+        "product_id": {"type": "string", "__example__": "00000000-0000-0000-0000-000000000000"},
+        "quantities": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "1", "title": "1"}, {"id": "2", "title": "2"}, {"id": "3", "title": "3"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "Image", "src": "${data.product_image_base64}", "scale-type": "contain", "aspect-ratio": 1, "alt-text": "${data.product_name}"},
+          {"type": "TextHeading", "text": "${data.product_name}"},
+          {"type": "TextSubheading", "text": "${data.product_price}"},
+          {"type": "TextBody", "text": "${data.product_description}"},
+          {"type": "Form", "name": "product_form", "children": [
+            {"type": "Dropdown", "label": "Quantidade", "name": "quantity", "data-source": "${data.quantities}", "required": true},
+            {"type": "Footer", "label": "Adicionar ao pedido", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "add_product", "product_id": "${data.product_id}", "quantity": "${form.quantity}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "UPSELL",
+      "title": "Talvez você também precise",
+      "data": {
+        "upsell_note": {"type": "string", "__example__": "Sugestões opcionais para completar seu pedido."},
+        "products": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "description": {"type": "string"}}}, "__example__": [{"id": "product-2", "title": "Filtro de café · R$ 5,99", "description": "Complementa sua compra"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "Complete seu pedido"},
+          {"type": "TextBody", "text": "${data.upsell_note}"},
+          {"type": "Form", "name": "upsell_form", "children": [
+            {"type": "Dropdown", "label": "Sugestão opcional", "name": "product_id", "data-source": "${data.products}", "required": false},
+            {"type": "Footer", "label": "Continuar", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "upsell_continue", "product_id": "${form.product_id}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "REVISAO",
+      "title": "Revise seu pedido",
+      "data": {
+        "summary": {"type": "string", "__example__": "Cesta Econômica\n2 Sabonetes\n1 Shampoo"},
+        "total": {"type": "string", "__example__": "R$ 259,70"},
+        "pricing_note": {"type": "string", "__example__": "A cesta possui preço comercial próprio; componentes não têm preço individual exibido."}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "Seu pedido"},
+          {"type": "TextBody", "text": "${data.summary}"},
+          {"type": "TextSubheading", "text": "Total: ${data.total}"},
+          {"type": "TextCaption", "text": "${data.pricing_note}"},
+          {"type": "Footer", "label": "Continuar para entrega", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "review_confirm"}}}
+        ]
+      }
+    },
+    {
+      "id": "CLIENTE",
+      "title": "Entrega e pagamento",
+      "data": {
+        "customer_name": {"type": "string", "__example__": "Maria Silva"},
+        "address_summary": {"type": "string", "__example__": "Rua A, 123 · Centro · Cuiabá"},
+        "customer_registered": {"type": "boolean", "__example__": true},
+        "payment_options": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}}}, "__example__": [{"id": "pix", "title": "PIX na entrega"}, {"id": "card", "title": "Cartão na entrega"}]}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "${data.customer_name}"},
+          {"type": "TextBody", "text": "${data.address_summary}"},
+          {"type": "Form", "name": "customer_form", "children": [
+            {"type": "Dropdown", "label": "Forma de pagamento", "name": "payment_method", "data-source": "${data.payment_options}", "required": true},
+            {"type": "TextArea", "label": "Observação", "name": "notes", "required": false},
+            {"type": "Footer", "label": "Confirmar pedido", "on-click-action": {"name": "data_exchange", "payload": {"trigger": "checkout_confirm", "payment_method": "${form.payment_method}", "notes": "${form.notes}"}}}
+          ]}
+        ]
+      }
+    },
+    {
+      "id": "FINALIZAR",
+      "title": "Pedido reservado",
+      "terminal": true,
+      "success": true,
+      "data": {
+        "confirmation": {"type": "string", "__example__": "Pedido reservado com sucesso."},
+        "next_step": {"type": "string", "__example__": "Ao voltar para a conversa, envie sua localização para confirmar o ponto da entrega."},
+        "request_id": {"type": "string", "__example__": "pedido-123"}
+      },
+      "layout": {
+        "type": "SingleColumnLayout",
+        "children": [
+          {"type": "TextHeading", "text": "Tudo certo!"},
+          {"type": "TextBody", "text": "${data.confirmation}"},
+          {"type": "TextBody", "text": "${data.next_step}"},
+          {"type": "Footer", "label": "Voltar ao WhatsApp", "on-click-action": {"name": "complete", "payload": {"request_id": "${data.request_id}", "next_action": "request_location"}}}
+        ]
+      }
+    }
+  ]
+}
