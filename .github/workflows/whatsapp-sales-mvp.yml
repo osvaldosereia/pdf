@@ -7,12 +7,17 @@ on:
       - 'supabase/migrations/20260908211*.sql'
       - 'supabase/migrations/20260908223*.sql'
       - 'supabase/migrations/2026090823*.sql'
+      - 'supabase/migrations/20260909*.sql'
       - 'supabase/functions/conversation-worker-v3/**'
+      - 'supabase/functions/conversation-worker-v4/**'
       - 'supabase/functions/admin-service-intelligence-v1/**'
+      - 'supabase/functions/admin-service-intelligence-v2/**'
       - 'supabase/functions/basket-shop-v1/**'
       - 'supabase/functions/admin-product-categories-v1/**'
+      - 'supabase/config.toml'
       - 'scripts/bling-order-writer-v1.mjs'
       - 'scripts/test-whatsapp-sales-mvp-*.mjs'
+      - 'scripts/test-whatsapp-cost-first-v1.mjs'
       - 'scripts/test-whatsapp-basket-showcase-swap-v1.mjs'
       - 'scripts/test-whatsapp-current-message-precedence-v1.mjs'
       - 'scripts/test-whatsapp-objective-service-v1.mjs'
@@ -34,12 +39,17 @@ on:
       - 'supabase/migrations/20260908211*.sql'
       - 'supabase/migrations/20260908223*.sql'
       - 'supabase/migrations/2026090823*.sql'
+      - 'supabase/migrations/20260909*.sql'
       - 'supabase/functions/conversation-worker-v3/**'
+      - 'supabase/functions/conversation-worker-v4/**'
       - 'supabase/functions/admin-service-intelligence-v1/**'
+      - 'supabase/functions/admin-service-intelligence-v2/**'
       - 'supabase/functions/basket-shop-v1/**'
       - 'supabase/functions/admin-product-categories-v1/**'
+      - 'supabase/config.toml'
       - 'scripts/bling-order-writer-v1.mjs'
       - 'scripts/test-whatsapp-sales-mvp-*.mjs'
+      - 'scripts/test-whatsapp-cost-first-v1.mjs'
       - 'scripts/test-whatsapp-basket-showcase-swap-v1.mjs'
       - 'scripts/test-whatsapp-current-message-precedence-v1.mjs'
       - 'scripts/test-whatsapp-objective-service-v1.mjs'
@@ -82,6 +92,7 @@ jobs:
           node scripts/test-whatsapp-release-pregate-v1.mjs
           node scripts/test-whatsapp-basket-return-link-v1.mjs
           node scripts/test-whatsapp-interactive-escape-fix-v1.mjs
+          node scripts/test-whatsapp-cost-first-v1.mjs
       - name: Catálogo próprio, carrinho e inteligência em PostgreSQL isolado
         env:
           TEST_RUNTIME: ${{ runner.temp }}/whatsapp-sales-mvp
@@ -99,7 +110,9 @@ jobs:
           deno-version: v2.x
       - run: |
           deno check supabase/functions/conversation-worker-v3/index.ts
+          deno check supabase/functions/conversation-worker-v4/index.ts
           deno check supabase/functions/admin-service-intelligence-v1/index.ts
+          deno check supabase/functions/admin-service-intelligence-v2/index.ts
           deno check supabase/functions/basket-shop-v1/index.ts
           deno check supabase/functions/admin-product-categories-v1/index.ts
       - name: Regressão crítica do worker existente
