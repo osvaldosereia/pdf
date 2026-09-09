@@ -94,23 +94,34 @@ Deno.serve(async(req:Request)=>{
   }
 
   if(action==="open"){
-    await sb.from("catalog_sessions").update({last_opened_at:new Date().toISOString(),last_activity_at:new Date().toISOString()}).eq("id",session.id);
+    const now=new Date().toISOString();
+    const activityPromise=sb.from("catalog_sessions")
+      .update({last_opened_at:now,last_activity_at:now})
+      .eq("id",session.id);
+
     let basket:any=null;
 
     if(flow==="basket_basic_v1"){
       const basketId=clean(session.metadata?.basket_id,80);
-      const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",basketId).maybeSingle();basket=b||null;
-      let cart:any=null;
-      if(session.cart_id){
-        const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle();
-        cart=c||null;
-      }
-      if(basket)basket={...basket,current_price:Number(cart?.base_commercial_price??basket.base_price??0)};
-      const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
+      const basketPromise=validUuid(basketId)
+        ? sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",basketId).maybeSingle()
+        : Promise.resolve({data:null,error:null});
+      const cartPromise=session.cart_id
+        ? sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle()
+        : Promise.resolve({data:null,error:null});
+      const itemsPromise=sb.from("catalog_session_items")
         .select("product_id,rank,quantity,metadata,product:products(id,name,image_url)")
         .eq("catalog_session_id",session.id).order("rank");
-      if(itemsError)return json({ok:false,error:"items_failed"},500);
-      const items=(rows||[]).map((r:any)=>({
+
+      const [,basketResult,cartResult,itemsResult]=await Promise.all([
+        activityPromise,basketPromise,cartPromise,itemsPromise
+      ]);
+
+      if(itemsResult.error)return json({ok:false,error:"items_failed"},500);
+      basket=basketResult.data||null;
+      const cart=cartResult.data||null;
+      if(basket)basket={...basket,current_price:Number(cart?.base_commercial_price??basket.base_price??0)};
+      const items=(itemsResult.data||[]).map((r:any)=>({
         product_id:r.product_id,
         name:r.product?.name||"Produto",
         image_url:r.product?.image_url||null,
@@ -131,20 +142,25 @@ Deno.serve(async(req:Request)=>{
     }
 
     const parentId=clean(session.metadata?.parent_basket_session_id,80);
-    let parentToken:string|null=null;
-    if(validUuid(parentId)){
-      const {data:parent}=await sb.from("catalog_sessions").select("public_token,metadata").eq("id",parentId).maybeSingle();
-      parentToken=parent?.public_token||null;
-      const bid=clean(parent?.metadata?.basket_id,80);
-      if(validUuid(bid)){const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",bid).maybeSingle();basket=b||null}
-    }
+    const parentPromise=validUuid(parentId)
+      ? sb.from("catalog_sessions").select("public_token,metadata").eq("id",parentId).maybeSingle()
+      : Promise.resolve({data:null,error:null});
 
     if(flow==="basket_replace_v1"){
-      const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
+      const itemsPromise=sb.from("catalog_session_items")
         .select("product_id,rank,metadata,product:products(id,name,image_url,category,stock)")
         .eq("catalog_session_id",session.id).order("rank");
-      if(itemsError)return json({ok:false,error:"items_failed"},500);
-      const items=(rows||[]).map((r:any)=>({
+      const [,parentResult,itemsResult]=await Promise.all([activityPromise,parentPromise,itemsPromise]);
+
+      if(itemsResult.error)return json({ok:false,error:"items_failed"},500);
+      const parent=parentResult.data;
+      const parentToken=parent?.public_token||null;
+      const bid=clean(parent?.metadata?.basket_id,80);
+      if(validUuid(bid)){
+        const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",bid).maybeSingle();
+        basket=b||null;
+      }
+      const items=(itemsResult.data||[]).map((r:any)=>({
         product_id:r.product_id,
         name:r.product?.name||"Produto",
         image_url:r.product?.image_url||null,
@@ -168,13 +184,28 @@ Deno.serve(async(req:Request)=>{
       });
     }
 
-    const {data:rows,error:itemsError}=await sb.from("catalog_session_items")
+    const itemsPromise=sb.from("catalog_session_items")
       .select("product_id,rank,quantity,metadata,product:products(id,name,price,image_url,category,stock)")
       .eq("catalog_session_id",session.id).order("rank");
-    if(itemsError)return json({ok:false,error:"items_failed"},500);
-    let cart:any=null;
-    if(session.cart_id){const {data:c}=await sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle();cart=c||null}
-    const items=(rows||[]).map((r:any)=>({
+    const cartPromise=session.cart_id
+      ? sb.from("carts").select("id,total,base_commercial_price,pricing_status,pricing_issues,version").eq("id",session.cart_id).maybeSingle()
+      : Promise.resolve({data:null,error:null});
+
+    const [,parentResult,itemsResult,cartResult]=await Promise.all([
+      activityPromise,parentPromise,itemsPromise,cartPromise
+    ]);
+    if(itemsResult.error)return json({ok:false,error:"items_failed"},500);
+
+    const parent=parentResult.data;
+    const parentToken=parent?.public_token||null;
+    const bid=clean(parent?.metadata?.basket_id,80);
+    if(validUuid(bid)){
+      const {data:b}=await sb.from("basket_templates").select("id,name,base_price,image_url").eq("id",bid).maybeSingle();
+      basket=b||null;
+    }
+
+    const cart=cartResult.data||null;
+    const items=(itemsResult.data||[]).map((r:any)=>({
       product_id:r.product_id,name:r.product?.name||"Produto",price:Number(r.product?.price||0),
       image_url:r.product?.image_url||null,category:r.product?.category||r.metadata?.category||null,
       stock:Number(r.product?.stock||0),quantity:Number(r.quantity||0)
