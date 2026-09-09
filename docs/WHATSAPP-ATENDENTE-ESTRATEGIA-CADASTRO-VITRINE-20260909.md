@@ -49,6 +49,8 @@ Validação com a mensagem `Vc tem sabonete?`: o bundle retornou 16 orientaçõe
 - `Cordialidade sem criar interações desnecessárias`;
 - `Confiança vale mais que parecer humano`.
 
+Também foi encontrado um conflito em uma orientação recém-importada: ela informava o WhatsApp `(65) 99815-0975`, enquanto a conta WhatsApp Business efetivamente ativa no transporte é `(65) 8449-1018`. O item publicado foi corrigido para evitar que a IA informe um canal diferente daquele em que o atendimento está operando.
+
 ## 2. Cliente consultado desde o primeiro contato
 
 Foram criados:
@@ -126,9 +128,9 @@ A função:
 
 - usa o termo extraído pela IA;
 - pesquisa somente produtos vendáveis e fisicamente conferidos;
-- cria uma `catalog_session` ligada à conversa e ao carrinho;
+- cria uma `catalog_session` ligada à conversa e ao mesmo carrinho;
 - disponibiliza até 20 resultados;
-- abre em `https://donaantonia.com.br/catalogo/?t=<token>`;
+- abre a Sala de Compra em `https://donaantonia.com.br/comprar/?s=<token>&q=<termo>`;
 - permite alterar quantidade e adicionar ao pedido na própria vitrine.
 
 O transporter foi adaptado para que respostas `search_product`, que antes viravam uma lista estreita de produtos no WhatsApp, sejam convertidas em `cta_url`.
@@ -140,9 +142,22 @@ Cliente: Vc tem sabonete?
 IA extrai: sabonete
 Sistema encontra produtos reais
 WhatsApp: [Ver Sabonete]
+Sala de Compra abre já filtrada por sabonete
 ```
 
-Teste técnico com `sabonete` criou uma vitrine com 10 produtos reais e carrinho vinculado.
+Teste técnico com `sabonete` criou uma vitrine com 10 produtos reais e carrinho vinculado. `sabonete líquido` criou uma vitrine com 5 resultados e URL UTF-8 corretamente codificada.
+
+No frontend foram adicionados:
+
+- `comprar/search-entry.js` — lê o parâmetro `q` e, depois de a Sala ficar online, abre automaticamente a busca correta;
+- atualização de `comprar/index.html` para carregar esse comportamento.
+
+Commits relacionados:
+
+```text
+506e3469094ed8e55828eae1ed1aaa6ad706edd0
+c59ce09eb96e08d273ff7c77b365589c659813a1
+```
 
 ## 6. Mais de uma busca na mesma pergunta
 
@@ -161,6 +176,7 @@ Como `cta_url` suporta um destino URL por mensagem interativa, múltiplas buscas
 20260909041440 whatsapp_checkout_outbound_plaintext_followup_v1
 20260909041501 fix_whatsapp_address_line_precedence_v1
 20260909041535 fix_whatsapp_search_catalog_cart_ambiguity_v1
+20260909042001 whatsapp_search_showcase_shopping_room_url_v1
 ```
 
 ## Próxima validação prática
