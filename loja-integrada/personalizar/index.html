@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#ffffff">
   <title>Personalize sua caneca — CanecaFácil</title>
   <link rel="stylesheet" href="./styles.css?v=20260902-9">
+  <link rel="stylesheet" href="./chat-v1.css?v=20260904-1">
   <link rel="stylesheet" href="./preview-polish-v1.css?v=20260902-2">
   <link rel="stylesheet" href="./fun-loader-v1.css?v=20260901-1">
 </head>
@@ -19,8 +20,8 @@
   <main class="page">
     <section class="intro">
       <p class="eyebrow">PERSONALIZAÇÃO</p>
-      <h1>Personalize sua caneca</h1>
-      <p>Altere somente o que este modelo permite. Gere sua arte, confira o resultado e só depois aprove para comprar.</p>
+      <h1>Conte sua ideia. A CanecaFácil cria.</h1>
+      <p>Responda uma pergunta por vez, por texto ou voz. Você confere a arte antes de comprar.</p>
     </section>
 
     <section class="product" id="productBox" aria-live="polite">
@@ -28,6 +29,26 @@
       <div class="product-copy"><div class="skeleton line"></div><div class="skeleton line short"></div></div>
     </section>
 
+    <section class="chat-card" id="chatCard" hidden aria-label="Conversa de personalização">
+      <div class="chat-head">
+        <div class="chat-head-copy"><small>CANECAFÁCIL IA</small><strong>Vamos criar sua caneca</strong></div>
+        <span class="chat-head-state">online</span>
+      </div>
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions"></div>
+      <div class="chat-composer" id="chatComposer">
+        <div class="chat-quick" id="chatQuick"></div>
+        <div class="chat-compose-row">
+          <button type="button" class="chat-tool chat-photo" id="chatPhoto" hidden aria-label="Enviar foto">📷 Enviar foto</button>
+          <textarea id="chatInput" rows="1" maxlength="500" placeholder="Digite sua resposta…" aria-label="Sua resposta"></textarea>
+          <button type="button" class="chat-tool" id="chatMic" aria-label="Responder por voz" title="Responder por voz">🎙️</button>
+          <button type="button" class="chat-send" id="chatSend" aria-label="Enviar resposta">↑</button>
+        </div>
+        <button type="button" class="chat-skip" id="chatSkip" hidden>Pular esta pergunta</button>
+        <p class="chat-status" id="chatStatus" hidden></p>
+      </div>
+    </section>
+
+    <!-- Fallback e contrato operacional atual: o chat preenche estes campos por trás. -->
     <form class="form-card" id="personalizerForm" hidden>
       <div class="form-head"><div><p class="eyebrow">PERSONALIZE</p><h2>Personalize esta Caneca</h2><p class="form-subtitle">Preencha os dados abaixo para criar sua versão.</p></div></div>
       <div class="grid">
@@ -93,5 +114,6 @@
   <script src="./mobile-fetch-compat-v1.js?v=20260903-2"></script>
   <script src="./image-upload-stability-v1.js?v=20260902-1"></script>
   <script type="module" src="./app-v15.js?v=20260902-2"></script>
+  <script src="./chat-v1.js?v=20260904-1"></script>
 </body>
 </html>
