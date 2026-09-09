@@ -6,12 +6,15 @@
   <meta name="theme-color" content="#f36b21">
   <title>Dona Antônia · Sua cesta</title>
   <meta name="robots" content="noindex,nofollow">
+  <link rel="dns-prefetch" href="//ssbesxgaijknwsjbsbcz.supabase.co">
+  <link rel="preconnect" href="https://ssbesxgaijknwsjbsbcz.supabase.co" crossorigin>
+  <link rel="preload" href="/img/logoantonia5.png" as="image">
   <link rel="stylesheet" href="./styles.css?v=4">
-  <link rel="stylesheet" href="./visual-v5.css?v=1">
+  <link rel="stylesheet" href="./visual-v6.css?v=1">
 </head>
 <body>
   <header class="topbar">
-    <img class="brand-logo" src="/img/logoantonia5.png" alt="Dona Antônia">
+    <img class="brand-logo" src="/img/logoantonia5.png" alt="Dona Antônia" fetchpriority="high" decoding="async">
     <div><strong>Dona Antônia</strong><span id="pageSubtitle">Sua cesta</span></div>
   </header>
 
@@ -21,7 +24,7 @@
 
     <section id="basketView" class="hidden">
       <div class="basket-hero">
-        <img id="basketImage" alt="Cesta básica Dona Antônia">
+        <img id="basketImage" alt="Cesta básica Dona Antônia" decoding="async">
         <div class="basket-hero-copy">
           <span class="eyebrow">Cesta selecionada</span>
           <h1 id="basketName"></h1>
@@ -66,15 +69,14 @@
 
   <dialog id="productModal" class="product-modal">
     <button id="closeModal" class="modal-close" aria-label="Fechar">×</button>
-    <img id="modalImage" alt="">
+    <img id="modalImage" alt="" decoding="async">
     <h2 id="modalName"></h2>
     <strong id="modalPrice"></strong>
     <div id="modalStepper"></div>
   </dialog>
 
   <div id="toast" class="toast hidden" role="status"></div>
-  <script src="./app.js?v=4" defer></script>
-  <script src="./visual-v5.js?v=1" defer></script>
+  <script src="./app.js?v=5" defer></script>
   <script src="./whatsapp-return.js?v=1" defer></script>
 </body>
 </html>
