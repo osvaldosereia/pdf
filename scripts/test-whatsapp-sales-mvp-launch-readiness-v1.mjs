@@ -6,6 +6,7 @@ const address=readFileSync(new URL('../supabase/migrations/20260908211020_whatsa
 const quantity=readFileSync(new URL('../supabase/migrations/20260908210970_whatsapp_product_quantity_step_v1.sql',import.meta.url),'utf8');
 const checkout=readFileSync(new URL('../supabase/migrations/20260908210980_whatsapp_checkout_address_first_v1.sql',import.meta.url),'utf8');
 const precedence=readFileSync(new URL('../supabase/migrations/20260908210940_whatsapp_current_message_precedence_v1.sql',import.meta.url),'utf8');
+const cityGuard=readFileSync(new URL('../supabase/migrations/20260909002000_whatsapp_basket_delivery_city_guard_v1.sql',import.meta.url),'utf8');
 const worker=readFileSync(new URL('../supabase/functions/conversation-worker-v3/index.ts',import.meta.url),'utf8');
 
 for(const needle of ["translate(lower(trim(coalesce(p_query,'')))","p.n_name like '%'||q.term||'%'","accentless_product_search"]){
@@ -26,6 +27,21 @@ for(const needle of ['current_message_is_authoritative','support_only_never_over
 for(const needle of ['sales_state','confirm_whatsapp_sales_order_v1','queue_human_handoff_v1']){
   assert.ok(worker.includes(needle),`worker de vendas: faltou ${needle}`);
 }
+for(const needle of [
+  'normalize_local_delivery_city_v1',
+  "when 'cuiaba' then 'Cuiabá'",
+  "when 'varzea grande' then 'Várzea Grande'",
+  'delivery_city_not_supported',
+  'expected_seven_fields',
+  'Nome | Rua | Quadra | Casa | Bairro | Cidade | Localizador',
+  "E'\\nCidade: '",
+  'save_whatsapp_basket_customer_v2'
+]){
+  assert.ok(cityGuard.includes(needle),`checkout local precisa da cidade: faltou ${needle}`);
+}
+assert.ok(!cityGuard.match(/whatsapp_live_canary_percent\s*=/i),'guard de cidade não pode alterar canary');
+assert.ok(!cityGuard.match(/bling_order_sync_enabled\s*=/i),'guard de cidade não pode alterar Bling');
+assert.ok(!cityGuard.match(/whatsapp_flow_send_enabled\s*=/i),'guard de cidade não pode alterar Flow');
 assert.ok(!worker.includes('whatsapp_sales_bling_submit_enabled=true'),'worker não pode ligar Bling por código');
 
-console.log('PASS: prontidão final do MVP protege busca, quantidade, endereço, confirmação e handoff.');
+console.log('PASS: prontidão final do MVP protege busca, quantidade, endereço/cidade, confirmação e handoff.');
