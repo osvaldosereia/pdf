@@ -6,10 +6,11 @@
   const state={flow:null,data:null,items:[],filtered:[],modal:null,busy:new Set(),categoryDialog:null};
   const money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
   const esc=s=>String(s??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+  const quantityText=v=>`${Math.max(0,Number(v||0))} ${Number(v||0)===1?"unidade":"unidades"}`;
   const toast=msg=>{const el=$("toast");el.textContent=msg;el.classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.add("hidden"),2400)};
 
   async function api(action,extra={}){
-    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,token,...extra}),cache:"no-store"});
+    const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,token,...extra}),cache:"no-store",credentials:"omit"});
     const data=await r.json().catch(()=>({ok:false,error:"invalid_response"}));
     if(!r.ok||!data.ok)throw new Error(data.detail||data.error||"Falha ao carregar");
     return data;
@@ -19,7 +20,7 @@
     const min=Number(item.min_quantity??0),max=Math.max(min,Number(item.max_quantity??item.stock??99));
     const editable=item.quantity_editable!==false;
     const disabled=editable?"":"disabled";
-    return `<div class="stepper" data-id="${esc(item.product_id)}"><button type="button" data-step="-1" ${disabled} aria-label="Diminuir">−</button><input type="number" inputmode="numeric" min="${min}" max="${max}" value="${Number(item.quantity||0)}" ${disabled} aria-label="Quantidade"><button type="button" data-step="1" ${disabled} aria-label="Aumentar">+</button></div>`;
+    return `<div class="stepper" data-id="${esc(item.product_id)}"><button type="button" data-step="-1" ${disabled} aria-label="Diminuir quantidade">−</button><input type="number" inputmode="numeric" min="${min}" max="${max}" value="${Number(item.quantity||0)}" ${disabled} aria-label="Quantidade atual"><button type="button" data-step="1" ${disabled} aria-label="Aumentar quantidade">+</button></div>`;
   }
 
   function updateBasketPricing(result={}){
@@ -34,10 +35,23 @@
   function refreshBasketRow(id){
     const item=state.items.find(x=>x.product_id===id);if(!item)return;
     const row=document.querySelector(`[data-basket-row="${CSS.escape(id)}"]`);if(!row)return;
-    row.classList.toggle("is-removed",Number(item.quantity||0)===0);
+    const quantity=Number(item.quantity||0);
+    row.classList.toggle("is-removed",quantity===0);
+    const qty=row.querySelector(".basket-row-qty");if(qty)qty.textContent=quantityText(quantity);
     const sub=row.querySelector(".basket-row-sub");
-    if(sub)sub.textContent=Number(item.quantity||0)===0?"Retirado da cesta":Number(item.quantity)!==Number(item.base_quantity)?"Quantidade alterada":"Quantidade original";
-    const remove=row.querySelector("[data-remove]");if(remove)remove.disabled=Number(item.quantity||0)===0;
+    if(sub)sub.textContent=quantity===0?"Retirado da cesta":quantity!==Number(item.base_quantity)?"Quantidade alterada":"";
+    const remove=row.querySelector("[data-remove]");if(remove)remove.disabled=quantity===0;
+  }
+
+  function refreshExtraCard(id){
+    const item=state.items.find(x=>x.product_id===id);if(!item)return;
+    const card=document.querySelector(`[data-product="${CSS.escape(id)}"]`);if(!card)return;
+    const quantity=Number(item.quantity||0);
+    card.classList.toggle("has-quantity",quantity>0);
+    const qty=card.querySelector(".product-quantity");
+    if(qty){qty.textContent=quantityText(quantity);qty.classList.toggle("hidden",quantity<=0)}
+    const add=card.querySelector(".product-add-button");
+    if(add){add.disabled=false;add.textContent="Adicionar"}
   }
 
   function bindSteppers(root,items){
@@ -59,10 +73,17 @@
           }else if(state.flow==="basket_extras_v1"){
             const total=res.result?.cart?.commercial_total??res.result?.cart?.total;
             if(total!=null)$("cartTotal").textContent=money(total);
+            refreshExtraCard(id);
             toast(next===0?"Produto retirado":"Quantidade atualizada");
           }
-        }catch(e){input.value=String(item.quantity||0);toast(e.message||"Não consegui atualizar");}
-        finally{state.busy.delete(id);el.querySelectorAll("button,input").forEach(x=>x.disabled=item.quantity_editable===false)}
+        }catch(e){
+          input.value=String(item.quantity||0);
+          if(state.flow==="basket_extras_v1")refreshExtraCard(id);
+          toast(e.message||"Não consegui atualizar");
+        }finally{
+          state.busy.delete(id);
+          el.querySelectorAll("button,input").forEach(x=>x.disabled=item.quantity_editable===false);
+        }
       };
       el.querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>commit(Number(input.value||0)+Number(btn.dataset.step||0))));
       input.addEventListener("change",()=>commit(input.value));
@@ -74,6 +95,14 @@
       const id=btn.dataset.remove;
       const step=root.querySelector(`.stepper[data-id="${CSS.escape(id)}"]`);if(!step)return;
       const input=step.querySelector("input");input.value="0";input.dispatchEvent(new Event("change",{bubbles:true}));
+    }));
+  }
+
+  function bindExtraAddButtons(root){
+    root.querySelectorAll(".product-add-button").forEach(btn=>btn.addEventListener("click",()=>{
+      const card=btn.closest("[data-product]"),id=card?.dataset.product;if(!id||state.busy.has(id))return;
+      const plus=card.querySelector('.stepper [data-step="1"]');if(!plus||plus.disabled)return;
+      btn.disabled=true;btn.textContent="Adicionando…";plus.click();
     }));
   }
 
@@ -89,8 +118,9 @@
     root.innerHTML=state.items.map(item=>{
       const sub=item.substitution;
       const status=sub?`<div class="swap-status">Substituição registrada: <strong>${esc(sub.replacement_name||"produto selecionado")}</strong></div>`:"";
-      const removed=Number(item.quantity||0)===0;
-      return `<article class="basket-row${removed?" is-removed":""}" data-basket-row="${esc(item.product_id)}"><img class="basket-row-image" loading="lazy" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"><div class="basket-row-copy"><div class="basket-row-name">${esc(item.name)}</div><div class="basket-row-sub">${removed?"Retirado da cesta":Number(item.quantity)!==Number(item.base_quantity)?"Quantidade alterada":"Quantidade original"}</div>${status}</div><div class="basket-row-actions">${stepper(item)}<button class="remove-button" type="button" data-remove="${esc(item.product_id)}" ${removed?"disabled":""}>Retirar</button></div></article>`;
+      const quantity=Number(item.quantity||0),removed=quantity===0;
+      const detail=removed?"Retirado da cesta":quantity!==Number(item.base_quantity)?"Quantidade alterada":"";
+      return `<article class="basket-row${removed?" is-removed":""}" data-basket-row="${esc(item.product_id)}"><img class="basket-row-image" loading="lazy" decoding="async" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"><div class="basket-row-copy"><div class="basket-row-qty">${quantityText(quantity)}</div><div class="basket-row-name">${esc(item.name)}</div><div class="basket-row-sub">${detail}</div>${status}</div><div class="basket-row-actions">${stepper(item)}<button class="remove-button" type="button" data-remove="${esc(item.product_id)}" ${removed?"disabled":""}>Retirar</button></div></article>`;
     }).join("");
     bindSteppers(root,state.items);bindRemoveButtons(root);
     if(params.get("swap")==="ok")toast("Substituição registrada para conferência");
@@ -98,15 +128,18 @@
 
   function renderExtraCards(items){
     const root=$("productGrid");
-    root.innerHTML=items.map(item=>`<article class="product-card" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-name">${esc(item.name)}</div><div class="product-price">${money(item.price)}</div></div></button>${stepper({...item,min_quantity:0,max_quantity:item.stock,quantity_editable:true})}</article>`).join("");
+    root.innerHTML=items.map(item=>{
+      const quantity=Number(item.quantity||0);
+      return `<article class="product-card${quantity>0?" has-quantity":""}" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" decoding="async" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-quantity${quantity>0?"":" hidden"}">${quantityText(quantity)}</div><div class="product-name">${esc(item.name)}</div><div class="product-price">${money(item.price)}</div></div></button>${stepper({...item,min_quantity:0,max_quantity:item.stock,quantity_editable:true})}<button class="product-add-button" type="button">Adicionar</button></article>`;
+    }).join("");
     $("emptyProducts").classList.toggle("hidden",items.length>0);
-    bindSteppers(root,state.items);
+    bindSteppers(root,state.items);bindExtraAddButtons(root);
     root.querySelectorAll("[data-open]").forEach(btn=>btn.addEventListener("click",()=>openProduct(btn.dataset.open)));
   }
 
   function renderReplacementCards(items){
     const root=$("productGrid");
-    root.innerHTML=items.map(item=>`<article class="product-card replacement-card" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-name">${esc(item.name)}</div><div class="replacement-category">${esc(item.category||"")}</div></div></button><button class="choose-replacement" type="button" data-choose="${esc(item.product_id)}">Escolher</button></article>`).join("");
+    root.innerHTML=items.map(item=>`<article class="product-card replacement-card" data-product="${esc(item.product_id)}"><button class="product-open" type="button" data-open="${esc(item.product_id)}"><div class="product-image-wrap"><img class="product-image" loading="lazy" decoding="async" src="${esc(item.image_url||"")}" alt="${esc(item.name)}"></div><div class="product-copy"><div class="product-name">${esc(item.name)}</div><div class="replacement-category">${esc(item.category||"")}</div></div></button><button class="choose-replacement" type="button" data-choose="${esc(item.product_id)}">Escolher</button></article>`).join("");
     $("emptyProducts").classList.toggle("hidden",items.length>0);
     root.querySelectorAll("[data-open]").forEach(btn=>btn.addEventListener("click",()=>openProduct(btn.dataset.open)));
     root.querySelectorAll("[data-choose]").forEach(btn=>btn.addEventListener("click",()=>chooseReplacement(btn.dataset.choose,btn)));
@@ -168,10 +201,11 @@
   async function chooseCategories(mode="extras",force=false){
     if(state.categoryDialog)return;
     let response;try{response=await api("categories")}catch(e){toast("Não consegui carregar as categorias");return}
-    const dialog=document.createElement("dialog");dialog.className="category-modal";state.categoryDialog=dialog;
-    const title=mode==="replacement"?"Escolha onde procurar":"Escolha as categorias";
-    const copy=mode==="replacement"?"Marque uma ou várias categorias para encontrar o produto que vai entrar no lugar.":"Marque uma ou várias categorias para montar sua vitrine.";
-    dialog.innerHTML=`<div class="category-head"><div><span class="eyebrow">${mode==="replacement"?"Trocar produto":"Personalizar cesta"}</span><h2>${title}</h2><p>${copy}</p></div><button type="button" class="modal-close category-close" aria-label="Fechar">×</button></div><div class="category-list">${(response.categories||[]).map(c=>`<label class="category-option"><input type="checkbox" value="${esc(c.category)}"><span><strong>${esc(c.display_name||c.category)}</strong><small>${Number(c.product_count||0)} produtos</small></span></label>`).join("")}</div><div class="category-actions"><button type="button" class="btn btn-primary category-go">Montar vitrine</button></div>`;
+    const dialog=document.createElement("dialog");dialog.className=`category-modal${mode==="extras"?" category-simple":""}`;state.categoryDialog=dialog;
+    const title=mode==="replacement"?"Escolha onde procurar":"O que te interessa?";
+    const intro=mode==="replacement"?`<span class="eyebrow">Trocar produto</span>`:"";
+    const copy=mode==="replacement"?`<p>Marque uma ou várias categorias para encontrar o produto que vai entrar no lugar.</p>`:"";
+    dialog.innerHTML=`<div class="category-head"><div>${intro}<h2>${title}</h2>${copy}</div><button type="button" class="modal-close category-close" aria-label="Fechar">×</button></div><div class="category-list">${(response.categories||[]).map(c=>`<label class="category-option"><input type="checkbox" value="${esc(c.category)}"><span><strong>${esc(c.display_name||c.category)}</strong><small>${Number(c.product_count||0)} produtos</small></span></label>`).join("")}</div><div class="category-actions"><button type="button" class="btn btn-primary category-go">Montar vitrine</button></div>`;
     document.body.appendChild(dialog);dialog.showModal();
     const close=()=>{dialog.close();dialog.remove();state.categoryDialog=null};
     dialog.querySelector(".category-close").addEventListener("click",()=>{if(force&&mode==="replacement"&&state.data?.session?.parent_url){location.href=state.data.session.parent_url}else close()});
@@ -203,8 +237,14 @@
 
   async function boot(){
     if(!/^[a-f0-9]{64}$/i.test(token)){showError("Este link não é válido.");return}
-    try{const data=await api("open");state.data=data;state.flow=data.flow;$("loading").classList.add("hidden");if(data.flow==="basket_basic_v1")renderBasket(data);else if(data.flow==="basket_extras_v1")renderExtras(data);else if(data.flow==="basket_replace_v1")renderReplacement(data);else showError("Este catálogo não está disponível.")}
-    catch(e){showError(e.message||"O link pode ter expirado.")}
+    try{
+      const data=await api("open");state.data=data;state.flow=data.flow;
+      $("loading").classList.add("hidden");
+      if(data.flow==="basket_basic_v1")renderBasket(data);
+      else if(data.flow==="basket_extras_v1")renderExtras(data);
+      else if(data.flow==="basket_replace_v1")renderReplacement(data);
+      else showError("Este catálogo não está disponível.");
+    }catch(e){showError(e.message||"O link pode ter expirado.")}
   }
   function showError(msg){$("loading").classList.add("hidden");$("errorText").textContent=msg;$("error").classList.remove("hidden")}
 
